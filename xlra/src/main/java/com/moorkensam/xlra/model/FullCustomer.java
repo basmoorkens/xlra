@@ -4,40 +4,44 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
-@Table(name="customer")
-public class Customer extends BaseEntity {
+@Table(name = "customer")
+@NamedQueries({ @NamedQuery(name = "FullCustomer.findAll", query = "SELECT c FROM FullCustomer c") })
+public class FullCustomer extends BaseCustomer {
+
+	public FullCustomer() {
+		super();
+	}
+	
+	public FullCustomer(boolean fullCustomer) {
+		address = new Address();
+		setFullCustomer(fullCustomer);
+	}
 
 	private static final long serialVersionUID = 1L;
 
-	@Length(max=100)
-	@NotNull
-	private String name;
-	
-	@Length(max=100)
-	@NotNull
-	private String email;
-
 	@Embedded
-	private Address address; 
-	
-	@Length(max=100)
+	private Address address;
+
+	@Length(max = 100)
 	@NotNull
-	private String phone; 
-	
-	//TODO btw number length
-	private String btwNumber; 
-	
+	@NotEmpty(message = "May not be empty")
+	private String btwNumber;
+
 	@Enumerated(EnumType.STRING)
-	private Language language; 
-	
-	private boolean fullCustomer; 
-	
+	@NotNull(message = "A language has to be selected")
+	private Language language;
+
+	private boolean fullCustomer;
+
 	public String getEmail() {
 		return email;
 	}
@@ -84,5 +88,13 @@ public class Customer extends BaseEntity {
 
 	public void setFullCustomer(boolean fullCustomer) {
 		this.fullCustomer = fullCustomer;
+	}
+
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
 	}
 }

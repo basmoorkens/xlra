@@ -6,7 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import com.moorkensam.xlra.dao.CustomerDAO;
-import com.moorkensam.xlra.model.Customer;
+import com.moorkensam.xlra.model.FullCustomer;
 import com.moorkensam.xlra.service.CustomerService;
 
 @Stateless
@@ -16,18 +16,18 @@ public class CustomerServiceImpl implements CustomerService {
 	private CustomerDAO customerDAO; 
 	
 	@Override
-	public void createCustomer(Customer customer) {
+	public void createCustomer(FullCustomer customer) {
 		customerDAO.createCustomer(customer);
 	}
 
 	@Override
-	public void updateCustomer(Customer customer) {
+	public void updateCustomer(FullCustomer customer) {
 		customerDAO.updateCustomer(customer);
 	}
 
 	@Override
-	public List<Customer> getAllCustomers() {
-		return customerDAO.getAllCustomers();
+	public List<FullCustomer> getAllFullCustomers() {
+		return customerDAO.getAllFullCustomers();
 	}
 
 }

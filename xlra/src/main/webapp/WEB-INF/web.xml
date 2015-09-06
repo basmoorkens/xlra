@@ -12,6 +12,6 @@
 		<url-pattern>*.xhtml</url-pattern>
 	</servlet-mapping>
 	<welcome-file-list>
-		<welcome-file>/customers.xhtml</welcome-file>
+		<welcome-file>/views/customers.xhtml</welcome-file>
 	</welcome-file-list>
 </web-app>

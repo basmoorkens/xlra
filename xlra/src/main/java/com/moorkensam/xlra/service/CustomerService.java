@@ -2,13 +2,13 @@ package com.moorkensam.xlra.service;
 
 import java.util.List;
 
-import com.moorkensam.xlra.model.Customer;
+import com.moorkensam.xlra.model.FullCustomer;
 
 public interface CustomerService {
 
-	public void createCustomer(Customer customer);
+	public void createCustomer(FullCustomer customer);
 
-	public void updateCustomer(Customer customer);
+	public void updateCustomer(FullCustomer customer);
 
-	public List<Customer> getAllCustomers();
+	public List<FullCustomer> getAllFullCustomers();
 }

@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/views/template.xhtml">
+	<ui:define name="title">
+		<h:outputText value="XLRA - Customer management" />
+	</ui:define>
+	<ui:define name="pageTitle">
+		<h:outputText value="Customer management" />
+	</ui:define>
+	<ui:define name="body">
+		<h:form>
+			<p:commandButton value="Create customer" title="Add new customer"
+				actionListener="#{customerController.openDetailGrid}"
+				icon="ui-icon-check" validateClient="true" ajax="false" />
+		</h:form>
+		<p:panel id="customerOverview" header="Customer overview">
+			<p:dataTable value="#{customerController.allFullCustomers}"
+				var="customer" emptyMessage="No customers found." rows="10">
+				<p:column>
+					<f:facet name="header">Name</f:facet>
+						#{customer.name}
+					</p:column>
+				<p:column>
+					<f:facet name="header">Email</f:facet>
+						#{customer.email}
+					</p:column>
+				<p:column>
+					<f:facet name="header">Phone</f:facet>
+						#{customer.phone}
+					</p:column>
+			</p:dataTable>
+		</p:panel>
+		<h:form>
+			<p:panel id="createCustomerPanel"
+				collapsed="#{customerController.renderDetailGrid}"
+				header="Create new customer">
+				<p:panelGrid columns="3" cellpadding="0"
+					styleClass="customerCreateGrid">
+					<h:outputLabel for="nameField">Name</h:outputLabel>
+					<p:inputText size="50"
+						value="#{customerController.newCustomer.name}" id="nameField"></p:inputText>
+					<p:message for="nameField" />
+
+
+					<h:outputLabel for="emailField">Email</h:outputLabel>
+					<p:inputText size="50"
+						value="#{customerController.newCustomer.email}" id="emailField"></p:inputText>
+					<p:message for="emailField" />
+
+
+
+					<h:outputLabel for="phoneField">Phone</h:outputLabel>
+					<p:inputText size="50"
+						value="#{customerController.newCustomer.phone}" id="phoneField"></p:inputText>
+					<p:message for="phoneField" />
+
+
+					<h:outputLabel for="streetField">Street</h:outputLabel>
+					<p:inputText size="50"
+						value="#{customerController.newCustomer.address.street}"
+						id="streetField"></p:inputText>
+					<p:message for="streetField" />
+
+
+					<h:outputLabel for="numberField">Number</h:outputLabel>
+					<p:inputText size="50"
+						value="#{customerController.newCustomer.address.number}"
+						id="numberField"></p:inputText>
+					<p:message for="numberField" />
+
+
+
+					<h:outputLabel for="zipField">ZIP</h:outputLabel>
+					<p:inputText size="50"
+						value="#{customerController.newCustomer.address.zip}"
+						id="zipField"></p:inputText>
+					<p:message for="zipField" />
+
+
+
+					<h:outputLabel for="cityField">City</h:outputLabel>
+					<p:inputText size="50"
+						value="#{customerController.newCustomer.address.city}"
+						id="cityField"></p:inputText>
+					<p:message for="cityField" />
+
+
+
+					<h:outputLabel for="countryField">Country</h:outputLabel>
+					<p:inputText size="50"
+						value="#{customerController.newCustomer.address.country}"
+						id="countryField"></p:inputText>
+					<p:message for="countryField" />
+
+
+					<h:outputLabel for="btwField">BTW number</h:outputLabel>
+					<p:inputText size="50"
+						value="#{customerController.newCustomer.btwNumber}" id="btwField"></p:inputText>
+					<p:message for="btwField" />
+
+
+					<h:outputLabel for="languageField">Language</h:outputLabel>
+					<p:selectOneRadio
+						value="#{customerController.newCustomer.language}"
+						id="languageField">
+						<f:selectItems value="#{customerController.allLanguages}"></f:selectItems>
+					</p:selectOneRadio>
+					<p:message for="languageField" />
+				</p:panelGrid>
+				<p:commandButton value="Cancel" title="Cancel" immediate="true"
+					actionListener="#{customerController.closeDetailGrid}" ajax="false"
+					style="width:200px;"></p:commandButton>
+				<p:commandButton value="Create customer" title="Create customer"
+					actionListener="#{customerController.createCustomer}"
+					style="width:200px;" icon="ui-icon-check" validateClient="true"
+					ajax="false" />
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

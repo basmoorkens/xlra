@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import com.moorkensam.xlra.model.Customer;
+import com.moorkensam.xlra.model.FullCustomer;
 
 @Stateless
 public class TestEJB {
@@ -15,11 +15,11 @@ public class TestEJB {
 	@PersistenceContext(unitName="xlraPU")
 	private EntityManager em;
 	
-	public void insertCustomer(Customer c) {
+	public void insertCustomer(FullCustomer c) {
 		em.persist(c);
 	}
 	
-	public List<Customer> getCustomers() {
+	public List<FullCustomer> getCustomers() {
 		String hql = "SELECT c FROM Customer c"; 
 		Query q = em.createQuery(hql);
 		return q.getResultList();
