@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -23,9 +24,17 @@ public abstract class BaseEntity implements Serializable{
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDateTime; 
 	
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date lastUpdatedDateTime;
+	
 	@PrePersist
 	public void onCreate() {
 		setCreatedDateTime(new Date()); 
+	}
+	
+	@PreUpdate
+	public void onUpdate() { 
+		setLastUpdatedDateTime(new Date());
 	}
 
 	public long getId() {
@@ -42,6 +51,14 @@ public abstract class BaseEntity implements Serializable{
 
 	public void setCreatedDateTime(Date createdDateTime) {
 		this.createdDateTime = createdDateTime;
+	}
+
+	public Date getLastUpdatedDateTime() {
+		return lastUpdatedDateTime;
+	}
+
+	public void setLastUpdatedDateTime(Date lastUpdatedDateTime) {
+		this.lastUpdatedDateTime = lastUpdatedDateTime;
 	}
 	
 }
