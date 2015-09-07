@@ -7,7 +7,7 @@ import com.moorkensam.xlra.model.DieselRate;
 import com.moorkensam.xlra.model.MailTemplate;
 import com.moorkensam.xlra.model.XlraConfiguration;
 
-public interface XlraConfigurationService {
+public interface ApplicationConfigurationService {
 
 	void updateXlraConfiguration(XlraConfiguration xlraConfiguration);
 	

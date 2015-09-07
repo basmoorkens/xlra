@@ -12,38 +12,20 @@
 		<h:outputText value="Application configuration" />
 	</ui:define>
 	<ui:define name="body">
-		<h:form id="customerOverviewForm">
-			<p:panel id="customerOverview" header="Customer overview">
-				<p:dataTable value="#{customerController.allFullCustomers}"
-					var="customer" emptyMessage="No customers found." id="customerTable" rows="10">
-					<p:column style="width:36px;text-align: center">
-						<p:commandButton
-							actionListener="#{customerController.setupPageForEditUser}"
-							icon="ui-icon-search" title="View" ajax="false">
-							<f:setPropertyActionListener value="#{customer}"
-								target="#{customerController.selectedCustomer}" />
-						</p:commandButton>
-					</p:column>
+		<h:form id="applicationConfigurationForm">
+			<p:panel id="dieselPanel" header="Diesel charges">
+				<p:dataTable value="#{configurationController.dieselRates}"
+				var="dieselRate" emptyMessage="No dieselrates found." id="dieselRateTable">
 					<p:column>
 						<f:facet name="header">Name</f:facet>
-						#{customer.name}
+						#{dieselRate.interval}
 					</p:column>
 					<p:column>
 						<f:facet name="header">Email</f:facet>
-						#{customer.email}
-					</p:column>
-					<p:column>
-						<f:facet name="header">Phone</f:facet>
-						#{customer.phone}
+						#{dieselRate.multiplier}
 					</p:column>
 				</p:dataTable>
 			</p:panel>
-		</h:form>
-		<h:form>
-			<ui:include src="/views/customer/customerDetail.xhtml">
-				<ui:param name="customer"
-					value="#{customerController.selectedCustomer}"></ui:param>
-			</ui:include>
 		</h:form>
 	</ui:define>
 </ui:composition>

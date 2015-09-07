@@ -13,11 +13,10 @@ import com.moorkensam.xlra.model.CurrencyRate;
 import com.moorkensam.xlra.model.DieselRate;
 import com.moorkensam.xlra.model.MailTemplate;
 import com.moorkensam.xlra.model.XlraConfiguration;
-import com.moorkensam.xlra.service.XlraConfigurationService;
+import com.moorkensam.xlra.service.ApplicationConfigurationService;
 
-//TODO refactor name to configurationservice
 @Stateless
-public class XlraConfigurationServiceImpl implements XlraConfigurationService {
+public class ApplicationConfigurationServiceImpl implements ApplicationConfigurationService {
 
 	@Inject
 	private XlraConfigurationDao xlraConfigurationDAO;

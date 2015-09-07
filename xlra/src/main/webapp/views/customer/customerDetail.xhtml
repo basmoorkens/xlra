@@ -69,23 +69,23 @@
 			<p:message for="languageField" />
 		</p:panelGrid>
 
-		<p:growl id="message" showDetail="true" />
 
 		<p:commandButton
-			action="#{customerController.deleteCustomer}"
-			title="delete" update="message @form " immediate="true"
-			icon="ui-icon-closethick">
-			<p:confirm header="Confirm delete" message="Are you sure you want to delete customer #{customerController.selectedCustomer.name}"
+			rendered="#{customerController.selectedCustomer.id != 0}"
+			action="#{customerController.deleteCustomer}" title="delete"
+			update="message @form " immediate="true" icon="ui-icon-closethick">
+			<p:confirm header="Confirm delete"
+				message="Are you sure you want to delete customer #{customerController.selectedCustomer.name}"
 				icon="ui-icon-alert" />
 		</p:commandButton>
-		
+
 		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-			<p:commandButton value="Yes" type="button"  
-				styleClass="ui-confirmdialog-yes" icon="ui-icon-check"  />
+			<p:commandButton value="Yes" type="button"
+				styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
 			<p:commandButton value="No" type="button" immediate="true"
 				styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
 		</p:confirmDialog>
-		
+
 		<p:commandButton value="Cancel" title="Cancel" immediate="true"
 			actionListener="#{customerController.closeDetailGrid}" ajax="false"
 			style="width:200px;" />

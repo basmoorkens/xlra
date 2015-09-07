@@ -27,6 +27,8 @@ public class CustomerController {
 	private String detailGridTitle;
 
 	
+	private List<FullCustomer> allCustomers;
+	
 	/**
 	 * Property for toggling the grid in the frontend.
 	 */
@@ -59,6 +61,7 @@ public class CustomerController {
 	}
 
 	private void reInitializePage() {
+		allCustomers = customerService.getAllFullCustomers();
 		collapseDetailGrid = true;
 		detailGridTitle = "Details selected customer";
 		selectedCustomer = new FullCustomer(true);
@@ -66,10 +69,6 @@ public class CustomerController {
 
 	public List<Language> getAllLanguages() {
 		return Arrays.asList(Language.values());
-	}
-
-	public List<FullCustomer> getAllFullCustomers() {
-		return customerService.getAllFullCustomers();
 	}
 
 	public void setupPageForNewUser() {
@@ -113,5 +112,13 @@ public class CustomerController {
 	public void setSelectedCustomer(FullCustomer selectedCustomer) {
 		this.selectedCustomer = selectedCustomer;
 		detailGridTitle = "Details for customer " + selectedCustomer.getName();
+	}
+
+	public List<FullCustomer> getAllCustomers() {
+		return allCustomers;
+	}
+
+	public void setAllCustomers(List<FullCustomer> allCustomers) {
+		this.allCustomers = allCustomers;
 	}
 }
