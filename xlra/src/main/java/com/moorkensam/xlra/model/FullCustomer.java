@@ -13,8 +13,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
-@Table(name = "customer")
-@NamedQueries({ @NamedQuery(name = "FullCustomer.findAll", query = "SELECT c FROM FullCustomer c") })
+@NamedQueries({ @NamedQuery(name = "FullCustomer.findAll", query = "SELECT c FROM FullCustomer c where c.deleted = false") })
 public class FullCustomer extends BaseCustomer {
 
 	public FullCustomer() {

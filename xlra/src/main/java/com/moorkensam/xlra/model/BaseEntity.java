@@ -27,6 +27,11 @@ public abstract class BaseEntity implements Serializable{
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastUpdatedDateTime;
 	
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date deletedDateTime; 
+	
+	private boolean deleted; 
+	
 	@PrePersist
 	public void onCreate() {
 		setCreatedDateTime(new Date()); 
@@ -59,6 +64,22 @@ public abstract class BaseEntity implements Serializable{
 
 	public void setLastUpdatedDateTime(Date lastUpdatedDateTime) {
 		this.lastUpdatedDateTime = lastUpdatedDateTime;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	public Date getDeletedDateTime() {
+		return deletedDateTime;
+	}
+
+	public void setDeletedDateTime(Date deletedDateTime) {
+		this.deletedDateTime = deletedDateTime;
 	}
 	
 }

@@ -19,8 +19,6 @@ public class CustomerController {
 	@Inject
 	private CustomerService customerService;
 
-	private FullCustomer newCustomer;
-
 	private FullCustomer selectedCustomer;
 
 	private String detailGridTitle;
@@ -35,11 +33,22 @@ public class CustomerController {
 		reInitializePage();
 	}
 
+	public void createCustomer() {
+		customerService.createCustomer(selectedCustomer);
+		reInitializePage();
+	}
+
+	public void deleteCustomer() {
+		if (selectedCustomer.getId() != 0) {
+			customerService.deleteCustomer(selectedCustomer);
+		}
+		reInitializePage();
+	}
+
 	private void reInitializePage() {
 		collapseDetailGrid = true;
 		detailGridTitle = "Details selected customer";
-		newCustomer = new FullCustomer(true);
-		selectedCustomer = null;
+		selectedCustomer = new FullCustomer(true);
 	}
 
 	public List<Language> getAllLanguages() {
@@ -50,26 +59,14 @@ public class CustomerController {
 		return customerService.getAllFullCustomers();
 	}
 
-	public void createCustomer() {
-		customerService.createCustomer(newCustomer);
-		reInitializePage();
-	}
-
 	public void setupPageForNewUser() {
 		detailGridTitle = "Details for new customer";
+		selectedCustomer = new FullCustomer(true);
 		openDetailGrid();
 	}
 
 	public void setupPageForEditUser() {
 		openDetailGrid();
-	}
-
-	public FullCustomer getNewCustomer() {
-		return newCustomer;
-	}
-
-	public void setNewCustomer(FullCustomer newCustomer) {
-		this.newCustomer = newCustomer;
 	}
 
 	public void openDetailGrid() {

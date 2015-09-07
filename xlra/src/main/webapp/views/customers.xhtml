@@ -21,7 +21,7 @@
 			<p:panel id="customerOverview" header="Customer overview">
 				<p:dataTable value="#{customerController.allFullCustomers}"
 					var="customer" emptyMessage="No customers found." rows="10">
-					<p:column style="width:32px;text-align: center">
+					<p:column style="width:36px;text-align: center">
 						<p:commandButton
 							actionListener="#{customerController.setupPageForEditUser}"
 							icon="ui-icon-search" title="View" ajax="false">
@@ -45,90 +45,10 @@
 			</p:panel>
 		</h:form>
 		<h:form>
-			<p:panel id="createCustomerPanel"
-				collapsed="#{customerController.renderDetailGrid}"
-				header="#{customerController.detailGridTitle}">
-				<p:panelGrid columns="3" cellpadding="0"
-					styleClass="customerCreateGrid">
-					<h:outputLabel for="nameField">Name</h:outputLabel>
-					<p:inputText size="50"
-						value="#{customerController.newCustomer.name}" id="nameField"></p:inputText>
-					<p:message for="nameField" />
-
-
-					<h:outputLabel for="emailField">Email</h:outputLabel>
-					<p:inputText size="50"
-						value="#{customerController.newCustomer.email}" id="emailField"></p:inputText>
-					<p:message for="emailField" />
-
-
-
-					<h:outputLabel for="phoneField">Phone</h:outputLabel>
-					<p:inputText size="50"
-						value="#{customerController.newCustomer.phone}" id="phoneField"></p:inputText>
-					<p:message for="phoneField" />
-
-
-					<h:outputLabel for="streetField">Street</h:outputLabel>
-					<p:inputText size="50"
-						value="#{customerController.newCustomer.address.street}"
-						id="streetField"></p:inputText>
-					<p:message for="streetField" />
-
-
-					<h:outputLabel for="numberField">Number</h:outputLabel>
-					<p:inputText size="50"
-						value="#{customerController.newCustomer.address.number}"
-						id="numberField"></p:inputText>
-					<p:message for="numberField" />
-
-
-
-					<h:outputLabel for="zipField">ZIP</h:outputLabel>
-					<p:inputText size="50"
-						value="#{customerController.newCustomer.address.zip}"
-						id="zipField"></p:inputText>
-					<p:message for="zipField" />
-
-
-
-					<h:outputLabel for="cityField">City</h:outputLabel>
-					<p:inputText size="50"
-						value="#{customerController.newCustomer.address.city}"
-						id="cityField"></p:inputText>
-					<p:message for="cityField" />
-
-
-
-					<h:outputLabel for="countryField">Country</h:outputLabel>
-					<p:inputText size="50"
-						value="#{customerController.newCustomer.address.country}"
-						id="countryField"></p:inputText>
-					<p:message for="countryField" />
-
-
-					<h:outputLabel for="btwField">BTW number</h:outputLabel>
-					<p:inputText size="50"
-						value="#{customerController.newCustomer.btwNumber}" id="btwField"></p:inputText>
-					<p:message for="btwField" />
-
-
-					<h:outputLabel for="languageField">Language</h:outputLabel>
-					<p:selectOneRadio
-						value="#{customerController.newCustomer.language}"
-						id="languageField">
-						<f:selectItems value="#{customerController.allLanguages}"></f:selectItems>
-					</p:selectOneRadio>
-					<p:message for="languageField" />
-				</p:panelGrid>
-				<p:commandButton value="Cancel" title="Cancel" immediate="true"
-					actionListener="#{customerController.closeDetailGrid}" ajax="false"
-					style="width:200px;"></p:commandButton>
-				<p:commandButton value="Create customer" title="Create customer"
-					actionListener="#{customerController.createCustomer}"
-					style="width:200px;" icon="ui-icon-check" validateClient="true"
-					ajax="false" />
-			</p:panel>
+			<ui:include src="/views/customer/customerDetail.xhtml">
+				<ui:param name="customer"
+					value="#{customerController.selectedCustomer}"></ui:param>
+			</ui:include>
 		</h:form>
 	</ui:define>
 </ui:composition>

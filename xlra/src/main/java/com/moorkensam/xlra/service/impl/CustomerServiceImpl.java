@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import com.moorkensam.xlra.dao.CustomerDAO;
+import com.moorkensam.xlra.model.BaseCustomer;
 import com.moorkensam.xlra.model.FullCustomer;
 import com.moorkensam.xlra.service.CustomerService;
 
@@ -28,6 +29,11 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public List<FullCustomer> getAllFullCustomers() {
 		return customerDAO.getAllFullCustomers();
+	}
+
+	@Override
+	public void deleteCustomer(BaseCustomer customer) {
+		customerDAO.deleteCustomer(customer);
 	}
 
 }
