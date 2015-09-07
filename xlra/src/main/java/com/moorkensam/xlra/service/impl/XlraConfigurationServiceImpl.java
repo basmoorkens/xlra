@@ -15,6 +15,7 @@ import com.moorkensam.xlra.model.MailTemplate;
 import com.moorkensam.xlra.model.XlraConfiguration;
 import com.moorkensam.xlra.service.XlraConfigurationService;
 
+//TODO refactor name to configurationservice
 @Stateless
 public class XlraConfigurationServiceImpl implements XlraConfigurationService {
 

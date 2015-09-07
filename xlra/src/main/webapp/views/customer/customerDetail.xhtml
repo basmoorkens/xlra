@@ -69,16 +69,28 @@
 			<p:message for="languageField" />
 		</p:panelGrid>
 
+		<p:growl id="message" showDetail="true" />
 
-		<p:commandButton actionListener="#{customerController.deleteCustomer}"
-			title="delete" ajax="false" update="message" immediate="true"
+		<p:commandButton
+			action="#{customerController.deleteCustomer}"
+			title="delete" update="message @form " immediate="true"
 			icon="ui-icon-closethick">
+			<p:confirm header="Confirm delete" message="Are you sure you want to delete customer #{customerController.selectedCustomer.name}"
+				icon="ui-icon-alert" />
 		</p:commandButton>
+		
+		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+			<p:commandButton value="Yes" type="button"  
+				styleClass="ui-confirmdialog-yes" icon="ui-icon-check"  />
+			<p:commandButton value="No" type="button" immediate="true"
+				styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+		</p:confirmDialog>
+		
 		<p:commandButton value="Cancel" title="Cancel" immediate="true"
 			actionListener="#{customerController.closeDetailGrid}" ajax="false"
 			style="width:200px;" />
-		<p:commandButton value="Create customer" title="Create customer"
-			actionListener="#{customerController.createCustomer}"
+		<p:commandButton value="Create customer" title="Save customer"
+			actionListener="#{customerController.createCustomerOrUpdate}"
 			style="width:200px;" icon="ui-icon-check" validateClient="true"
 			ajax="false" />
 	</p:panel>
