@@ -21,6 +21,10 @@ public class CustomerController {
 
 	private FullCustomer newCustomer;
 
+	private FullCustomer selectedCustomer;
+
+	private String detailGridTitle;
+
 	/**
 	 * Property for toggling the grid in the frontend.
 	 */
@@ -28,12 +32,14 @@ public class CustomerController {
 
 	@PostConstruct
 	public void initializeController() {
-		setupNewCustomer();
-		collapseDetailGrid = true;
+		reInitializePage();
 	}
 
-	private void setupNewCustomer() {
+	private void reInitializePage() {
+		collapseDetailGrid = true;
+		detailGridTitle = "Details selected customer";
 		newCustomer = new FullCustomer(true);
+		selectedCustomer = null;
 	}
 
 	public List<Language> getAllLanguages() {
@@ -46,10 +52,17 @@ public class CustomerController {
 
 	public void createCustomer() {
 		customerService.createCustomer(newCustomer);
-		setupNewCustomer();
-		collapseDetailGrid=true;
+		reInitializePage();
 	}
 
+	public void setupPageForNewUser() {
+		detailGridTitle = "Details for new customer";
+		openDetailGrid();
+	}
+
+	public void setupPageForEditUser() {
+		openDetailGrid();
+	}
 
 	public FullCustomer getNewCustomer() {
 		return newCustomer;
@@ -60,19 +73,36 @@ public class CustomerController {
 	}
 
 	public void openDetailGrid() {
-		collapseDetailGrid=false;
+		collapseDetailGrid = false;
 	}
 
 	public void closeDetailGrid() {
-		collapseDetailGrid=true;
+		collapseDetailGrid = true;
 	}
-	
+
 	public boolean isRenderDetailGrid() {
 		return collapseDetailGrid;
 	}
 
 	public void setRenderDetailGrid(boolean renderDetailGrid) {
 		this.collapseDetailGrid = renderDetailGrid;
+	}
+
+	public String getDetailGridTitle() {
+		return detailGridTitle;
+	}
+
+	public void setDetailGridTitle(String detailGridTitle) {
+		this.detailGridTitle = detailGridTitle;
+	}
+
+	public FullCustomer getSelectedCustomer() {
+		return selectedCustomer;
+	}
+
+	public void setSelectedCustomer(FullCustomer selectedCustomer) {
+		this.selectedCustomer = selectedCustomer;
+		detailGridTitle = "Details for customer " + selectedCustomer.getName();
 	}
 
 }

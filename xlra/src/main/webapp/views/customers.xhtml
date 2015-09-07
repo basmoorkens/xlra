@@ -14,30 +14,40 @@
 	<ui:define name="body">
 		<h:form>
 			<p:commandButton value="Create customer" title="Add new customer"
-				actionListener="#{customerController.openDetailGrid}"
-				icon="ui-icon-check" validateClient="true" ajax="false" />
+				actionListener="#{customerController.setupPageForNewUser}"
+				icon="ui-icon-check" ajax="false" />
 		</h:form>
-		<p:panel id="customerOverview" header="Customer overview">
-			<p:dataTable value="#{customerController.allFullCustomers}"
-				var="customer" emptyMessage="No customers found." rows="10">
-				<p:column>
-					<f:facet name="header">Name</f:facet>
+		<h:form>
+			<p:panel id="customerOverview" header="Customer overview">
+				<p:dataTable value="#{customerController.allFullCustomers}"
+					var="customer" emptyMessage="No customers found." rows="10">
+					<p:column style="width:32px;text-align: center">
+						<p:commandButton
+							actionListener="#{customerController.setupPageForEditUser}"
+							icon="ui-icon-search" title="View" ajax="false">
+							<f:setPropertyActionListener value="#{customer}"
+								target="#{customerController.selectedCustomer}" />
+						</p:commandButton>
+					</p:column>
+					<p:column>
+						<f:facet name="header">Name</f:facet>
 						#{customer.name}
 					</p:column>
-				<p:column>
-					<f:facet name="header">Email</f:facet>
+					<p:column>
+						<f:facet name="header">Email</f:facet>
 						#{customer.email}
 					</p:column>
-				<p:column>
-					<f:facet name="header">Phone</f:facet>
+					<p:column>
+						<f:facet name="header">Phone</f:facet>
 						#{customer.phone}
 					</p:column>
-			</p:dataTable>
-		</p:panel>
+				</p:dataTable>
+			</p:panel>
+		</h:form>
 		<h:form>
 			<p:panel id="createCustomerPanel"
 				collapsed="#{customerController.renderDetailGrid}"
-				header="Create new customer">
+				header="#{customerController.detailGridTitle}">
 				<p:panelGrid columns="3" cellpadding="0"
 					styleClass="customerCreateGrid">
 					<h:outputLabel for="nameField">Name</h:outputLabel>
