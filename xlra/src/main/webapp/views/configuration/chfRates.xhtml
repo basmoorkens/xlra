@@ -19,10 +19,8 @@
 						<h:outputText value="#{chfRate.interval}" />
 					</f:facet>
 					<f:facet name="input">
-						<p:inputText value="#{chfRate.interval.start}"
-							style="width:100%" />
-						<p:inputText value="#{chfRate.interval.end}"
-							style="width:100%" />
+						<p:inputText value="#{chfRate.interval.start}" style="width:100%" />
+						<p:inputText value="#{chfRate.interval.end}" style="width:100%" />
 					</f:facet>
 				</p:cellEditor>
 			</p:column>
@@ -40,5 +38,14 @@
 				<p:rowEditor />
 			</p:column>
 		</p:dataTable>
+		<p:panel>
+			<h:outputLabel for="currentChfRateField">Current swiss franc price:</h:outputLabel>
+			<p:inputText size="50"
+				value="#{configurationController.currentChfValue}"
+				id="currentChfRateField"></p:inputText>
+			<p:commandButton
+				action="#{configurationController.updateCurrentChfRate}"
+				value="Save new price" update=":applicationConfigurationForm:msgs" />
+		</p:panel>
 	</p:panel>
 </ui:composition>

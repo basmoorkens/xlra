@@ -37,4 +37,11 @@ public abstract class LogRecord extends BaseEntity {
 		this.type = type;
 	}
 
+	@Override
+	public String toString() {
+		return getLogDate() + " - " + type;
+	}
+
+	
+	
 }

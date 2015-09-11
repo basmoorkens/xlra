@@ -19,6 +19,7 @@ import com.moorkensam.xlra.dao.LogDAO;
 import com.moorkensam.xlra.dao.ConfigurationDao;
 import com.moorkensam.xlra.model.configuration.CurrencyRate;
 import com.moorkensam.xlra.model.configuration.DieselRate;
+import com.moorkensam.xlra.model.configuration.LogRecord;
 import com.moorkensam.xlra.model.configuration.MailTemplate;
 import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.service.ApplicationConfigurationService;
@@ -104,10 +105,12 @@ public class ApplicationConfigurationServiceImpl implements
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void updateCurrentChfValue(double value) {
 		Configuration config = xlraConfigurationDAO.getXlraConfiguration();
-		logger.log(Level.INFO, "Saving chfprice logrecord logrecord");
-		logDAO.createLogRecord(LogRecordFactory.createChfLogRecord(config
-				.getCurrentChfValue()));
+		LogRecord createChfLogRecord = LogRecordFactory
+				.createChfLogRecord(config.getCurrentChfValue());
+		logger.info("saving chfprice logrecord" + createChfLogRecord);
+		logDAO.createLogRecord(createChfLogRecord);
 		config.setCurrentChfValue(value);
+		logger.info("Saving current chf rate " + config.getCurrentChfValue());
 		xlraConfigurationDAO.updateXlraConfiguration(config);
 	}
 
@@ -115,10 +118,13 @@ public class ApplicationConfigurationServiceImpl implements
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void updateCurrentDieselValue(double value) {
 		Configuration config = xlraConfigurationDAO.getXlraConfiguration();
-		logger.log(Level.INFO, "Saving dieselprice logrecord");
-		logDAO.createLogRecord(LogRecordFactory.createDieselLogRecord(config
-				.getCurrentDieselPrice()));
+		LogRecord createDieselLogRecord = LogRecordFactory
+				.createDieselLogRecord(config.getCurrentDieselPrice());
+		logger.info("Saving dieselprice logrecord " + createDieselLogRecord);
+		logDAO.createLogRecord(createDieselLogRecord);
 		config.setCurrentDieselPrice(value);
+		logger.info("Saving current diesel price"
+				+ config.getCurrentDieselPrice());
 		xlraConfigurationDAO.updateXlraConfiguration(config);
 	}
 

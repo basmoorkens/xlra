@@ -35,7 +35,7 @@ public class ConfigurationController {
 	private Configuration configuration;
 
 	private double currentDieselValue, currentChfValue;
-	
+
 	@PostConstruct
 	public void initPage() {
 		refreshData();
@@ -44,7 +44,13 @@ public class ConfigurationController {
 	private void refreshData() {
 		refreshDieselRates();
 		refreshCurrencyRates();
+		setupCurrentRates();
+	}
+
+	private void setupCurrentRates() {
 		configuration = applicationConfigurationService.getConfiguration();
+		currentDieselValue = configuration.getCurrentDieselPrice();
+		currentChfValue = configuration.getCurrentChfValue();
 	}
 
 	private void refreshCurrencyRates() {
@@ -64,13 +70,33 @@ public class ConfigurationController {
 	}
 
 	public void updateCurrentDieselRate() {
-		applicationConfigurationService.updateCurrentDieselValue(getCurrentDieselValue());
+		if (configuration.getCurrentDieselPrice() != getCurrentDieselValue()) {
+			applicationConfigurationService
+					.updateCurrentDieselValue(getCurrentDieselValue());
+			MessageUtil.addMessage("Current diesel price",
+					"Updated current diesel price to "
+							+ getCurrentDieselValue());
+			setupCurrentRates();
+		} else {
+			MessageUtil.addMessage("Current diesel price",
+					"The new price is the same as the old, not updating.");
+		}
 	}
-	
+
 	public void updateCurrentChfRate() {
-		applicationConfigurationService.updateCurrentChfValue(getCurrentChfValue());
+		if (configuration.getCurrentChfValue() != getCurrentChfValue()) {
+			applicationConfigurationService
+					.updateCurrentChfValue(getCurrentChfValue());
+			MessageUtil.addMessage("Current swiss franc price",
+					"Updated current swiss franc price to "
+							+ getCurrentChfValue());
+			setupCurrentRates();
+		} else {
+			MessageUtil.addMessage("Current swiss franc price",
+					"The new price is the same as the old, not updating.");
+		}
 	}
-	
+
 	public void onChfCurrencyRateRowEdit(RowEditEvent event) {
 		CurrencyRate newRate = (CurrencyRate) event.getObject();
 

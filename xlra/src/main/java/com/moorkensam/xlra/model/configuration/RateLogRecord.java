@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="ratelogrecord")
+@Table(name = "ratelogrecord")
 public class RateLogRecord extends LogRecord {
 
 	private static final long serialVersionUID = -9102740273707056738L;
@@ -17,6 +17,12 @@ public class RateLogRecord extends LogRecord {
 
 	public void setRate(double rate) {
 		this.rate = rate;
-	} 
-	
+	}
+
+	@Override
+	public String toString() {
+		String result = super.toString();
+		result += " rate";
+		return result;
+	}
 }
