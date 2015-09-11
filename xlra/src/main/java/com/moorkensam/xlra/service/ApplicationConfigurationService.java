@@ -2,16 +2,16 @@ package com.moorkensam.xlra.service;
 
 import java.util.List;
 
-import com.moorkensam.xlra.model.CurrencyRate;
-import com.moorkensam.xlra.model.DieselRate;
-import com.moorkensam.xlra.model.MailTemplate;
-import com.moorkensam.xlra.model.XlraConfiguration;
+import com.moorkensam.xlra.model.configuration.CurrencyRate;
+import com.moorkensam.xlra.model.configuration.DieselRate;
+import com.moorkensam.xlra.model.configuration.MailTemplate;
+import com.moorkensam.xlra.model.configuration.Configuration;
 
 public interface ApplicationConfigurationService {
 
-	void updateXlraConfiguration(XlraConfiguration xlraConfiguration);
+	void updateXlraConfiguration(Configuration xlraConfiguration);
 	
-	XlraConfiguration getXlraConfiguration();
+	Configuration getConfiguration();
 	
 	void updateDieselRate(DieselRate dieselRate);
 	
@@ -29,4 +29,9 @@ public interface ApplicationConfigurationService {
 	
 	void updateEmailTemplate(MailTemplate mailTemplate);
 	
+	List<CurrencyRate> getAllChfRates();
+	
+	void updateCurrentChfValue(double value);
+	
+	void updateCurrentDieselValue(double value);
 }

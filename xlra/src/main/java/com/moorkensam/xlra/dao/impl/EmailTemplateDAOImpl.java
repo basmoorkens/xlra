@@ -6,7 +6,7 @@ import javax.persistence.Query;
 
 import com.moorkensam.xlra.dao.BaseDAO;
 import com.moorkensam.xlra.dao.EmailTemplateDAO;
-import com.moorkensam.xlra.model.MailTemplate;
+import com.moorkensam.xlra.model.configuration.MailTemplate;
 
 public class EmailTemplateDAOImpl extends BaseDAO implements EmailTemplateDAO {
 

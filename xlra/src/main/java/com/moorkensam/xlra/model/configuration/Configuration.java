@@ -1,4 +1,4 @@
-package com.moorkensam.xlra.model;
+package com.moorkensam.xlra.model.configuration;
 
 import java.util.List;
 
@@ -9,11 +9,13 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.moorkensam.xlra.model.BaseEntity;
+
 @Entity
-@Table(name="xlraconfiguration")
+@Table(name="configuration")
 @NamedQueries(
-		@NamedQuery(name="XlraConfiguration.findMainConfig", query="SELECT x FROM XlraConfiguration x where x.configurationName = :configName"))
-public class XlraConfiguration extends BaseEntity {
+		@NamedQuery(name="Configuration.findMainConfig", query="SELECT x FROM Configuration x where x.configurationName = :configName"))
+public class Configuration extends BaseEntity {
 
 	public final static String MAIN_CONFIG_NAME = "mainconfig";
 	

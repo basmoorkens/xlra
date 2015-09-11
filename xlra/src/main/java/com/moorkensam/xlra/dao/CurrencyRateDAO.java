@@ -2,7 +2,7 @@ package com.moorkensam.xlra.dao;
 
 import java.util.List;
 
-import com.moorkensam.xlra.model.CurrencyRate;
+import com.moorkensam.xlra.model.configuration.CurrencyRate;
 
 public interface CurrencyRateDAO {
 
@@ -12,4 +12,5 @@ public interface CurrencyRateDAO {
 	
 	List<CurrencyRate> getAllCurrencyRates();
 	
+	List<CurrencyRate> getAllChfRates();
 }

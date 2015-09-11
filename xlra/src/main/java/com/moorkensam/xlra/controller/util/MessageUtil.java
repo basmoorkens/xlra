@@ -3,8 +3,13 @@ package com.moorkensam.xlra.controller.util;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
+/**
+ * Utility class for adding messages to a page.
+ * @author bas
+ *
+ */
 public class MessageUtil {
-
+//TODO ADD CUSTOM ERROR MESSAGE SHIT WITH FACES CONFIG
 	public static void addMessage(String summary, String detail) {
 		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
 				summary, detail);

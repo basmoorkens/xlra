@@ -6,7 +6,7 @@ import javax.persistence.Query;
 
 import com.moorkensam.xlra.dao.BaseDAO;
 import com.moorkensam.xlra.dao.DieselRateDAO;
-import com.moorkensam.xlra.model.DieselRate;
+import com.moorkensam.xlra.model.configuration.DieselRate;
 
 public class DieselRateDAOImpl extends BaseDAO implements DieselRateDAO {
 

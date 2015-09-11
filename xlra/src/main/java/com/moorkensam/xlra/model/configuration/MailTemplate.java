@@ -1,4 +1,4 @@
-package com.moorkensam.xlra.model;
+package com.moorkensam.xlra.model.configuration;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -7,6 +7,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+
+import com.moorkensam.xlra.model.BaseEntity;
+import com.moorkensam.xlra.model.Language;
 
 @Entity
 @Table(name="mailTemplate")
@@ -20,7 +23,7 @@ public class MailTemplate extends BaseEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "xlraConfigurationId")
-	private XlraConfiguration xlraConfiguration;
+	private Configuration xlraConfiguration;
 	
 	@Lob
 	private String template;
@@ -41,11 +44,11 @@ public class MailTemplate extends BaseEntity {
 		this.template = template;
 	}
 
-	public XlraConfiguration getXlraConfiguration() {
+	public Configuration getXlraConfiguration() {
 		return xlraConfiguration;
 	}
 
-	public void setXlraConfiguration(XlraConfiguration xlraConfiguration) {
+	public void setXlraConfiguration(Configuration xlraConfiguration) {
 		this.xlraConfiguration = xlraConfiguration;
 	}
 	

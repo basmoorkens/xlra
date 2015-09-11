@@ -6,9 +6,9 @@ import javax.persistence.Query;
 
 import com.moorkensam.xlra.dao.BaseDAO;
 import com.moorkensam.xlra.dao.CurrencyRateDAO;
-import com.moorkensam.xlra.model.CurrencyRate;
+import com.moorkensam.xlra.model.configuration.CurrencyRate;
 
-public class CurrencyRateDAOImpl extends BaseDAO implements CurrencyRateDAO{
+public class CurrencyRateDAOImpl extends BaseDAO implements CurrencyRateDAO {
 
 	@Override
 	public void createCurrencyRate(CurrencyRate currency) {
@@ -20,9 +20,19 @@ public class CurrencyRateDAOImpl extends BaseDAO implements CurrencyRateDAO{
 		getEntityManager().merge(currency);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<CurrencyRate> getAllCurrencyRates() {
-		Query query = getEntityManager().createNamedQuery("CurrencyRate.findAll");
+		Query query = getEntityManager().createNamedQuery(
+				"CurrencyRate.findAll");
+		return (List<CurrencyRate>) query.getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<CurrencyRate> getAllChfRates() {
+		Query query = getEntityManager().createNamedQuery(
+				"CurrencyRate.findAllChf");
 		return (List<CurrencyRate>) query.getResultList();
 	}
 

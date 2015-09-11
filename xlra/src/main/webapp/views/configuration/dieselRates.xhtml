@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<p:panel id="dieselPanel" header="Diesel charges">
+		<p:dataTable editable="true"
+			value="#{configurationController.dieselRates}" var="dieselRate"
+			emptyMessage="No dieselrates found." id="dieselRateTable">
+
+			<p:ajax event="rowEdit"
+				listener="#{configurationController.onDieselChargeRowEdit}"
+				update=":applicationConfigurationForm:msgs" />
+
+			<p:column headerText="Start - End">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{dieselRate.interval}" />
+					</f:facet>
+					<f:facet name="input">
+						<p:inputText value="#{dieselRate.interval.start}"
+							style="width:100%" />
+						<p:inputText value="#{dieselRate.interval.end}" style="width:100%" />
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+			<p:column headerText="Multiplier">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{dieselRate.multiplier}" />
+					</f:facet>
+					<f:facet name="input">
+						<p:inputText value="#{dieselRate.multiplier}" style="width:100%" />
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+			<p:column style="width:32px">
+				<p:rowEditor />
+			</p:column>
+		</p:dataTable>
+		<p:panel>
+			<h:outputLabel for="currentDieselRateField">Current diesel price:</h:outputLabel>
+			<p:inputText size="50"
+				value="#{configurationController.currentDieselValue}"
+				id="currentDieselRateField"></p:inputText>
+			<p:commandButton
+				action="#{configurationController.updateCurrentDieselRate}"
+				value="Save new price" />
+		</p:panel>
+	</p:panel>
+</ui:composition>
