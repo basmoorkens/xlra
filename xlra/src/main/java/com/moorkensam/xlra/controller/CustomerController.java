@@ -7,7 +7,6 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
@@ -26,7 +25,6 @@ public class CustomerController {
 
 	private String detailGridTitle;
 
-	
 	private List<FullCustomer> allCustomers;
 	
 	/**

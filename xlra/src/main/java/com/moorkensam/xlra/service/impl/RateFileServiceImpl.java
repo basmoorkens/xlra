@@ -9,9 +9,10 @@ import com.moorkensam.xlra.dao.BaseDAO;
 import com.moorkensam.xlra.dao.RateFileDAO;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
+import com.moorkensam.xlra.service.RateFileService;
 
 @Stateless
-public class RateFileServiceImpl extends BaseDAO implements RateFileDAO {
+public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 
 	@Inject
 	private RateFileDAO rateFileDAO;

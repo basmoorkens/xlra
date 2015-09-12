@@ -5,7 +5,7 @@ import java.util.List;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
 
-public interface RateService {
+public interface RateFileService {
 
 	List<RateFile> getAllRateFiles();
 
