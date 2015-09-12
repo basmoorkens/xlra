@@ -8,7 +8,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "dieselrate")
-@NamedQueries(@NamedQuery(name = "DieselRate.findAll", query = "SELECT d FROM DieselRate d"))
+@NamedQueries(@NamedQuery(name = "DieselRate.findAll", query = "SELECT d FROM DieselRate d where d.deleted = false"))
 public class DieselRate extends AbstractRate {
 	private static final long serialVersionUID = 1424312481303614643L;
 }

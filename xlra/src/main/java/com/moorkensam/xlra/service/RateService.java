@@ -1,11 +1,11 @@
-package com.moorkensam.xlra.dao;
+package com.moorkensam.xlra.service;
 
 import java.util.List;
 
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
 
-public interface RateFileDAO {
+public interface RateService {
 
 	List<RateFile> getAllRateFiles();
 
@@ -16,5 +16,4 @@ public interface RateFileDAO {
 	List<RateFile> getRateFilesForFilter(RateFileSearchFilter filter);
 
 	void deleteRateFile(RateFile rateFile);
-	
 }

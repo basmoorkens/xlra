@@ -13,8 +13,8 @@ import com.moorkensam.xlra.model.BaseEntity;
 @Entity
 @Table(name = "currencyrate")
 @NamedQueries({
-		@NamedQuery(name = "CurrencyRate.findAll", query = "SELECT c FROM CurrencyRate c"),
-		@NamedQuery(name = "CurrencyRate.findAllChf", query = "SELECT c FROM CurrencyRate c WHERE c.currencyType = com.moorkensam.xlra.model.configuration.XLRACurrency.CHF") })
+		@NamedQuery(name = "CurrencyRate.findAll", query = "SELECT c FROM CurrencyRate c where c.deleted = false"),
+		@NamedQuery(name = "CurrencyRate.findAllChf", query = "SELECT c FROM CurrencyRate c WHERE c.deleted = false and c.currencyType = com.moorkensam.xlra.model.configuration.XLRACurrency.CHF") })
 public class CurrencyRate extends AbstractRate {
 
 	private static final long serialVersionUID = -7687370103653996637L;
