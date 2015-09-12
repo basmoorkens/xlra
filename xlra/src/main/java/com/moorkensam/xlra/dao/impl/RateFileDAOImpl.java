@@ -3,6 +3,7 @@ package com.moorkensam.xlra.dao.impl;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Persistence;
 import javax.persistence.Query;
 
 import org.apache.logging.log4j.LogManager;
@@ -74,6 +75,13 @@ public class RateFileDAOImpl extends BaseDAO implements RateFileDAO {
 		rateFile.setDeleted(true);
 		rateFile.setDeletedDateTime(new Date());
 		getEntityManager().merge(rateFile);
+	}
+
+	@Override
+	public RateFile getFullRateFile(long rateFileId) {
+		RateFile rf = getEntityManager().find(RateFile.class, rateFileId);
+		rf.getRateLines().size();
+		return rf; 
 	}
 
 }

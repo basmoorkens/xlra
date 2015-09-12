@@ -42,7 +42,7 @@ public class RateFile extends BaseEntity {
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="rateFile")
 	private List<RateLine> rateLines = new ArrayList<RateLine>();
 	
-	@OneToOne
+	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="conditionId")
 	private Condition condition;
 	
@@ -98,5 +98,13 @@ public class RateFile extends BaseEntity {
 	
 	public String getRateFileId() {
 		return id  +"";
+	}
+
+	public Condition getCondition() {
+		return condition;
+	}
+
+	public void setCondition(Condition condition) {
+		this.condition = condition;
 	}
 }

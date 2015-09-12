@@ -16,4 +16,6 @@ public interface RateFileService {
 	List<RateFile> getRateFilesForFilter(RateFileSearchFilter filter);
 
 	void deleteRateFile(RateFile rateFile);
+	
+	RateFile getFullRateFile(long id); 
 }

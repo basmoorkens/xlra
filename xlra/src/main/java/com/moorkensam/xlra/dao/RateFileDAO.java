@@ -17,4 +17,6 @@ public interface RateFileDAO {
 
 	void deleteRateFile(RateFile rateFile);
 	
+	RateFile getFullRateFile(long rateFileId);
+	
 }

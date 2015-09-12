@@ -42,4 +42,9 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 		rateFileDAO.deleteRateFile(rateFile);
 	}
 
+	@Override
+	public RateFile getFullRateFile(long id) {
+		return rateFileDAO.getFullRateFile(id);
+	}
+
 }

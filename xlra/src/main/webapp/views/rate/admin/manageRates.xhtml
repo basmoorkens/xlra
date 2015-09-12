@@ -13,19 +13,32 @@
 	</ui:define>
 	<ui:define name="body">
 		<h:form>
-			<p:panelGrid columns="3">
+			<p:growl id="message" showDetail="true" />
+			<p:panelGrid columns="4">
 				<p:outputLabel value="Select Rates to display:" for="rateSelector" />
+
 				<p:autoComplete id="rateSelector" dropdown="true"
 					value="#{manageRatesController.rateSearchTerm}"
 					completeMethod="#{manageRatesController.completeRateName}"
-					var="rateFile" itemLabel="#{rateFile.name}" itemValue="#{rateFile.rateFileId}" />
+					var="rateFile" itemLabel="#{rateFile.name}"
+					itemValue="#{rateFile.rateFileId}">
+					<p:ajax event="itemSelect"
+						listener="#{manageRatesController.fetchDetailsOfRatefile}" />
+				</p:autoComplete>
+
+
+				<p:commandButton icon="ui-icon-check" ajax="false"
+					value="View details" title="View details"
+					action="#{manageRatesController.displayConditions}" />
 
 				<p:commandButton value="Create rate file" title="Add new rates"
 					icon="ui-icon-check" ajax="false" />
 			</p:panelGrid>
-
+			<ui:include src="/views/rate/admin/conditionsDetail.xhtml">
+				<ui:param name="condition"
+					value="#{manageRatesController.selectedRateFile.condition}"></ui:param>
+			</ui:include>
 		</h:form>
-
 	</ui:define>
 </ui:composition>
 </html>

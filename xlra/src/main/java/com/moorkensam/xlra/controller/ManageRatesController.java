@@ -8,6 +8,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 
+import org.primefaces.event.SelectEvent;
+
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.service.RateFileService;
 
@@ -22,9 +24,21 @@ public class ManageRatesController {
 
 	private List<RateFile> rateFiles;
 
+	private boolean collapseDetailGrid = true;
+
+	private RateFile selectedRateFile;
+
 	@PostConstruct
 	public void initializeController() {
 		refreshRates();
+	}
+
+	public void fetchDetailsOfRatefile(SelectEvent event) {
+		selectedRateFile = rateFileService.getFullRateFile(Long.parseLong((String) event.getObject()));
+	}
+
+	public void displayConditions() {
+		collapseDetailGrid = false;
 	}
 
 	private void refreshRates() {
@@ -63,5 +77,21 @@ public class ManageRatesController {
 
 	public void setRateFileService(RateFileService rateFileService) {
 		this.rateFileService = rateFileService;
+	}
+
+	public RateFile getSelectedRateFile() {
+		return selectedRateFile;
+	}
+
+	public void setSelectedRateFile(RateFile selectedRateFile) {
+		this.selectedRateFile = selectedRateFile;
+	}
+
+	public boolean isCollapseDetailGrid() {
+		return collapseDetailGrid;
+	}
+
+	public void setCollapseDetailGrid(boolean collapseDetailGrid) {
+		this.collapseDetailGrid = collapseDetailGrid;
 	}
 }
