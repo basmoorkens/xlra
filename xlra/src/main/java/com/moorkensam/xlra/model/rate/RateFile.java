@@ -91,4 +91,8 @@ public class RateFile extends BaseEntity {
 	public void setRateLines(List<RateLine> rateLines) {
 		this.rateLines = rateLines;
 	}
+	
+	public String getRateFileId() {
+		return id  +"";
+	}
 }

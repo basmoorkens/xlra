@@ -1,6 +1,5 @@
 package com.moorkensam.xlra.dao.impl;
 
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import com.moorkensam.xlra.dao.BaseDAO;

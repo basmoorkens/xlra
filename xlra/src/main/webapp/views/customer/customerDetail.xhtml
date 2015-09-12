@@ -9,6 +9,7 @@
 		header="#{customerController.detailGridTitle}">
 		<p:panelGrid columns="3" cellpadding="0"
 			styleClass="customerCreateGrid">
+			<p:growl id="message" showDetail="true" />
 			<h:outputLabel for="nameField">Name</h:outputLabel>
 			<p:inputText size="50" value="#{customer.name}" id="nameField"></p:inputText>
 			<p:message for="nameField" />

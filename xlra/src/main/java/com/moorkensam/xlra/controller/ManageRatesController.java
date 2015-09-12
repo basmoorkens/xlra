@@ -42,7 +42,7 @@ public class ManageRatesController {
 	public List<RateFile> completeRateName(String input) {
 		List<RateFile> filteredRateFiles = new ArrayList<RateFile>();
 		for (RateFile rf : rateFiles) {
-			if (rf.getName().toLowerCase().startsWith(input.toLowerCase())) {
+			if (rf.getName().toLowerCase().contains(input.toLowerCase())) {
 				filteredRateFiles.add(rf);
 			}
 		}
