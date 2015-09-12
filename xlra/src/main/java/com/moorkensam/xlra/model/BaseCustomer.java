@@ -1,6 +1,8 @@
 package com.moorkensam.xlra.model;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -27,5 +29,9 @@ public class BaseCustomer extends BaseEntity {
 	@NotNull
 	@NotEmpty(message = "Phone may not be empty")
 	protected String phone;
+	
+	@Enumerated(EnumType.STRING)
+	@NotNull(message = "A language has to be selected")
+	protected Language language;
 
 }

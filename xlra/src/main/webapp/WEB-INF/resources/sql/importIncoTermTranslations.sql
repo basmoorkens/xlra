@@ -1,0 +1,1 @@
+INSERT INTO `xlra`.`incotermtranslation` (`id`, `createdDateTime`, `deleted`, `deletedDateTime`, `lastUpdatedDateTime`, `incoTermType`, `language`, `text`) VALUES (NULL, NULL, '', NULL, NULL, 'EXW', 'NL', 'Tarief Ex Works, inclusief 1 uur laden en 1 uur lossen');

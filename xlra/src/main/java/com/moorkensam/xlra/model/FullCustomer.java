@@ -35,10 +35,6 @@ public class FullCustomer extends BaseCustomer {
 	@NotEmpty(message = "May not be empty")
 	private String btwNumber;
 
-	@Enumerated(EnumType.STRING)
-	@NotNull(message = "A language has to be selected")
-	private Language language;
-
 	private boolean fullCustomer;
 
 	public String getEmail() {

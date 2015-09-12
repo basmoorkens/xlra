@@ -42,6 +42,10 @@ public class RateFile extends BaseEntity {
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="rateFile")
 	private List<RateLine> rateLines = new ArrayList<RateLine>();
 	
+	@OneToOne
+	@JoinColumn(name="conditionId")
+	private Condition condition;
+	
 	private String name;
 
 	public FullCustomer getCustomer() {

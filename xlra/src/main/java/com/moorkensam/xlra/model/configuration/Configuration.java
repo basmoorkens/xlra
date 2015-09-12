@@ -26,7 +26,7 @@ public class Configuration extends BaseEntity {
 	private double currentDieselPrice; 
 	
 	private double currentChfValue;
-
+	
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="xlraConfiguration")
 	private List<MailTemplate> mailTemplates;
 	

@@ -1,6 +1,5 @@
 package com.moorkensam.xlra.service.impl;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -8,7 +7,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,6 +22,8 @@ import com.moorkensam.xlra.model.configuration.MailTemplate;
 import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.service.ApplicationConfigurationService;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
+
+//TODO Implement diesel and chf 4 ciphers after.
 
 @Stateless
 public class ApplicationConfigurationServiceImpl implements
