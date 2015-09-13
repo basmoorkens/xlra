@@ -12,8 +12,64 @@
 
 			<h:outputLabel for="importFormField">Import formality:</h:outputLabel>
 			<p:inputText size="50" value="#{condition.importFormality}"
-				id="importFormField"></p:inputText>
+				id="importFormField" />
 			<p:message for="importFormField" />
+
+			<h:outputLabel for="exportFormField">Export formality:</h:outputLabel>
+			<p:inputText size="50" value="#{condition.exportFormality}"
+				id="exportFormField" />
+			<p:message for="exportFormField" />
+
+			<h:outputLabel for="eur1Field">EUR1:</h:outputLabel>
+			<p:inputText size="50" value="#{condition.eur1}" id="eur1Field" />
+			<p:message for="eur1Field" />
+
+			<h:outputLabel for="adrSurchargeField">Adress surcharge(%):</h:outputLabel>
+			<p:inputText size="50" value="#{condition.adrSurcharge}"
+				id="adrSurchargeField" />
+			<p:message for="adrSurchargeField" />
+
+			<h:outputLabel for="adrSurchargeMinimumField">Minimal address surcharge(EUR):</h:outputLabel>
+			<p:inputText size="50" value="#{condition.adrSurchargeMinimum}"
+				id="adrSurchargeMinimumField" />
+			<p:message for="adrSurchargeMinimumField" />
+
+			<h:outputLabel for="supplementaryTarifNumbersField">Supplementary rate numbers:</h:outputLabel>
+			<p:inputText size="50" value="#{condition.supplementaryTarifNumbers}"
+				id="supplementaryTarifNumbersField" />
+			<p:message for="supplementaryTarifNumbersField" />
+
+			<h:outputLabel for="incoTermTypeField">Export formality:</h:outputLabel>
+			<p:selectOneRadio id="incoTermTypeField"
+				value="#{condition.incoTermType}">
+				<f:selectItems value="#{manageRatesController.incoTermTypes}"
+					var="incoTermType" itemLabel="#{incoTermType}" />
+			</p:selectOneRadio>
+			<p:message for="incoTermTypeField" />
+
+			<h:outputLabel for="waitHourTarifField">Waiting hours rate:</h:outputLabel>
+			<p:inputText size="50" value="#{condition.waitHourTarif}"
+				id="waitHourTarifField" />
+			<p:message for="waitHourTarifField" />
+
+			<h:outputLabel for="paymentTermField">Payment terms:</h:outputLabel>
+			<p:inputText size="50" value="#{condition.paymentTerm}"
+				id="paymentTermField" />
+			<p:message for="paymentTermField" />
+
+			<h:outputLabel for="transportInsuranceField">Transport insurance rate:</h:outputLabel>
+			<p:inputText size="50" value="#{condition.transportInsurance}"
+				id="transportInsuranceField" />
+			<p:message for="transportInsuranceField" />
+
+			<h:outputLabel for="expirationDateField">Expiration date:</h:outputLabel>
+			<p:inputText size="50" value="#{condition.expirationDate}"
+				id="expirationDateField" />
+			<p:message for="expirationDateField" />
+
+			<p:commandButton value="Save terms and conditions"
+				title="Save terms and conditions" ajax="false"
+				action="#{manageRatesController.saveConditions}" />
 		</p:panelGrid>
 
 	</p:panel>

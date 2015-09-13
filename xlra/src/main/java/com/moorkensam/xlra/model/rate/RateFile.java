@@ -25,6 +25,10 @@ public class RateFile extends BaseEntity {
 
 	private static final long serialVersionUID = 830015468011487605L;
 
+	public RateFile() {
+		condition = new Condition();
+	}
+
 	@OneToOne
 	@JoinColumn(name = "customerId")
 	private FullCustomer customer;
@@ -39,13 +43,13 @@ public class RateFile extends BaseEntity {
 	@JoinColumn(name = "countryId")
 	private Country country;
 
-	@OneToMany(fetch=FetchType.LAZY, mappedBy="rateFile")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "rateFile")
 	private List<RateLine> rateLines = new ArrayList<RateLine>();
-	
-	@OneToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="conditionId")
+
+	@OneToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "conditionId")
 	private Condition condition;
-	
+
 	private String name;
 
 	public FullCustomer getCustomer() {
@@ -94,10 +98,6 @@ public class RateFile extends BaseEntity {
 
 	public void setRateLines(List<RateLine> rateLines) {
 		this.rateLines = rateLines;
-	}
-	
-	public String getRateFileId() {
-		return id  +"";
 	}
 
 	public Condition getCondition() {

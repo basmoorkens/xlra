@@ -1,6 +1,7 @@
 package com.moorkensam.xlra.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -10,17 +11,16 @@ import javax.inject.Inject;
 
 import org.primefaces.event.SelectEvent;
 
+import com.moorkensam.xlra.model.rate.IncoTermType;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.service.RateFileService;
 
-@ManagedBean
+@ManagedBean(name = "manageRatesController")
 @ViewScoped
 public class ManageRatesController {
 
 	@Inject
 	private RateFileService rateFileService;
-
-	private String rateSearchTerm;
 
 	private List<RateFile> rateFiles;
 
@@ -31,26 +31,33 @@ public class ManageRatesController {
 	@PostConstruct
 	public void initializeController() {
 		refreshRates();
+		resetSelectedRateFile();
+	}
+
+	private void resetSelectedRateFile() {
+		selectedRateFile = new RateFile();
+	}
+
+	private void resetPage() {
+		resetSelectedRateFile();
+		collapseDetailGrid = true;
+		completeRateName("");
+	}
+
+	public void saveConditions() {
+		selectedRateFile.setCondition(rateFileService
+				.updateTermsAndConditions(selectedRateFile.getCondition()));
+		resetPage();
 	}
 
 	public void fetchDetailsOfRatefile(SelectEvent event) {
-		selectedRateFile = rateFileService.getFullRateFile(Long.parseLong((String) event.getObject()));
-	}
-
-	public void displayConditions() {
+		selectedRateFile = rateFileService.getFullRateFile(((RateFile) event
+				.getObject()).getId());
 		collapseDetailGrid = false;
 	}
 
 	private void refreshRates() {
 		rateFiles = rateFileService.getAllRateFiles();
-	}
-
-	public String getRateSearchTerm() {
-		return rateSearchTerm;
-	}
-
-	public void setRateSearchTerm(String rateSearchTerm) {
-		this.rateSearchTerm = rateSearchTerm;
 	}
 
 	public List<RateFile> completeRateName(String input) {
@@ -94,4 +101,18 @@ public class ManageRatesController {
 	public void setCollapseDetailGrid(boolean collapseDetailGrid) {
 		this.collapseDetailGrid = collapseDetailGrid;
 	}
+
+	public List<IncoTermType> getIncoTermTypes() {
+		return Arrays.asList(IncoTermType.values());
+	}
+
+	public RateFile getRateFileById(long id) {
+		for (RateFile rf : rateFiles) {
+			if (rf.getId() == id) {
+				return rf;
+			}
+		}
+		return null;
+	}
+
 }

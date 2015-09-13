@@ -18,22 +18,19 @@
 				<p:outputLabel value="Select Rates to display:" for="rateSelector" />
 
 				<p:autoComplete id="rateSelector" dropdown="true"
-					value="#{manageRatesController.rateSearchTerm}"
+					value="#{manageRatesController.selectedRateFile}"
 					completeMethod="#{manageRatesController.completeRateName}"
-					var="rateFile" itemLabel="#{rateFile.name}"
-					itemValue="#{rateFile.rateFileId}">
-					<p:ajax event="itemSelect"
+					var="rateFile" itemLabel="#{rateFile.name}" itemValue="#{rateFile}"
+					converter="#{rateFileConverter}">
+					<p:ajax event="itemSelect" update=":detailForm"
 						listener="#{manageRatesController.fetchDetailsOfRatefile}" />
 				</p:autoComplete>
-
-
-				<p:commandButton icon="ui-icon-check" ajax="false"
-					value="View details" title="View details"
-					action="#{manageRatesController.displayConditions}" />
 
 				<p:commandButton value="Create rate file" title="Add new rates"
 					icon="ui-icon-check" ajax="false" />
 			</p:panelGrid>
+		</h:form>
+		<h:form id="detailForm">
 			<ui:include src="/views/rate/admin/conditionsDetail.xhtml">
 				<ui:param name="condition"
 					value="#{manageRatesController.selectedRateFile.condition}"></ui:param>
