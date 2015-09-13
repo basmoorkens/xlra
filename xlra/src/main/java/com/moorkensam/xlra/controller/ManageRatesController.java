@@ -9,6 +9,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 
+import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 
 import com.moorkensam.xlra.model.rate.IncoTermType;
@@ -24,9 +25,13 @@ public class ManageRatesController {
 
 	private List<RateFile> rateFiles;
 
-	private boolean collapseDetailGrid = true;
+	private boolean collapseConditionsDetailGrid = true;
+
+	private boolean collapseRateLinesDetailGrid = true;
 
 	private RateFile selectedRateFile;
+
+	private boolean hasRateFileSelected = false;
 
 	@PostConstruct
 	public void initializeController() {
@@ -40,8 +45,10 @@ public class ManageRatesController {
 
 	private void resetPage() {
 		resetSelectedRateFile();
-		collapseDetailGrid = true;
+		collapseConditionsDetailGrid = true;
+		collapseRateLinesDetailGrid = true;
 		completeRateName("");
+		hasRateFileSelected = false;
 	}
 
 	public void saveConditions() {
@@ -53,7 +60,9 @@ public class ManageRatesController {
 	public void fetchDetailsOfRatefile(SelectEvent event) {
 		selectedRateFile = rateFileService.getFullRateFile(((RateFile) event
 				.getObject()).getId());
-		collapseDetailGrid = false;
+		collapseConditionsDetailGrid = false;
+		collapseRateLinesDetailGrid = false;
+		hasRateFileSelected = true;
 	}
 
 	private void refreshRates() {
@@ -68,6 +77,10 @@ public class ManageRatesController {
 			}
 		}
 		return filteredRateFiles;
+	}
+
+	public void onRateLineRowEdit(RowEditEvent event) {
+
 	}
 
 	public List<RateFile> getRateFiles() {
@@ -94,14 +107,6 @@ public class ManageRatesController {
 		this.selectedRateFile = selectedRateFile;
 	}
 
-	public boolean isCollapseDetailGrid() {
-		return collapseDetailGrid;
-	}
-
-	public void setCollapseDetailGrid(boolean collapseDetailGrid) {
-		this.collapseDetailGrid = collapseDetailGrid;
-	}
-
 	public List<IncoTermType> getIncoTermTypes() {
 		return Arrays.asList(IncoTermType.values());
 	}
@@ -113,6 +118,32 @@ public class ManageRatesController {
 			}
 		}
 		return null;
+	}
+
+	public boolean isCollapseConditionsDetailGrid() {
+		return collapseConditionsDetailGrid;
+	}
+
+	public void setCollapseConditionsDetailGrid(
+			boolean collapseConditionsDetailGrid) {
+		this.collapseConditionsDetailGrid = collapseConditionsDetailGrid;
+	}
+
+	public boolean isCollapseRateLinesDetailGrid() {
+		return collapseRateLinesDetailGrid;
+	}
+
+	public void setCollapseRateLinesDetailGrid(
+			boolean collapseRateLinesDetailGrid) {
+		this.collapseRateLinesDetailGrid = collapseRateLinesDetailGrid;
+	}
+
+	public boolean isHasRateFileSelected() {
+		return hasRateFileSelected;
+	}
+
+	public void setHasRateFileSelected(boolean hasRateFileSelected) {
+		this.hasRateFileSelected = hasRateFileSelected;
 	}
 
 }

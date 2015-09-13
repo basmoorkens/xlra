@@ -11,6 +11,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
 
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable{
@@ -20,6 +21,9 @@ public abstract class BaseEntity implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	protected long id;
+	
+	@Version
+	private long version;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDateTime; 
@@ -80,6 +84,14 @@ public abstract class BaseEntity implements Serializable{
 
 	public void setDeletedDateTime(Date deletedDateTime) {
 		this.deletedDateTime = deletedDateTime;
+	}
+
+	public long getVersion() {
+		return version;
+	}
+
+	public void setVersion(long version) {
+		this.version = version;
 	}
 	
 }

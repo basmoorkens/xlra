@@ -1,6 +1,8 @@
 package com.moorkensam.xlra.model.rate;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -13,7 +15,8 @@ public class RateLine extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 
-	private String measurement;
+	@Enumerated(EnumType.STRING)
+	private Measurement measurement;
 
 	private String zone;
 
@@ -29,14 +32,6 @@ public class RateLine extends BaseEntity {
 
 	public void setZone(String zone) {
 		this.zone = zone;
-	}
-
-	public String getMeasurement() {
-		return measurement;
-	}
-
-	public void setMeasurement(String measurement) {
-		this.measurement = measurement;
 	}
 
 	public double getValue() {

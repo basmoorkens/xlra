@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<p:panel id="customerDetailPanel" toggleable="#{manageRatesController.hasRateFileSelected}"
+		collapsed="#{manageRatesController.collapseRateLinesDetailGrid}"
+		header="Terms and conditions">
+		<p:panelGrid columns="3" cellpadding="0" 
+			styleClass="rateLinesDetailGrid" style="width:100%">
+			<p:dataTable value="#{rateLines}" var="rateLine"
+				emptyMessage="No rate lines found." id="rateLineTable" rows="10">
+
+				<p:ajax event="rowEdit"
+					listener="#{manageRatesController.onRateLineRowEdit}"
+					update=":ratesForm:message" />
+
+				<p:column headerText="Measurement">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{rateLine.measurement}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{rateLine.measurement}" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="Postcode / zone">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{rateLine.zone}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{rateLine.zone}" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="Value">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{rateLine.value}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{rateLine.value}" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column style="width:32px">
+					<p:rowEditor />
+				</p:column>
+			</p:dataTable>
+		</p:panelGrid>
+
+	</p:panel>
+</ui:composition>

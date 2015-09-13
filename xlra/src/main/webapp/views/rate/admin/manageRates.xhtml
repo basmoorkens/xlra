@@ -12,25 +12,35 @@
 		<h:outputText value="Rate management" />
 	</ui:define>
 	<ui:define name="body">
-		<h:form>
+		<h:form id="ratesForm">
+		<h3>Search options</h3>
 			<p:growl id="message" showDetail="true" />
-			<p:panelGrid columns="4">
+			<p:panelGrid columns="3" style="width:100%">
 				<p:outputLabel value="Select Rates to display:" for="rateSelector" />
 
-				<p:autoComplete id="rateSelector" dropdown="true"
+				<p:autoComplete size="90" id="rateSelector" dropdown="true"
 					value="#{manageRatesController.selectedRateFile}"
 					completeMethod="#{manageRatesController.completeRateName}"
 					var="rateFile" itemLabel="#{rateFile.name}" itemValue="#{rateFile}"
 					converter="#{rateFileConverter}">
-					<p:ajax event="itemSelect" update=":detailForm"
+					<p:ajax event="itemSelect"
+						update=":conditionsDetailForm :rateLinesDetailForm"
 						listener="#{manageRatesController.fetchDetailsOfRatefile}" />
 				</p:autoComplete>
 
-				<p:commandButton value="Create rate file" title="Add new rates"
+				<p:commandButton value="Add new rates" title="Add new rates"
 					icon="ui-icon-check" ajax="false" />
 			</p:panelGrid>
 		</h:form>
-		<h:form id="detailForm">
+		
+		<h3>Details</h3>
+		<h:form id="rateLinesDetailForm">
+			<ui:include src="/views/rate/admin/rateLinesDetail.xhtml">
+				<ui:param name="rateLines"
+					value="#{manageRatesController.selectedRateFile.rateLines}"></ui:param>
+			</ui:include>
+		</h:form>
+		<h:form id="conditionsDetailForm">
 			<ui:include src="/views/rate/admin/conditionsDetail.xhtml">
 				<ui:param name="condition"
 					value="#{manageRatesController.selectedRateFile.condition}"></ui:param>
