@@ -5,15 +5,19 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
-import org.primefaces.event.RowEditEvent;
+import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.SelectEvent;
 
+import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.rate.IncoTermType;
 import com.moorkensam.xlra.model.rate.RateFile;
+import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.service.RateFileService;
 
 @ManagedBean(name = "manageRatesController")
@@ -31,6 +35,8 @@ public class ManageRatesController {
 
 	private RateFile selectedRateFile;
 
+	private List<String> columnHeaders = new ArrayList<String>();
+
 	private boolean hasRateFileSelected = false;
 
 	@PostConstruct
@@ -43,12 +49,33 @@ public class ManageRatesController {
 		selectedRateFile = new RateFile();
 	}
 
+	public void saveRateFile() {
+		rateFileService.updateRateFile(selectedRateFile);
+		resetPage();
+	}
+
 	private void resetPage() {
 		resetSelectedRateFile();
 		collapseConditionsDetailGrid = true;
 		collapseRateLinesDetailGrid = true;
 		completeRateName("");
 		hasRateFileSelected = false;
+		columnHeaders = new ArrayList<String>();
+	}
+
+	/**
+	 * Added in the ID of the rateline to know which cell to update.
+	 * 
+	 * @param event
+	 */
+	public void onRateLineCellEdit(CellEditEvent event) {
+		Object newValue = event.getNewValue();
+		Object oldValue = event.getOldValue();
+
+		if (newValue != null && !newValue.equals(oldValue)) {
+			MessageUtil.addMessage("Rate updated", "Rate value updated to "
+					+ newValue);
+		}
 	}
 
 	public void saveConditions() {
@@ -63,6 +90,7 @@ public class ManageRatesController {
 		collapseConditionsDetailGrid = false;
 		collapseRateLinesDetailGrid = false;
 		hasRateFileSelected = true;
+		refreshRateLineColumns();
 	}
 
 	private void refreshRates() {
@@ -77,10 +105,6 @@ public class ManageRatesController {
 			}
 		}
 		return filteredRateFiles;
-	}
-
-	public void onRateLineRowEdit(RowEditEvent event) {
-
 	}
 
 	public List<RateFile> getRateFiles() {
@@ -144,6 +168,30 @@ public class ManageRatesController {
 
 	public void setHasRateFileSelected(boolean hasRateFileSelected) {
 		this.hasRateFileSelected = hasRateFileSelected;
+	}
+
+	private List<String> refreshRateLineColumns() {
+		columnHeaders = new ArrayList<String>();
+		for (RateLine rl : selectedRateFile.getRateLines()) {
+			columnHeaders.add(rl.getZone());
+		}
+		return columnHeaders;
+	}
+
+	public String getMeasurementTitle() {
+		if (selectedRateFile.getId() != 0) {
+			return selectedRateFile.getMeasurement().getDescription();
+		} else {
+			return "Measurement";
+		}
+	}
+
+	public List<String> getColumnHeaders() {
+		return columnHeaders;
+	}
+
+	public void setColumnHeaders(List<String> columnHeaders) {
+		this.columnHeaders = columnHeaders;
 	}
 
 }

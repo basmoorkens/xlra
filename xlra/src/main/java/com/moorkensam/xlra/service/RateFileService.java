@@ -12,7 +12,7 @@ public interface RateFileService {
 
 	void createRateFile(RateFile rateFile);
 
-	void updateRateFile(RateFile rateFile);
+	RateFile updateRateFile(RateFile rateFile);
 
 	List<RateFile> getRateFilesForFilter(RateFileSearchFilter filter);
 

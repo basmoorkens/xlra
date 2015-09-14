@@ -13,7 +13,7 @@
 	</ui:define>
 	<ui:define name="body">
 		<h:form id="ratesForm">
-		<h3>Search options</h3>
+			<h3>Search options</h3>
 			<p:growl id="message" showDetail="true" />
 			<p:panelGrid columns="3" style="width:100%">
 				<p:outputLabel value="Select Rates to display:" for="rateSelector" />
@@ -32,12 +32,12 @@
 					icon="ui-icon-check" ajax="false" />
 			</p:panelGrid>
 		</h:form>
-		
+
 		<h3>Details</h3>
 		<h:form id="rateLinesDetailForm">
 			<ui:include src="/views/rate/admin/rateLinesDetail.xhtml">
-				<ui:param name="rateLines"
-					value="#{manageRatesController.selectedRateFile.rateLines}"></ui:param>
+				<ui:param name="rateFile"
+					value="#{manageRatesController.selectedRateFile}"></ui:param>
 			</ui:include>
 		</h:form>
 		<h:form id="conditionsDetailForm">

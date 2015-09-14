@@ -3,7 +3,6 @@ package com.moorkensam.xlra.dao.impl;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Persistence;
 import javax.persistence.Query;
 
 import org.apache.logging.log4j.LogManager;
@@ -12,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import com.moorkensam.xlra.dao.BaseDAO;
 import com.moorkensam.xlra.dao.RateFileDAO;
 import com.moorkensam.xlra.model.rate.RateFile;
+import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
 
 public class RateFileDAOImpl extends BaseDAO implements RateFileDAO {
@@ -31,8 +31,8 @@ public class RateFileDAOImpl extends BaseDAO implements RateFileDAO {
 	}
 
 	@Override
-	public void updateRateFile(RateFile rateFile) {
-		getEntityManager().merge(rateFile);
+	public RateFile updateRateFile(RateFile rateFile) {
+		return getEntityManager().merge(rateFile);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -81,7 +81,33 @@ public class RateFileDAOImpl extends BaseDAO implements RateFileDAO {
 	public RateFile getFullRateFile(long rateFileId) {
 		RateFile rf = getEntityManager().find(RateFile.class, rateFileId);
 		rf.getRateLines().size();
-		return rf; 
+		return rf;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getDistinctZonesForRateFile(RateFile rateFile) {
+		Query query = getEntityManager().createNamedQuery(
+				"RateFile.findDistinctZones");
+		query.setParameter("ratefileid", rateFile.getId());
+		return (List<String>) query.getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<RateLine> findRateLinesForRateFile(RateFile rf) {
+		Query query = getEntityManager().createNamedQuery(
+				"RateLine.findAllForRateFile", RateLine.class);
+		query.setParameter("ratefileid", rf.getId());
+		return (List<RateLine>) query.getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Integer> getDistinctMeasurementsForRateFile(RateFile rf) {
+		Query query = getEntityManager().createNamedQuery(
+				"RateFile.findDistinctMeasurements");
+		query.setParameter("ratefileid", rf.getId());
+		return (List<Integer>) query.getResultList();
+	}
 }

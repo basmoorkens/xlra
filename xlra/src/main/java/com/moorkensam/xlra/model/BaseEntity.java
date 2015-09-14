@@ -14,35 +14,35 @@ import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 @MappedSuperclass
-public abstract class BaseEntity implements Serializable{
+public abstract class BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	protected long id;
-	
+
 	@Version
 	private long version;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdDateTime; 
-	
+	private Date createdDateTime;
+
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastUpdatedDateTime;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date deletedDateTime; 
-	
-	private boolean deleted; 
-	
+	private Date deletedDateTime;
+
+	private boolean deleted;
+
 	@PrePersist
 	public void onCreate() {
-		setCreatedDateTime(new Date()); 
+		setCreatedDateTime(new Date());
 	}
-	
+
 	@PreUpdate
-	public void onUpdate() { 
+	public void onUpdate() {
 		setLastUpdatedDateTime(new Date());
 	}
 
@@ -93,5 +93,5 @@ public abstract class BaseEntity implements Serializable{
 	public void setVersion(long version) {
 		this.version = version;
 	}
-	
+
 }

@@ -3,6 +3,7 @@ package com.moorkensam.xlra.dao;
 import java.util.List;
 
 import com.moorkensam.xlra.model.rate.RateFile;
+import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
 
 public interface RateFileDAO {
@@ -11,12 +12,17 @@ public interface RateFileDAO {
 
 	void createRateFile(RateFile rateFile);
 
-	void updateRateFile(RateFile rateFile);
+	RateFile updateRateFile(RateFile rateFile);
 
 	List<RateFile> getRateFilesForFilter(RateFileSearchFilter filter);
 
 	void deleteRateFile(RateFile rateFile);
-	
+
 	RateFile getFullRateFile(long rateFileId);
+
+	public List<String> getDistinctZonesForRateFile(RateFile rateFile);
+
+	public List<Integer> getDistinctMeasurementsForRateFile(RateFile rf);
 	
+	public List<RateLine> findRateLinesForRateFile(RateFile rf) ;
 }
