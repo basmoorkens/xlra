@@ -14,11 +14,26 @@ public interface RateFileService {
 
 	RateFile updateRateFile(RateFile rateFile);
 
-	List<RateFile> getRateFilesForFilter(RateFileSearchFilter filter);
+	/**
+	 * Find a list of ratefiles for a given set of filters.
+	 * 
+	 * @param filter
+	 * @return
+	 */
+	List<RateFile> getRateFilesForFilter(final RateFileSearchFilter filter);
 
 	void deleteRateFile(RateFile rateFile);
-	
-	RateFile getFullRateFile(long id); 
-	
+
+	RateFile getFullRateFile(long id);
+
 	Condition updateTermsAndConditions(Condition condition);
+
+	/**
+	 * Raise all the ratelines in the given ratefiles with a given percentage.
+	 * 
+	 * @param rateFiles
+	 * @param percentage
+	 */
+	void raiseRateFileRateLinesWithPercentage(List<RateFile> rateFiles,
+			int percentage);
 }

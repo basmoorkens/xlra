@@ -105,10 +105,12 @@ public class ApplicationConfigurationServiceImpl implements
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void updateCurrentChfValue(double value) {
 		Configuration config = xlraConfigurationDAO.getXlraConfiguration();
+
 		LogRecord createChfLogRecord = LogRecordFactory
 				.createChfLogRecord(config.getCurrentChfValue());
 		logger.info("saving chfprice logrecord" + createChfLogRecord);
 		logDAO.createLogRecord(createChfLogRecord);
+
 		config.setCurrentChfValue(value);
 		logger.info("Saving current chf rate " + config.getCurrentChfValue());
 		xlraConfigurationDAO.updateXlraConfiguration(config);
@@ -118,10 +120,12 @@ public class ApplicationConfigurationServiceImpl implements
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void updateCurrentDieselValue(double value) {
 		Configuration config = xlraConfigurationDAO.getXlraConfiguration();
+
 		LogRecord createDieselLogRecord = LogRecordFactory
 				.createDieselLogRecord(config.getCurrentDieselPrice());
 		logger.info("Saving dieselprice logrecord " + createDieselLogRecord);
 		logDAO.createLogRecord(createDieselLogRecord);
+
 		config.setCurrentDieselPrice(value);
 		logger.info("Saving current diesel price"
 				+ config.getCurrentDieselPrice());
