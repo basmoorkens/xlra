@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.model.configuration;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -9,6 +10,7 @@ import com.moorkensam.xlra.model.BaseEntity;
 import com.moorkensam.xlra.model.Language;
 
 @Entity
+@Cacheable
 @Table(name = "xlratranslation")
 public class Translation extends BaseEntity {
 

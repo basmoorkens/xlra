@@ -1,11 +1,13 @@
 package com.moorkensam.xlra.model.rate;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import com.moorkensam.xlra.model.BaseEntity;
 
 @Entity
+@Cacheable
 @Table(name = "country")
 public class Country extends BaseEntity {
 

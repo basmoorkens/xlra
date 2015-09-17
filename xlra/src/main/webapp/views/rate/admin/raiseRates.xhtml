@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/views/template.xhtml">
+	<ui:define name="title">
+		<h:outputText value="XLRA - Raise rates" />
+	</ui:define>
+	<ui:define name="pageTitle">
+		<h:outputText value="Raise rates" />
+	</ui:define>
+	<ui:define name="body">
+		<h:form id="raiseRatesForm">
+			<p:panelGrid columns="2" style="width:100%">
+				<p:outputLabel for="selectRateFiles"
+					value="Select RateFiles to raise:" />
+				<p:panel>
+					<p:commandButton value="Select all" title="Select all"
+						update="raiseRatesForm"
+						action="#{raiseRatesController.selectAllRateFiles}" />
+					<p:commandButton value="Unselect all" title="Unselect all"
+						update="raiseRatesForm"
+						action="#{raiseRatesController.unSelectAllRateFiles}" />
+				</p:panel>
+				<h:outputLabel />
+				<p:selectManyMenu style="width:100%" id="selectRateFiles"
+					converter="#{rateFileSimpleConverter}"
+					value="#{raiseRatesController.selectedRateFiles}" var="rf"
+					filter="true" filterMatchMode="contains" showCheckbox="true">
+					<f:selectItems value="#{raiseRatesController.allRateFiles}"
+						var="rateFile" itemLabel="#{rateFile.name}"
+						itemValue="#{rateFile}" />
+
+					<p:column>
+						<h:outputText value="#{rf.name}" />
+					</p:column>
+				</p:selectManyMenu>
+			</p:panelGrid>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

@@ -115,7 +115,7 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 			raiseRateLinesOfRateFile(rateLineMultiplier, rf);
 		}
 
-		for(RateFile rf : rateFiles) {
+		for (RateFile rf : rateFiles) {
 			rateFileDAO.updateRateFile(rf);
 		}
 	}
@@ -137,6 +137,18 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 		int percentagePlus100 = percentage + 100;
 		double result = (double) percentagePlus100 / 100;
 		return result;
+	}
+
+	@Override
+	public RateFile getRateFileWithoutLazyLoad(Long id) {
+		logger.info("Fetching ratefiles and finding in memory");
+		List<RateFile> rfs = rateFileDAO.getAllRateFiles();
+		for (RateFile rf : rfs) {
+			if (rf.getId() == id) {
+				return rf;
+			}
+		}
+		return null;
 	}
 
 }

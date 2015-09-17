@@ -2,6 +2,7 @@ package com.moorkensam.xlra.model.configuration;
 
 import java.util.List;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.NamedQueries;
@@ -12,6 +13,7 @@ import javax.persistence.Table;
 import com.moorkensam.xlra.model.BaseEntity;
 
 @Entity
+@Cacheable
 @Table(name="configuration")
 @NamedQueries(
 		@NamedQuery(name="Configuration.findMainConfig", query="SELECT x FROM Configuration x where x.configurationName = :configName"))

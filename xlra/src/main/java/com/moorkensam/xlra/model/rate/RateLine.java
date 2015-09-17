@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.model.rate;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -10,6 +11,7 @@ import javax.persistence.Table;
 import com.moorkensam.xlra.model.BaseEntity;
 
 @Entity
+@Cacheable
 @Table(name = "rateline")
 @NamedQueries(@NamedQuery(name="RateLine.findAllForRateFile", query="SELECT r FROM RateLine r WHERE r.rateFile.id = :ratefileid"))
 public class RateLine extends BaseEntity implements Comparable<RateLine> {

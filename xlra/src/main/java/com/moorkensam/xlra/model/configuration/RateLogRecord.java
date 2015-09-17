@@ -1,9 +1,11 @@
 package com.moorkensam.xlra.model.configuration;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
+@Cacheable
 @Table(name = "ratelogrecord")
 public class RateLogRecord extends LogRecord {
 

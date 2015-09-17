@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.model;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -13,6 +14,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
+@Cacheable
 @NamedQueries({ @NamedQuery(name = "FullCustomer.findAll", query = "SELECT c FROM FullCustomer c where c.deleted = false") })
 public class FullCustomer extends BaseCustomer {
 

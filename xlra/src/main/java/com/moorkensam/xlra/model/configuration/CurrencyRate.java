@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.model.configuration;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -11,6 +12,7 @@ import javax.validation.constraints.NotNull;
 import com.moorkensam.xlra.model.BaseEntity;
 
 @Entity
+@Cacheable
 @Table(name = "currencyrate")
 @NamedQueries({
 		@NamedQuery(name = "CurrencyRate.findAll", query = "SELECT c FROM CurrencyRate c where c.deleted = false"),

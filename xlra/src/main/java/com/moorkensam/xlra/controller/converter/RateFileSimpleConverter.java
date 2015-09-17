@@ -14,7 +14,7 @@ import com.moorkensam.xlra.service.RateFileService;
 
 @ManagedBean
 @RequestScoped
-public class RateFileConverter implements Converter {
+public class RateFileSimpleConverter implements Converter {
 
 	@Inject
 	private RateFileService rateFileService;
@@ -23,7 +23,8 @@ public class RateFileConverter implements Converter {
 	public Object getAsObject(FacesContext fc, UIComponent arg1, String value) {
 		if (value != null && value.length() > 0) {
 			try {
-				return rateFileService.getFullRateFile(Long.parseLong(value));
+				return rateFileService.getRateFileWithoutLazyLoad(Long
+						.parseLong(value));
 			} catch (NumberFormatException e) {
 				throw new ConverterException(new FacesMessage(
 						FacesMessage.SEVERITY_ERROR, "Conversion Error",

@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.model.rate;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -11,6 +12,7 @@ import com.moorkensam.xlra.model.BaseEntity;
 import com.moorkensam.xlra.model.Language;
 
 @Entity
+@Cacheable
 @Table(name = "incotermtranslation")
 @NamedQueries(
 		@NamedQuery(name = "IncoTermTranslation.findByLanguageAndIncoTermType", 

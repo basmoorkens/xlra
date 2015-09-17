@@ -36,4 +36,6 @@ public interface RateFileService {
 	 */
 	void raiseRateFileRateLinesWithPercentage(List<RateFile> rateFiles,
 			int percentage);
+	
+	RateFile getRateFileWithoutLazyLoad(Long id);
 }
