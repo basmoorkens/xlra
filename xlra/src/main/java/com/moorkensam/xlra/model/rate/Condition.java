@@ -7,8 +7,8 @@ import javax.persistence.Table;
 
 import com.moorkensam.xlra.model.BaseEntity;
 
-@Entity 
-@Table(name="conditions")
+@Entity
+@Table(name = "conditions")
 public class Condition extends BaseEntity {
 
 	private static final long serialVersionUID = 7814328305384417198L;
@@ -123,4 +123,21 @@ public class Condition extends BaseEntity {
 	public void setExpirationDate(String expirationDate) {
 		this.expirationDate = expirationDate;
 	}
+
+	public Condition deepCopy() {
+		Condition c = new Condition();
+		c.setAdrSurcharge(getAdrSurcharge());
+		c.setAdrSurchargeMinimum(getAdrSurchargeMinimum());
+		c.setEur1(getEur1());
+		c.setExpirationDate(getExpirationDate());
+		c.setExportFormality(getExportFormality());
+		c.setImportFormality(getImportFormality());
+		c.setIncoTermType(getIncoTermType());
+		c.setPaymentTerm(getPaymentTerm());
+		c.setSupplementaryTarifNumbers(getSupplementaryTarifNumbers());
+		c.setTransportInsurance(getTransportInsurance());
+		c.setWaitHourTarif(getWaitHourTarif());
+		return c;
+	}
+
 }

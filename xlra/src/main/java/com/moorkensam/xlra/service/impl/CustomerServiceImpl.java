@@ -17,10 +17,10 @@ import com.moorkensam.xlra.service.CustomerService;
 public class CustomerServiceImpl implements CustomerService {
 
 	@Inject
-	private CustomerDAO customerDAO; 
-	
+	private CustomerDAO customerDAO;
+
 	private final static Logger logger = LogManager.getLogger();
-	
+
 	@Override
 	public void createCustomer(FullCustomer customer) {
 		logger.info("Creating new customer with name " + customer.getName());
@@ -41,6 +41,11 @@ public class CustomerServiceImpl implements CustomerService {
 	public void deleteCustomer(BaseCustomer customer) {
 		logger.info("Deleting customer with id " + customer.getId());
 		customerDAO.deleteCustomer(customer);
+	}
+
+	@Override
+	public FullCustomer getCustomerById(long id) {
+		return customerDAO.getCustomerById(id);
 	}
 
 }

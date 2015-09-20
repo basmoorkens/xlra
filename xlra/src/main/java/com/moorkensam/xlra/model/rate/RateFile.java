@@ -158,4 +158,23 @@ public class RateFile extends BaseEntity {
 		return null;
 	}
 
+	public RateFile deepCopy() {
+		RateFile rf = new RateFile();
+		rf.setName(getName());
+		rf.setColumns(getColumns());
+		rf.setCondition(getCondition().deepCopy());
+		rf.setCountry(getCountry());
+		rf.setCustomer(getCustomer());
+		rf.setKindOfRate(getKindOfRate());
+		rf.setMeasurement(getMeasurement());
+		rf.setMeasurementRows(getMeasurementRows());
+		rf.setRateLines(new ArrayList<RateLine>());
+		for (RateLine rl : getRateLines()) {
+			RateLine deepCopy = rl.deepCopy();
+			deepCopy.setRateFile(rf);
+			rf.getRateLines().add(deepCopy);
+		}
+		return rf;
+	}
+
 }

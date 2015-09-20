@@ -22,6 +22,7 @@ public class CustomerDAOImpl extends BaseDAO implements CustomerDAO {
 		getEntityManager().merge(customer);
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<FullCustomer> getAllFullCustomers() {
 		Query query = getEntityManager().createNamedQuery(
 				"FullCustomer.findAll");
@@ -33,6 +34,12 @@ public class CustomerDAOImpl extends BaseDAO implements CustomerDAO {
 		customer.setDeleted(true);
 		customer.setDeletedDateTime(new Date());
 		getEntityManager().merge(customer);
+	}
+
+	@Override
+	public FullCustomer getCustomerById(long id) {
+		return (FullCustomer) getEntityManager().find(FullCustomer.class, id);
+
 	}
 
 }

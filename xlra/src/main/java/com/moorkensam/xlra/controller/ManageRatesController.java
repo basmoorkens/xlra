@@ -185,7 +185,7 @@ public class ManageRatesController {
 			return "Measurement";
 		}
 	}
-
+	
 	public List<String> getColumnHeaders() {
 		return columnHeaders;
 	}
@@ -193,5 +193,4 @@ public class ManageRatesController {
 	public void setColumnHeaders(List<String> columnHeaders) {
 		this.columnHeaders = columnHeaders;
 	}
-
 }

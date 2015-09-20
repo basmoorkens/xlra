@@ -7,6 +7,8 @@ import com.moorkensam.xlra.model.FullCustomer;
 
 public interface CustomerDAO {
 
+	public FullCustomer getCustomerById(long id);
+
 	public void createCustomer(FullCustomer customer);
 
 	public void updateCustomer(FullCustomer customer);
@@ -14,5 +16,5 @@ public interface CustomerDAO {
 	public List<FullCustomer> getAllFullCustomers();
 
 	public void deleteCustomer(BaseCustomer customer);
-	
+
 }
