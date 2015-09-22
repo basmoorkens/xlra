@@ -17,4 +17,9 @@ public class CountryDAOImpl extends BaseDAO implements CountryDAO {
 		return (List<Country>) query.getResultList();
 	}
 
+	@Override
+	public Country getCountryById(long id) {
+		return (Country) getEntityManager().find(Country.class, id);
+	}
+
 }

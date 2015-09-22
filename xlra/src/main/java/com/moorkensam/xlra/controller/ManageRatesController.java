@@ -15,6 +15,7 @@ import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.SelectEvent;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
+import com.moorkensam.xlra.controller.util.RateUtil;
 import com.moorkensam.xlra.model.rate.IncoTermType;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
@@ -64,18 +65,11 @@ public class ManageRatesController {
 	}
 
 	/**
-	 * Added in the ID of the rateline to know which cell to update.
 	 * 
 	 * @param event
 	 */
 	public void onRateLineCellEdit(CellEditEvent event) {
-		Object newValue = event.getNewValue();
-		Object oldValue = event.getOldValue();
-
-		if (newValue != null && !newValue.equals(oldValue)) {
-			MessageUtil.addMessage("Rate updated", "Rate value updated to "
-					+ newValue);
-		}
+		RateUtil.onRateLineCellEdit(event);
 	}
 
 	public void saveConditions() {
@@ -132,7 +126,7 @@ public class ManageRatesController {
 	}
 
 	public List<IncoTermType> getIncoTermTypes() {
-		return Arrays.asList(IncoTermType.values());
+		return RateUtil.getIncoTermTypes();
 	}
 
 	public RateFile getRateFileById(long id) {
@@ -185,7 +179,7 @@ public class ManageRatesController {
 			return "Measurement";
 		}
 	}
-	
+
 	public List<String> getColumnHeaders() {
 		return columnHeaders;
 	}

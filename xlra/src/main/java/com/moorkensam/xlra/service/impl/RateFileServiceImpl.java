@@ -37,6 +37,7 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 
 	@Override
 	public void createRateFile(final RateFile rateFile) {
+		logger.info("Creating ratefile for " + rateFile.getName());
 		rateFileDAO.createRateFile(rateFile);
 	}
 
@@ -61,9 +62,13 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 		logger.info("Fetching details for ratefile with id " + id);
 		RateFile rateFile = rateFileDAO.getFullRateFile(id);
 		rateFile.setRateLines(rateFileDAO.findRateLinesForRateFile(rateFile));
+		prepareRateFileForFrontend(rateFile);
+		return rateFile;
+	}
+
+	private void prepareRateFileForFrontend(RateFile rateFile) {
 		fillUpRelationalProperties(rateFile);
 		fillUpRateLineRelationalMap(rateFile);
-		return rateFile;
 	}
 
 	/**
@@ -149,6 +154,18 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public RateFile getCopyOfRateFileForFilter(RateFileSearchFilter filter) {
+		List<RateFile> rateFiles = rateFileDAO.getRateFilesForFilter(filter);
+		if (rateFiles.isEmpty()) {
+			return null;
+		}
+		RateFile original = rateFiles.get(0);
+		RateFile fullOriginal = getFullRateFile(original.getId());
+		RateFile copy = fullOriginal.deepCopy();
+		return copy;
 	}
 
 }

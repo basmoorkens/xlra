@@ -29,7 +29,9 @@
 				</p:autoComplete>
 
 				<p:commandButton value="Add new rates" title="Add new rates"
-					icon="ui-icon-check" action="#{manageRatesController.setupPageForNewRateFileStep1}" ajax="false" />
+					icon="ui-icon-check" immediate="true"
+					action="/views/rate/admin/createRateFile.xhtml?faces-redirect=true"
+					ajax="false" />
 			</p:panelGrid>
 		</h:form>
 
@@ -37,13 +39,17 @@
 		<h:form id="rateLinesDetailForm">
 			<ui:include src="/views/rate/admin/rateLinesDetail.xhtml">
 				<ui:param name="rateFile"
-					value="#{manageRatesController.selectedRateFile}"></ui:param>
+					value="#{manageRatesController.selectedRateFile}" />
+				<ui:param name="controller" value="#{manageRatesController}" />
+				<ui:param name="controllerName" value="manageRatesController" />
 			</ui:include>
 		</h:form>
 		<h:form id="conditionsDetailForm">
 			<ui:include src="/views/rate/admin/conditionsDetail.xhtml">
 				<ui:param name="condition"
-					value="#{manageRatesController.selectedRateFile.condition}"></ui:param>
+					value="#{manageRatesController.selectedRateFile.condition}" />
+				<ui:param name="controller" value="#{manageRatesController}" />
+				<ui:param name="controllerName" value="manageRatesController" />
 			</ui:include>
 		</h:form>
 	</ui:define>

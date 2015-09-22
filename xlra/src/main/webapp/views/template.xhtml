@@ -13,6 +13,23 @@
 	<p:panel>
 		<h:panelGrid columns="2" cellpadding="10">
 			<h:panelGroup>
+				<p:menubar>
+					<p:submenu label="Rates" icon="ui-icon-document">
+						<p:menuitem value="Manage rates"
+							url="/views/rate/admin/manageRates.xhtml" />
+						<p:menuitem value="Raise rates"
+							url="/views/rate/admin/raiseRates.xhtml" />
+					</p:submenu>
+					<p:submenu label="Customer" icon="ui-icon-document">
+						<p:menuitem value="Manage customers"
+							url="/views/customer/manageCustomers.xhtml" />
+					</p:submenu>
+					<p:submenu label="Configuration" icon="ui-icon-document">
+						<p:menuitem value="Manage configuration"
+							url="/views/configuration/configurations.xhtml" />
+
+					</p:submenu>
+				</p:menubar>
 				<h1>
 					<ui:insert name="pageTitle">Extra logistics Rates application</ui:insert>
 				</h1>

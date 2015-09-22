@@ -8,4 +8,6 @@ public interface CountryDAO {
 
 	List<Country> getAllCountries();
 	
+	Country getCountryById(long id);
+	
 }

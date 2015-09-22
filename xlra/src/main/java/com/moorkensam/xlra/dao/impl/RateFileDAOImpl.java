@@ -38,6 +38,30 @@ public class RateFileDAOImpl extends BaseDAO implements RateFileDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<RateFile> getRateFilesForFilter(RateFileSearchFilter filter) {
+		StringBuilder builder = buildSearchQuery(filter);
+
+		Query query = getEntityManager().createQuery(builder.toString());
+		buildSearchParams(filter, query);
+		logger.info("Searching ratefile for filter: " + builder.toString());
+		return (List<RateFile>) query.getResultList();
+	}
+
+	private void buildSearchParams(RateFileSearchFilter filter, Query query) {
+		if (filter.getRateKind() != null) {
+			query.setParameter("kindOfRate", filter.getRateKind());
+		}
+		if (filter.getMeasurement() != null) {
+			query.setParameter("measurement", filter.getMeasurement());
+		}
+		if (filter.getCustomer() != null) {
+			query.setParameter("customer", filter.getCustomer());
+		}
+		if (filter.getCountry() != null) {
+			query.setParameter("country", filter.getCountry());
+		}
+	}
+
+	private StringBuilder buildSearchQuery(RateFileSearchFilter filter) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("SELECT r FROM RateFile r WHERE r.deleted = false ");
 		if (filter.getRateKind() != null) {
@@ -52,22 +76,7 @@ public class RateFileDAOImpl extends BaseDAO implements RateFileDAO {
 		if (filter.getCountry() != null) {
 			builder.append("AND r.country = :country ");
 		}
-
-		Query query = getEntityManager().createQuery(builder.toString());
-		if (filter.getRateKind() != null) {
-			query.setParameter("kindOfRate", filter.getRateKind());
-		}
-		if (filter.getMeasurement() != null) {
-			query.setParameter("measurement", filter.getMeasurement());
-		}
-		if (filter.getCustomer() != null) {
-			query.setParameter("customer", filter.getCustomer());
-		}
-		if (filter.getCountry() != null) {
-			query.setParameter("country", filter.getCountry());
-		}
-		logger.info("Searching ratefile for filter: " + builder.toString());
-		return (List<RateFile>) query.getResultList();
+		return builder;
 	}
 
 	@Override

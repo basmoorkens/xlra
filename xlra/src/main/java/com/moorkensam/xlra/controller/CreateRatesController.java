@@ -9,13 +9,17 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 
+import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.FlowEvent;
 
+import com.moorkensam.xlra.controller.util.RateUtil;
 import com.moorkensam.xlra.model.FullCustomer;
 import com.moorkensam.xlra.model.rate.Country;
+import com.moorkensam.xlra.model.rate.IncoTermType;
 import com.moorkensam.xlra.model.rate.Kind;
 import com.moorkensam.xlra.model.rate.Measurement;
 import com.moorkensam.xlra.model.rate.RateFile;
+import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
 import com.moorkensam.xlra.service.CountryService;
 import com.moorkensam.xlra.service.CustomerService;
 import com.moorkensam.xlra.service.RateFileService;
@@ -43,8 +47,17 @@ public class CreateRatesController {
 
 	private List<FullCustomer> fullCustomers;
 
+	private RateFileSearchFilter filter;
+
+	private boolean hasRateFileSelected = false;
+
+	private boolean collapseRateLinesDetailGrid = false;
+
+	private boolean collapseConditionsDetailGrid = false;
+
 	@PostConstruct
 	public void init() {
+		filter = new RateFileSearchFilter();
 		setRateFile(new RateFile());
 		countries = countryService.getAllCountries();
 		fullCustomers = customerService.getAllFullCustomers();
@@ -53,7 +66,18 @@ public class CreateRatesController {
 	}
 
 	public String onFlowProcess(FlowEvent event) {
+		if (event.getNewStep().equals("rateLineEditor")) {
+			RateFile copiedFile = rateFileService
+					.getCopyOfRateFileForFilter(filter);
+			copiedFile.setCustomer(rateFile.getCustomer());
+			copiedFile.setName(rateFile.getName());
+			rateFile = copiedFile;
+		}
 		return event.getNewStep();
+	}
+
+	public void onRateLineCellEdit(CellEditEvent event) {
+		RateUtil.onRateLineCellEdit(event);
 	}
 
 	public RateFileService getRateFileService() {
@@ -107,11 +131,53 @@ public class CreateRatesController {
 		return filteredCustomers;
 	}
 
+	public void saveNewRateFile() {
+		rateFileService.createRateFile(rateFile);
+	}
+
 	public List<FullCustomer> getFullCustomers() {
 		return fullCustomers;
 	}
 
 	public void setFullCustomers(List<FullCustomer> fullCustomers) {
 		this.fullCustomers = fullCustomers;
+	}
+
+	public RateFileSearchFilter getFilter() {
+		return filter;
+	}
+
+	public void setFilter(RateFileSearchFilter filter) {
+		this.filter = filter;
+	}
+
+	public boolean isHasRateFileSelected() {
+		return hasRateFileSelected;
+	}
+
+	public void setHasRateFileSelected(boolean hasRateFileSelected) {
+		this.hasRateFileSelected = hasRateFileSelected;
+	}
+
+	public boolean isCollapseRateLinesDetailGrid() {
+		return collapseRateLinesDetailGrid;
+	}
+
+	public void setCollapseRateLinesDetailGrid(
+			boolean collapseRateLinesDetailGrid) {
+		this.collapseRateLinesDetailGrid = collapseRateLinesDetailGrid;
+	}
+
+	public boolean isCollapseConditionsDetailGrid() {
+		return collapseConditionsDetailGrid;
+	}
+
+	public void setCollapseConditionsDetailGrid(
+			boolean collapseConditionsDetailGrid) {
+		this.collapseConditionsDetailGrid = collapseConditionsDetailGrid;
+	}
+
+	public List<IncoTermType> getIncoTermTypes() {
+		return RateUtil.getIncoTermTypes();
 	}
 }

@@ -36,6 +36,16 @@ public interface RateFileService {
 	 */
 	void raiseRateFileRateLinesWithPercentage(List<RateFile> rateFiles,
 			int percentage);
-	
+
 	RateFile getRateFileWithoutLazyLoad(Long id);
+
+	/**
+	 * This method returns a new instance of ratefile for a set of
+	 * searchcriteria. it is not persisted in anyway its just a full copy of the
+	 * ratefile that matched the searchfilter.
+	 * 
+	 * @param filter
+	 * @return
+	 */
+	RateFile getCopyOfRateFileForFilter(RateFileSearchFilter filter);
 }

@@ -12,7 +12,7 @@
 		<url-pattern>*.xhtml</url-pattern>
 	</servlet-mapping>
 	<welcome-file-list>
-		<welcome-file>/views/customers.xhtml</welcome-file>
+		<welcome-file>/views/welcome.xhtml</welcome-file>
 	</welcome-file-list>
 	
 	 <filter>

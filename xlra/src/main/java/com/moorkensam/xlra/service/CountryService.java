@@ -7,4 +7,6 @@ import com.moorkensam.xlra.model.rate.Country;
 public interface CountryService {
 
 	List<Country> getAllCountries();
+	
+	Country getCountryById(long id);
 }

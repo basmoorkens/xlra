@@ -2,7 +2,6 @@ package com.moorkensam.xlra.model.rate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
@@ -54,7 +53,7 @@ public class RateFile extends BaseEntity {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "rateFile", cascade = CascadeType.ALL)
 	private List<RateLine> rateLines = new ArrayList<RateLine>();
 
-	@OneToOne(fetch = FetchType.EAGER)
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "conditionId")
 	private Condition condition;
 
@@ -174,6 +173,15 @@ public class RateFile extends BaseEntity {
 			deepCopy.setRateFile(rf);
 			rf.getRateLines().add(deepCopy);
 		}
+		List<List<RateLine>> relationRatelines = new ArrayList<List<RateLine>>();
+		for (List<RateLine> rateList : getRelationalRateLines()) {
+			List<RateLine> rls = new ArrayList<RateLine>();
+			for (RateLine rl : rateList) {
+				rls.add(rl);
+			}
+			relationRatelines.add(rls);
+		}
+		rf.setRelationalRateLines(relationRatelines);
 		return rf;
 	}
 

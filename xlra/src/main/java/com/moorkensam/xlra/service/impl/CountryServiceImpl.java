@@ -20,4 +20,9 @@ public class CountryServiceImpl implements CountryService {
 		return countryDAO.getAllCountries();
 	}
 
+	@Override
+	public Country getCountryById(long id) {
+		return countryDAO.getCountryById(id);
+	}
+
 }

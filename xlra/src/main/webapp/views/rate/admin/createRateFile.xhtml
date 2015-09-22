@@ -6,34 +6,43 @@
 	xmlns:p="http://primefaces.org/ui">
 <ui:composition template="/views/template.xhtml">
 	<ui:define name="title">
-		<h:outputText value="XLRA - Rate management" />
+		<h:outputText value="XLRA - Create rates" />
 	</ui:define>
 	<ui:define name="pageTitle">
-		<h:outputText value="Rate management" />
+		<h:outputText value="Create rates" />
 	</ui:define>
 	<ui:define name="body">
 		<h:form>
 			<p:growl id="growl" sticky="true" showDetail="true" />
 
-			<p:wizard flowListener="#{createRatesController.onFlowProcess}">
+			<p:wizard flowListener="#{createRatesController.onFlowProcess}"
+				showNavBar="false" widgetVar="wizard">
 				<p:tab id="rateFileBasicInfo" title="Basic information">
 					<p:panel header="Basic information">
 						<p:messages />
 
-						<p:panelGrid columns="2">
+						<p:panelGrid columns="2" style="margin:0; width:100%">
 							<h:outputText value="Name: " />
 							<p:inputText value="#{createRatesController.rateFile.name}"
-								required="true" />
+								required="true" requiredMessage="Name is required"
+								style="width:80%" />
 
 							<h:outputText value="Customer: " />
-							<p:autoComplete size="90" id="customerSelector" dropdown="true"
+							<p:autoComplete size="100" id="customerSelector" dropdown="true"
 								value="#{createRatesController.rateFile.customer}"
 								completeMethod="#{createRatesController.completeCustomerName}"
 								var="customer" itemLabel="#{customer.name}"
 								itemValue="#{customer}" converter="#{customerConverter}"
-								required="true">
+								required="true" requiredMessage="Customer is required">
 							</p:autoComplete>
 						</p:panelGrid>
+
+						<p:panel style="margin-top:10px;padding:0px;border:0px;">
+							<p:commandButton value="Back" onclick="PF('wizard').back();"
+								style="width:150px;" />
+							<p:commandButton value="Next" onclick="PF('wizard').next();"
+								style="width:150px; margin-left:20px;" />
+						</p:panel>
 					</p:panel>
 				</p:tab>
 
@@ -43,8 +52,10 @@
 						<p:messages />
 						<p:panelGrid columns="2">
 							<h:outputText value="Country: " />
-							<p:selectOneRadio id="selectCountry" required="true"
-								value="#{createRatesController.rateFile.country}">
+							<p:selectOneRadio converter="#{countryConverter}"
+								id="selectCountry" required="true"
+								requiredMessage="Select a country"
+								value="#{createRatesController.filter.country}">
 								<f:selectItems value="#{createRatesController.countries}"
 									var="country" itemLabel="#{country.name}"
 									itemValue="#{country}" />
@@ -52,7 +63,7 @@
 
 							<h:outputText value="Measurement: " />
 							<p:selectOneRadio id="selectMeasurement" required="true"
-								value="#{createRatesController.rateFile.measurement}">
+								value="#{createRatesController.filter.measurement}">
 								<f:selectItems value="#{createRatesController.measurements}"
 									var="measurement" itemLabel="#{measurement.description}"
 									itemValue="#{measurement}" />
@@ -60,15 +71,52 @@
 
 							<h:outputText value="Type of transport: " />
 							<p:selectOneRadio id="selectTypeOfTransport" required="true"
-								value="#{createRatesController.rateFile.kindOfRate}">
+								value="#{createRatesController.filter.rateKind}">
 								<f:selectItems value="#{createRatesController.kindOfRates}"
 									var="kind" itemLabel="#{kind.description}" itemValue="#{kind}" />
 							</p:selectOneRadio>
 						</p:panelGrid>
+
+						<p:panel style="margin-top:10px;padding:0px;border:0px;">
+							<p:commandButton value="Back" onclick="PF('wizard').back();"
+								style="width:150px;" />
+							<p:commandButton value="Next" onclick="PF('wizard').next();"
+								style="width:150px; margin-left:20px;" />
+						</p:panel>
 					</p:panel>
 				</p:tab>
 
+				<p:tab id="rateLineEditor" title="Setup rates">
+					<ui:include src="/views/rate/admin/rateLinesDetail.xhtml">
+						<ui:param name="rateFile"
+							value="#{createRatesController.rateFile}" />
+						<ui:param name="controller" value="#{createRatesController}" />
+						<ui:param name="controllerName" value="createRatesController" />
+					</ui:include>
 
+					<p:panel style="margin-top:10px;padding:0px;border:0px;">
+						<p:commandButton value="Back" onclick="PF('wizard').back();"
+							style="width:150px;" />
+						<p:commandButton value="Next" onclick="PF('wizard').next();"
+							style="width:150px; margin-left:20px;" />
+					</p:panel>
+				</p:tab>
+				<p:tab id="conditionEditor" title="General conditions">
+					<ui:include src="/views/rate/admin/conditionsDetail.xhtml">
+						<ui:param name="condition"
+							value="#{createRatesController.rateFile.condition}" />
+						<ui:param name="controller" value="#{createRatesController}" />
+						<ui:param name="controllerName" value="createRatesController" />
+					</ui:include>
+
+					<p:panel style="margin-top:10px;padding:0px;border:0px;">
+						<p:commandButton value="Back" onclick="PF('wizard').back();"
+							style="width:150px;" />
+						<p:commandButton value="Create and save rates"
+							action="#{createRatesController.saveNewRateFile}"
+							style="width:250px; margin-left:20px;" />
+					</p:panel>
+				</p:tab>
 			</p:wizard>
 		</h:form>
 	</ui:define>
