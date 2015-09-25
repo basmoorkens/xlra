@@ -15,11 +15,11 @@ public abstract class LogRecord extends BaseEntity {
 
 	private static final long serialVersionUID = -9102740273707056738L;
 
-	@Temporal(TemporalType.DATE)
-	private Date logDate;
+	@Temporal(TemporalType.TIMESTAMP)
+	protected Date logDate;
 
 	@Enumerated(EnumType.STRING)
-	private LogType type;
+	protected LogType type;
 
 	public Date getLogDate() {
 		return logDate;

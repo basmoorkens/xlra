@@ -1,10 +1,17 @@
 package com.moorkensam.xlra.service.impl;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
@@ -12,10 +19,13 @@ import org.apache.logging.log4j.Logger;
 
 import com.moorkensam.xlra.dao.BaseDAO;
 import com.moorkensam.xlra.dao.ConditionTypeDAO;
+import com.moorkensam.xlra.dao.LogDAO;
 import com.moorkensam.xlra.dao.RateFileDAO;
+import com.moorkensam.xlra.model.RaiseRatesRecord;
 import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
+import com.moorkensam.xlra.model.rate.RateOperation;
 import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
 import com.moorkensam.xlra.service.RateFileService;
 
@@ -29,6 +39,9 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 
 	@Inject
 	private ConditionTypeDAO conditionTypeDAO;
+
+	@Inject
+	private LogDAO logDAO;
 
 	@Override
 	public List<RateFile> getAllRateFiles() {
@@ -113,21 +126,89 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 	}
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void raiseRateFileRateLinesWithPercentage(List<RateFile> rateFiles,
-			int percentage) {
-		double rateLineMultiplier = convertPercentageToMultiplier(percentage);
-		for (RateFile rf : rateFiles) {
-			raiseRateLinesOfRateFile(rateLineMultiplier, rf);
-		}
+			double percentage) {
+		applyRateOperation(rateFiles, percentage, RateOperation.RAISE);
+	}
 
-		for (RateFile rf : rateFiles) {
+	protected void applyRateOperation(List<RateFile> rateFiles,
+			double percentage, RateOperation operation) {
+		double rateLineMultiplier = 0.0d;
+		rateLineMultiplier = setupRateLineMultiplier(percentage,
+				rateLineMultiplier);
+
+		List<RateFile> fullRateFiles = fetchFullRateFiles(rateFiles,
+				rateLineMultiplier);
+
+		raiseRateFiles(rateLineMultiplier, fullRateFiles, operation);
+
+		createAndSaveRateOperationLogRecord(percentage, fullRateFiles,
+				operation);
+
+		for (RateFile rf : fullRateFiles) {
+			if (operation == RateOperation.RAISE) {
+				logger.info("Saving raised rates file " + rf.getName());
+			} else {
+				logger.info("Saving subtracted rates file " + rf.getName());
+			}
 			rateFileDAO.updateRateFile(rf);
 		}
 	}
 
+	protected void raiseRateFiles(double rateLineMultiplier,
+			List<RateFile> fullRateFiles, RateOperation operation) {
+		for (RateFile rf : fullRateFiles) {
+			if (operation == RateOperation.RAISE) {
+				raiseRateLinesOfRateFile(rateLineMultiplier, rf);
+			}
+			if (operation == RateOperation.SUBTRACT) {
+				lowerRateLinesOfRateFile(rateLineMultiplier, rf);
+			}
+		}
+	}
+
+	protected void lowerRateLinesOfRateFile(double multiplier, RateFile rf) {
+		for (RateLine rl : rf.getRateLines()) {
+			BigDecimal bd = new BigDecimal(rl.getValue().doubleValue()
+					/ multiplier);
+			BigDecimal bd2 = bd.setScale(2, RoundingMode.HALF_UP);
+			rl.setValue(bd2);
+		}
+	}
+
+	protected List<RateFile> fetchFullRateFiles(List<RateFile> rateFiles,
+			double rateLineMultiplier) {
+		List<RateFile> fullRateFiles = new ArrayList<RateFile>();
+		for (RateFile rf : rateFiles) {
+			fullRateFiles.add(rateFileDAO.getFullRateFile(rf.getId()));
+		}
+
+		return fullRateFiles;
+	}
+
+	protected double setupRateLineMultiplier(double percentage,
+			double rateLineMultiplier) {
+		rateLineMultiplier = convertPercentageToMultiplier(percentage);
+		return rateLineMultiplier;
+	}
+
+	private void createAndSaveRateOperationLogRecord(double percentage,
+			List<RateFile> fullRateFiles, RateOperation operation) {
+		RaiseRatesRecord logRecord = new RaiseRatesRecord();
+		logRecord.setPercentage(percentage);
+		logRecord.setRateFiles(fullRateFiles);
+		logRecord.setLogDate(new Date());
+		logRecord.setOperation(operation);
+		logDAO.createLogRecord(logRecord);
+	}
+
 	private void raiseRateLinesOfRateFile(double rateLineMultiplier, RateFile rf) {
 		for (RateLine rl : rf.getRateLines()) {
-			rl.setValue(rl.getValue() * rateLineMultiplier);
+			BigDecimal bd = new BigDecimal(rl.getValue().doubleValue()
+					* rateLineMultiplier);
+			BigDecimal bd2 = bd.setScale(2, RoundingMode.HALF_UP);
+			rl.setValue(bd2);
 		}
 	}
 
@@ -138,10 +219,24 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 	 * @param percentage
 	 * @return
 	 */
-	protected double convertPercentageToMultiplier(int percentage) {
-		int percentagePlus100 = percentage + 100;
-		double result = (double) percentagePlus100 / 100;
-		return result;
+	protected double convertPercentageToMultiplier(double percentage) {
+		double percentagePlus100 = percentage + 100d;
+		BigDecimal bd = new BigDecimal((double) percentagePlus100 / 100d);
+		return double2Digits(bd);
+	}
+
+	private double double2Digits(BigDecimal input) {
+		DecimalFormat df = new DecimalFormat("####,##");
+		try {
+			return (double) df.parse(input.doubleValue() + "");
+		} catch (ParseException e) {
+		}
+		return 0.0d;
+	}
+
+	protected double convertPercentageToReservedMultiplier(double percentage) {
+		BigDecimal bd = new BigDecimal((percentage) / 100d);
+		return double2Digits(bd);
 	}
 
 	@Override
@@ -168,4 +263,22 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 		return copy;
 	}
 
+	@Override
+	public List<RaiseRatesRecord> getRaiseRatesLogRecordsThatAreNotUndone() {
+		return logDAO.getAllRaiseRateLogRecords();
+	}
+
+	@Override
+	public void undoLatestRatesRaise() {
+		RaiseRatesRecord lastRaise = logDAO.getLastRaiseRates();
+		if (lastRaise == null) {
+			logger.info("No raise found in the database");
+		} else {
+			logger.info("Subtracting latest raise");
+			applyRateOperation(lastRaise.getRateFiles(),
+					lastRaise.getPercentage(), RateOperation.SUBTRACT);
+			lastRaise.setUndone(true);
+			logDAO.updateRaiseRatesRecord(lastRaise);
+		}
+	}
 }

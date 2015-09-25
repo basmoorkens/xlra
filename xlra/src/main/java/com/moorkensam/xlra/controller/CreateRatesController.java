@@ -12,13 +12,16 @@ import javax.inject.Inject;
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.FlowEvent;
 
+import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.controller.util.RateUtil;
 import com.moorkensam.xlra.model.FullCustomer;
+import com.moorkensam.xlra.model.Language;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.IncoTermType;
 import com.moorkensam.xlra.model.rate.Kind;
 import com.moorkensam.xlra.model.rate.Measurement;
 import com.moorkensam.xlra.model.rate.RateFile;
+import com.moorkensam.xlra.model.rate.RateOperation;
 import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
 import com.moorkensam.xlra.service.CountryService;
 import com.moorkensam.xlra.service.CustomerService;
@@ -71,6 +74,11 @@ public class CreateRatesController {
 					.getCopyOfRateFileForFilter(filter);
 			copiedFile.setCustomer(rateFile.getCustomer());
 			copiedFile.setName(rateFile.getName());
+			if (rateFile.getLanguage() != null) {
+				copiedFile.setLanguage(rateFile.getLanguage());
+			} else {
+				copiedFile.setLanguage(rateFile.getCustomer().getLanguage());
+			}
 			rateFile = copiedFile;
 		}
 		return event.getNewStep();
@@ -131,8 +139,15 @@ public class CreateRatesController {
 		return filteredCustomers;
 	}
 
-	public void saveNewRateFile() {
+	public String saveNewRateFile() {
 		rateFileService.createRateFile(rateFile);
+		MessageUtil.addMessage("Rates created",
+				"Succesfully created rates for " + rateFile.getName());
+		return "views/rate/admin/manageRates.xhtml";
+	}
+
+	public List<Language> getLanguages() {
+		return RateUtil.getLanguages();
 	}
 
 	public List<FullCustomer> getFullCustomers() {

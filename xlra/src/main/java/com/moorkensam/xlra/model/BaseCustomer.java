@@ -34,6 +34,14 @@ public class BaseCustomer extends BaseEntity {
 	
 	@Enumerated(EnumType.STRING)
 	@NotNull(message = "A language has to be selected")
-	protected Language language;
+	private Language language;
+
+	public Language getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(Language language) {
+		this.language = language;
+	}
 
 }

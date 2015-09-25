@@ -8,6 +8,11 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 
+import org.primefaces.event.FlowEvent;
+import org.primefaces.model.DualListModel;
+
+import com.moorkensam.xlra.controller.util.MessageUtil;
+import com.moorkensam.xlra.model.RaiseRatesRecord;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.service.RateFileService;
 
@@ -20,24 +25,43 @@ public class RaiseRatesController {
 
 	private List<RateFile> allRateFiles;
 
-	private List<RateFile> selectedRateFiles = new ArrayList<RateFile>();
+	private DualListModel<RateFile> rateFiles;
+
+	private List<RateFile> selectedRateFiles;
+
+	private double percentage;
+
+	private List<RaiseRatesRecord> logRecords;
 
 	@PostConstruct
 	public void initializeController() {
+		resetState();
+		rateFiles.setTarget(selectedRateFiles);
+	}
+
+	private void resetState() {
+		rateFiles = new DualListModel<RateFile>();
 		allRateFiles = rateFileService.getAllRateFiles();
+		rateFiles.setSource(allRateFiles);
+		selectedRateFiles = new ArrayList<RateFile>();
+		logRecords = rateFileService.getRaiseRatesLogRecordsThatAreNotUndone();
 	}
 
-	public void selectAllRateFiles() {
-		selectedRateFiles = new ArrayList<RateFile>();
-		for (RateFile rf : allRateFiles) {
-			selectedRateFiles.add(rf);
-		}
+	public String onFlowProcess(FlowEvent event) {
+		return event.getNewStep();
 	}
 
-	public void unSelectAllRateFiles() {
-		selectedRateFiles = new ArrayList<RateFile>();
+	public String raiseRates() {
+		rateFileService.raiseRateFileRateLinesWithPercentage(
+				rateFiles.getTarget(), percentage);
+		MessageUtil.addMessage("Rates raised", "Succesfully raised rates for");
+		return "views/rate/admin/manageRates.xhtml";
 	}
-	
+
+	public void undoLatestRaiseRates() {
+		rateFileService.undoLatestRatesRaise();
+	}
+
 	public List<RateFile> getAllRateFiles() {
 		return allRateFiles;
 	}
@@ -52,5 +76,29 @@ public class RaiseRatesController {
 
 	public void setSelectedRateFiles(List<RateFile> selectedRateFiles) {
 		this.selectedRateFiles = selectedRateFiles;
+	}
+
+	public DualListModel<RateFile> getRateFiles() {
+		return rateFiles;
+	}
+
+	public void setRateFiles(DualListModel<RateFile> rateFiles) {
+		this.rateFiles = rateFiles;
+	}
+
+	public double getPercentage() {
+		return percentage;
+	}
+
+	public void setPercentage(double percentage) {
+		this.percentage = percentage;
+	}
+
+	public List<RaiseRatesRecord> getLogRecords() {
+		return logRecords;
+	}
+
+	public void setLogRecords(List<RaiseRatesRecord> logRecords) {
+		this.logRecords = logRecords;
 	}
 }

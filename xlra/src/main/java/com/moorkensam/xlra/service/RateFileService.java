@@ -2,6 +2,7 @@ package com.moorkensam.xlra.service;
 
 import java.util.List;
 
+import com.moorkensam.xlra.model.RaiseRatesRecord;
 import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
@@ -35,7 +36,7 @@ public interface RateFileService {
 	 * @param percentage
 	 */
 	void raiseRateFileRateLinesWithPercentage(List<RateFile> rateFiles,
-			int percentage);
+			double percentage);
 
 	RateFile getRateFileWithoutLazyLoad(Long id);
 
@@ -48,4 +49,17 @@ public interface RateFileService {
 	 * @return
 	 */
 	RateFile getCopyOfRateFileForFilter(RateFileSearchFilter filter);
+
+	/**
+	 * Fetches all the records of raises.
+	 * 
+	 * @return
+	 */
+	List<RaiseRatesRecord> getRaiseRatesLogRecordsThatAreNotUndone();
+
+	/**
+	 * Finds the last raise that happened on rates and undos it by reversing it.
+	 */
+	public void undoLatestRatesRaise();
+	
 }

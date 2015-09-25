@@ -1,5 +1,7 @@
 package com.moorkensam.xlra.model.rate;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -22,7 +24,7 @@ public class RateLine extends BaseEntity implements Comparable<RateLine> {
 
 	private String zone;
 
-	private double value;
+	private BigDecimal value;
 
 	@ManyToOne
 	@JoinColumn(name = "rateFileId")
@@ -34,14 +36,6 @@ public class RateLine extends BaseEntity implements Comparable<RateLine> {
 
 	public void setZone(String zone) {
 		this.zone = zone;
-	}
-
-	public double getValue() {
-		return value;
-	}
-
-	public void setValue(double value) {
-		this.value = value;
 	}
 
 	public RateFile getRateFile() {
@@ -81,6 +75,14 @@ public class RateLine extends BaseEntity implements Comparable<RateLine> {
 		rl.setZone(getZone());
 		rl.setValue(getValue());
 		return rl;
+	}
+
+	public BigDecimal getValue() {
+		return value;
+	}
+
+	public void setValue(BigDecimal value) {
+		this.value = value;
 	}
 
 }

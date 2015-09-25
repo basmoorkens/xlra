@@ -7,7 +7,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
@@ -39,6 +38,7 @@ public class FullCustomer extends BaseCustomer {
 
 	private boolean fullCustomer;
 
+	
 	public String getEmail() {
 		return email;
 	}
@@ -69,14 +69,6 @@ public class FullCustomer extends BaseCustomer {
 
 	public void setBtwNumber(String btwNumber) {
 		this.btwNumber = btwNumber;
-	}
-
-	public Language getLanguage() {
-		return language;
-	}
-
-	public void setLanguage(Language language) {
-		this.language = language;
 	}
 
 	public boolean isFullCustomer() {

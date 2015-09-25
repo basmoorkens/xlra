@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.dao.impl;
 
+
 import javax.persistence.Query;
 
 import com.moorkensam.xlra.dao.BaseDAO;
@@ -17,7 +18,8 @@ public class ConfigurationDAOImpl extends BaseDAO implements ConfigurationDao {
 	public Configuration getXlraConfiguration() {
 		Query query = getEntityManager().createNamedQuery("Configuration.findMainConfig");
 		query.setParameter("configName", Configuration.MAIN_CONFIG_NAME);
-		return (Configuration) query.getSingleResult();
+		Configuration config = (Configuration) query.getSingleResult();
+		config.getTranslations().size();
+		return config;
 	}
-
 }

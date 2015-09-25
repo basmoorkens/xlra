@@ -20,6 +20,7 @@ import javax.persistence.Transient;
 
 import com.moorkensam.xlra.model.BaseEntity;
 import com.moorkensam.xlra.model.FullCustomer;
+import com.moorkensam.xlra.model.Language;
 
 @Entity
 @Cacheable
@@ -57,6 +58,9 @@ public class RateFile extends BaseEntity {
 	@JoinColumn(name = "conditionId")
 	private Condition condition;
 
+	@Enumerated(EnumType.STRING)
+	private Language language; 
+	
 	@Transient
 	private List<String> columns;
 
@@ -183,6 +187,14 @@ public class RateFile extends BaseEntity {
 		}
 		rf.setRelationalRateLines(relationRatelines);
 		return rf;
+	}
+
+	public Language getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(Language language) {
+		this.language = language;
 	}
 
 }
