@@ -59,6 +59,8 @@ public class TranslationController {
 	public void saveNewTranslations() {
 		fillTranslationKeyForNewTranslations();
 		translationService.createTranslations(newTranslations);
+		MessageUtil.addMessage("Translation created", "Added translations for "
+				+ newTranslations[0].getTranslationKey());
 		refreshPage();
 	}
 
@@ -136,7 +138,7 @@ public class TranslationController {
 
 		updateTranslation(editedTranslation);
 		MessageUtil.addMessage(
-				"Diesel rate updated",
+				"Translation updated",
 				"Updated translation for "
 						+ editedTranslation.getTranslationKey()
 						+ " - language "

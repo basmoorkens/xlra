@@ -1,6 +1,8 @@
 package com.moorkensam.xlra.model.configuration;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
@@ -12,22 +14,22 @@ import com.moorkensam.xlra.model.BaseEntity;
 import com.moorkensam.xlra.model.Language;
 
 @Entity
-@Table(name="mailTemplate")
-@NamedQueries(
-		@NamedQuery(name="MailTemplate.findAll",query="SELECT m FROM MailTemplate m"))
+@Table(name = "mailTemplate")
+@NamedQueries(@NamedQuery(name = "MailTemplate.findAll", query = "SELECT m FROM MailTemplate m"))
 public class MailTemplate extends BaseEntity {
 
 	private static final long serialVersionUID = -7712260056891764597L;
 
+	@Enumerated(EnumType.STRING)
 	private Language language;
 
 	@ManyToOne
 	@JoinColumn(name = "xlraConfigurationId")
 	private Configuration xlraConfiguration;
-	
+
 	@Lob
 	private String template;
-	
+
 	public Language getLanguage() {
 		return language;
 	}
@@ -51,5 +53,5 @@ public class MailTemplate extends BaseEntity {
 	public void setXlraConfiguration(Configuration xlraConfiguration) {
 		this.xlraConfiguration = xlraConfiguration;
 	}
-	
+
 }

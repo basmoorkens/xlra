@@ -21,7 +21,6 @@ import com.moorkensam.xlra.model.rate.IncoTermType;
 import com.moorkensam.xlra.model.rate.Kind;
 import com.moorkensam.xlra.model.rate.Measurement;
 import com.moorkensam.xlra.model.rate.RateFile;
-import com.moorkensam.xlra.model.rate.RateOperation;
 import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
 import com.moorkensam.xlra.service.CountryService;
 import com.moorkensam.xlra.service.CustomerService;

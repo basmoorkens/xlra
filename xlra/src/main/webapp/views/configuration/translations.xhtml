@@ -17,6 +17,8 @@
 				<p:growl id="msgs" showDetail="true" />
 				<p:dataTable editable="true"
 					value="#{translationController.translations}" var="translation"
+					paginator="true" rowsPerPageTemplate="5,10,15" rows="10"
+					paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
 					emptyMessage="No translations found." id="translationTable">
 
 					<p:ajax event="rowEdit"
@@ -91,8 +93,9 @@
 
 					<p:panel>
 						<p:commandButton
-							action="#{translationController.saveNewTranslations}" ajax="true"
-							value="Save new translations" update=":translationsForm :translationsForm:msgs" />
+							action="#{translationController.saveNewTranslations}"
+							ajax="false" value="Save new translations"
+							update=":translationsForm :translationsForm:msgs" />
 					</p:panel>
 				</p:panelGrid>
 			</p:panel>
