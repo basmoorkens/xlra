@@ -10,4 +10,6 @@ public interface CountryDAO {
 	
 	Country getCountryById(long id);
 	
+	List<Country> getAllCountriesFullyLoaded();
+	
 }

@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<ui:composition template="/views/template.xhtml">
+	<ui:define name="title">
+		<h:outputText value="XLRA - Configuration - Country and zones" />
+	</ui:define>
+	<ui:define name="pageTitle">
+		<h:outputText value="Country and zone info" />
+	</ui:define>
+	<ui:define name="body">
+		<h:form id="countryForm">
+			<p:growl id="msgs" showDetail="true" />
+			<h:outputText value="Select country: " />
+			<p:selectOneMenu style="width:100%;"
+				value="#{countryController.selectedCountry}"
+				converter="#{countryConverter}">
+				<f:selectItems value="#{countryController.countries}" />
+				<p:ajax update=":countryForm"
+					listener="#{countryController.doSelectCountry}" />
+			</p:selectOneMenu>
+
+			<p:panel id="countryPanel" header="Country detail"
+				rendered="#{countryController.renderDetailGrid}">
+
+				<p:dataTable editable="true"
+					value="#{countryController.selectedCountry.zones}" var="zone"
+					emptyMessage="No zones added yet!" id="zoneTable">
+
+					<p:ajax event="rowEdit"
+						listener="#{countryController.o}"
+						update=":chfRatesForm:msgs" />
+
+					<p:column headerText="Name: ">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{zone.name}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{zone.name}" style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					<p:column rendered="#{countryController.numericCountryZone}"
+						headerText="Start code">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{zone.startCode}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{zone.startCode}" style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					<p:column rendered="#{countryController.numericCountryZone}"
+						headerText="Stop code">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{zone.stopCode}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{zone.stopCode}" style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					<p:column rendered="#{countryController.alphaNumericCountryZone}"
+						headerText="Postalcode list">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{zone.alphaNumericPostalCodesAsString}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputTextarea value="#{zone.alphaNumericPostalCodesAsString}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					<p:column style="width:32px">
+						<p:rowEditor />
+					</p:column>
+
+				</p:dataTable>
+			</p:panel>
+			<p:commandButton style="margin-top:20px;" title="Add new zone"
+				value="Add new zone"
+				rendered="#{!countryController.renderAddZoneGrid and countryController.renderDetailGrid}"
+				action="#{countryController.setupNewZone}" update=":countryForm" />
+
+			<p:panel id="addZonePanelNumeric" header="Add new zone"
+				rendered="#{countryController.renderAddZoneGrid and countryController.numericCountryZone}">
+				<p:panelGrid columns="2" style="width:100%;">
+					<h:outputText value="Name: " />
+					<p:inputText value="#{countryController.selectedZone.name}"
+						style="width:100%;" />
+
+					<h:outputText value="Start code" />
+					<p:inputText value="#{countryController.selectedZone.startCode}"
+						style="width:100%;" />
+
+					<h:outputText value="Stop code" />
+					<p:inputText value="#{countryController.selectedZone.stopCode}"
+						style="width:100%;" />
+				</p:panelGrid>
+
+				<p:commandButton value="Cancel" immediate="true"
+					action="#{countryController.resetPage}" update=":countryForm" />
+				<p:commandButton value="Save zone" update=":countryForm"
+					action="#{countryController.saveNewZone}" />
+			</p:panel>
+
+			<p:panel id="addZonePanelAlphaNumeric" header="Add new zone"
+				rendered="#{countryController.renderAddZoneGrid and countryController.alphaNumericCountryZone}">
+				<p:panelGrid columns="2" style="width:100%;">
+					<h:outputText value="Name: " />
+					<p:inputText value="#{countryController.selectedZone.name}" />
+
+					<h:outputText value="Postal codes: (seperated by ','))" />
+					<p:editor
+						value="#{countryController.selectedZone.alphaNumericPostalCodesAsString}" />
+
+				</p:panelGrid>
+
+				<p:commandButton value="Cancel" immediate="true"
+					action="#{countryController.resetPage}" update=":countryForm" />
+				<p:commandButton value="Save zone" update=":countryForm"
+					action="#{countryController.saveNewZone}" />
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>
