@@ -32,8 +32,8 @@
 					emptyMessage="No zones added yet!" id="zoneTable">
 
 					<p:ajax event="rowEdit"
-						listener="#{countryController.o}"
-						update=":chfRatesForm:msgs" />
+						listener="#{countryController.onZoneEdit}"
+						update=":countryForm" />
 
 					<p:column headerText="Name: ">
 						<p:cellEditor>
