@@ -1,6 +1,5 @@
 .customerCreateGrid td {
 	border: none;
-<<<<<<< HEAD
 }
 
 .customerCreateGrid tr {
@@ -16,11 +15,8 @@
 	min-height:400px;
 	padding-top:20px;
 }
-=======
-}
 
 .customerCreateGrid tr {
 	border: none;
 }
 
->>>>>>> c96ac86d8d8e6527688a5ef3fd3344e69c4e7616
