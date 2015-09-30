@@ -6,6 +6,8 @@
 -style the application to make an acceptable UI.
 -email service to send out mails
 
+
 NICE TO HAVES
 -excel export from data
 -graphical overview of diesel/chf prices
+-optimize application where needed
