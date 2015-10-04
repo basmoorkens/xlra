@@ -5,15 +5,14 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.inject.Inject;
 
 import org.primefaces.event.RowEditEvent;
-import org.primefaces.event.SelectEvent;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.controller.util.ZoneFactory;
+import com.moorkensam.xlra.model.configuration.Interval;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.rate.ZoneType;
@@ -69,16 +68,19 @@ public class CountryController {
 
 	private boolean isValidZone(Zone zone) {
 		if (isNumericCountryZone()) {
-			if (zone.getStopCode() == 0) {
-				MessageUtil.addMessage("Stop code is 0.",
-						"Stop postal code should not be 0.");
-				return false;
-			}
+			zone.convertNumericalPostalCodeStringToList();
+			for (Interval interval : zone.getNumericalPostalCodes()) {
+				if (interval.getEnd() == 0) {
+					MessageUtil.addMessage("Stop code is 0.",
+							"Stop postal code should not be 0.");
+					return false;
+				}
 
-			if (zone.getStopCode() == zone.getStartCode()) {
-				MessageUtil.addMessage("Start code is equal to stop code.",
-						"Start and stop code should be different.");
-				return false;
+				if (interval.getEnd() == interval.getStart()) {
+					MessageUtil.addMessage("Start code is equal to stop code.",
+							"Start and stop code should be different.");
+					return false;
+				}
 			}
 			return true;
 		}

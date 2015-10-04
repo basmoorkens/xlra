@@ -38,14 +38,18 @@ public class CountryServiceImpl implements CountryService {
 
 	@Override
 	public void createZone(Zone zone) {
-		if (zone.getZoneType() == ZoneType.ALPHANUMERIC_LIST) {
-			zone.convertAlphaNumericPostalCodeStringToList();
-		}
+		fillInPersistentPostalCodes(zone);
 		zoneDAO.createZone(zone);
+	}
+
+	private void fillInPersistentPostalCodes(Zone zone) {
+		zone.convertAlphaNumericPostalCodeStringToList();
+		zone.convertNumericalPostalCodeStringToList();
 	}
 
 	@Override
 	public void updateZone(Zone zone) {
+		fillInPersistentPostalCodes(zone);
 		zoneDAO.updateZone(zone);
 	}
 

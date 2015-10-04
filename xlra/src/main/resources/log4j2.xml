@@ -1,26 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN">
+<Configuration status="debug">
+	<Properties>
+		<Property name="log-path">/Users/bas/xlra</Property>
+	</Properties>
 
-	<!-- Author: Crunchify.com -->
 	<Appenders>
-		<Console name="Console" target="SYSTEM_OUT">
-			<PatternLayout pattern="%d{YYYY-MM-dd HH:mm:ss} [%t] %-5p %c{1}:%L - %msg%n" />
-		</Console>
-
-		<RollingFile name="RollingFile" filename="/Users/bas/xlra/xlra/xlra.log"
-			filepattern="${logPath}/%d{YYYYMMddHHmmss}.log">
-			<PatternLayout pattern="%d{YYYY-MM-dd HH:mm:ss} [%t] %-5p %c{1}:%L - %msg%n" />
+		<RollingFile name="file-log" fileName="${log-path}/xlra.log"
+			filePattern="${log-path}/moorkensam-info-%d{yyyy-MM-dd}.log">
+			<PatternLayout>
+				<pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
+				</pattern>
+			</PatternLayout>
 			<Policies>
-				<SizeBasedTriggeringPolicy size="100 MB" />
+				<TimeBasedTriggeringPolicy interval="1"
+					modulate="true" />
 			</Policies>
-			<DefaultRolloverStrategy max="20" />
 		</RollingFile>
 
+		<Console name="console" target="SYSTEM_OUT">
+			<PatternLayout
+				pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n" />
+		</Console>
 	</Appenders>
 	<Loggers>
-		<Root level="info">
-			<AppenderRef ref="Console" />
-			<AppenderRef ref="RollingFile" />
+		<Logger name="com.moorkensam" level="info" additivity="false">
+			<appender-ref ref="file-log" level="info" />
+		</Logger>
+		<Root level="info" additivity="false">
+			<appender-ref ref="console" />
 		</Root>
 	</Loggers>
 </Configuration>

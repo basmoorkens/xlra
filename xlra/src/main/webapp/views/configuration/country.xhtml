@@ -31,8 +31,7 @@
 					value="#{countryController.selectedCountry.zones}" var="zone"
 					emptyMessage="No zones added yet!" id="zoneTable">
 
-					<p:ajax event="rowEdit"
-						listener="#{countryController.onZoneEdit}"
+					<p:ajax event="rowEdit" listener="#{countryController.onZoneEdit}"
 						update=":countryForm" />
 
 					<p:column headerText="Name: ">
@@ -46,24 +45,14 @@
 						</p:cellEditor>
 					</p:column>
 					<p:column rendered="#{countryController.numericCountryZone}"
-						headerText="Start code">
+						headerText="Postalcode list(start-stop) seperated by ,">
 						<p:cellEditor>
 							<f:facet name="output">
-								<h:outputText value="#{zone.startCode}" />
+								<h:outputText value="#{zone.numericalPostalCodesAsString}" />
 							</f:facet>
 							<f:facet name="input">
-								<p:inputText value="#{zone.startCode}" style="width:100%" />
-							</f:facet>
-						</p:cellEditor>
-					</p:column>
-					<p:column rendered="#{countryController.numericCountryZone}"
-						headerText="Stop code">
-						<p:cellEditor>
-							<f:facet name="output">
-								<h:outputText value="#{zone.stopCode}" />
-							</f:facet>
-							<f:facet name="input">
-								<p:inputText value="#{zone.stopCode}" style="width:100%" />
+								<p:inputTextarea value="#{zone.numericalPostalCodesAsString}"
+									style="width:100%" />
 							</f:facet>
 						</p:cellEditor>
 					</p:column>
@@ -97,13 +86,10 @@
 					<p:inputText value="#{countryController.selectedZone.name}"
 						style="width:100%;" />
 
-					<h:outputText value="Start code" />
-					<p:inputText value="#{countryController.selectedZone.startCode}"
-						style="width:100%;" />
-
-					<h:outputText value="Stop code" />
-					<p:inputText value="#{countryController.selectedZone.stopCode}"
-						style="width:100%;" />
+					<h:outputText
+						value="Postal code intervals(start-stop): (seperated by ','))" />
+					<p:editor
+						value="#{countryController.selectedZone.numericalPostalCodesAsString}" />
 				</p:panelGrid>
 
 				<p:commandButton value="Cancel" immediate="true"

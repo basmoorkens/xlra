@@ -11,6 +11,15 @@ public class Interval implements Serializable {
 
 	private double start, end;
 
+	public Interval() {
+
+	}
+
+	public Interval(String[] ints) {
+		this.start = Integer.parseInt(ints[0]);
+		this.end = Integer.parseInt(ints[1]);
+	}
+
 	public double getStart() {
 		return start;
 	}
@@ -32,6 +41,10 @@ public class Interval implements Serializable {
 		return start + " - " + end;
 	}
 
+	public String toIntString() {
+		return (int) start + " - " + (int) end;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) {
@@ -47,5 +60,4 @@ public class Interval implements Serializable {
 		}
 		return false;
 	}
-
 }

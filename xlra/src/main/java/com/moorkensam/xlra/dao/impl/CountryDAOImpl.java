@@ -29,6 +29,7 @@ public class CountryDAOImpl extends BaseDAO implements CountryDAO {
 		c.getZones().size();
 		for (Zone z : c.getZones()) {
 			z.convertAlphaNumericPostalCodeListToString();
+			z.convertNumericalPostalCodeListToString();
 		}
 	}
 

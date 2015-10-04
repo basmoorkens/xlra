@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.model.rate;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.moorkensam.xlra.model.BaseEntity;
+import com.moorkensam.xlra.model.configuration.Interval;
 
 @Entity
 @Table(name = "zone")
@@ -32,30 +34,20 @@ public class Zone extends BaseEntity {
 	@Column(name = "postalcode")
 	private List<String> alphaNumericalPostalCodes;
 
-	private int startCode, stopCode;
+	@ElementCollection
+	@CollectionTable(name = "numericalPostalcodes", joinColumns = @JoinColumn(name = "zone_id"))
+	@Column(name = "postalcode")
+	private List<Interval> numericalPostalCodes;
 
 	@Transient
 	private String alphaNumericPostalCodesAsString;
 
+	@Transient
+	private String numericalPostalCodesAsString;
+
 	@ManyToOne
 	@JoinColumn(name = "countryId")
 	private Country country;
-
-	public int getStopCode() {
-		return stopCode;
-	}
-
-	public void setStopCode(int stopCode) {
-		this.stopCode = stopCode;
-	}
-
-	public int getStartCode() {
-		return startCode;
-	}
-
-	public void setStartCode(int startCode) {
-		this.startCode = startCode;
-	}
 
 	public List<String> getAlphaNumericalPostalCodes() {
 		return alphaNumericalPostalCodes;
@@ -104,9 +96,48 @@ public class Zone extends BaseEntity {
 		}
 	}
 
+	public void convertNumericalPostalCodeListToString() {
+		if (numericalPostalCodes != null && !numericalPostalCodes.isEmpty()) {
+			String numericalCodes = "";
+			for (Interval interval : numericalPostalCodes) {
+				numericalCodes += interval.toIntString() + ",";
+			}
+			numericalCodes.substring(0, numericalCodes.length() - 1);
+			setNumericalPostalCodesAsString(numericalCodes);
+		}
+	}
+
+	public void convertNumericalPostalCodeStringToList() {
+		if (numericalPostalCodesAsString != null
+				&& !numericalPostalCodesAsString.isEmpty()) {
+			List<Interval> intervals = new ArrayList<Interval>();
+			String[] numericArray = numericalPostalCodesAsString.split(",");
+			numericArray = trimSpaces(numericArray);
+			for (String s : numericArray) {
+				String[] ints = s.split("-");
+				ints = trimSpaces(ints);
+				Interval interval = new Interval(ints);
+				intervals.add(interval);
+			}
+			setNumericalPostalCodes(intervals);
+		}
+	}
+
+	public String[] trimSpaces(String[] input) {
+		String[] result = new String[input.length];
+		for (int i = 0; i < input.length; i++) {
+			result[i] = input[i].trim();
+		}
+		return result;
+	}
+
 	public void convertAlphaNumericPostalCodeStringToList() {
-		String[] alphaArray = alphaNumericPostalCodesAsString.split(",");
-		setAlphaNumericalPostalCodes(Arrays.asList(alphaArray));
+		if (alphaNumericPostalCodesAsString != null
+				&& !alphaNumericPostalCodesAsString.isEmpty()) {
+			String[] alphaArray = alphaNumericPostalCodesAsString.split(",");
+			alphaArray = trimSpaces(alphaArray);
+			setAlphaNumericalPostalCodes(Arrays.asList(alphaArray));
+		}
 	}
 
 	public String getName() {
@@ -115,6 +146,23 @@ public class Zone extends BaseEntity {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getNumericalPostalCodesAsString() {
+		return numericalPostalCodesAsString;
+	}
+
+	public void setNumericalPostalCodesAsString(
+			String numericalPostalCodesAsString) {
+		this.numericalPostalCodesAsString = numericalPostalCodesAsString;
+	}
+
+	public List<Interval> getNumericalPostalCodes() {
+		return numericalPostalCodes;
+	}
+
+	public void setNumericalPostalCodes(List<Interval> numericalPostalCodes) {
+		this.numericalPostalCodes = numericalPostalCodes;
 	}
 
 }

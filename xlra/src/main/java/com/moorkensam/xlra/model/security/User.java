@@ -4,21 +4,23 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.moorkensam.xlra.model.BaseEntity;
 
 @Entity
-@Table(name="user")
+@Table(name = "user")
 public class User extends BaseEntity {
 
 	private static final long serialVersionUID = -8058602514887367935L;
 
 	private String username;
-	
+
 	private String password;
 
+	@Transient
 	private List<Role> roles;
-	
+
 	public String getPassword() {
 		return password;
 	}
@@ -42,7 +44,5 @@ public class User extends BaseEntity {
 	public void setRoles(List<Role> roles) {
 		this.roles = roles;
 	}
-	
-	
-	
+
 }
