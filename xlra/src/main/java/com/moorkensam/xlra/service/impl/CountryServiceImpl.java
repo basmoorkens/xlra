@@ -9,7 +9,6 @@ import com.moorkensam.xlra.dao.CountryDAO;
 import com.moorkensam.xlra.dao.ZoneDAO;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Zone;
-import com.moorkensam.xlra.model.rate.ZoneType;
 import com.moorkensam.xlra.service.CountryService;
 
 @Stateless

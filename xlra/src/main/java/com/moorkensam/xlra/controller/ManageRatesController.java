@@ -1,20 +1,16 @@
 package com.moorkensam.xlra.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.SelectEvent;
 
-import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.controller.util.RateUtil;
 import com.moorkensam.xlra.model.rate.IncoTermType;
 import com.moorkensam.xlra.model.rate.RateFile;
@@ -73,8 +69,7 @@ public class ManageRatesController {
 	}
 
 	public void saveConditions() {
-		selectedRateFile.setCondition(rateFileService
-				.updateTermsAndConditions(selectedRateFile.getCondition()));
+		// TODO implement save
 		resetPage();
 	}
 

@@ -15,6 +15,7 @@ public class EmailTemplateDAOImpl extends BaseDAO implements EmailTemplateDAO {
 		getEntityManager().merge(mailTemplate);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<MailTemplate> getAllTemplates() {
 		Query query = getEntityManager().createNamedQuery("MailTemplate.findAll");

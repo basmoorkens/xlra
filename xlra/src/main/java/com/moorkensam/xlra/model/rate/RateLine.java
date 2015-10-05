@@ -20,7 +20,7 @@ public class RateLine extends BaseEntity implements Comparable<RateLine> {
 
 	private static final long serialVersionUID = 1L;
 
-	private int measurement;
+	private double measurement;
 
 	private String zone;
 
@@ -46,11 +46,11 @@ public class RateLine extends BaseEntity implements Comparable<RateLine> {
 		this.rateFile = rateFile;
 	}
 
-	public int getMeasurement() {
+	public double getMeasurement() {
 		return measurement;
 	}
 
-	public void setMeasurement(int measurement) {
+	public void setMeasurement(double measurement) {
 		this.measurement = measurement;
 	}
 

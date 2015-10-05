@@ -18,11 +18,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.moorkensam.xlra.dao.BaseDAO;
-import com.moorkensam.xlra.dao.ConditionTypeDAO;
 import com.moorkensam.xlra.dao.LogDAO;
 import com.moorkensam.xlra.dao.RateFileDAO;
 import com.moorkensam.xlra.model.RaiseRatesRecord;
-import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.RateOperation;
@@ -36,9 +34,6 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 
 	@Inject
 	private RateFileDAO rateFileDAO;
-
-	@Inject
-	private ConditionTypeDAO conditionTypeDAO;
 
 	@Inject
 	private LogDAO logDAO;
@@ -118,11 +113,6 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 			relationRateLines.add(rateLines);
 		}
 		rateFile.setRelationalRateLines(relationRateLines);
-	}
-
-	@Override
-	public Condition updateTermsAndConditions(final Condition condition) {
-		return conditionTypeDAO.updateCondition(condition);
 	}
 
 	@Override

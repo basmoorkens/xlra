@@ -3,8 +3,6 @@ package com.moorkensam.xlra.model;
 import javax.persistence.Cacheable;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.validation.constraints.NotNull;
@@ -20,7 +18,7 @@ public class FullCustomer extends BaseCustomer {
 	public FullCustomer() {
 		super();
 	}
-	
+
 	public FullCustomer(boolean fullCustomer) {
 		address = new Address();
 		setFullCustomer(fullCustomer);
@@ -38,7 +36,6 @@ public class FullCustomer extends BaseCustomer {
 
 	private boolean fullCustomer;
 
-	
 	public String getEmail() {
 		return email;
 	}

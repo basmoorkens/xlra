@@ -22,6 +22,7 @@ public class DieselRateDAOImpl extends BaseDAO implements DieselRateDAO {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<DieselRate> getAllDieselRates() {
 		Query query = getEntityManager().createNamedQuery("DieselRate.findAll");

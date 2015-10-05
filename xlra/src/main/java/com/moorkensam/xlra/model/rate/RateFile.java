@@ -34,8 +34,10 @@ public class RateFile extends BaseEntity {
 	private static final long serialVersionUID = 830015468011487605L;
 
 	public RateFile() {
-		condition = new Condition();
 	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "rateFile", cascade = CascadeType.ALL)
+	private List<Condition> conditions;
 
 	@OneToOne
 	@JoinColumn(name = "customerId")
@@ -52,15 +54,14 @@ public class RateFile extends BaseEntity {
 	private Country country;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "rateFile", cascade = CascadeType.ALL)
+	private List<Zone> zones;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "rateFile", cascade = CascadeType.ALL)
 	private List<RateLine> rateLines = new ArrayList<RateLine>();
 
-	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinColumn(name = "conditionId")
-	private Condition condition;
-
 	@Enumerated(EnumType.STRING)
-	private Language language; 
-	
+	private Language language;
+
 	@Transient
 	private List<String> columns;
 
@@ -120,14 +121,6 @@ public class RateFile extends BaseEntity {
 		this.rateLines = rateLines;
 	}
 
-	public Condition getCondition() {
-		return condition;
-	}
-
-	public void setCondition(Condition condition) {
-		this.condition = condition;
-	}
-
 	public List<String> getColumns() {
 		return columns;
 	}
@@ -165,7 +158,6 @@ public class RateFile extends BaseEntity {
 		RateFile rf = new RateFile();
 		rf.setName(getName());
 		rf.setColumns(getColumns());
-		rf.setCondition(getCondition().deepCopy());
 		rf.setCountry(getCountry());
 		rf.setCustomer(getCustomer());
 		rf.setKindOfRate(getKindOfRate());
@@ -185,6 +177,14 @@ public class RateFile extends BaseEntity {
 			}
 			relationRatelines.add(rls);
 		}
+
+		rf.setConditions(new ArrayList<Condition>());
+		for (Condition c : conditions) {
+			Condition copy = c.deepCopy();
+			copy.setRateFile(rf);
+			rf.getConditions().add(copy);
+		}
+
 		rf.setRelationalRateLines(relationRatelines);
 		return rf;
 	}
@@ -195,6 +195,22 @@ public class RateFile extends BaseEntity {
 
 	public void setLanguage(Language language) {
 		this.language = language;
+	}
+
+	public List<Zone> getZones() {
+		return zones;
+	}
+
+	public void setZones(List<Zone> zones) {
+		this.zones = zones;
+	}
+
+	public List<Condition> getConditions() {
+		return conditions;
+	}
+
+	public void setConditions(List<Condition> conditions) {
+		this.conditions = conditions;
 	}
 
 }
