@@ -102,7 +102,7 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 		logger.info("Building relation rateline map for ratefile "
 				+ rateFile.getId());
 		List<List<RateLine>> relationRateLines = new ArrayList<List<RateLine>>();
-		for (Integer i : rateFile.getMeasurementRows()) {
+		for (Double i : rateFile.getMeasurementRows()) {
 			List<RateLine> rateLines = new ArrayList<RateLine>();
 			for (RateLine rl : rateFile.getRateLines()) {
 				if (rl.getMeasurement() == (i)) {

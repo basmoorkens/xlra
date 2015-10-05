@@ -45,9 +45,9 @@ public class RateFileServiceImplTest extends UnitilsJUnit4 {
 	@Before
 	public void init() {
 		rateFile = new RateFile();
-		List<Integer> measurements = new ArrayList<Integer>();
-		measurements.add(100);
-		measurements.add(200);
+		List<Double> measurements = new ArrayList<Double>();
+		measurements.add(100d);
+		measurements.add(200d);
 		List<String> columnNames = new ArrayList<String>();
 		columnNames.add("Zone 1");
 		columnNames.add("Zone 2");

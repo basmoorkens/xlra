@@ -52,50 +52,23 @@
 		</p:dataTable>
 
 		<h3>General conditions</h3>
-		<p:panelGrid columns="2" style="width:100%;">
-			<h:outputLabel for="importFormField">Import formality:</h:outputLabel>
-			<h:outputText
-				value="#{createRatesController.rateFile.condition.importFormality}" />
-
-			<h:outputLabel for="exportFormField">Export formality:</h:outputLabel>
-			<h:outputText
-				value="#{createRatesController.rateFile.condition.exportFormality}" />
-
-			<h:outputLabel for="eur1Field">EUR1:</h:outputLabel>
-			<h:outputText
-				value="#{createRatesController.rateFile.condition.eur1}" />
-
-			<h:outputLabel for="adrSurchargeField">Adress surcharge(%):</h:outputLabel>
-			<h:outputText
-				value="#{createRatesController.rateFile.condition.adrSurcharge}" />
-
-			<h:outputLabel for="adrSurchargeMinimumField">Minimal address surcharge(EUR):</h:outputLabel>
-			<h:outputText
-				value="#{createRatesController.rateFile.condition.adrSurchargeMinimum}" />
-
-			<h:outputLabel for="supplementaryTarifNumbersField">Supplementary rate numbers:</h:outputLabel>
-			<h:outputText
-				value="#{createRatesController.rateFile.condition.supplementaryTarifNumbers}" />
-
-			<h:outputLabel for="incoTermTypeField">Inco term type:</h:outputLabel>
-			<h:outputText
-				value="#{createRatesController.rateFile.condition.incoTermType}" />
-
-			<h:outputLabel for="waitHourTarifField">Waiting hours rate:</h:outputLabel>
-			<h:outputText
-				value="#{createRatesController.rateFile.condition.waitHourTarif}" />
-
-			<h:outputLabel for="paymentTermField">Payment terms:</h:outputLabel>
-			<h:outputText
-				value="#{createRatesController.rateFile.condition.paymentTerm}" />
-
-			<h:outputLabel for="transportInsuranceField">Transport insurance rate:</h:outputLabel>
-			<h:outputText
-				value="#{createRatesController.rateFile.condition.transportInsurance}" />
-
-			<h:outputLabel for="expirationDateField">Expiration date:</h:outputLabel>
-			<h:outputText
-				value="#{createRatesController.rateFile.condition.expirationDate}" />
-		</p:panelGrid>
+		<p:dataTable editable="true"
+			value="#{createRatesController.rateFile.conditions}" var="condition"
+			emptyMessage="No conditions found." id="conditionTable">
+			<p:column headerText="Key:">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{condition.conditionKey}" />
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+			<p:column headerText="Value">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{condition.value}" />
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+		</p:dataTable>
 	</p:panel>
 </ui:composition>

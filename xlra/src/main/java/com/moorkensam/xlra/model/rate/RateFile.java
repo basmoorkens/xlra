@@ -66,7 +66,7 @@ public class RateFile extends BaseEntity {
 	private List<String> columns;
 
 	@Transient
-	private List<Integer> measurementRows;
+	private List<Double> measurementRows;
 
 	@Transient
 	private List<List<RateLine>> relationalRateLines;
@@ -129,11 +129,11 @@ public class RateFile extends BaseEntity {
 		this.columns = columns;
 	}
 
-	public List<Integer> getMeasurementRows() {
+	public List<Double> getMeasurementRows() {
 		return measurementRows;
 	}
 
-	public void setMeasurementRows(List<Integer> measurementRows) {
+	public void setMeasurementRows(List<Double> measurementRows) {
 		this.measurementRows = measurementRows;
 	}
 

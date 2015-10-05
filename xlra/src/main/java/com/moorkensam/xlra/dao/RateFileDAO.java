@@ -22,7 +22,7 @@ public interface RateFileDAO {
 
 	public List<String> getDistinctZonesForRateFile(RateFile rateFile);
 
-	public List<Integer> getDistinctMeasurementsForRateFile(RateFile rf);
-	
-	public List<RateLine> findRateLinesForRateFile(RateFile rf) ;
+	public List<Double> getDistinctMeasurementsForRateFile(RateFile rf);
+
+	public List<RateLine> findRateLinesForRateFile(RateFile rf);
 }

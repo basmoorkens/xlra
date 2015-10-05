@@ -113,10 +113,10 @@ public class RateFileDAOImpl extends BaseDAO implements RateFileDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Integer> getDistinctMeasurementsForRateFile(RateFile rf) {
+	public List<Double> getDistinctMeasurementsForRateFile(RateFile rf) {
 		Query query = getEntityManager().createNamedQuery(
 				"RateFile.findDistinctMeasurements");
 		query.setParameter("ratefileid", rf.getId());
-		return (List<Integer>) query.getResultList();
+		return (List<Double>) query.getResultList();
 	}
 }
