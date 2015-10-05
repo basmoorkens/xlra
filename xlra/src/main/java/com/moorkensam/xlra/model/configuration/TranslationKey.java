@@ -1,20 +1,28 @@
 package com.moorkensam.xlra.model.configuration;
 
+/**
+ * These are the translation keys used in the application. USe this in the excel
+ * upload to mark the fields.
+ * 
+ * @author bas
+ *
+ */
 public enum TranslationKey {
 
 	IMPORT_FORM,
-	EXPORT_FORM,
-	EUR1, 
-	ADR_TOESLAG, 
+	EXPORT_FORM, 
+	EUR1_DOCUMENT, 
+	ADR_SURCHARGE,
 	ADR_MINIMUM, 
 	SUPPL_TARIF, 
 	WACHT_TARIF, 
-	PAYMENT_TERM, 
+	PAYMENT_TERMS, 
 	TRANSPORT_INS, 
 	GELD_DATE, 
-	WACHT_TARIF_TEXT, 
-	PAYMENT_TERM_TEXT, 
-	GELD_DATE_TEXT, 
-	TRANSPORT_INS_TEXT;
-	
+	PAYMENT_TERM, 
+	GELD_DATE_TEXT,
+	RETOUR_REFUSED_DELIVERY,
+	TARIF_FRANCO_HOUSE,
+	TARIF_VALID_TO,
+	TRANSPORT_INSURANCE;
 }

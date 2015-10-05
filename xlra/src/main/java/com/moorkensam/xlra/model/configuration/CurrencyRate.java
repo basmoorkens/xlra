@@ -9,8 +9,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import com.moorkensam.xlra.model.BaseEntity;
-
 @Entity
 @Cacheable
 @Table(name = "currencyrate")

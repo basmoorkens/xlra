@@ -3,8 +3,6 @@ package com.moorkensam.xlra.dao.impl;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Query;
 
 import com.moorkensam.xlra.dao.BaseDAO;

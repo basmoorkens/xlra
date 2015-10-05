@@ -1,9 +1,9 @@
 package com.moorkensam.xlra.service;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public interface ExcelService {
 
-	void uploadRateFileExcel(HSSFWorkbook workBook);
+	void uploadRateFileExcel(XSSFWorkbook workBook);
 
 }

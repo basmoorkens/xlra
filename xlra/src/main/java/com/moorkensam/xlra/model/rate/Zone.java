@@ -39,6 +39,10 @@ public class Zone extends BaseEntity {
 	@Column(name = "postalcode")
 	private List<Interval> numericalPostalCodes;
 
+	@ManyToOne
+	@JoinColumn(name = "rateFileId")
+	private RateFile rateFile;
+
 	@Transient
 	private String alphaNumericPostalCodesAsString;
 
@@ -163,6 +167,14 @@ public class Zone extends BaseEntity {
 
 	public void setNumericalPostalCodes(List<Interval> numericalPostalCodes) {
 		this.numericalPostalCodes = numericalPostalCodes;
+	}
+
+	public RateFile getRateFile() {
+		return rateFile;
+	}
+
+	public void setRateFile(RateFile rateFile) {
+		this.rateFile = rateFile;
 	}
 
 }
