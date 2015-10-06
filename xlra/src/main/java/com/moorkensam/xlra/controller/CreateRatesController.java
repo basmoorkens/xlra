@@ -87,6 +87,10 @@ public class CreateRatesController {
 		RateUtil.onRateLineCellEdit(event);
 	}
 
+	public void onConditionCellEdit(CellEditEvent event) {
+		RateUtil.onConditionCellEdit(event);
+	}
+
 	public RateFileService getRateFileService() {
 		return rateFileService;
 	}

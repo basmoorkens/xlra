@@ -12,6 +12,7 @@ import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.SelectEvent;
 
 import com.moorkensam.xlra.controller.util.RateUtil;
+import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.IncoTermType;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
@@ -68,9 +69,13 @@ public class ManageRatesController {
 		RateUtil.onRateLineCellEdit(event);
 	}
 
-	public void saveConditions() {
-		// TODO implement save
-		resetPage();
+	public void onConditionCellEdit(CellEditEvent event) {
+		RateUtil.onConditionCellEdit(event);
+	}
+
+	public void deleteCondition(Condition condition) {
+		selectedRateFile.getConditions().remove(condition);
+		condition.setRateFile(null);
 	}
 
 	public void fetchDetailsOfRatefile(SelectEvent event) {

@@ -45,8 +45,9 @@
 			</ui:include>
 		</h:form>
 		<h:form id="conditionsDetailForm">
+			<p:growl id="message" showDetail="true" />
 			<ui:include src="/views/rate/admin/conditionsDetail.xhtml">
-				<ui:param name="condition"
+				<ui:param name="conditions"
 					value="#{manageRatesController.selectedRateFile.conditions}" />
 				<ui:param name="controller" value="#{manageRatesController}" />
 				<ui:param name="controllerName" value="manageRatesController" />

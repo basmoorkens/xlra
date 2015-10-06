@@ -90,6 +90,8 @@ public class RateFileDAOImpl extends BaseDAO implements RateFileDAO {
 	public RateFile getFullRateFile(long rateFileId) {
 		RateFile rf = getEntityManager().find(RateFile.class, rateFileId);
 		rf.getRateLines().size();
+		rf.getConditions().size();
+		rf.getZones().size();
 		return rf;
 	}
 

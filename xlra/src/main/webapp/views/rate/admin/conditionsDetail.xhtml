@@ -10,13 +10,25 @@
 		collapsed="#{controller.collapseConditionsDetailGrid}"
 		header="Terms and conditions">
 		<p:dataTable editable="true" value="#{conditions}" var="condition"
-			emptyMessage="No conditions found." id="conditionTable">
+			editMode="row" emptyMessage="No conditions found."
+			id="conditionTable">
+			<c:if test="${controllerName == 'manageRatesController'}">
+				<p:ajax event="cellEdit"
+					listener="#{manageRatesController.onConditionCellEdit}"
+					update=":conditionsDetailForm:message" />
+			</c:if>
+			<c:if test="${controllerName == 'createRatesController'}">
+				<p:ajax event="cellEdit"
+					listener="#{createRatesController.onConditionCellEdit}" />
+			</c:if>
 
 
-
-			<p:column headerText="Key:">
+			<p:column headerText="Keys">
 				<p:cellEditor>
 					<f:facet name="output">
+						<h:outputText value="#{condition.conditionKey}" />
+					</f:facet>
+					<f:facet name="input">
 						<h:outputText value="#{condition.conditionKey}" />
 					</f:facet>
 				</p:cellEditor>
@@ -26,8 +38,23 @@
 					<f:facet name="output">
 						<h:outputText value="#{condition.value}" />
 					</f:facet>
+					<f:facet name="input">
+						<p:inputText value="#{condition.value}" />
+					</f:facet>
 				</p:cellEditor>
 			</p:column>
+			<p:column style="width:32px">
+				<p:rowEditor />
+			</p:column>
+			<p:column style="width:32px;">
+				<p:commandButton icon="ui-icon-trash" title="Delete"
+					actionListener="#{manageRatesController.deleteCondition(condition)}"
+					ajax="true" immediate="true" update=":conditionsDetailForm" />
+			</p:column>
 		</p:dataTable>
+		<c:if test="${controllerName == 'manageRatesController'}">
+			<p:commandButton value="Save rates" title="Save conditions"
+				ajax="false" action="#{manageRatesController.saveRateFile}" />
+		</c:if>
 	</p:panel>
 </ui:composition>

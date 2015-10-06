@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -12,7 +13,8 @@ import com.moorkensam.xlra.model.ExcelUploadUtilData;
 import com.moorkensam.xlra.model.RateLineExcelImportDTO;
 
 /**
- * This clas does the magic of converting the excel to a relational model usable by the application.
+ * This clas does the magic of converting the excel to a relational model usable
+ * by the application.
  * 
  * @author bas
  *
@@ -21,8 +23,13 @@ public class ExcelUploadParser {
 
 	private ExcelUploadUtilData data;
 
+	private FormulaEvaluator formulaEvaluator;
+
 	public ExcelUploadUtilData parseRateFileExcel(XSSFWorkbook workBook) {
 		data = new ExcelUploadUtilData();
+
+		formulaEvaluator = workBook.getCreationHelper()
+				.createFormulaEvaluator();
 
 		ExcelReaderState readerState = ExcelReaderState.NOT_READING;
 
@@ -44,6 +51,8 @@ public class ExcelUploadParser {
 					}
 					if (cell.getColumnIndex() == 0
 							&& (cell.getCellType() == Cell.CELL_TYPE_NUMERIC)) {
+						data.setSelectedMeasurement(Poiutil.getSafeCellDouble(
+								cell, formulaEvaluator));
 						readerState = ExcelReaderState.READ_RATES;
 					}
 					break;
@@ -108,7 +117,8 @@ public class ExcelUploadParser {
 
 	private void readRateCells(Cell cell) {
 		if (cell.getColumnIndex() == 0) {
-			data.setSelectedMeasurement(Poiutil.getSafeCellDouble(cell));
+			data.setSelectedMeasurement(Poiutil.getSafeCellDouble(cell,
+					formulaEvaluator));
 		} else {
 			readRateCellData(cell);
 		}
@@ -135,7 +145,7 @@ public class ExcelUploadParser {
 
 	private RateLineExcelImportDTO AddRateLine(Cell cell) {
 		RateLineExcelImportDTO dto = new RateLineExcelImportDTO();
-		dto.setValue(Poiutil.getSafeCellDouble(cell));
+		dto.setValue(Poiutil.getSafeCellDouble(cell, formulaEvaluator));
 		dto.setZone(data.getZoneMap().get(cell.getColumnIndex()));
 		return dto;
 	}

@@ -57,4 +57,17 @@ public class Condition extends BaseEntity {
 		return c;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Condition))
+			return false;
+		Condition other = (Condition) obj;
+		if (other.getId() == id) {
+			return true;
+		}
+		return false;
+	}
+
 }

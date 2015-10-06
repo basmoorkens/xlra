@@ -21,6 +21,16 @@ public class RateUtil {
 		}
 	}
 
+	public static void onConditionCellEdit(CellEditEvent event) {
+		Object newValue = event.getNewValue();
+		Object oldValue = event.getOldValue();
+
+		if (newValue != null && !newValue.equals(oldValue)) {
+			MessageUtil.addMessage("Condition updated", "Condition updated to"
+					+ newValue);
+		}
+	}
+
 	public static List<IncoTermType> getIncoTermTypes() {
 		return Arrays.asList(IncoTermType.values());
 	}

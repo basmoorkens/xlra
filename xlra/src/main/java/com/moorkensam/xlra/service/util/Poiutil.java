@@ -1,27 +1,37 @@
 package com.moorkensam.xlra.service.util;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 
 public class Poiutil {
 
+
 	/**
-	 * Utility method to get the contents of a cell as a double regarding of the cell type.
-	 * If the value can not be parsed to a valid double this will crash.
+	 * Utility method to get the contents of a cell as a double regarding of the
+	 * cell type. If the value can not be parsed to a valid double this will
+	 * crash.
+	 * 
 	 * @param cell
 	 * @return
 	 */
-	public static Double getSafeCellDouble(Cell cell) {
+	public static Double getSafeCellDouble(Cell cell, FormulaEvaluator evaluator) {
 		if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
 			return cell.getNumericCellValue();
 		}
 		if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
 			return Double.parseDouble(cell.getStringCellValue());
 		}
+		if (cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
+			evaluator.evaluateInCell(cell);
+			return cell.getNumericCellValue();
+		}
 		return 0d;
 	}
 
 	/**
-	 * Utility method to get the contents of a cell as a string regarding of the cell type.
+	 * Utility method to get the contents of a cell as a string regarding of the
+	 * cell type.
+	 * 
 	 * @param cell
 	 * @param parseAsInt
 	 * @return
@@ -42,5 +52,5 @@ public class Poiutil {
 		}
 		return "";
 	}
-	
+
 }

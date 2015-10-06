@@ -12,7 +12,9 @@
 			styleClass="rateLinesDetailGrid" style="width:100%">
 			<p:dataTable value="#{rateFile.relationalRateLines}" var="rateLine"
 				emptyMessage="No rate lines found." id="rateLineTable" rows="10"
-				editable="true" editMode="cell">
+				editable="true" editMode="cell" paginator="true"
+				rowsPerPageTemplate="5,10,15,25,50" 
+				paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
 
 				<c:if test="${controllerName == 'manageRatesController'}">
 					<p:ajax event="cellEdit"

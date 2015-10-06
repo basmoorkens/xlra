@@ -36,7 +36,7 @@ public class RateFile extends BaseEntity {
 	public RateFile() {
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "rateFile", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "rateFile", cascade = CascadeType.ALL, orphanRemoval=true)
 	private List<Condition> conditions;
 
 	@OneToOne
