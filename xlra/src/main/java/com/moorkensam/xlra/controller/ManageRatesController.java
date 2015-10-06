@@ -1,6 +1,7 @@
 package com.moorkensam.xlra.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -12,6 +13,7 @@ import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.SelectEvent;
 
 import com.moorkensam.xlra.controller.util.RateUtil;
+import com.moorkensam.xlra.model.configuration.TranslationKey;
 import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.IncoTermType;
 import com.moorkensam.xlra.model.rate.RateFile;
@@ -36,6 +38,8 @@ public class ManageRatesController {
 	private List<String> columnHeaders = new ArrayList<String>();
 
 	private boolean hasRateFileSelected = false;
+
+	private TranslationKey keyToAdd;
 
 	@PostConstruct
 	public void initializeController() {
@@ -187,4 +191,42 @@ public class ManageRatesController {
 	public void setColumnHeaders(List<String> columnHeaders) {
 		this.columnHeaders = columnHeaders;
 	}
+
+	public TranslationKey getKeyToAdd() {
+		return keyToAdd;
+	}
+
+	public void setKeyToAdd(TranslationKey keyToAdd) {
+		this.keyToAdd = keyToAdd;
+	}
+
+	public void createConditionForSelectedTranslationKey() {
+		Condition c = new Condition();
+		c.setConditionKey(keyToAdd);
+		c.setValue("");
+		c.setRateFile(selectedRateFile);
+		selectedRateFile.getConditions().add(c);
+		keyToAdd = null;
+	}
+
+	public List<TranslationKey> getAvailableTranslationKeysForSelectedRateFile() {
+		List<TranslationKey> allKeys = Arrays.asList(TranslationKey.values());
+		if (selectedRateFile != null
+				&& selectedRateFile.getConditions() != null
+				&& !selectedRateFile.getConditions().isEmpty()) {
+			List<TranslationKey> usedKeys = new ArrayList<TranslationKey>();
+			for (Condition c : selectedRateFile.getConditions()) {
+				usedKeys.add(c.getConditionKey());
+			}
+			List<TranslationKey> result = new ArrayList<TranslationKey>();
+			for (TranslationKey key : allKeys) {
+				if (!usedKeys.contains(key)) {
+					result.add(key);
+				}
+			}
+			return result;
+		}
+		return allKeys;
+	}
+
 }
