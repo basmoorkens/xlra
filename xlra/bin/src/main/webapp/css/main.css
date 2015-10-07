@@ -1,0 +1,22 @@
+.customerCreateGrid td {
+	border: none;
+}
+
+.customerCreateGrid tr {
+	border: none;
+}
+
+.ui-picklist-list {
+	width: 100% !important;
+}
+
+
+.ui-wizard-content {
+	min-height:400px;
+	padding-top:20px;
+}
+
+.customerCreateGrid tr {
+	border: none;
+}
+

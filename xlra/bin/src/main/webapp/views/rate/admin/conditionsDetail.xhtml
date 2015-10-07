@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<p:panel id="conditionsDetailPanel"
+		toggleable="#{controller.hasRateFileSelected}"
+		collapsed="#{controller.collapseConditionsDetailGrid}"
+		header="Terms and conditions">
+		<p:panelGrid columns="3" style="width:100%" cellpadding="0"
+			styleClass="conditionsDetailGrid">
+
+			<h:outputLabel for="importFormField">Import formality:</h:outputLabel>
+			<p:inputText size="50" value="#{condition.importFormality}"
+				id="importFormField" />
+			<p:message for="importFormField" />
+
+			<h:outputLabel for="exportFormField">Export formality:</h:outputLabel>
+			<p:inputText size="50" value="#{condition.exportFormality}"
+				id="exportFormField" />
+			<p:message for="exportFormField" />
+
+			<h:outputLabel for="eur1Field">EUR1:</h:outputLabel>
+			<p:inputText size="50" value="#{condition.eur1}" id="eur1Field" />
+			<p:message for="eur1Field" />
+
+			<h:outputLabel for="adrSurchargeField">Adress surcharge(%):</h:outputLabel>
+			<p:inputText size="50" value="#{condition.adrSurcharge}"
+				id="adrSurchargeField" />
+			<p:message for="adrSurchargeField" />
+
+			<h:outputLabel for="adrSurchargeMinimumField">Minimal address surcharge(EUR):</h:outputLabel>
+			<p:inputText size="50" value="#{condition.adrSurchargeMinimum}"
+				id="adrSurchargeMinimumField" />
+			<p:message for="adrSurchargeMinimumField" />
+
+			<h:outputLabel for="supplementaryTarifNumbersField">Supplementary rate numbers:</h:outputLabel>
+			<p:inputText size="50" value="#{condition.supplementaryTarifNumbers}"
+				id="supplementaryTarifNumbersField" />
+			<p:message for="supplementaryTarifNumbersField" />
+
+			<h:outputLabel for="incoTermTypeField">Inco term type:</h:outputLabel>
+			<p:selectOneRadio id="incoTermTypeField"
+				value="#{condition.incoTermType}">
+				<c:if test="${controllerName == 'manageRatesController'}">
+					<f:selectItems value="#{manageRatesController.incoTermTypes}"
+						var="incoTermType" itemLabel="#{incoTermType}" />
+				</c:if>
+				<c:if test="${controllerName == 'createRatesController'}">
+					<f:selectItems value="#{createRatesController.incoTermTypes}"
+						var="incoTermType" itemLabel="#{incoTermType}" />
+				</c:if>
+			</p:selectOneRadio>
+			<p:message for="incoTermTypeField" />
+
+			<h:outputLabel for="waitHourTarifField">Waiting hours rate:</h:outputLabel>
+			<p:inputText size="50" value="#{condition.waitHourTarif}"
+				id="waitHourTarifField" />
+			<p:message for="waitHourTarifField" />
+
+			<h:outputLabel for="paymentTermField">Payment terms:</h:outputLabel>
+			<p:inputText size="50" value="#{condition.paymentTerm}"
+				id="paymentTermField" />
+			<p:message for="paymentTermField" />
+
+			<h:outputLabel for="transportInsuranceField">Transport insurance rate:</h:outputLabel>
+			<p:inputText size="50" value="#{condition.transportInsurance}"
+				id="transportInsuranceField" />
+			<p:message for="transportInsuranceField" />
+
+			<h:outputLabel for="expirationDateField">Expiration date:</h:outputLabel>
+			<p:inputText size="50" value="#{condition.expirationDate}"
+				id="expirationDateField" />
+			<p:message for="expirationDateField" />
+
+			<c:if test="${controllerName == 'manageRatesController'}">
+				<p:commandButton value="Save terms and conditions"
+					title="Save terms and conditions" ajax="false"
+					action="#{manageRatesController.saveConditions}" />
+			</c:if>
+		</p:panelGrid>
+
+	</p:panel>
+</ui:composition>

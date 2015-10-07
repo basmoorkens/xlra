@@ -7,6 +7,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 
 import org.primefaces.event.CellEditEvent;
@@ -19,6 +20,7 @@ import com.moorkensam.xlra.model.rate.IncoTermType;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.service.RateFileService;
+import com.moorkensam.xlra.service.util.TranslationUtil;
 
 @ManagedBean(name = "manageRatesController")
 @ViewScoped
@@ -200,9 +202,8 @@ public class ManageRatesController {
 		this.keyToAdd = keyToAdd;
 	}
 
-	public void createConditionForSelectedTranslationKey() {
+	public void createConditionForSelectedTranslationKey(ActionEvent event) {
 		Condition c = new Condition();
-		c.setConditionKey(keyToAdd);
 		c.setValue("");
 		c.setRateFile(selectedRateFile);
 		selectedRateFile.getConditions().add(c);
@@ -210,13 +211,13 @@ public class ManageRatesController {
 	}
 
 	public List<TranslationKey> getAvailableTranslationKeysForSelectedRateFile() {
-		List<TranslationKey> allKeys = Arrays.asList(TranslationKey.values());
+		List<TranslationKey> allKeys = TranslationUtil.getTranslationsNotKey();
 		if (selectedRateFile != null
 				&& selectedRateFile.getConditions() != null
 				&& !selectedRateFile.getConditions().isEmpty()) {
 			List<TranslationKey> usedKeys = new ArrayList<TranslationKey>();
 			for (Condition c : selectedRateFile.getConditions()) {
-				usedKeys.add(c.getConditionKey());
+				usedKeys.add(c.getTranslation().getTranslationKey());
 			}
 			List<TranslationKey> result = new ArrayList<TranslationKey>();
 			for (TranslationKey key : allKeys) {
@@ -228,5 +229,4 @@ public class ManageRatesController {
 		}
 		return allKeys;
 	}
-
 }

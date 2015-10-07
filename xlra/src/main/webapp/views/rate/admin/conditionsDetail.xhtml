@@ -58,15 +58,18 @@
 			<p:commandButton value="Save rates" title="Save conditions"
 				ajax="false" action="#{manageRatesController.saveRateFile}" />
 		</c:if>
+
 		<p:dialog header="Add condition" widgetVar="addConditionDialog"
-			modal="true" height="200px" dynamic="true">
+			modal="true" height="150px" width="300px" dynamic="true">
 			<p:selectOneMenu value="#{manageRatesController.keyToAdd}">
 				<f:selectItems
 					value="#{manageRatesController.availableTranslationKeysForSelectedRateFile}" />
 			</p:selectOneMenu>
-			<p:commandButton value="Add condition"
-				action="#{manageRatesController.createConditionForSelectedTranslationKey}"
-				ajax="true" immediate="true" update=":conditionsDetailForm" />
+			<f:facet name="footer">
+				<p:commandButton value="Add condition"
+					actionListener="#{manageRatesController.createConditionForSelectedTranslationKey}"
+					ajax="true" update=":conditionsDetailForm" />
+			</f:facet>
 		</p:dialog>
 	</p:panel>
 </ui:composition>

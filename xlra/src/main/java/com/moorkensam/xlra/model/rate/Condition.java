@@ -5,9 +5,11 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.moorkensam.xlra.model.BaseEntity;
+import com.moorkensam.xlra.model.configuration.Translation;
 import com.moorkensam.xlra.model.configuration.TranslationKey;
 
 @Entity
@@ -16,8 +18,9 @@ public class Condition extends BaseEntity {
 
 	private static final long serialVersionUID = 7814328305384417198L;
 
-	@Enumerated(EnumType.STRING)
-	private TranslationKey conditionKey;
+	@ManyToOne
+	@JoinColumn(name = "translationId")
+	private Translation translation;
 
 	private String value;
 
@@ -33,14 +36,6 @@ public class Condition extends BaseEntity {
 		this.value = value;
 	}
 
-	public TranslationKey getConditionKey() {
-		return conditionKey;
-	}
-
-	public void setConditionKey(TranslationKey conditionKey) {
-		this.conditionKey = conditionKey;
-	}
-
 	public RateFile getRateFile() {
 		return rateFile;
 	}
@@ -53,7 +48,7 @@ public class Condition extends BaseEntity {
 		Condition c = new Condition();
 		c.setValue(this.value);
 		c.setRateFile(this.rateFile);
-		c.setConditionKey(this.conditionKey);
+		c.setTranslation(translation);
 		return c;
 	}
 
@@ -68,6 +63,14 @@ public class Condition extends BaseEntity {
 			return true;
 		}
 		return false;
+	}
+
+	public Translation getTranslation() {
+		return translation;
+	}
+
+	public void setTranslation(Translation translation) {
+		this.translation = translation;
 	}
 
 }

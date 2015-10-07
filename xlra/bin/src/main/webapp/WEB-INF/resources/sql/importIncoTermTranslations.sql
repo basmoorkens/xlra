@@ -1,0 +1,2 @@
+INSERT INTO `xlra`.`incotermtranslation` (`id`, `createdDateTime`, `deleted`, `deletedDateTime`, `lastUpdatedDateTime`, `incoTermType`, `language`, `text`, version) VALUES (NULL, NULL, '', NULL, NULL, 'EXW', 'NL', 'Tarief Ex Works, inclusief 1 uur laden en 1 uur lossen', 0);
+INSERT INTO `xlra`.`xlratranslation` (`id`, `createdDateTime`, `deleted`, `deletedDateTime`, `lastUpdatedDateTime`, `language`, `text`, `translationKey`, version) VALUES (NULL, NULL, '', NULL, NULL, 'NL', 'Wachturen : � 55,00 per extra uur ( max. � 550,00 per dag )', 'WACHT_TARIF_TEXT', 0);
