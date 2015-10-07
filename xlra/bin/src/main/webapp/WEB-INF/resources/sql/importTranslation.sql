@@ -1,1 +1,0 @@
-INSERT INTO `xlra`.`xlratranslation` (`id`, `createdDateTime`, `deleted`, `deletedDateTime`, `lastUpdatedDateTime`, `language`, `text`, `translationKey`) VALUES (NULL, NULL, '', NULL, NULL, 'NL', 'Wachturen : € 55,00 per extra uur ( max. € 550,00 per dag )', 'WACHT_TARIF_TEXT');
