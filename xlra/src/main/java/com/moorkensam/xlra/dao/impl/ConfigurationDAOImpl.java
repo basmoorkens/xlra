@@ -19,7 +19,6 @@ public class ConfigurationDAOImpl extends BaseDAO implements ConfigurationDao {
 		Query query = getEntityManager().createNamedQuery("Configuration.findMainConfig");
 		query.setParameter("configName", Configuration.MAIN_CONFIG_NAME);
 		Configuration config = (Configuration) query.getSingleResult();
-		config.getTranslations().size();
 		return config;
 	}
 }

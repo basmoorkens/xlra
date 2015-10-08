@@ -16,10 +16,10 @@ public class TranslationUtil {
 				result.add(key);
 			}
 		}
-		return keys;
+		return result;
 	}
 
-	public static List<TranslationKey> getTranslationKeys() {
+	public static List<TranslationKey> getTranslationKeyKeys() {
 		List<TranslationKey> keys = Arrays.asList(TranslationKey.values());
 		List<TranslationKey> result = new ArrayList<TranslationKey>();
 		for (TranslationKey key : keys) {
@@ -27,7 +27,7 @@ public class TranslationUtil {
 				result.add(key);
 			}
 		}
-		return keys;
+		return result;
 	}
 
 }

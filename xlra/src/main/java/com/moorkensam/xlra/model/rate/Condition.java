@@ -18,11 +18,10 @@ public class Condition extends BaseEntity {
 
 	private static final long serialVersionUID = 7814328305384417198L;
 
-	@ManyToOne
-	@JoinColumn(name = "translationId")
-	private Translation translation;
-
 	private String value;
+
+	@Enumerated(EnumType.STRING)
+	private TranslationKey conditionKey;
 
 	@ManyToOne
 	@JoinColumn(name = "rateFileId")
@@ -48,7 +47,6 @@ public class Condition extends BaseEntity {
 		Condition c = new Condition();
 		c.setValue(this.value);
 		c.setRateFile(this.rateFile);
-		c.setTranslation(translation);
 		return c;
 	}
 
@@ -65,12 +63,11 @@ public class Condition extends BaseEntity {
 		return false;
 	}
 
-	public Translation getTranslation() {
-		return translation;
+	public TranslationKey getConditionKey() {
+		return conditionKey;
 	}
 
-	public void setTranslation(Translation translation) {
-		this.translation = translation;
+	public void setConditionKey(TranslationKey conditionKey) {
+		this.conditionKey = conditionKey;
 	}
-
 }

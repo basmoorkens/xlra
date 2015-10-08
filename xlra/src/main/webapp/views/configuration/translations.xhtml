@@ -59,11 +59,6 @@
 						<p:rowEditor />
 					</p:column>
 				</p:dataTable>
-				<p:panel>
-					<p:commandButton
-						action="#{translationController.updateCurrentChfRate}"
-						value="Save translations" update=":translationsForm:msgs" />
-				</p:panel>
 			</p:panel>
 
 			<p:panel header="Setup new Translation" style="width:100%;">
@@ -91,13 +86,13 @@
 					<h:inputText style="width:100%;"
 						value="#{translationController.newTranslations[3].text}" />
 
-					<p:panel>
-						<p:commandButton
-							action="#{translationController.saveNewTranslations}"
-							ajax="false" value="Save new translations"
-							update=":translationsForm :translationsForm:msgs" />
-					</p:panel>
 				</p:panelGrid>
+				<p:panel>
+					<p:commandButton
+						action="#{translationController.saveNewTranslations}" ajax="false"
+						value="Save new translations"
+						update=":translationsForm :translationsForm:msgs" />
+				</p:panel>
 			</p:panel>
 		</h:form>
 	</ui:define>

@@ -36,7 +36,7 @@ public class RateFile extends BaseEntity {
 	public RateFile() {
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "rateFile", cascade = CascadeType.ALL, orphanRemoval=true)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "rateFile", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Condition> conditions;
 
 	@OneToOne
@@ -211,6 +211,20 @@ public class RateFile extends BaseEntity {
 
 	public void setConditions(List<Condition> conditions) {
 		this.conditions = conditions;
+	}
+
+	public boolean isNumericalZoneRateFile() {
+		if (getZones() != null && !getZones().isEmpty()) {
+			return getZones().get(0).getZoneType() == ZoneType.NUMERIC_CODES;
+		}
+		return false;
+	}
+
+	public boolean isAlphaNumericalZoneRateFile() {
+		if (getZones() != null && !getZones().isEmpty()) {
+			return getZones().get(0).getZoneType() == ZoneType.ALPHANUMERIC_LIST;
+		}
+		return false;
 	}
 
 }

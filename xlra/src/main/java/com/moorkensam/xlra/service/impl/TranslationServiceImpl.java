@@ -9,7 +9,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.moorkensam.xlra.dao.TranslationDAO;
+import com.moorkensam.xlra.model.Language;
 import com.moorkensam.xlra.model.configuration.Translation;
+import com.moorkensam.xlra.model.configuration.TranslationKey;
 import com.moorkensam.xlra.service.TranslationService;
 
 @Stateless
@@ -39,5 +41,18 @@ public class TranslationServiceImpl implements TranslationService {
 		for (Translation translation : translations) {
 			translationDAO.createTranslation(translation);
 		}
+	}
+
+	@Override
+	public Translation findTranslationInCacheByTranslationKeyAndLanguage(
+			TranslationKey key, Language language) {
+		List<Translation> translations = getAllNonDeletedTranslations();
+		for (Translation translation : translations) {
+			if (translation.getTranslationKey() == key
+					&& translation.getLanguage() == language) {
+				return translation;
+			}
+		}
+		return null;
 	}
 }

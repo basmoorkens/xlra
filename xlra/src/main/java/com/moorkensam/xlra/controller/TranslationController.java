@@ -18,6 +18,7 @@ import com.moorkensam.xlra.model.configuration.Translation;
 import com.moorkensam.xlra.model.configuration.TranslationKey;
 import com.moorkensam.xlra.service.ApplicationConfigurationService;
 import com.moorkensam.xlra.service.TranslationService;
+import com.moorkensam.xlra.service.util.TranslationUtil;
 
 @ManagedBean
 @ViewScoped
@@ -25,11 +26,6 @@ public class TranslationController {
 
 	@Inject
 	private TranslationService translationService;
-
-	@Inject
-	private ApplicationConfigurationService configurationService;
-
-	private Configuration config;
 
 	private List<Translation> translations;
 
@@ -45,7 +41,6 @@ public class TranslationController {
 
 	@PostConstruct
 	public void initPage() {
-		config = configurationService.getConfiguration();
 		setupLanguages();
 		refreshPage();
 	}
@@ -81,22 +76,18 @@ public class TranslationController {
 		Translation t1 = new Translation();
 		t1.setTranslationKey(selectedKey);
 		t1.setLanguage(langEng);
-		t1.setConfiguration(config);
 
 		Translation t2 = new Translation();
 		t2.setTranslationKey(selectedKey);
 		t2.setLanguage(langNl);
-		t2.setConfiguration(config);
 
 		Translation t3 = new Translation();
 		t3.setTranslationKey(selectedKey);
 		t3.setLanguage(langFr);
-		t3.setConfiguration(config);
 
 		Translation t4 = new Translation();
 		t4.setTranslationKey(selectedKey);
 		t4.setLanguage(langDe);
-		t4.setConfiguration(config);
 
 		newTranslations = new Translation[4];
 		newTranslations[0] = t1;
@@ -107,7 +98,7 @@ public class TranslationController {
 
 	private void setupAvailableTranslationKeys() {
 		availableKeys = new ArrayList<TranslationKey>();
-		for (TranslationKey key : RateUtil.getTranslationKeys()) {
+		for (TranslationKey key : TranslationUtil.getTranslationKeyKeys()) {
 			boolean found = false;
 			for (Translation t : translations) {
 				if (t.getTranslationKey().equals(key)) {
@@ -216,14 +207,5 @@ public class TranslationController {
 
 	public void setNewTranslations(Translation[] newTranslations) {
 		this.newTranslations = newTranslations;
-	}
-
-	public ApplicationConfigurationService getConfigurationService() {
-		return configurationService;
-	}
-
-	public void setConfigurationService(
-			ApplicationConfigurationService configurationService) {
-		this.configurationService = configurationService;
 	}
 }

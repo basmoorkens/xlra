@@ -24,6 +24,7 @@ import com.moorkensam.xlra.model.RaiseRatesRecord;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.RateOperation;
+import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
 import com.moorkensam.xlra.service.RateFileService;
 
@@ -46,6 +47,10 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 	@Override
 	public void createRateFile(final RateFile rateFile) {
 		logger.info("Creating ratefile for " + rateFile.getName());
+		for (Zone zone : rateFile.getZones()) {
+			zone.convertAlphaNumericPostalCodeStringToList();
+			zone.convertNumericalPostalCodeStringToList();
+		}
 		rateFileDAO.createRateFile(rateFile);
 	}
 

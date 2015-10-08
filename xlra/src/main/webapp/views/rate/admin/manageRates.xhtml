@@ -36,6 +36,14 @@
 		</h:form>
 
 		<h3>Details</h3>
+		<h:form id="zoneDetailForm">
+			<ui:include src="/views/rate/admin/zoneDetail.xhtml">
+				<ui:param name="zones"
+					value="#{manageRatesController.selectedRateFile.zones}" />
+				<ui:param name="controller" value="#{manageRatesController}" />
+				<ui:param name="controllerName" value="manageRatesController" />
+			</ui:include>
+		</h:form>
 		<h:form id="rateLinesDetailForm">
 			<ui:include src="/views/rate/admin/rateLinesDetail.xhtml">
 				<ui:param name="rateFile"

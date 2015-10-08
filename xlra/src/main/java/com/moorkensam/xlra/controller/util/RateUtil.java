@@ -38,9 +38,4 @@ public class RateUtil {
 	public static List<Language> getLanguages() {
 		return Arrays.asList(Language.values());
 	}
-
-	public static List<TranslationKey> getTranslationKeys() {
-		return Arrays.asList(TranslationKey.values());
-	}
-
 }

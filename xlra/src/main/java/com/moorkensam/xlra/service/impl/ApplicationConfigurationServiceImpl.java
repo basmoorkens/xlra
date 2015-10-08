@@ -37,7 +37,6 @@ public class ApplicationConfigurationServiceImpl implements
 	@Override
 	public Configuration getConfiguration() {
 		Configuration config = xlraConfigurationDAO.getXlraConfiguration();
-		Collections.sort(config.getTranslations());
 		return config;
 	}
 

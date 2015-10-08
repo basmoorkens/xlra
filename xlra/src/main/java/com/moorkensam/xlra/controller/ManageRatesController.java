@@ -11,14 +11,18 @@ import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 
 import org.primefaces.event.CellEditEvent;
+import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 
+import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.controller.util.RateUtil;
 import com.moorkensam.xlra.model.configuration.TranslationKey;
 import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.IncoTermType;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
+import com.moorkensam.xlra.model.rate.Zone;
+import com.moorkensam.xlra.model.rate.ZoneType;
 import com.moorkensam.xlra.service.RateFileService;
 import com.moorkensam.xlra.service.util.TranslationUtil;
 
@@ -35,6 +39,8 @@ public class ManageRatesController {
 
 	private boolean collapseRateLinesDetailGrid = true;
 
+	private boolean collapseZonesDetailGrid = true;
+	
 	private RateFile selectedRateFile;
 
 	private List<String> columnHeaders = new ArrayList<String>();
@@ -62,6 +68,7 @@ public class ManageRatesController {
 		resetSelectedRateFile();
 		collapseConditionsDetailGrid = true;
 		collapseRateLinesDetailGrid = true;
+		collapseZonesDetailGrid = true;
 		completeRateName("");
 		hasRateFileSelected = false;
 		columnHeaders = new ArrayList<String>();
@@ -79,6 +86,26 @@ public class ManageRatesController {
 		RateUtil.onConditionCellEdit(event);
 	}
 
+	public boolean isNumericRateFileZone() {
+		if (selectedRateFile != null) {
+			return selectedRateFile.isNumericalZoneRateFile();
+		}
+		return false;
+	}
+
+	public boolean isAlphaNumericRateFileZone() {
+		if (selectedRateFile != null) {
+			return selectedRateFile.isAlphaNumericalZoneRateFile();
+		}
+		return false;
+	}
+
+	public void onZoneEdit(RowEditEvent event) {
+		Zone zone = (Zone) event.getObject();
+		MessageUtil.addMessage("Zone update", "Changed zone information for "
+				+ zone.getName());
+	}
+
 	public void deleteCondition(Condition condition) {
 		selectedRateFile.getConditions().remove(condition);
 		condition.setRateFile(null);
@@ -89,6 +116,7 @@ public class ManageRatesController {
 				.getObject()).getId());
 		collapseConditionsDetailGrid = false;
 		collapseRateLinesDetailGrid = false;
+		collapseZonesDetailGrid = false ;
 		hasRateFileSelected = true;
 		refreshRateLineColumns();
 	}
@@ -217,7 +245,7 @@ public class ManageRatesController {
 				&& !selectedRateFile.getConditions().isEmpty()) {
 			List<TranslationKey> usedKeys = new ArrayList<TranslationKey>();
 			for (Condition c : selectedRateFile.getConditions()) {
-				usedKeys.add(c.getTranslation().getTranslationKey());
+				usedKeys.add(c.getConditionKey());
 			}
 			List<TranslationKey> result = new ArrayList<TranslationKey>();
 			for (TranslationKey key : allKeys) {
@@ -228,5 +256,13 @@ public class ManageRatesController {
 			return result;
 		}
 		return allKeys;
+	}
+
+	public boolean isCollapseZonesDetailGrid() {
+		return collapseZonesDetailGrid;
+	}
+
+	public void setCollapseZonesDetailGrid(boolean collapseZonesDetailGrid) {
+		this.collapseZonesDetailGrid = collapseZonesDetailGrid;
 	}
 }

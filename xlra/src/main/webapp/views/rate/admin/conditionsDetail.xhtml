@@ -61,7 +61,7 @@
 
 		<p:dialog header="Add condition" widgetVar="addConditionDialog"
 			modal="true" height="150px" width="300px" dynamic="true">
-			<p:selectOneMenu value="#{manageRatesController.keyToAdd}">
+			<p:selectOneMenu value="#{manageRatesController.keyToAdd}" style="width:200px;">
 				<f:selectItems
 					value="#{manageRatesController.availableTranslationKeysForSelectedRateFile}" />
 			</p:selectOneMenu>

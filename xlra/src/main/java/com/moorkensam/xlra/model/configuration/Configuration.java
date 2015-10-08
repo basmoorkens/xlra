@@ -22,7 +22,6 @@ public class Configuration extends BaseEntity {
 
 	public Configuration() {
 		super();
-		translations = new ArrayList<Translation>();
 	}
 
 	public final static String MAIN_CONFIG_NAME = "mainconfig";
@@ -34,9 +33,6 @@ public class Configuration extends BaseEntity {
 	private double currentDieselPrice;
 
 	private double currentChfValue;
-
-	@OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, mappedBy = "configuration")
-	private List<Translation> translations;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "xlraConfiguration")
 	private List<MailTemplate> mailTemplates;
@@ -73,11 +69,4 @@ public class Configuration extends BaseEntity {
 		this.configurationName = configurationName;
 	}
 
-	public List<Translation> getTranslations() {
-		return translations;
-	}
-
-	public void setTranslations(List<Translation> translations) {
-		this.translations = translations;
-	}
 }
