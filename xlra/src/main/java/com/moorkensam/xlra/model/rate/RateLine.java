@@ -22,21 +22,15 @@ public class RateLine extends BaseEntity implements Comparable<RateLine> {
 
 	private double measurement;
 
-	private String zone;
+	@ManyToOne
+	@JoinColumn(name = "zoneId")
+	private Zone zone;
 
 	private BigDecimal value;
 
 	@ManyToOne
 	@JoinColumn(name = "rateFileId")
 	private RateFile rateFile;
-
-	public String getZone() {
-		return zone;
-	}
-
-	public void setZone(String zone) {
-		this.zone = zone;
-	}
 
 	public RateFile getRateFile() {
 		return rateFile;
@@ -72,7 +66,7 @@ public class RateLine extends BaseEntity implements Comparable<RateLine> {
 	public RateLine deepCopy() {
 		RateLine rl = new RateLine();
 		rl.setMeasurement(getMeasurement());
-		rl.setZone(getZone());
+		rl.setZone(getZone().deepCopy());
 		rl.setValue(getValue());
 		return rl;
 	}
@@ -83,6 +77,14 @@ public class RateLine extends BaseEntity implements Comparable<RateLine> {
 
 	public void setValue(BigDecimal value) {
 		this.value = value;
+	}
+
+	public Zone getZone() {
+		return zone;
+	}
+
+	public void setZone(Zone zone) {
+		this.zone = zone;
 	}
 
 }

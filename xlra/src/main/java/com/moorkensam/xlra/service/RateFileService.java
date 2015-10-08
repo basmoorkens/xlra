@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.moorkensam.xlra.model.RaiseRatesRecord;
 import com.moorkensam.xlra.model.rate.RateFile;
+import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
 
 public interface RateFileService {
@@ -58,5 +59,7 @@ public interface RateFileService {
 	 * Finds the last raise that happened on rates and undos it by reversing it.
 	 */
 	public void undoLatestRatesRaise();
+
+	RateFile deleteZone(Zone zone);
 
 }

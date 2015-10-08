@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -19,8 +20,17 @@ import com.moorkensam.xlra.model.BaseEntity;
 import com.moorkensam.xlra.model.configuration.Interval;
 
 @Entity
+@Cacheable
 @Table(name = "zone")
 public class Zone extends BaseEntity {
+
+	public Zone() {
+
+	}
+
+	public Zone(String name) {
+		this.name = name;
+	}
 
 	private static final long serialVersionUID = 1L;
 
@@ -185,6 +195,28 @@ public class Zone extends BaseEntity {
 
 	public void setExtraInfo(String extraInfo) {
 		this.extraInfo = extraInfo;
+	}
+
+	public String getAsColumnHeader() {
+		String header = name + " ";
+		if (zoneType == ZoneType.ALPHANUMERIC_LIST) {
+			header += "( " + getAlphaNumericPostalCodesAsString() + " )";
+		} else {
+			header += "( " + getNumericalPostalCodesAsString() + " )";
+		}
+
+		return header;
+	}
+
+	public Zone deepCopy() {
+		Zone copy = new Zone();
+		copy.setName(name);
+		copy.setAlphaNumericPostalCodesAsString(alphaNumericPostalCodesAsString);
+		copy.setNumericalPostalCodesAsString(numericalPostalCodesAsString);
+		copy.setCountry(country);
+		copy.setExtraInfo(extraInfo);
+		copy.setZoneType(zoneType);
+		return copy;
 	}
 
 }

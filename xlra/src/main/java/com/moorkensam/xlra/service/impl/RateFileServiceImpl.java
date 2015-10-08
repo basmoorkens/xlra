@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -86,8 +87,6 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 	}
 
 	private void prepareRateFileForFrontend(RateFile rateFile) {
-		fillUpRelationalProperties(rateFile);
-		fillUpRateLineRelationalMap(rateFile);
 		for (Zone z : rateFile.getZones()) {
 			if (z.getZoneType() == ZoneType.ALPHANUMERIC_LIST) {
 				z.convertAlphaNumericPostalCodeListToString();
@@ -95,6 +94,8 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 				z.convertNumericalPostalCodeListToString();
 			}
 		}
+		fillUpRelationalProperties(rateFile);
+		fillUpRateLineRelationalMap(rateFile);
 	}
 
 	/**
@@ -104,7 +105,11 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 	 * @param rateFile
 	 */
 	protected void fillUpRelationalProperties(RateFile rateFile) {
-		rateFile.setColumns(rateFileDAO.getDistinctZonesForRateFile(rateFile));
+
+		rateFile.setColumns(new ArrayList<String>());
+		for (Zone z : rateFile.getZones()) {
+			rateFile.getColumns().add(z.getAsColumnHeader());
+		}
 		rateFile.setMeasurementRows(rateFileDAO
 				.getDistinctMeasurementsForRateFile(rateFile));
 	}
@@ -288,5 +293,22 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 			lastRaise.setUndone(true);
 			logDAO.updateRaiseRatesRecord(lastRaise);
 		}
+	}
+
+	@Override
+	public RateFile deleteZone(Zone zone) {
+		logger.info("Deleting zone " + zone.getName());
+		RateFile rf = zone.getRateFile();
+		rf.getZones().remove(zone);
+		zone.setRateFile(null);
+		Iterator<RateLine> iterator = rf.getRateLines().iterator();
+		RateLine rl;
+		while ((rl = iterator.next()) != null) {
+			if (rl.getZone().getId() == zone.getId()) {
+				rf.getRateLines().remove(rl);
+				rl.setRateFile(null);
+			}
+		}
+		return updateRateFile(rf);
 	}
 }

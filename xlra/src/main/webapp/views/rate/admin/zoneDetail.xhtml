@@ -53,6 +53,12 @@
 			<p:column style="width:32px">
 				<p:rowEditor />
 			</p:column>
+			<p:column style="width:32px;">
+				<p:commandButton icon="ui-icon-trash" title="Delete"
+					actionListener="#{manageRatesController.deleteZone(zone)}"
+					ajax="true" immediate="true"
+					update=":zoneDetailForm :rateLinesDetailForm" />
+			</p:column>
 
 		</p:dataTable>
 	</p:panel>

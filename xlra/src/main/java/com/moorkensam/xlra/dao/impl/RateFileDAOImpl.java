@@ -101,16 +101,10 @@ public class RateFileDAOImpl extends BaseDAO implements RateFileDAO {
 				zone.getNumericalPostalCodes().size();
 			}
 		}
+		for (RateLine rl : rf.getRateLines()) {
+			rl.getZone();
+		}
 		return rf;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<String> getDistinctZonesForRateFile(RateFile rateFile) {
-		Query query = getEntityManager().createNamedQuery(
-				"RateFile.findDistinctZones");
-		query.setParameter("ratefileid", rateFile.getId());
-		return (List<String>) query.getResultList();
 	}
 
 	@SuppressWarnings("unchecked")

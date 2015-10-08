@@ -13,6 +13,7 @@
 			<p:dataTable value="#{rateFile.relationalRateLines}" var="rateLine"
 				emptyMessage="No rate lines found." id="rateLineTable" rows="50"
 				editable="true" editMode="cell" paginator="true"
+				stickyHeader="true"
 				rowsPerPageTemplate="5,10,15,25,50" 
 				paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
 

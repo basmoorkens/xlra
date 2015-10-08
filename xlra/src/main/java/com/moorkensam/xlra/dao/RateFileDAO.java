@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
+import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
 
 public interface RateFileDAO {
@@ -19,8 +20,6 @@ public interface RateFileDAO {
 	void deleteRateFile(RateFile rateFile);
 
 	RateFile getFullRateFile(long rateFileId);
-
-	public List<String> getDistinctZonesForRateFile(RateFile rateFile);
 
 	public List<Double> getDistinctMeasurementsForRateFile(RateFile rf);
 

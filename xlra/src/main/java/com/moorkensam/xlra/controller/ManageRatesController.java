@@ -40,7 +40,7 @@ public class ManageRatesController {
 	private boolean collapseRateLinesDetailGrid = true;
 
 	private boolean collapseZonesDetailGrid = true;
-	
+
 	private RateFile selectedRateFile;
 
 	private List<String> columnHeaders = new ArrayList<String>();
@@ -106,8 +106,15 @@ public class ManageRatesController {
 				+ zone.getName());
 	}
 
+	public void deleteZone(Zone zone) {
+		selectedRateFile.getZones().remove(zone);
+		zone.setRateFile(null);
+		rateFileService.updateRateFile(selectedRateFile);
+	}
+
 	public void deleteCondition(Condition condition) {
 		selectedRateFile.getConditions().remove(condition);
+		rateFileService.updateRateFile(selectedRateFile);
 		condition.setRateFile(null);
 	}
 
@@ -116,7 +123,7 @@ public class ManageRatesController {
 				.getObject()).getId());
 		collapseConditionsDetailGrid = false;
 		collapseRateLinesDetailGrid = false;
-		collapseZonesDetailGrid = false ;
+		collapseZonesDetailGrid = false;
 		hasRateFileSelected = true;
 		refreshRateLineColumns();
 	}
@@ -201,7 +208,7 @@ public class ManageRatesController {
 	private List<String> refreshRateLineColumns() {
 		columnHeaders = new ArrayList<String>();
 		for (RateLine rl : selectedRateFile.getRateLines()) {
-			columnHeaders.add(rl.getZone());
+			columnHeaders.add(rl.getZone().getName());
 		}
 		return columnHeaders;
 	}
@@ -233,6 +240,7 @@ public class ManageRatesController {
 	public void createConditionForSelectedTranslationKey(ActionEvent event) {
 		Condition c = new Condition();
 		c.setValue("");
+		c.setConditionKey(keyToAdd);
 		c.setRateFile(selectedRateFile);
 		selectedRateFile.getConditions().add(c);
 		keyToAdd = null;

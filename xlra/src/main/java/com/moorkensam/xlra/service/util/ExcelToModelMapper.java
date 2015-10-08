@@ -56,7 +56,7 @@ public class ExcelToModelMapper {
 				RateLine rl = new RateLine();
 				rl.setMeasurement(key);
 				rl.setValue(new BigDecimal(dto.getValue()));
-				rl.setZone(dto.getZone());
+				rl.setZone(rf.getZoneForZoneName(dto.getZone()));
 				rl.setRateFile(rf);
 				rateLines.add(rl);
 			}

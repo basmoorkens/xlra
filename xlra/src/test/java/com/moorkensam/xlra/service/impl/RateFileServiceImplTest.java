@@ -19,6 +19,7 @@ import com.moorkensam.xlra.dao.RateFileDAO;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.RateOperation;
+import com.moorkensam.xlra.model.rate.Zone;
 
 public class RateFileServiceImplTest extends UnitilsJUnit4 {
 
@@ -54,35 +55,39 @@ public class RateFileServiceImplTest extends UnitilsJUnit4 {
 		columnNames.add("Zone 3");
 		rateFile.setMeasurementRows(measurements);
 		rateFile.setColumns(columnNames);
+		rateFile.setZones(new ArrayList<Zone>());
+		rateFile.getZones().add(new Zone("Zone 1"));
+		rateFile.getZones().add(new Zone("Zone 2"));
+		rateFile.getZones().add(new Zone("Zone 3"));
 		List<RateLine> rateLines = new ArrayList<RateLine>();
 		rl = new RateLine();
 		rl.setMeasurement(100);
-		rl.setZone("Zone 1");
+		rl.setZone(new Zone("Zone 1"));
 		rl.setValue(new BigDecimal(100));
 		rateLines.add(rl);
 		rl1 = new RateLine();
 		rl1.setMeasurement(100);
-		rl1.setZone("Zone 2");
+		rl1.setZone(new Zone("Zone 2"));
 		rl1.setValue(new BigDecimal(150));
 		rateLines.add(rl1);
 		rl2 = new RateLine();
 		rl2.setMeasurement(100);
-		rl2.setZone("Zone 3");
+		rl2.setZone(new Zone("Zone 3"));
 		rl2.setValue(new BigDecimal(200));
 		rateLines.add(rl2);
 		rl3 = new RateLine();
 		rl3.setMeasurement(200);
-		rl3.setZone("Zone 1");
+		rl3.setZone(new Zone("Zone 1"));
 		rl3.setValue(new BigDecimal(130));
 		rateLines.add(rl3);
 		rl4 = new RateLine();
 		rl4.setMeasurement(200);
-		rl4.setZone("Zone 2");
+		rl4.setZone(new Zone("Zone 2"));
 		rl4.setValue(new BigDecimal(190));
 		rateLines.add(rl4);
 		rl5 = new RateLine();
 		rl5.setMeasurement(200);
-		rl5.setZone("Zone 3");
+		rl5.setZone(new Zone("Zone 3"));
 		rl5.setValue(new BigDecimal(260));
 		rateLines.add(rl5);
 		rateFile.setRateLines(rateLines);
@@ -108,7 +113,6 @@ public class RateFileServiceImplTest extends UnitilsJUnit4 {
 	@Test
 	public void testFillUpRelationProperties() {
 		rateFileServiceImpl.fillUpRelationalProperties(rateFile);
-		rateFileDAOMock.assertInvoked().getDistinctZonesForRateFile(rateFile);
 		rateFileDAOMock.assertInvoked().getDistinctMeasurementsForRateFile(
 				rateFile);
 	}

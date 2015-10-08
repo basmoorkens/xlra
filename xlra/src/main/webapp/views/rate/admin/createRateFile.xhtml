@@ -35,7 +35,8 @@
 								itemValue="#{customer}" converter="#{customerConverter}"
 								required="true" requiredMessage="Customer is required">
 							</p:autoComplete>
-							<h:outputText value="Language:(if not filled in customer language will be chosen) " />
+							<h:outputText
+								value="Language:(if not filled in customer language will be chosen) " />
 							<p:selectOneRadio
 								value="#{createRatesController.rateFile.language}">
 								<f:selectItems value="#{createRatesController.languages}" />
@@ -43,8 +44,6 @@
 						</p:panelGrid>
 
 						<p:panel style="margin-top:10px;padding:0px;border:0px;">
-							<p:commandButton value="Back" onclick="PF('wizard').back();"
-								style="width:150px;" />
 							<p:commandButton value="Next" onclick="PF('wizard').next();"
 								style="width:150px; margin-left:20px;" />
 						</p:panel>

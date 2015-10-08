@@ -27,7 +27,6 @@ import com.moorkensam.xlra.model.Language;
 @Table(name = "ratefile")
 @NamedQueries({
 		@NamedQuery(name = "RateFile.findAll", query = "SELECT r FROM RateFile r WHERE r.deleted = false"),
-		@NamedQuery(name = "RateFile.findDistinctZones", query = "SELECT distinct rs.zone FROM RateFile r join r.rateLines rs WHERE r.id = :ratefileid ORDER BY rs.zone"),
 		@NamedQuery(name = "RateFile.findDistinctMeasurements", query = "SELECT distinct rs.measurement FROM RateFile r join r.rateLines rs WHERE r.id = :ratefileid ORDER BY rs.measurement") })
 public class RateFile extends BaseEntity {
 
@@ -174,6 +173,7 @@ public class RateFile extends BaseEntity {
 			List<RateLine> rls = new ArrayList<RateLine>();
 			for (RateLine rl : rateList) {
 				rls.add(rl);
+				rl.getZone().setRateFile(rf);
 			}
 			relationRatelines.add(rls);
 		}
@@ -225,6 +225,17 @@ public class RateFile extends BaseEntity {
 			return getZones().get(0).getZoneType() == ZoneType.ALPHANUMERIC_LIST;
 		}
 		return false;
+	}
+
+	public Zone getZoneForZoneName(String zoneName) {
+		if (zones != null && !zones.isEmpty()) {
+			for (Zone z : zones) {
+				if (z.getName().equals(zoneName)) {
+					return z;
+				}
+			}
+		}
+		return null;
 	}
 
 }
