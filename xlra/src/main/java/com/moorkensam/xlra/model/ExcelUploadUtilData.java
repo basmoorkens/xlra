@@ -12,16 +12,32 @@ import java.util.Map;
  *
  */
 public class ExcelUploadUtilData {
+
 	/**
 	 * Contains the actual zones.
 	 */
 	private Map<Integer, String> zoneMap = new HashMap<Integer, String>();
+
 	/**
 	 * Contains the zone information: postcode list.
 	 */
 	private Map<Integer, List<String>> zoneValuesMap = new HashMap<Integer, List<String>>();
+
+	/**
+	 * Map for the extra info.
+	 */
+	private Map<Integer, String> zoneExtraInfoMap = new HashMap<Integer, String>();
+
+	/**
+	 * Map for the ratelines.
+	 */
 	private Map<Double, List<RateLineExcelImportDTO>> ratesMap = new HashMap<Double, List<RateLineExcelImportDTO>>();
+
+	/**
+	 * Map for the conditions.
+	 */
 	private Map<String, List<String>> termsMap = new HashMap<String, List<String>>();
+
 	/**
 	 * The selected measurement whilst parsing.
 	 */
@@ -77,5 +93,13 @@ public class ExcelUploadUtilData {
 
 	public void setZoneMap(Map<Integer, String> zoneMap) {
 		this.zoneMap = zoneMap;
+	}
+
+	public Map<Integer, String> getZoneExtraInfoMap() {
+		return zoneExtraInfoMap;
+	}
+
+	public void setZoneExtraInfoMap(Map<Integer, String> zoneExtraInfoMap) {
+		this.zoneExtraInfoMap = zoneExtraInfoMap;
 	}
 }

@@ -21,6 +21,8 @@ import com.moorkensam.xlra.model.RateLineExcelImportDTO;
  */
 public class ExcelUploadParser {
 
+	private final static String EXTRA_INFO = "Extra info";
+
 	private ExcelUploadUtilData data;
 
 	private FormulaEvaluator formulaEvaluator;
@@ -48,6 +50,17 @@ public class ExcelUploadParser {
 				case READ_ZONE_VALUES:
 					readerState = readZoneValues(readerState, cell);
 					break;
+				case WAIT_FOR_RATES:
+					if (cell.getColumnIndex() == 0
+							&& cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+						data.setSelectedMeasurement(Poiutil.getSafeCellDouble(
+								cell, formulaEvaluator));
+						readerState = ExcelReaderState.READ_RATES;
+					}
+					break;
+				case READ_ZONE_EXTRA_INFO:
+					readExtraInfo(readerState, cell);
+					break;
 				case READ_RATES:
 					if (cell.getColumnIndex() == 0
 							&& cell.getCellType() == Cell.CELL_TYPE_STRING) {
@@ -67,8 +80,15 @@ public class ExcelUploadParser {
 			if (readerState == ExcelReaderState.READ_ZONES) {
 				readerState = ExcelReaderState.READ_ZONE_VALUES;
 			}
+			if (readerState == ExcelReaderState.READ_ZONE_EXTRA_INFO) {
+				readerState = ExcelReaderState.WAIT_FOR_RATES;
+			}
 		}
 		return data;
+	}
+
+	private void readExtraInfo(ExcelReaderState readerState, Cell cell) {
+		readExtraInfoCell(cell);
 	}
 
 	private ExcelReaderState readTerms(ExcelReaderState readerState, Cell cell) {
@@ -86,11 +106,20 @@ public class ExcelUploadParser {
 		if (cell.getCellType() != Cell.CELL_TYPE_BLANK) {
 			readZoneValues(cell);
 		}
-		if (cell.getColumnIndex() == 0
-				&& (cell.getCellType() == Cell.CELL_TYPE_NUMERIC)) {
-			data.setSelectedMeasurement(Poiutil.getSafeCellDouble(cell,
-					formulaEvaluator));
-			readerState = ExcelReaderState.READ_RATES;
+
+		if (cell.getColumnIndex() == 0) {
+			if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
+				String cellValue = Poiutil.getSafeCellString(cell, false);
+				if (cellValue.toLowerCase().equals(EXTRA_INFO.toLowerCase())) {
+					readerState = ExcelReaderState.READ_ZONE_EXTRA_INFO;
+				}
+			}
+
+			if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+				data.setSelectedMeasurement(Poiutil.getSafeCellDouble(cell,
+						formulaEvaluator));
+				readerState = ExcelReaderState.READ_RATES;
+			}
 		}
 		return readerState;
 	}
@@ -123,6 +152,15 @@ public class ExcelUploadParser {
 				list.add(Poiutil.getSafeCellString(cell, false));
 				data.getTermsMap().put(data.getSelectedTerm(), list);
 			} // else first time just ignore
+		}
+	}
+
+	private void readExtraInfoCell(Cell cell) {
+		if (cell.getColumnIndex() == 0) {// dont process this one
+			return;
+		} else {
+			data.getZoneExtraInfoMap().put(cell.getColumnIndex(),
+					Poiutil.getSafeCellString(cell, false));
 		}
 	}
 

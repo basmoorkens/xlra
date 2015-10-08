@@ -24,7 +24,7 @@
 					var="rateFile" itemLabel="#{rateFile.name}" itemValue="#{rateFile}"
 					converter="#{rateFileConverter}">
 					<p:ajax event="itemSelect"
-						update=":conditionsDetailForm :rateLinesDetailForm"
+						update=":conditionsDetailForm :rateLinesDetailForm :zoneDetailForm"
 						listener="#{manageRatesController.fetchDetailsOfRatefile}" />
 				</p:autoComplete>
 

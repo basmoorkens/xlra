@@ -12,6 +12,7 @@ import com.moorkensam.xlra.dao.BaseDAO;
 import com.moorkensam.xlra.dao.RateFileDAO;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
+import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
 
 public class RateFileDAOImpl extends BaseDAO implements RateFileDAO {
@@ -92,6 +93,14 @@ public class RateFileDAOImpl extends BaseDAO implements RateFileDAO {
 		rf.getRateLines().size();
 		rf.getConditions().size();
 		rf.getZones().size();
+		for (Zone zone : rf.getZones()) {
+			if (zone.getAlphaNumericalPostalCodes() != null) {
+				zone.getAlphaNumericalPostalCodes().size();
+			}
+			if (zone.getNumericalPostalCodes() != null) {
+				zone.getNumericalPostalCodes().size();
+			}
+		}
 		return rf;
 	}
 

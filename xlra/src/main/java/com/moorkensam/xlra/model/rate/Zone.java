@@ -53,6 +53,8 @@ public class Zone extends BaseEntity {
 	@JoinColumn(name = "countryId")
 	private Country country;
 
+	private String extraInfo;
+
 	public List<String> getAlphaNumericalPostalCodes() {
 		return alphaNumericalPostalCodes;
 	}
@@ -175,6 +177,14 @@ public class Zone extends BaseEntity {
 
 	public void setRateFile(RateFile rateFile) {
 		this.rateFile = rateFile;
+	}
+
+	public String getExtraInfo() {
+		return extraInfo;
+	}
+
+	public void setExtraInfo(String extraInfo) {
+		this.extraInfo = extraInfo;
 	}
 
 }

@@ -72,16 +72,27 @@ public class ExcelToModelMapper {
 			zone.setName(data.getZoneMap().get(key));
 			zones.add(zone);
 			zone.setRateFile(rf);
-			List<String> postalCodes = data.getZoneValuesMap().get(key);
-			String postalCodeAsString = constructPostalCodeString(postalCodes);
-			if (rf.getCountry().getZoneType() == ZoneType.ALPHANUMERIC_LIST) {
-				zone.setAlphaNumericPostalCodesAsString(postalCodeAsString);
-			} else {
-				zone.setNumericalPostalCodesAsString(postalCodeAsString);
+			zone.setZoneType(rf.getCountry().getZoneType());
+			fillInPostalCodes(rf, data, key, zone);
+			if (data.getZoneExtraInfoMap() != null) {
+				if (!data.getZoneExtraInfoMap().isEmpty()) {
+					zone.setExtraInfo(data.getZoneExtraInfoMap().get(key));
+				}
 			}
 		}
 
 		return zones;
+	}
+
+	private void fillInPostalCodes(RateFile rf, ExcelUploadUtilData data,
+			Integer key, Zone zone) {
+		List<String> postalCodes = data.getZoneValuesMap().get(key);
+		String postalCodeAsString = constructPostalCodeString(postalCodes);
+		if (rf.getCountry().getZoneType() == ZoneType.ALPHANUMERIC_LIST) {
+			zone.setAlphaNumericPostalCodesAsString(postalCodeAsString);
+		} else {
+			zone.setNumericalPostalCodesAsString(postalCodeAsString);
+		}
 	}
 
 	private String constructPostalCodeString(List<String> postalCodes) {

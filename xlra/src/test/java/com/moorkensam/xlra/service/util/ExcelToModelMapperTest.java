@@ -87,12 +87,14 @@ public class ExcelToModelMapperTest extends UnitilsJUnit4 {
 		List<Condition> conditions = mapper.createConditions(data, rf);
 		Assert.assertNotNull(conditions);
 		Assert.assertTrue(conditions.size() > 0);
-		Assert.assertEquals(TranslationKey.IMPORT_FORM, conditions.get(1)
-				.getConditionKey());
-		Assert.assertEquals(TranslationKey.EXPORT_FORM, conditions.get(0)
-				.getConditionKey());
-		Assert.assertEquals("blabla1", conditions.get(1).getValue());
-		Assert.assertEquals("blabla2", conditions.get(0).getValue());
+		for (Condition c : conditions) {
+			if (c.getConditionKey() == TranslationKey.IMPORT_FORM) {
+				Assert.assertEquals("blabla1", c.getValue());
+			}
+			if (c.getConditionKey() == TranslationKey.EXPORT_FORM) {
+				Assert.assertEquals("blabla2", c.getValue());
+			}
+		}
 	}
 
 	@Test

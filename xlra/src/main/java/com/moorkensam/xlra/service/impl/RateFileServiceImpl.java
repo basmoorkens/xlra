@@ -25,6 +25,7 @@ import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.RateOperation;
 import com.moorkensam.xlra.model.rate.Zone;
+import com.moorkensam.xlra.model.rate.ZoneType;
 import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
 import com.moorkensam.xlra.service.RateFileService;
 
@@ -47,15 +48,20 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 	@Override
 	public void createRateFile(final RateFile rateFile) {
 		logger.info("Creating ratefile for " + rateFile.getName());
+		convertStringCodesToObjects(rateFile);
+		rateFileDAO.createRateFile(rateFile);
+	}
+
+	private void convertStringCodesToObjects(final RateFile rateFile) {
 		for (Zone zone : rateFile.getZones()) {
 			zone.convertAlphaNumericPostalCodeStringToList();
 			zone.convertNumericalPostalCodeStringToList();
 		}
-		rateFileDAO.createRateFile(rateFile);
 	}
 
 	@Override
 	public RateFile updateRateFile(final RateFile rateFile) {
+		convertStringCodesToObjects(rateFile);
 		return rateFileDAO.updateRateFile(rateFile);
 	}
 
@@ -82,6 +88,13 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 	private void prepareRateFileForFrontend(RateFile rateFile) {
 		fillUpRelationalProperties(rateFile);
 		fillUpRateLineRelationalMap(rateFile);
+		for (Zone z : rateFile.getZones()) {
+			if (z.getZoneType() == ZoneType.ALPHANUMERIC_LIST) {
+				z.convertAlphaNumericPostalCodeListToString();
+			} else {
+				z.convertNumericalPostalCodeListToString();
+			}
+		}
 	}
 
 	/**
