@@ -27,7 +27,7 @@ public class ExcelToModelMapper {
 		rf.setConditions(createConditions(data, rf));
 	}
 
-	private List<Condition> createConditions(ExcelUploadUtilData data,
+	protected List<Condition> createConditions(ExcelUploadUtilData data,
 			RateFile rf) {
 		List<Condition> conditions = new ArrayList<Condition>();
 		for (String key : data.getTermsMap().keySet()) {
@@ -40,7 +40,7 @@ public class ExcelToModelMapper {
 		return conditions;
 	}
 
-	private String concatTermValues(List<String> terms) {
+	protected String concatTermValues(List<String> terms) {
 		String result = "";
 		for (String s : terms) {
 			result += s;
@@ -48,7 +48,8 @@ public class ExcelToModelMapper {
 		return result;
 	}
 
-	private List<RateLine> createRateLines(ExcelUploadUtilData data, RateFile rf) {
+	protected List<RateLine> createRateLines(ExcelUploadUtilData data,
+			RateFile rf) {
 		List<RateLine> rateLines = new ArrayList<RateLine>();
 		for (Double key : data.getRatesMap().keySet()) {
 			for (RateLineExcelImportDTO dto : data.getRatesMap().get(key)) {
@@ -63,7 +64,7 @@ public class ExcelToModelMapper {
 		return rateLines;
 	}
 
-	private List<Zone> createZones(RateFile rf, ExcelUploadUtilData data) {
+	protected List<Zone> createZones(RateFile rf, ExcelUploadUtilData data) {
 		List<Zone> zones = new ArrayList<Zone>();
 
 		for (Integer key : data.getZoneMap().keySet()) {

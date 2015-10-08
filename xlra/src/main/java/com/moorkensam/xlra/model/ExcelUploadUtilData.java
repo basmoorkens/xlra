@@ -4,12 +4,31 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Utility object to hold the values that result from parsing the ratefile
+ * excel.
+ * 
+ * @author bas
+ *
+ */
 public class ExcelUploadUtilData {
+	/**
+	 * Contains the actual zones.
+	 */
 	private Map<Integer, String> zoneMap = new HashMap<Integer, String>();
+	/**
+	 * Contains the zone information: postcode list.
+	 */
 	private Map<Integer, List<String>> zoneValuesMap = new HashMap<Integer, List<String>>();
 	private Map<Double, List<RateLineExcelImportDTO>> ratesMap = new HashMap<Double, List<RateLineExcelImportDTO>>();
 	private Map<String, List<String>> termsMap = new HashMap<String, List<String>>();
+	/**
+	 * The selected measurement whilst parsing.
+	 */
 	private double selectedMeasurement;
+	/**
+	 * The selected term whilst parsing.
+	 */
 	private String selectedTerm;
 
 	public String getSelectedTerm() {

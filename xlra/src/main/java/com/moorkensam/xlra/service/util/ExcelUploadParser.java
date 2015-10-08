@@ -46,15 +46,7 @@ public class ExcelUploadParser {
 					readZone(cell);
 					break;
 				case READ_ZONE_VALUES:
-					if (cell.getCellType() != Cell.CELL_TYPE_BLANK) {
-						readZoneValues(cell);
-					}
-					if (cell.getColumnIndex() == 0
-							&& (cell.getCellType() == Cell.CELL_TYPE_NUMERIC)) {
-						data.setSelectedMeasurement(Poiutil.getSafeCellDouble(
-								cell, formulaEvaluator));
-						readerState = ExcelReaderState.READ_RATES;
-					}
+					readerState = readZoneValues(readerState, cell);
 					break;
 				case READ_RATES:
 					if (cell.getColumnIndex() == 0
@@ -66,12 +58,7 @@ public class ExcelUploadParser {
 					}
 					break;
 				case READ_TERMS:
-					if (cell.getColumnIndex() == 0
-							&& cell.getCellType() == Cell.CELL_TYPE_BLANK) {
-						readerState = ExcelReaderState.DONE;
-					} else {
-						readTermsCell(cell);
-					}
+					readerState = readTerms(readerState, cell);
 					break;
 				default:
 					break;
@@ -84,6 +71,30 @@ public class ExcelUploadParser {
 		return data;
 	}
 
+	private ExcelReaderState readTerms(ExcelReaderState readerState, Cell cell) {
+		if (cell.getColumnIndex() == 0
+				&& cell.getCellType() == Cell.CELL_TYPE_BLANK) {
+			readerState = ExcelReaderState.DONE;
+		} else {
+			readTermsCell(cell);
+		}
+		return readerState;
+	}
+
+	private ExcelReaderState readZoneValues(ExcelReaderState readerState,
+			Cell cell) {
+		if (cell.getCellType() != Cell.CELL_TYPE_BLANK) {
+			readZoneValues(cell);
+		}
+		if (cell.getColumnIndex() == 0
+				&& (cell.getCellType() == Cell.CELL_TYPE_NUMERIC)) {
+			data.setSelectedMeasurement(Poiutil.getSafeCellDouble(cell,
+					formulaEvaluator));
+			readerState = ExcelReaderState.READ_RATES;
+		}
+		return readerState;
+	}
+
 	private ExcelReaderState tryBeginReading(ExcelReaderState readerState,
 			Cell cell) {
 		boolean startReadingLines;
@@ -94,7 +105,7 @@ public class ExcelUploadParser {
 		return readerState;
 	}
 
-	private void readTermsCell(Cell cell) {
+	protected void readTermsCell(Cell cell) {
 		if (cell.getColumnIndex() == 0) {
 			data.setSelectedTerm(Poiutil.getSafeCellString(cell, false));
 		} else {
