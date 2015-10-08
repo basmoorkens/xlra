@@ -11,3 +11,9 @@ NICE TO HAVES
 -excel export from data
 -graphical overview of diesel/chf prices
 -optimize application where needed
+
+-auto select belgie palet normal nl 
+lege zones eraf
+range zones bij in column header rates
+headers fixed
+type of field (%, currency)
