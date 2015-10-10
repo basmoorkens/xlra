@@ -11,12 +11,12 @@ public class RateFileSearchFilter implements Serializable {
 
 	private static final long serialVersionUID = -6601295471333940331L;
 
-	private Kind rateKind; 
-	
-	private Measurement measurement; 
-	
+	private Kind rateKind;
+
+	private Measurement measurement;
+
 	private Country country;
-	
+
 	private FullCustomer customer;
 
 	public Kind getRateKind() {
@@ -49,5 +49,26 @@ public class RateFileSearchFilter implements Serializable {
 
 	public void setCustomer(FullCustomer customer) {
 		this.customer = customer;
-	} 
+	}
+
+	@Override
+	public String toString() {
+		String result = "";
+		if (rateKind != null) {
+			result += "Ratekind: " + rateKind;
+		}
+		if (measurement != null) {
+			result += " Measurement: " + measurement;
+		}
+		if (country != null) {
+			result += " Country: " + country;
+		}
+		if (customer != null) {
+			result += " Customer: " + customer.getName();
+		}
+		if (result.equals("")) {
+			result = "Empty filter";
+		}
+		return result;
+	}
 }

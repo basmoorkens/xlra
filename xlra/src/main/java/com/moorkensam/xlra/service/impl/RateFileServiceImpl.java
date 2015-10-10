@@ -69,6 +69,7 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 	@Override
 	public List<RateFile> getRateFilesForFilter(
 			final RateFileSearchFilter filter) {
+		logger.info("Fetch ratefiles for filter " + filter);
 		return rateFileDAO.getRateFilesForFilter(filter);
 	}
 
@@ -79,13 +80,14 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 
 	@Override
 	public RateFile getFullRateFile(long id) {
-		logger.info("Fetching details for ratefile with id " + id);
+		logger.debug("Fetching details for ratefile with id " + id);
 		RateFile rateFile = rateFileDAO.getFullRateFile(id);
 		prepareRateFileForFrontend(rateFile);
 		return rateFile;
 	}
 
 	private void prepareRateFileForFrontend(RateFile rateFile) {
+		logger.debug("Preparing ratefile for front end");
 		for (Zone z : rateFile.getZones()) {
 			if (z.getZoneType() == ZoneType.ALPHANUMERIC_LIST) {
 				z.convertAlphaNumericPostalCodeListToString();
@@ -104,7 +106,7 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 	 * @param rateFile
 	 */
 	protected void fillUpRelationalProperties(RateFile rateFile) {
-
+		logger.debug("Filling in measurement rows & columnheaders for ratefile");
 		rateFile.setColumns(new ArrayList<String>());
 		for (Zone z : rateFile.getZones()) {
 			rateFile.getColumns().add(z.getAsColumnHeader());
@@ -148,6 +150,7 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void raiseRateFileRateLinesWithPercentage(List<RateFile> rateFiles,
 			double percentage) {
+		logger.info("Raising ratelines with percentage " + percentage);
 		applyRateOperation(rateFiles, percentage, RateOperation.RAISE);
 	}
 
@@ -214,6 +217,7 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 
 	private void createAndSaveRateOperationLogRecord(double percentage,
 			List<RateFile> fullRateFiles, RateOperation operation) {
+		logger.debug("Creating log record for " + operation);
 		RaiseRatesRecord logRecord = new RaiseRatesRecord();
 		logRecord.setPercentage(percentage);
 		logRecord.setRateFiles(fullRateFiles);

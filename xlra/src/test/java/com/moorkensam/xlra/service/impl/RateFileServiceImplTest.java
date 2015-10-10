@@ -113,8 +113,6 @@ public class RateFileServiceImplTest extends UnitilsJUnit4 {
 	@Test
 	public void testFillUpRelationProperties() {
 		rateFileServiceImpl.fillUpRelationalProperties(rateFile);
-		rateFileDAOMock.assertInvoked().getDistinctMeasurementsForRateFile(
-				rateFile);
 	}
 
 	@Test

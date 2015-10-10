@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.moorkensam.xlra.model.ExcelUploadUtilData;
 import com.moorkensam.xlra.model.RateLineExcelImportDTO;
 import com.moorkensam.xlra.model.configuration.TranslationKey;
@@ -21,6 +24,8 @@ import com.moorkensam.xlra.model.rate.ZoneType;
  */
 public class ExcelToModelMapper {
 
+	private final static Logger logger = LogManager.getLogger();
+
 	public void mapExcelToModel(RateFile rf, ExcelUploadUtilData data) {
 		rf.setZones(createZones(rf, data));
 		rf.setRateLines(createRateLines(data, rf));
@@ -29,6 +34,7 @@ public class ExcelToModelMapper {
 
 	protected List<Condition> createConditions(ExcelUploadUtilData data,
 			RateFile rf) {
+		logger.debug("Creating conditions for excel data");
 		List<Condition> conditions = new ArrayList<Condition>();
 		for (String key : data.getTermsMap().keySet()) {
 			Condition condition = new Condition();
@@ -50,6 +56,7 @@ public class ExcelToModelMapper {
 
 	protected List<RateLine> createRateLines(ExcelUploadUtilData data,
 			RateFile rf) {
+		logger.debug("Creating ratelines for excel");
 		List<RateLine> rateLines = new ArrayList<RateLine>();
 		for (Double key : data.getRatesMap().keySet()) {
 			for (RateLineExcelImportDTO dto : data.getRatesMap().get(key)) {
@@ -65,6 +72,7 @@ public class ExcelToModelMapper {
 	}
 
 	protected List<Zone> createZones(RateFile rf, ExcelUploadUtilData data) {
+		logger.debug("Creating zones for ratefile");
 		List<Zone> zones = new ArrayList<Zone>();
 
 		for (Integer key : data.getZoneMap().keySet()) {

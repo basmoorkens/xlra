@@ -14,5 +14,4 @@ NICE TO HAVES
 
 -auto select belgie palet normal nl 
 lege zones eraf
-range zones bij in column header rates
 type of field (%, currency)

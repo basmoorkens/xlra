@@ -17,4 +17,6 @@ public interface CustomerService {
 
 	public void deleteCustomer(BaseCustomer customer);
 
+	public List<BaseCustomer> getAllCustomers();
+
 }

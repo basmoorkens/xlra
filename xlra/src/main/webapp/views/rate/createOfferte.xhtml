@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/views/template.xhtml">
+	<ui:define name="title">
+		<h:outputText value="XLRA - create quotation" />
+	</ui:define>
+	<ui:define name="pageTitle">
+		<h:outputText value="Create quotation" />
+	</ui:define>
+	<ui:define name="body">
+		<h:form id="createQuotationForm">
+			<p:wizard flowListener="#{createQuotationController.onFlowProcess}"
+				showNavBar="false" widgetVar="wizard">
+				<p:tab id="selectCustomer" title="Select / create customer">
+
+					<h:outputText value="Select an existing customer: " />
+					<p:autoComplete size="100" id="customerSelector" dropdown="true"
+						value="#{createQuotationController.quotation.customer}"
+						completeMethod="#{createQuotationController.completeCustomerName}"
+						var="customer" itemLabel="#{customer.name}"
+						itemValue="#{customer}" converter="#{customerConverter}"
+						required="true" requiredMessage="Customer is required">
+					</p:autoComplete>
+					<br />
+					<h:outputText value="Or create a new customer" />
+					<p:commandButton value="Add new customer"
+						update=":createQuotationForm"
+						actionListener="#{createQuotationController.setupPageForNewCustomer}" />
+
+					<p:panel header="Add customer"
+						rendered="#{createQuotationController.renderAddCustomerGrid}">
+						<p:growl showDetail="true" id="growl" sticky="true" />
+						<p:panelGrid columns="2">
+							<h:outputLabel for="nameField">Name</h:outputLabel>
+							<p:inputText size="50"
+								value="#{createQuotationController.customerToAdd.name}"
+								id="nameField"></p:inputText>
+
+							<h:outputLabel for="emailField">Email</h:outputLabel>
+							<p:inputText size="50"
+								value="#{createQuotationController.customerToAdd.email}"
+								id="emailField"></p:inputText>
+
+							<h:outputLabel for="phoneField">Phone</h:outputLabel>
+							<p:inputText size="50"
+								value="#{createQuotationController.customerToAdd.phone}"
+								id="phoneField"></p:inputText>
+
+							<h:outputLabel for="languageField">Language</h:outputLabel>
+							<p:selectOneRadio
+								value="#{createQuotationController.customerToAdd.language}"
+								id="languageField">
+								<f:selectItems value="#{createQuotationController.allLanguages}"></f:selectItems>
+							</p:selectOneRadio>
+						</p:panelGrid>
+						<p:commandButton value="Save customer"
+							update=":createQuotationForm growl"
+							actionListener="#{createQuotationController.createCustomer}"
+							ajax="true" />
+					</p:panel>
+				</p:tab>
+			</p:wizard>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

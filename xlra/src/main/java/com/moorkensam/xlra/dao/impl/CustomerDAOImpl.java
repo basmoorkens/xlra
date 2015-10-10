@@ -40,4 +40,12 @@ public class CustomerDAOImpl extends BaseDAO implements CustomerDAO {
 
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<BaseCustomer> getAllCustomers() {
+		Query query = getEntityManager().createNamedQuery(
+				"BaseCustomer.findAll");
+		return (List<BaseCustomer>) query.getResultList();
+	}
+
 }
