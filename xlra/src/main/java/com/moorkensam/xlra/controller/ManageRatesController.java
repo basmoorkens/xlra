@@ -107,9 +107,7 @@ public class ManageRatesController {
 	}
 
 	public void deleteZone(Zone zone) {
-		selectedRateFile.getZones().remove(zone);
-		zone.setRateFile(null);
-		rateFileService.updateRateFile(selectedRateFile);
+		selectedRateFile = rateFileService.deleteZone(zone);
 	}
 
 	public void deleteCondition(Condition condition) {

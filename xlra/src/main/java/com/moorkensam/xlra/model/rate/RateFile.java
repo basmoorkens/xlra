@@ -52,10 +52,10 @@ public class RateFile extends BaseEntity {
 	@JoinColumn(name = "countryId")
 	private Country country;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "rateFile", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "rateFile", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Zone> zones;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "rateFile", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "rateFile", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<RateLine> rateLines = new ArrayList<RateLine>();
 
 	@Enumerated(EnumType.STRING)

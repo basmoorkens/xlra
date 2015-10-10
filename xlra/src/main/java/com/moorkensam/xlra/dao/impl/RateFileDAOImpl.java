@@ -90,6 +90,11 @@ public class RateFileDAOImpl extends BaseDAO implements RateFileDAO {
 	@Override
 	public RateFile getFullRateFile(long rateFileId) {
 		RateFile rf = getEntityManager().find(RateFile.class, rateFileId);
+		lazyLoadRateFile(rf);
+		return rf;
+	}
+
+	public void lazyLoadRateFile(RateFile rf) {
 		rf.getRateLines().size();
 		rf.getConditions().size();
 		rf.getZones().size();
@@ -104,7 +109,6 @@ public class RateFileDAOImpl extends BaseDAO implements RateFileDAO {
 		for (RateLine rl : rf.getRateLines()) {
 			rl.getZone();
 		}
-		return rf;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -114,14 +118,5 @@ public class RateFileDAOImpl extends BaseDAO implements RateFileDAO {
 				"RateLine.findAllForRateFile", RateLine.class);
 		query.setParameter("ratefileid", rf.getId());
 		return (List<RateLine>) query.getResultList();
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Double> getDistinctMeasurementsForRateFile(RateFile rf) {
-		Query query = getEntityManager().createNamedQuery(
-				"RateFile.findDistinctMeasurements");
-		query.setParameter("ratefileid", rf.getId());
-		return (List<Double>) query.getResultList();
 	}
 }

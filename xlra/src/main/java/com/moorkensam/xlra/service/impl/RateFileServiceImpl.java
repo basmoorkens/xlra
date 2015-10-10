@@ -81,7 +81,6 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 	public RateFile getFullRateFile(long id) {
 		logger.info("Fetching details for ratefile with id " + id);
 		RateFile rateFile = rateFileDAO.getFullRateFile(id);
-		rateFile.setRateLines(rateFileDAO.findRateLinesForRateFile(rateFile));
 		prepareRateFileForFrontend(rateFile);
 		return rateFile;
 	}
@@ -110,8 +109,15 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 		for (Zone z : rateFile.getZones()) {
 			rateFile.getColumns().add(z.getAsColumnHeader());
 		}
-		rateFile.setMeasurementRows(rateFileDAO
-				.getDistinctMeasurementsForRateFile(rateFile));
+		List<Double> measurementRows = new ArrayList<Double>();
+		for (RateLine rl : rateFile.getRateLines()) {
+			if (!measurementRows.contains(rl.getMeasurement())) {
+				measurementRows.add(rl.getMeasurement());
+			}
+		}
+		Collections.sort(measurementRows);
+		rateFile.setMeasurementRows(measurementRows);
+
 	}
 
 	/**
@@ -303,12 +309,17 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 		zone.setRateFile(null);
 		Iterator<RateLine> iterator = rf.getRateLines().iterator();
 		RateLine rl;
-		while ((rl = iterator.next()) != null) {
+		while (iterator.hasNext()) {
+			rl = iterator.next();
 			if (rl.getZone().getId() == zone.getId()) {
-				rf.getRateLines().remove(rl);
+				iterator.remove();
 				rl.setRateFile(null);
+				break;
 			}
 		}
-		return updateRateFile(rf);
+		rf = updateRateFile(rf);
+		rateFileDAO.lazyLoadRateFile(rf);
+		prepareRateFileForFrontend(rf);
+		return rf;
 	}
 }

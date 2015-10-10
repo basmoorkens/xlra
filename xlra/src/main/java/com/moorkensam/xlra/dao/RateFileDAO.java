@@ -21,7 +21,7 @@ public interface RateFileDAO {
 
 	RateFile getFullRateFile(long rateFileId);
 
-	public List<Double> getDistinctMeasurementsForRateFile(RateFile rf);
-
 	public List<RateLine> findRateLinesForRateFile(RateFile rf);
+
+	public void lazyLoadRateFile(RateFile rf);
 }
