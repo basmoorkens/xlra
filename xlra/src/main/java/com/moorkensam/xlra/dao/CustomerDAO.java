@@ -7,11 +7,11 @@ import com.moorkensam.xlra.model.FullCustomer;
 
 public interface CustomerDAO {
 
-	public FullCustomer getCustomerById(long id);
+	public BaseCustomer getCustomerById(long id);
 
-	public void createCustomer(FullCustomer customer);
+	public BaseCustomer createCustomer(BaseCustomer customer);
 
-	public void updateCustomer(FullCustomer customer);
+	public BaseCustomer updateCustomer(BaseCustomer customer);
 
 	public List<FullCustomer> getAllFullCustomers();
 

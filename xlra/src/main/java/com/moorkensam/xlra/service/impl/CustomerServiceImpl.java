@@ -22,13 +22,13 @@ public class CustomerServiceImpl implements CustomerService {
 	private final static Logger logger = LogManager.getLogger();
 
 	@Override
-	public void createCustomer(FullCustomer customer) {
+	public BaseCustomer createCustomer(BaseCustomer customer) {
 		logger.info("Creating new customer with name " + customer.getName());
-		customerDAO.createCustomer(customer);
+		return customerDAO.createCustomer(customer);
 	}
 
 	@Override
-	public void updateCustomer(FullCustomer customer) {
+	public void updateCustomer(BaseCustomer customer) {
 		customerDAO.updateCustomer(customer);
 	}
 
@@ -44,14 +44,13 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public FullCustomer getCustomerById(long id) {
+	public BaseCustomer getCustomerById(long id) {
 		return customerDAO.getCustomerById(id);
 	}
 
 	@Override
 	public List<BaseCustomer> getAllCustomers() {
-		// TODO Auto-generated method stub
-		return null;
+		return customerDAO.getAllCustomers();
 	}
 
 }

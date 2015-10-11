@@ -22,16 +22,15 @@
 						value="#{createQuotationController.quotation.customer}"
 						completeMethod="#{createQuotationController.completeCustomerName}"
 						var="customer" itemLabel="#{customer.name}"
-						itemValue="#{customer}" converter="#{customerConverter}"
-						required="true" requiredMessage="Customer is required">
+						itemValue="#{customer}" converter="#{customerConverter}">
 					</p:autoComplete>
 					<br />
 					<h:outputText value="Or create a new customer" />
 					<p:commandButton value="Add new customer"
-						update=":createQuotationForm"
+						update=":createQuotationForm" immediate="true"
 						actionListener="#{createQuotationController.setupPageForNewCustomer}" />
 
-					<p:panel header="Add customer"
+					<p:panel header="Add customer" style="margin-top:50px;"
 						rendered="#{createQuotationController.renderAddCustomerGrid}">
 						<p:growl showDetail="true" id="growl" sticky="true" />
 						<p:panelGrid columns="2">
@@ -62,6 +61,42 @@
 							actionListener="#{createQuotationController.createCustomer}"
 							ajax="true" />
 					</p:panel>
+
+					<p:commandButton value="Next" onclick="PF('wizard').next();"
+						style="width:150px; margin-left:20px;" />
+					</p:panel>
+				</p:tab>
+				<p:tab id="selectFiltersTab">
+					<p:panelGrid columns="2">
+						<h:outputText value="Measurement: " />
+						<p:selectOneRadio
+							value="#{createQuotationController.quotation.measurement}">
+							<f:selectItems
+								value="#{createQuotationController.allMeasurements})" />
+						</p:selectOneRadio>
+
+						<h:outputText value="Type: " />
+						<p:selectOneRadio
+							value="#{createQuotationController.quotation.kindOfRate}">
+							<f:selectItems value="#{createQuotationController.allKinds}" />
+						</p:selectOneRadio>
+
+						<h:outputText value="Country: " />
+						<p:selectOneRadio
+							value="#{createQuotationController.quotation.country}">
+							<f:selectItems value="#{createQuotationController.allCountries}" />
+						</p:selectOneRadio>
+					</p:panelGrid>
+					<p:panel style="bottom:20px;  padding:0px;border:0px;">
+						<p:commandButton value="Back" onclick="PF('wizard').back();"
+							style="width:150px;" />
+						<p:commandButton value="Next" onclick="PF('wizard').next();"
+							style="width:150px; margin-left:20px;" />
+					</p:panel>
+				</p:tab>
+				
+				<p:tab id="summaryOfferteTab">
+				
 				</p:tab>
 			</p:wizard>
 		</h:form>

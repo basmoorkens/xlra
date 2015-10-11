@@ -64,6 +64,7 @@ public class ExcelToModelMapperTest extends UnitilsJUnit4 {
 		zoneValuesMap.put(2, Arrays.asList("boemboem"));
 		rf.setCountry(new Country());
 		rf.getCountry().setZoneType(ZoneType.ALPHANUMERIC_LIST);
+
 	}
 
 	@Test
@@ -99,13 +100,21 @@ public class ExcelToModelMapperTest extends UnitilsJUnit4 {
 
 	@Test
 	public void testCreateRatelines() {
+		rf.setZones(new ArrayList<Zone>());
+		Zone zone = new Zone();
+		zone.setName("Zone 1");
+		Zone zone2 = new Zone();
+		zone2.setName("Zone 2");
+		rf.getZones().add(zone);
+		rf.getZones().add(zone2);
+
 		List<RateLine> lines = mapper.createRateLines(data, rf);
 		Assert.assertEquals(2, lines.size());
 		Assert.assertEquals(new BigDecimal(100d), lines.get(0).getValue());
-		Assert.assertEquals("Zone 1", lines.get(0).getZone());
+		Assert.assertEquals("Zone 1", lines.get(0).getZone().getName());
 		Assert.assertEquals(1d, lines.get(0).getMeasurement());
 		Assert.assertEquals(new BigDecimal(150d), lines.get(1).getValue());
-		Assert.assertEquals("Zone 2", lines.get(1).getZone());
+		Assert.assertEquals("Zone 2", lines.get(1).getZone().getName());
 		Assert.assertEquals(1d, lines.get(1).getMeasurement());
 	}
 }

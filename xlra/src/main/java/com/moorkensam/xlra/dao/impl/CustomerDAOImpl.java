@@ -12,12 +12,12 @@ import com.moorkensam.xlra.model.FullCustomer;
 
 public class CustomerDAOImpl extends BaseDAO implements CustomerDAO {
 
-	public void createCustomer(FullCustomer customer) {
-		getEntityManager().persist(customer);
+	public BaseCustomer createCustomer(BaseCustomer customer) {
+		return getEntityManager().merge(customer);
 	}
 
-	public void updateCustomer(FullCustomer customer) {
-		getEntityManager().merge(customer);
+	public BaseCustomer updateCustomer(BaseCustomer customer) {
+		return getEntityManager().merge(customer);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -35,8 +35,8 @@ public class CustomerDAOImpl extends BaseDAO implements CustomerDAO {
 	}
 
 	@Override
-	public FullCustomer getCustomerById(long id) {
-		return (FullCustomer) getEntityManager().find(FullCustomer.class, id);
+	public BaseCustomer getCustomerById(long id) {
+		return (FullCustomer) getEntityManager().find(BaseCustomer.class, id);
 
 	}
 
