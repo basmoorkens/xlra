@@ -36,7 +36,7 @@ public class CustomerDAOImpl extends BaseDAO implements CustomerDAO {
 
 	@Override
 	public BaseCustomer getCustomerById(long id) {
-		return (FullCustomer) getEntityManager().find(BaseCustomer.class, id);
+		return getEntityManager().find(BaseCustomer.class, id);
 
 	}
 

@@ -33,6 +33,10 @@ public class QuotationQuery extends BaseEntity {
 	@JoinColumn(name = "countryId")
 	private Country country;
 
+	private double quantity;
+
+	private String postalCode;
+
 	public QuotationQuery() {
 	}
 
@@ -73,5 +77,21 @@ public class QuotationQuery extends BaseEntity {
 		return "Country: " + country.getName() + " Type: " + kindOfRate
 				+ " Measurement: " + measurement + " Customer: "
 				+ customer.getName();
+	}
+
+	public String getPostalCode() {
+		return postalCode;
+	}
+
+	public void setPostalCode(String postalCode) {
+		this.postalCode = postalCode;
+	}
+
+	public double getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(double quantity) {
+		this.quantity = quantity;
 	}
 }

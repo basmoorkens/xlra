@@ -19,12 +19,17 @@ import com.moorkensam.xlra.model.QuotationQuery;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Kind;
 import com.moorkensam.xlra.model.rate.Measurement;
+import com.moorkensam.xlra.model.rate.QuotationResult;
 import com.moorkensam.xlra.service.CountryService;
 import com.moorkensam.xlra.service.CustomerService;
+import com.moorkensam.xlra.service.QuotationService;
 
 @ManagedBean
 @ViewScoped
 public class CreateQuotationController {
+
+	@Inject
+	private QuotationService quotationService;
 
 	@Inject
 	private CustomerService customerService;
@@ -34,7 +39,9 @@ public class CreateQuotationController {
 
 	private List<BaseCustomer> customers;
 
-	private QuotationQuery quotation;
+	private QuotationQuery quotationQuery;
+
+	private QuotationResult quotationResult;
 
 	private BaseCustomer customerToAdd;
 
@@ -45,7 +52,7 @@ public class CreateQuotationController {
 	@PostConstruct
 	public void init() {
 		allCountries = countryService.getAllCountries();
-		quotation = new QuotationQuery();
+		setQuotationQuery(new QuotationQuery());
 		refreshCustomers();
 		initializeNewCustomer();
 	}
@@ -63,7 +70,8 @@ public class CreateQuotationController {
 	}
 
 	public void createCustomer() {
-		quotation.setCustomer(customerService.createCustomer(customerToAdd));
+		getQuotationQuery().setCustomer(
+				customerService.createCustomer(customerToAdd));
 		refreshCustomers();
 		renderAddCustomerGrid = false;
 		customerToAdd = new BaseCustomer();
@@ -75,19 +83,20 @@ public class CreateQuotationController {
 
 	public String onFlowProcess(FlowEvent event) {
 		if (event.getNewStep().equals("selectFiltersTab")) {
-			if (quotation.getCustomer() instanceof FullCustomer) {
+			if (getQuotationQuery().getCustomer() instanceof FullCustomer) {
 				setupFiltersFromExistingCustomer();
 			}
 		}
 
 		if (event.getNewStep().equals("summaryOfferteTab")) {
-
+			quotationResult = quotationService
+					.generateQuotationResultForQuotationQuery(quotationQuery);
 		}
 		return event.getNewStep();
 	}
 
 	private void setupFiltersFromExistingCustomer() {
-		FullCustomer fc = (FullCustomer) quotation.getCustomer();
+		FullCustomer fc = (FullCustomer) getQuotationQuery().getCustomer();
 		// TODO implements loading of filters based on customer ratefile present
 	}
 
@@ -110,14 +119,6 @@ public class CreateQuotationController {
 
 	public List<Kind> getAllKinds() {
 		return Arrays.asList(Kind.values());
-	}
-
-	public QuotationQuery getQuotation() {
-		return quotation;
-	}
-
-	public void setQuotation(QuotationQuery quotation) {
-		this.quotation = quotation;
 	}
 
 	public List<BaseCustomer> getCustomers() {
@@ -150,6 +151,22 @@ public class CreateQuotationController {
 
 	public void setAllCountries(List<Country> allCountries) {
 		this.allCountries = allCountries;
+	}
+
+	public QuotationQuery getQuotationQuery() {
+		return quotationQuery;
+	}
+
+	public void setQuotationQuery(QuotationQuery quotationQuery) {
+		this.quotationQuery = quotationQuery;
+	}
+
+	public QuotationResult getQuotationResult() {
+		return quotationResult;
+	}
+
+	public void setQuotationResult(QuotationResult quotationResult) {
+		this.quotationResult = quotationResult;
 	}
 
 }

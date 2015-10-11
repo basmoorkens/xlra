@@ -39,52 +39,69 @@ public class ExcelUploadParser {
 		while (rowIterator.hasNext()) {
 			Iterator<Cell> cellIterator = rowIterator.next().cellIterator();
 			while (cellIterator.hasNext()) {
-				Cell cell = cellIterator.next();
-				switch (readerState) {
-				case NOT_READING:
-					readerState = tryBeginReading(readerState, cell);
-					break;
-				case READ_ZONES:
-					readZone(cell);
-					break;
-				case READ_ZONE_VALUES:
-					readerState = readZoneValues(readerState, cell);
-					break;
-				case WAIT_FOR_RATES:
-					if (cell.getColumnIndex() == 0
-							&& cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-						data.setSelectedMeasurement(Poiutil.getSafeCellDouble(
-								cell, formulaEvaluator));
-						readerState = ExcelReaderState.READ_RATES;
-					}
-					break;
-				case READ_ZONE_EXTRA_INFO:
-					readExtraInfo(readerState, cell);
-					break;
-				case READ_RATES:
-					if (cell.getColumnIndex() == 0
-							&& cell.getCellType() == Cell.CELL_TYPE_STRING) {
-						readerState = ExcelReaderState.READ_TERMS;
-						break;// dont need to read rest of row
-					} else {
-						readRateCells(cell);
-					}
-					break;
-				case READ_TERMS:
-					readerState = readTerms(readerState, cell);
-					break;
-				default:
-					break;
-				}
+				readerState = processOneCell(readerState, cellIterator);
 			}
-			if (readerState == ExcelReaderState.READ_ZONES) {
-				readerState = ExcelReaderState.READ_ZONE_VALUES;
-			}
-			if (readerState == ExcelReaderState.READ_ZONE_EXTRA_INFO) {
-				readerState = ExcelReaderState.WAIT_FOR_RATES;
-			}
+			readerState = applyAfterProcessLogic(readerState);
 		}
 		return data;
+	}
+
+	private ExcelReaderState applyAfterProcessLogic(ExcelReaderState readerState) {
+		if (readerState == ExcelReaderState.READ_ZONES) {
+			readerState = ExcelReaderState.READ_ZONE_VALUES;
+		}
+		if (readerState == ExcelReaderState.READ_ZONE_EXTRA_INFO) {
+			readerState = ExcelReaderState.WAIT_FOR_RATES;
+		}
+		return readerState;
+	}
+
+	private ExcelReaderState processOneCell(ExcelReaderState readerState,
+			Iterator<Cell> cellIterator) {
+		Cell cell = cellIterator.next();
+		switch (readerState) {
+		case NOT_READING:
+			readerState = tryBeginReading(readerState, cell);
+			break;
+		case READ_ZONES:
+			readZone(cell);
+			break;
+		case READ_ZONE_VALUES:
+			readerState = readZoneValues(readerState, cell);
+			break;
+		case WAIT_FOR_RATES:
+			readerState = readWaitForRates(readerState, cell);
+			break;
+		case READ_ZONE_EXTRA_INFO:
+			readExtraInfo(readerState, cell);
+			break;
+		case READ_RATES:
+			if (cell.getColumnIndex() == 0
+					&& cell.getCellType() == Cell.CELL_TYPE_STRING) {
+				readerState = ExcelReaderState.READ_TERMS;
+				break;// dont need to read rest of row
+			} else {
+				readRateCells(cell);
+			}
+			break;
+		case READ_TERMS:
+			readerState = readTerms(readerState, cell);
+			break;
+		default:
+			break;
+		}
+		return readerState;
+	}
+
+	private ExcelReaderState readWaitForRates(ExcelReaderState readerState,
+			Cell cell) {
+		if (cell.getColumnIndex() == 0
+				&& cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+			data.setSelectedMeasurement(Poiutil.getSafeCellDouble(cell,
+					formulaEvaluator));
+			readerState = ExcelReaderState.READ_RATES;
+		}
+		return readerState;
 	}
 
 	private void readExtraInfo(ExcelReaderState readerState, Cell cell) {

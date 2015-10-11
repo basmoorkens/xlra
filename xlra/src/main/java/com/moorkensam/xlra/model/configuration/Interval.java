@@ -15,9 +15,14 @@ public class Interval implements Serializable {
 
 	}
 
+	public Interval(String start, String end) {
+		this.start = Double.parseDouble(start);
+		this.end = Double.parseDouble(end);
+	}
+
 	public Interval(String[] ints) {
-		this.start = Integer.parseInt(ints[0]);
-		this.end = Integer.parseInt(ints[1]);
+		this.start = Double.parseDouble(ints[0]);
+		this.end = Double.parseDouble(ints[1]);
 	}
 
 	public double getStart() {

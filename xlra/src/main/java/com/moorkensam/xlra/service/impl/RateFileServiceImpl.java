@@ -326,4 +326,11 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 		prepareRateFileForFrontend(rf);
 		return rf;
 	}
+
+	@Override
+	public RateFile getFullRateFileForFilter(RateFileSearchFilter filter) {
+		RateFile rf = rateFileDAO.getFullRateFileForFilter(filter);
+		prepareRateFileForFrontend(rf);
+		return rf;
+	}
 }

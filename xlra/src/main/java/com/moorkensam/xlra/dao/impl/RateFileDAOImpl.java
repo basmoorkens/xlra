@@ -119,4 +119,16 @@ public class RateFileDAOImpl extends BaseDAO implements RateFileDAO {
 		query.setParameter("ratefileid", rf.getId());
 		return (List<RateLine>) query.getResultList();
 	}
+
+	@Override
+	public RateFile getFullRateFileForFilter(RateFileSearchFilter filter) {
+		StringBuilder builder = buildSearchQuery(filter);
+
+		Query query = getEntityManager().createQuery(builder.toString());
+		buildSearchParams(filter, query);
+		logger.info("Searching ratefile for filter: " + builder.toString());
+		RateFile rf = (RateFile) query.getSingleResult();
+		lazyLoadRateFile(rf);
+		return rf;
+	}
 }

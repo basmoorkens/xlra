@@ -24,4 +24,6 @@ public interface RateFileDAO {
 	public List<RateLine> findRateLinesForRateFile(RateFile rf);
 
 	public void lazyLoadRateFile(RateFile rf);
+
+	public RateFile getFullRateFileForFilter(RateFileSearchFilter filter);
 }

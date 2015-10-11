@@ -62,4 +62,6 @@ public interface RateFileService {
 
 	RateFile deleteZone(Zone zone);
 
+	RateFile getFullRateFileForFilter(RateFileSearchFilter filter);
+
 }

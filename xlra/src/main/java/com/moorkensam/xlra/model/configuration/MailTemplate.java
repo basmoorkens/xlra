@@ -15,7 +15,9 @@ import com.moorkensam.xlra.model.Language;
 
 @Entity
 @Table(name = "mailTemplate")
-@NamedQueries(@NamedQuery(name = "MailTemplate.findAll", query = "SELECT m FROM MailTemplate m"))
+@NamedQueries({
+		@NamedQuery(name = "MailTemplate.findAll", query = "SELECT m FROM MailTemplate m"),
+		@NamedQuery(name = "MailTemplate.findByLanguage", query = "SELECT m FROM MailTemplate m where m.language = :language") })
 public class MailTemplate extends BaseEntity {
 
 	private static final long serialVersionUID = -7712260056891764597L;

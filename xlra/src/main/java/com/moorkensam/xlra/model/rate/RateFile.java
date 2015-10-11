@@ -21,6 +21,7 @@ import javax.persistence.Transient;
 import com.moorkensam.xlra.model.BaseEntity;
 import com.moorkensam.xlra.model.FullCustomer;
 import com.moorkensam.xlra.model.Language;
+import com.moorkensam.xlra.model.configuration.Interval;
 
 @Entity
 @Cacheable
@@ -225,6 +226,38 @@ public class RateFile extends BaseEntity {
 			return getZones().get(0).getZoneType() == ZoneType.ALPHANUMERIC_LIST;
 		}
 		return false;
+	}
+
+	public RateLine getRateLineForQuantityAndPostalCode(double quantity,
+			String postalCode) {
+		if (rateLines != null) {
+			List<RateLine> rlsWithCorrectQuantity = new ArrayList<RateLine>();
+			for (RateLine rl : getRateLines()) {
+				if (rl.getMeasurement() == quantity) {
+					rlsWithCorrectQuantity.add(rl);
+				}
+			}
+			for (RateLine rl : rlsWithCorrectQuantity) {
+				if (rl.getZone().getZoneType() == ZoneType.ALPHANUMERIC_LIST) {
+					for (String s : rl.getZone().getAlphaNumericalPostalCodes()) {
+						if (s.equals(postalCode)) {
+							return rl;
+						}
+					}
+				} else {
+					for (Interval interval : rl.getZone()
+							.getNumericalPostalCodes()) {
+						int postalCodeAsInt = Integer.parseInt(postalCode);
+						if (postalCodeAsInt >= interval.getStart()
+								&& postalCodeAsInt < interval.getEnd()) {
+							return rl;
+						}
+
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	public Zone getZoneForZoneName(String zoneName) {

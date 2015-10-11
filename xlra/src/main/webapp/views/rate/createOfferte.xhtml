@@ -21,7 +21,7 @@
 					<p:autoComplete size="100" id="customerSelector" dropdown="true"
 						value="#{createQuotationController.quotation.customer}"
 						completeMethod="#{createQuotationController.completeCustomerName}"
-						var="customer" itemLabel="#{customer.name}"
+						var="customer" itemLabel="#{customer.name}" required="true"
 						itemValue="#{customer}" converter="#{customerConverter}">
 					</p:autoComplete>
 					<br />
@@ -61,31 +61,40 @@
 							actionListener="#{createQuotationController.createCustomer}"
 							ajax="true" />
 					</p:panel>
-
-					<p:commandButton value="Next" onclick="PF('wizard').next();"
-						style="width:150px; margin-left:20px;" />
+					<p:panel style="bottom:20px;  padding:0px;border:0px;">
+						<p:commandButton value="Next" onclick="PF('wizard').next();"
+							style="width:150px; margin-left:20px;" />
 					</p:panel>
 				</p:tab>
-				<p:tab id="selectFiltersTab">
+				<p:tab id="selectFiltersTab" title="Rate filters">
 					<p:panelGrid columns="2">
 						<h:outputText value="Measurement: " />
-						<p:selectOneRadio
-							value="#{createQuotationController.quotation.measurement}">
+						<p:selectOneRadio required="true"
+							value="#{createQuotationController.quotationQuery.measurement}">
 							<f:selectItems
-								value="#{createQuotationController.allMeasurements})" />
+								value="#{createQuotationController.allMeasurements}" />
 						</p:selectOneRadio>
 
 						<h:outputText value="Type: " />
-						<p:selectOneRadio
-							value="#{createQuotationController.quotation.kindOfRate}">
+						<p:selectOneRadio required="true"
+							value="#{createQuotationController.quotationQuery.kindOfRate}">
 							<f:selectItems value="#{createQuotationController.allKinds}" />
 						</p:selectOneRadio>
 
 						<h:outputText value="Country: " />
-						<p:selectOneRadio
-							value="#{createQuotationController.quotation.country}">
+						<p:selectOneRadio converter="#{countryConverter}" required="true"
+							value="#{createQuotationController.quotationQuery.country}">
 							<f:selectItems value="#{createQuotationController.allCountries}" />
 						</p:selectOneRadio>
+
+						<h:outputText value="Quantity:" />
+						<p:inputText required="true"
+							value="#{createQuotationController.quotationQuery.quantity}" />
+
+						<h:outputText value="Postal code: " />
+						<p:inputText required="true"
+							value="#{createQuotationController.quotationQuery.postalCode}" />
+
 					</p:panelGrid>
 					<p:panel style="bottom:20px;  padding:0px;border:0px;">
 						<p:commandButton value="Back" onclick="PF('wizard').back();"
@@ -94,9 +103,9 @@
 							style="width:150px; margin-left:20px;" />
 					</p:panel>
 				</p:tab>
-				
-				<p:tab id="summaryOfferteTab">
-				
+
+				<p:tab id="summaryTab" title="Summary">
+
 				</p:tab>
 			</p:wizard>
 		</h:form>

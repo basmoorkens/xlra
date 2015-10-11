@@ -5,6 +5,7 @@ import javax.inject.Inject;
 
 import com.moorkensam.xlra.dao.EmailTemplateDAO;
 import com.moorkensam.xlra.dto.MailTemplateDTO;
+import com.moorkensam.xlra.model.Language;
 import com.moorkensam.xlra.model.configuration.MailTemplate;
 import com.moorkensam.xlra.service.MailTemplateService;
 
@@ -31,6 +32,11 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 		for (MailTemplate mt : mailTemplateDTO.getMailTemplates()) {
 			mailTemplateDAO.updateEmailTemplate(mt);
 		}
+	}
+
+	@Override
+	public MailTemplate getMailTemplateForLanguage(Language language) {
+		return mailTemplateDAO.getMailTemplateForLanguage(language);
 	}
 
 }

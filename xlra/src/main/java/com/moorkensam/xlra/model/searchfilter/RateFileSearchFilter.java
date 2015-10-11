@@ -2,6 +2,7 @@ package com.moorkensam.xlra.model.searchfilter;
 
 import java.io.Serializable;
 
+import com.moorkensam.xlra.model.BaseCustomer;
 import com.moorkensam.xlra.model.FullCustomer;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Kind;
@@ -17,7 +18,7 @@ public class RateFileSearchFilter implements Serializable {
 
 	private Country country;
 
-	private FullCustomer customer;
+	private BaseCustomer customer;
 
 	public Kind getRateKind() {
 		return rateKind;
@@ -43,14 +44,6 @@ public class RateFileSearchFilter implements Serializable {
 		this.country = country;
 	}
 
-	public FullCustomer getCustomer() {
-		return customer;
-	}
-
-	public void setCustomer(FullCustomer customer) {
-		this.customer = customer;
-	}
-
 	@Override
 	public String toString() {
 		String result = "";
@@ -63,12 +56,20 @@ public class RateFileSearchFilter implements Serializable {
 		if (country != null) {
 			result += " Country: " + country;
 		}
-		if (customer != null) {
-			result += " Customer: " + customer.getName();
+		if (getCustomer() != null) {
+			result += " Customer: " + getCustomer().getName();
 		}
 		if (result.equals("")) {
 			result = "Empty filter";
 		}
 		return result;
+	}
+
+	public BaseCustomer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(BaseCustomer customer) {
+		this.customer = customer;
 	}
 }
