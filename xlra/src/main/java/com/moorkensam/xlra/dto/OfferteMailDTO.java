@@ -14,6 +14,10 @@ public class OfferteMailDTO {
 		this.content = content;
 	}
 
+	public OfferteMailDTO() {
+
+	}
+
 	public String getContent() {
 		return content;
 	}

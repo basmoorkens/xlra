@@ -5,6 +5,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 
+import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.dto.MailTemplateDTO;
 import com.moorkensam.xlra.service.MailTemplateService;
 
@@ -23,7 +24,9 @@ public class MailTemplateController {
 	}
 
 	public void saveMailTemplates() {
-
+		mailTemplateService.saveMailTemplateDTO(mailTemplateDTO);
+		MessageUtil.addMessage("Update succesful",
+				"Succesfully updated email templates");
 	}
 
 	private void refreshTemplates() {

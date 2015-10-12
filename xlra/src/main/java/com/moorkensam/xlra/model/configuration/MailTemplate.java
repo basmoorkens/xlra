@@ -29,6 +29,8 @@ public class MailTemplate extends BaseEntity {
 	@JoinColumn(name = "xlraConfigurationId")
 	private Configuration xlraConfiguration;
 
+	private String subject;
+
 	@Lob
 	private String template;
 
@@ -54,6 +56,14 @@ public class MailTemplate extends BaseEntity {
 
 	public void setXlraConfiguration(Configuration xlraConfiguration) {
 		this.xlraConfiguration = xlraConfiguration;
+	}
+
+	public String getSubject() {
+		return subject;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
 	}
 
 }

@@ -19,7 +19,7 @@
 
 					<h:outputText value="Select an existing customer: " />
 					<p:autoComplete size="100" id="customerSelector" dropdown="true"
-						value="#{createQuotationController.quotation.customer}"
+						value="#{createQuotationController.quotationQuery.customer}"
 						completeMethod="#{createQuotationController.completeCustomerName}"
 						var="customer" itemLabel="#{customer.name}" required="true"
 						itemValue="#{customer}" converter="#{customerConverter}">
@@ -27,40 +27,9 @@
 					<br />
 					<h:outputText value="Or create a new customer" />
 					<p:commandButton value="Add new customer"
-						update=":createQuotationForm" immediate="true"
+						update=":addQuickCustomerForm" immediate="true"
 						actionListener="#{createQuotationController.setupPageForNewCustomer}" />
 
-					<p:panel header="Add customer" style="margin-top:50px;"
-						rendered="#{createQuotationController.renderAddCustomerGrid}">
-						<p:growl showDetail="true" id="growl" sticky="true" />
-						<p:panelGrid columns="2">
-							<h:outputLabel for="nameField">Name</h:outputLabel>
-							<p:inputText size="50"
-								value="#{createQuotationController.customerToAdd.name}"
-								id="nameField"></p:inputText>
-
-							<h:outputLabel for="emailField">Email</h:outputLabel>
-							<p:inputText size="50"
-								value="#{createQuotationController.customerToAdd.email}"
-								id="emailField"></p:inputText>
-
-							<h:outputLabel for="phoneField">Phone</h:outputLabel>
-							<p:inputText size="50"
-								value="#{createQuotationController.customerToAdd.phone}"
-								id="phoneField"></p:inputText>
-
-							<h:outputLabel for="languageField">Language</h:outputLabel>
-							<p:selectOneRadio
-								value="#{createQuotationController.customerToAdd.language}"
-								id="languageField">
-								<f:selectItems value="#{createQuotationController.allLanguages}"></f:selectItems>
-							</p:selectOneRadio>
-						</p:panelGrid>
-						<p:commandButton value="Save customer"
-							update=":createQuotationForm growl"
-							actionListener="#{createQuotationController.createCustomer}"
-							ajax="true" />
-					</p:panel>
 					<p:panel style="bottom:20px;  padding:0px;border:0px;">
 						<p:commandButton value="Next" onclick="PF('wizard').next();"
 							style="width:150px; margin-left:20px;" />
@@ -104,10 +73,43 @@
 					</p:panel>
 				</p:tab>
 
-				<p:tab id="summaryTab" title="Summary">
+				<p:tab id="summaryOfferteTab" title="Summary">
 
 				</p:tab>
 			</p:wizard>
+		</h:form>
+		<h:form id="addQuickCustomerForm">
+			<p:panel header="Add customer" style="margin-top:50px;"
+				rendered="#{createQuotationController.renderAddCustomerGrid}">
+				<p:growl showDetail="true" id="growl" sticky="true" />
+				<p:panelGrid columns="2">
+					<h:outputLabel for="nameField">Name</h:outputLabel>
+					<p:inputText size="50"
+						value="#{createQuotationController.customerToAdd.name}"
+						id="nameField"></p:inputText>
+
+					<h:outputLabel for="emailField">Email</h:outputLabel>
+					<p:inputText size="50"
+						value="#{createQuotationController.customerToAdd.email}"
+						id="emailField"></p:inputText>
+
+					<h:outputLabel for="phoneField">Phone</h:outputLabel>
+					<p:inputText size="50"
+						value="#{createQuotationController.customerToAdd.phone}"
+						id="phoneField"></p:inputText>
+
+					<h:outputLabel for="languageField">Language</h:outputLabel>
+					<p:selectOneRadio
+						value="#{createQuotationController.customerToAdd.language}"
+						id="languageField">
+						<f:selectItems value="#{createQuotationController.allLanguages}"></f:selectItems>
+					</p:selectOneRadio>
+				</p:panelGrid>
+				<p:commandButton value="Save customer"
+					update=":createQuotationForm :addQuickCustomerForm growl"
+					actionListener="#{createQuotationController.createCustomer}"
+					ajax="true" />
+			</p:panel>
 		</h:form>
 	</ui:define>
 </ui:composition>
