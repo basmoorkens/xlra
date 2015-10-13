@@ -5,13 +5,20 @@ import javax.faces.context.FacesContext;
 
 /**
  * Utility class for adding messages to a page.
+ * 
  * @author bas
  *
  */
 public class MessageUtil {
-//TODO ADD CUSTOM ERROR MESSAGE SHIT WITH FACES CONFIG
+	// TODO ADD CUSTOM ERROR MESSAGE SHIT WITH FACES CONFIG
 	public static void addMessage(String summary, String detail) {
 		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+				summary, detail);
+		FacesContext.getCurrentInstance().addMessage(null, message);
+	}
+
+	public static void addErrorMessage(String summary, String detail) {
+		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 				summary, detail);
 		FacesContext.getCurrentInstance().addMessage(null, message);
 	}

@@ -1,10 +1,8 @@
 package com.moorkensam.xlra.model.configuration;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Cacheable;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.NamedQueries;
@@ -14,6 +12,13 @@ import javax.persistence.Table;
 
 import com.moorkensam.xlra.model.BaseEntity;
 
+/**
+ * Configuration object for the application. Contains all necessairy parameters
+ * to bootstrap the application correctly.
+ * 
+ * @author bas
+ *
+ */
 @Entity
 @Cacheable
 @Table(name = "configuration")

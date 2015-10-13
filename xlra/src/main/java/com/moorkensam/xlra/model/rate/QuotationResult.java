@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.model.rate;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -12,6 +13,7 @@ import javax.persistence.Table;
 import com.moorkensam.xlra.model.BaseEntity;
 
 @Entity
+@Cacheable
 @Table(name = "quotationresult")
 @NamedQueries(@NamedQuery(name = "QuotationResult.findAll", query = "SELECT q FROM QuotationResult q where q.deleted = false"))
 public class QuotationResult extends BaseEntity {

@@ -14,12 +14,11 @@
 	<ui:define name="body">
 		<h:form>
 			<p:growl id="growl" sticky="true" showDetail="true" />
-
+			<p:messages id="messages" />
 			<p:wizard flowListener="#{createRatesController.onFlowProcess}"
 				showNavBar="false" widgetVar="wizard">
 				<p:tab id="rateFileBasicInfo" title="Basic information">
 					<p:panel header="Basic information">
-						<p:messages />
 
 						<p:panelGrid columns="2" style="margin:0; width:100%">
 							<h:outputText value="Name: " />

@@ -11,6 +11,7 @@ import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.TestedObject;
 
 import com.moorkensam.xlra.model.configuration.Interval;
+import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.Zone;
@@ -57,7 +58,7 @@ public class RateFileTest extends UnitilsJUnit4 {
 	}
 
 	@Test
-	public void testFindNumericalPostalCodes() {
+	public void testFindNumericalPostalCodes() throws RateFileException {
 		for (Zone zone : rateFile.getZones()) {
 			zone.setZoneType(ZoneType.NUMERIC_CODES);
 		}
@@ -86,8 +87,23 @@ public class RateFileTest extends UnitilsJUnit4 {
 		Assert.assertEquals(new BigDecimal(1600d), rl.getValue());
 	}
 
+	@Test(expected = RateFileException.class)
+	public void testFindAlphaNumericalPostalCodeNotFound()
+			throws RateFileException {
+		for (Zone zone : rateFile.getZones()) {
+			zone.setZoneType(ZoneType.ALPHANUMERIC_LIST);
+		}
+		rateFile.getZones()
+				.get(0)
+				.setAlphaNumericalPostalCodes(
+						Arrays.asList("CX1", "CX2", "CX4", "AA2", "AA1", "CX3A"));
+
+		RateLine result = rateFile
+				.getRateLineForQuantityAndPostalCode(6, "CX3");
+	}
+
 	@Test
-	public void testFindAlphaNumericalPostalCode() {
+	public void testFindAlphaNumericalPostalCode() throws RateFileException {
 		for (Zone zone : rateFile.getZones()) {
 			zone.setZoneType(ZoneType.ALPHANUMERIC_LIST);
 		}

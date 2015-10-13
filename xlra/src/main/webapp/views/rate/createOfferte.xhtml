@@ -13,30 +13,38 @@
 	</ui:define>
 	<ui:define name="body">
 		<h:form id="createQuotationForm">
+			<p:messages id="messages" showDetail="true" autoUpdate="true"
+				closable="true" />
 			<p:wizard flowListener="#{createQuotationController.onFlowProcess}"
 				showNavBar="false" widgetVar="wizard">
 				<p:tab id="selectCustomer" title="Select / create customer">
 
 					<h:outputText value="Select an existing customer: " />
-					<p:autoComplete size="100" id="customerSelector" dropdown="true"
+					<p:autoComplete size="50" id="customerSelector" dropdown="true"
 						value="#{createQuotationController.quotationQuery.customer}"
 						completeMethod="#{createQuotationController.completeCustomerName}"
 						var="customer" itemLabel="#{customer.name}" required="true"
 						itemValue="#{customer}" converter="#{customerConverter}">
 					</p:autoComplete>
-					<br />
-					<h:outputText value="Or create a new customer" />
-					<p:commandButton value="Add new customer"
-						update=":addQuickCustomerForm" immediate="true"
-						actionListener="#{createQuotationController.setupPageForNewCustomer}" />
 
-					<p:panel style="bottom:20px;  padding:0px;border:0px;">
+					<p:commandButton value="Create new customer"
+						update=":addQuickCustomerForm" immediate="true"
+						onclick="PF('addCustomerDialog').show();" />
+
+					<p:panel
+						style="margin-top:20px; bottom:20px;  padding:0px;border:0px;">
 						<p:commandButton value="Next" onclick="PF('wizard').next();"
 							style="width:150px; margin-left:20px;" />
 					</p:panel>
 				</p:tab>
 				<p:tab id="selectFiltersTab" title="Rate filters">
 					<p:panelGrid columns="2">
+						<h:outputText value="Country: " />
+						<p:selectOneRadio converter="#{countryConverter}" required="true"
+							value="#{createQuotationController.quotationQuery.country}">
+							<f:selectItems value="#{createQuotationController.allCountries}" />
+						</p:selectOneRadio>
+
 						<h:outputText value="Measurement: " />
 						<p:selectOneRadio required="true"
 							value="#{createQuotationController.quotationQuery.measurement}">
@@ -50,18 +58,13 @@
 							<f:selectItems value="#{createQuotationController.allKinds}" />
 						</p:selectOneRadio>
 
-						<h:outputText value="Country: " />
-						<p:selectOneRadio converter="#{countryConverter}" required="true"
-							value="#{createQuotationController.quotationQuery.country}">
-							<f:selectItems value="#{createQuotationController.allCountries}" />
-						</p:selectOneRadio>
 
 						<h:outputText value="Quantity:" />
-						<p:inputText required="true"
+						<p:inputText required="true" style="width:100%;"
 							value="#{createQuotationController.quotationQuery.quantity}" />
 
 						<h:outputText value="Postal code: " />
-						<p:inputText required="true"
+						<p:inputText required="true" style="width:100%;"
 							value="#{createQuotationController.quotationQuery.postalCode}" />
 
 					</p:panelGrid>
@@ -78,39 +81,53 @@
 				</p:tab>
 			</p:wizard>
 		</h:form>
-		<h:form id="addQuickCustomerForm">
-			<p:panel header="Add customer" style="margin-top:50px;"
-				rendered="#{createQuotationController.renderAddCustomerGrid}">
-				<p:growl showDetail="true" id="growl" sticky="true" />
-				<p:panelGrid columns="2">
-					<h:outputLabel for="nameField">Name</h:outputLabel>
-					<p:inputText size="50"
-						value="#{createQuotationController.customerToAdd.name}"
-						id="nameField"></p:inputText>
+		<p:dialog header="Add condition" widgetVar="addCustomerDialog"
+			modal="true" height="480px" width="900px" dynamic="true">
+			<h:form id="addQuickCustomerForm">
+				<p:panel header="Add customer" style="margin-top:50px;">
+					<p:growl showDetail="true" id="growl" sticky="true" />
+					<p:panelGrid columns="2" style="width:100%;">
+						<h:outputLabel for="nameField">Name</h:outputLabel>
+						<p:inputText size="50" style="width:100%;"
+							value="#{createQuotationController.customerToAdd.name}"
+							id="nameField"></p:inputText>
 
-					<h:outputLabel for="emailField">Email</h:outputLabel>
-					<p:inputText size="50"
-						value="#{createQuotationController.customerToAdd.email}"
-						id="emailField"></p:inputText>
+						<h:outputLabel for="emailField">Email</h:outputLabel>
+						<p:inputText size="50" style="width:100%;"
+							value="#{createQuotationController.customerToAdd.email}"
+							id="emailField"></p:inputText>
 
-					<h:outputLabel for="phoneField">Phone</h:outputLabel>
-					<p:inputText size="50"
-						value="#{createQuotationController.customerToAdd.phone}"
-						id="phoneField"></p:inputText>
+						<h:outputLabel for="phoneField">Phone</h:outputLabel>
+						<p:inputText size="50" style="width:100%;"
+							value="#{createQuotationController.customerToAdd.phone}"
+							id="phoneField"></p:inputText>
 
-					<h:outputLabel for="languageField">Language</h:outputLabel>
-					<p:selectOneRadio
-						value="#{createQuotationController.customerToAdd.language}"
-						id="languageField">
-						<f:selectItems value="#{createQuotationController.allLanguages}"></f:selectItems>
-					</p:selectOneRadio>
-				</p:panelGrid>
-				<p:commandButton value="Save customer"
-					update=":createQuotationForm :addQuickCustomerForm growl"
-					actionListener="#{createQuotationController.createCustomer}"
-					ajax="true" />
-			</p:panel>
-		</h:form>
+						<h:outputLabel for="languageField">Language</h:outputLabel>
+						<p:selectOneRadio
+							value="#{createQuotationController.customerToAdd.language}"
+							id="languageField">
+							<f:selectItems value="#{createQuotationController.allLanguages}"></f:selectItems>
+						</p:selectOneRadio>
+					</p:panelGrid>
+					<p:commandButton value="Save customer"
+						update=":createQuotationForm :addQuickCustomerForm growl "
+						actionListener="#{createQuotationController.createCustomer}"
+						ajax="true"
+						oncomplete="handleAddCustomerRequest(xhr, status, args)" />
+				</p:panel>
+			</h:form>
+		</p:dialog>
+		<script type="text/javascript">
+			function handleAddCustomerRequest(xhr, status, args) {
+				if (args.validationFailed) {
+					PF('addCustomerDialog').jq.effect("shake", {
+						times : 5
+					}, 100);
+				} else {
+					PF('addCustomerDialog').hide();
+				}
+			}
+		</script>
 	</ui:define>
 </ui:composition>
 </html>

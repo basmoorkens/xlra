@@ -13,6 +13,13 @@ public interface TranslationService {
 
 	void createTranslations(Translation[] translations);
 
+	/**
+	 * Fetches a translation from memory.
+	 * 
+	 * @param key
+	 * @param language
+	 * @return
+	 */
 	Translation findTranslationInCacheByTranslationKeyAndLanguage(
 			TranslationKey key, Language language);
 }

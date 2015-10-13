@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.model;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -15,6 +16,7 @@ import com.moorkensam.xlra.model.rate.Measurement;
 import com.moorkensam.xlra.model.rate.RateFile;
 
 @Entity
+@Cacheable
 @Table(name = "quotationquery")
 @NamedQueries({ @NamedQuery(name = "QuotationQuery.findAll", query = "SELECT q FROM QuotationQuery q where q.deleted = false") })
 public class QuotationQuery extends BaseEntity {

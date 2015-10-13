@@ -12,10 +12,12 @@ import javax.inject.Inject;
 import org.hibernate.validator.util.SetAccessibility;
 import org.primefaces.event.FlowEvent;
 
+import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.BaseCustomer;
 import com.moorkensam.xlra.model.FullCustomer;
 import com.moorkensam.xlra.model.Language;
 import com.moorkensam.xlra.model.QuotationQuery;
+import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Kind;
 import com.moorkensam.xlra.model.rate.Measurement;
@@ -52,9 +54,21 @@ public class CreateQuotationController {
 	@PostConstruct
 	public void init() {
 		allCountries = countryService.getAllCountries();
-		setQuotationQuery(new QuotationQuery());
+		initializeNewQuotationQuery();
 		refreshCustomers();
 		initializeNewCustomer();
+	}
+
+	private void initializeNewQuotationQuery() {
+		QuotationQuery query = new QuotationQuery();
+		for (Country c : allCountries) {
+			if (c.getShortName().toLowerCase().equals("be")) {
+				query.setCountry(c);
+			}
+		}
+		query.setMeasurement(Measurement.PALET);
+		query.setKindOfRate(Kind.NORMAL);
+		setQuotationQuery(query);
 	}
 
 	private void refreshCustomers() {
@@ -72,6 +86,8 @@ public class CreateQuotationController {
 	public void createCustomer() {
 		getQuotationQuery().setCustomer(
 				customerService.createCustomer(customerToAdd));
+		MessageUtil.addMessage("Customer created", "Created customer "
+				+ customerToAdd.getName());
 		refreshCustomers();
 		renderAddCustomerGrid = false;
 		customerToAdd = new BaseCustomer();
@@ -89,8 +105,15 @@ public class CreateQuotationController {
 		}
 
 		if (event.getNewStep().equals("summaryOfferteTab")) {
-			quotationResult = quotationService
-					.generateQuotationResultForQuotationQuery(quotationQuery);
+			try {
+				quotationResult = quotationService
+						.generateQuotationResultForQuotationQuery(quotationQuery);
+			} catch (RateFileException e) {
+				MessageUtil
+						.addErrorMessage(
+								"Unexpected error whilst processing quotation request.",
+								e.getBusinessException());
+			}
 		}
 		return event.getNewStep();
 	}

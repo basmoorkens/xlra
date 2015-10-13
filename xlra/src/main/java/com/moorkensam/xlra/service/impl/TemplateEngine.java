@@ -34,6 +34,11 @@ public class TemplateEngine {
 
 	private static TemplateEngine engine;
 
+	/**
+	 * Factory method to get the instance.
+	 * 
+	 * @return
+	 */
 	public static TemplateEngine getInstance() {
 		if (engine == null) {
 			engine = new TemplateEngine();
@@ -41,11 +46,25 @@ public class TemplateEngine {
 		return engine;
 	}
 
+	/*
+	 * Private constructor.
+	 */
 	private TemplateEngine() {
 		stringTemplateLoader = new StringTemplateLoader();
 		configuration = new Configuration();
 	}
 
+	/**
+	 * Parses a freemarker template with a given map of values.
+	 * 
+	 * @param templateFromDb
+	 *            The freemarker template to parse.
+	 * @param dataModel
+	 *            The values to put in the template.
+	 * @return The parsed template as a string.
+	 * @throws TemplatingException
+	 *             When the template could not be parsed
+	 */
 	public String parseEmailTemplate(String templateFromDb,
 			Map<String, Object> dataModel) throws TemplatingException {
 		logger.debug("Parsing template " + templateFromDb);

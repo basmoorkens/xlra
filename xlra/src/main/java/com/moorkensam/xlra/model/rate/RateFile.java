@@ -22,6 +22,7 @@ import com.moorkensam.xlra.model.BaseEntity;
 import com.moorkensam.xlra.model.FullCustomer;
 import com.moorkensam.xlra.model.Language;
 import com.moorkensam.xlra.model.configuration.Interval;
+import com.moorkensam.xlra.model.error.RateFileException;
 
 @Entity
 @Cacheable
@@ -229,7 +230,7 @@ public class RateFile extends BaseEntity {
 	}
 
 	public RateLine getRateLineForQuantityAndPostalCode(double quantity,
-			String postalCode) {
+			String postalCode) throws RateFileException {
 		if (rateLines != null) {
 			List<RateLine> rlsWithCorrectQuantity = new ArrayList<RateLine>();
 			for (RateLine rl : getRateLines()) {
@@ -257,7 +258,7 @@ public class RateFile extends BaseEntity {
 				}
 			}
 		}
-		return null;
+		throw new RateFileException("Could not find price!");
 	}
 
 	public Zone getZoneForZoneName(String zoneName) {

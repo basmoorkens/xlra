@@ -13,6 +13,12 @@ import com.moorkensam.xlra.model.BaseCustomer;
 import com.moorkensam.xlra.model.FullCustomer;
 import com.moorkensam.xlra.service.CustomerService;
 
+/**
+ * Service to fetch and update customers.
+ * 
+ * @author bas
+ *
+ */
 @Stateless
 public class CustomerServiceImpl implements CustomerService {
 
@@ -45,6 +51,9 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public BaseCustomer getCustomerById(long id) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("Fetching customer for id " + id);
+		}
 		return customerDAO.getCustomerById(id);
 	}
 

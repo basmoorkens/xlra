@@ -11,6 +11,13 @@ import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.service.CountryService;
 
+/**
+ * Service to fetch and update countries. This service can also create zones for
+ * countries and delete them.
+ * 
+ * @author bas
+ *
+ */
 @Stateless
 public class CountryServiceImpl implements CountryService {
 

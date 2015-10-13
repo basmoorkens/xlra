@@ -14,6 +14,12 @@ import com.moorkensam.xlra.model.configuration.Translation;
 import com.moorkensam.xlra.model.configuration.TranslationKey;
 import com.moorkensam.xlra.service.TranslationService;
 
+/**
+ * Contains methods for updating and fetching translations.
+ * 
+ * @author bas
+ *
+ */
 @Stateless
 public class TranslationServiceImpl implements TranslationService {
 
@@ -46,6 +52,10 @@ public class TranslationServiceImpl implements TranslationService {
 	@Override
 	public Translation findTranslationInCacheByTranslationKeyAndLanguage(
 			TranslationKey key, Language language) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("Fetching translations in memory for " + key
+					+ " and lang " + language);
+		}
 		List<Translation> translations = getAllNonDeletedTranslations();
 		for (Translation translation : translations) {
 			if (translation.getTranslationKey() == key

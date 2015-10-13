@@ -19,6 +19,12 @@ import com.moorkensam.xlra.model.configuration.LogRecord;
 import com.moorkensam.xlra.service.CurrencyService;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
 
+/**
+ * Service to fetch and update currencys (CHF).
+ * 
+ * @author bas
+ *
+ */
 @Stateless
 public class CurrencyServiceImpl implements CurrencyService {
 

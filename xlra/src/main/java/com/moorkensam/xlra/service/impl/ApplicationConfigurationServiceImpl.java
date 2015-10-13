@@ -1,6 +1,5 @@
 package com.moorkensam.xlra.service.impl;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -16,7 +15,13 @@ import com.moorkensam.xlra.model.configuration.MailTemplate;
 import com.moorkensam.xlra.service.ApplicationConfigurationService;
 
 //TODO Implement diesel and chf 4 ciphers after.
-
+/**
+ * This service is used to get email templates to the front end and the main
+ * application cofiguration.
+ * 
+ * @author bas
+ *
+ */
 @Stateless
 public class ApplicationConfigurationServiceImpl implements
 		ApplicationConfigurationService {
@@ -47,6 +52,10 @@ public class ApplicationConfigurationServiceImpl implements
 
 	@Override
 	public void updateEmailTemplate(MailTemplate mailTemplate) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("Updating email template: "
+					+ mailTemplate.getSubject() + mailTemplate.getLanguage());
+		}
 		emailTemplateDAO.updateEmailTemplate(mailTemplate);
 	}
 

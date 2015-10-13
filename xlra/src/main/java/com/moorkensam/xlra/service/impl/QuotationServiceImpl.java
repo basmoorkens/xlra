@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.mail.MessagingException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,6 +19,7 @@ import com.moorkensam.xlra.dto.OfferteMailDTO;
 import com.moorkensam.xlra.model.FullCustomer;
 import com.moorkensam.xlra.model.QuotationQuery;
 import com.moorkensam.xlra.model.configuration.MailTemplate;
+import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.error.TemplatingException;
 import com.moorkensam.xlra.model.rate.QuotationResult;
 import com.moorkensam.xlra.model.rate.RateFile;
@@ -88,29 +90,44 @@ public class QuotationServiceImpl implements QuotationService {
 
 	@Override
 	public QuotationResult generateQuotationResultForQuotationQuery(
-			QuotationQuery query) {
+			QuotationQuery query) throws RateFileException {
 		OfferteMailDTO dto = new OfferteMailDTO();
 		RateFileSearchFilter filter = createRateFileSearchFilterForQuery(query);
 		RateFile rf = rateFileService.getFullRateFileForFilter(filter);
-		RateLine result = rf.getRateLineForQuantityAndPostalCode(
-				query.getQuantity(), query.getPostalCode());
-		calculatePriceAccordingToConditions();
+		RateLine result;
+		try {
+			result = rf.getRateLineForQuantityAndPostalCode(
+					query.getQuantity(), query.getPostalCode());
+			calculatePriceAccordingToConditions();
+			initializeOfferteEmail(query, dto, rf, result);
+			emailService.sendOfferteMail(dto);
+		} catch (RateFileException e1) {
+			logger.error("Could find value for parameters: " + query.toString());
+			throw new RateFileException(
+					"Could not find price for given input parameters.");
+		} catch (TemplatingException e) {
+			logger.error("Failed to parse Template" + e.getMessage());
+			throw new RateFileException("Failed to parse email template.");
+		} catch (MessagingException e) {
+			logger.error("Failed to send offerte email");
+			throw new RateFileException("Failed to send email");
+		}
+		// generate pdf
+		return null;
+	}
+
+	private void initializeOfferteEmail(QuotationQuery query,
+			OfferteMailDTO dto, RateFile rf, RateLine result)
+			throws TemplatingException {
 		MailTemplate template = emailTemplateDAO.getMailTemplateForLanguage(rf
 				.getLanguage());
 		Map<String, Object> templateParameters = createTemplateParams(query,
 				result);
-		try {
-			String emailMessage = templatEngine.parseEmailTemplate(
-					template.getTemplate(), templateParameters);
-			dto.setAddress(query.getCustomer().getEmail());
-			dto.setSubject(template.getSubject());
-			dto.setContent(emailMessage);
-			emailService.sendOfferteMail(dto);
-		} catch (TemplatingException e) {
-			logger.error("Failed to parse Template" + e.getMessage());
-		}
-		// generate pdf
-		return null;
+		String emailMessage = templatEngine.parseEmailTemplate(
+				template.getTemplate(), templateParameters);
+		dto.setAddress(query.getCustomer().getEmail());
+		dto.setSubject(template.getSubject());
+		dto.setContent(emailMessage);
 	}
 
 	private Map<String, Object> createTemplateParams(QuotationQuery query,

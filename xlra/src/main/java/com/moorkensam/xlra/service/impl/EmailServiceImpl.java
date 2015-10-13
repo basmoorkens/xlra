@@ -16,6 +16,12 @@ import com.moorkensam.xlra.dto.OfferteMailDTO;
 import com.moorkensam.xlra.service.EmailService;
 import com.moorkensam.xlra.service.util.ConfigurationLoader;
 
+/**
+ * This service can be used to send emails from the application.
+ * 
+ * @author bas
+ *
+ */
 @Stateless
 public class EmailServiceImpl implements EmailService {
 
@@ -25,7 +31,7 @@ public class EmailServiceImpl implements EmailService {
 	private Session mailSession;
 
 	@Override
-	public void sendOfferteMail(OfferteMailDTO dto) {
+	public void sendOfferteMail(OfferteMailDTO dto) throws MessagingException {
 		logger.info("Sending offerte mail to " + dto.getAddress()
 				+ " with subject " + dto.getSubject() + " and content "
 				+ dto.getContent());
@@ -48,6 +54,7 @@ public class EmailServiceImpl implements EmailService {
 
 		} catch (MessagingException e) {
 			logger.error("Error sending email: " + e);
+			throw new MessagingException("Error sending offerte email");
 		}
 	}
 

@@ -30,6 +30,12 @@ import com.moorkensam.xlra.model.rate.ZoneType;
 import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
 import com.moorkensam.xlra.service.RateFileService;
 
+/**
+ * This service contains the business logic for ratefiles.
+ * 
+ * @author bas
+ *
+ */
 @Stateless
 public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 
@@ -69,25 +75,32 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 	@Override
 	public List<RateFile> getRateFilesForFilter(
 			final RateFileSearchFilter filter) {
-		logger.info("Fetch ratefiles for filter " + filter);
+		if (logger.isDebugEnabled()) {
+			logger.debug("Fetch ratefiles for filter " + filter);
+		}
 		return rateFileDAO.getRateFilesForFilter(filter);
 	}
 
 	@Override
 	public void deleteRateFile(final RateFile rateFile) {
+		logger.info("Deleting ratefile " + rateFile.getId());
 		rateFileDAO.deleteRateFile(rateFile);
 	}
 
 	@Override
 	public RateFile getFullRateFile(long id) {
-		logger.debug("Fetching details for ratefile with id " + id);
+		if (logger.isDebugEnabled()) {
+			logger.debug("Fetching details for ratefile with id " + id);
+		}
 		RateFile rateFile = rateFileDAO.getFullRateFile(id);
 		prepareRateFileForFrontend(rateFile);
 		return rateFile;
 	}
 
 	private void prepareRateFileForFrontend(RateFile rateFile) {
-		logger.debug("Preparing ratefile for front end");
+		if (logger.isDebugEnabled()) {
+			logger.debug("Preparing ratefile for front end");
+		}
 		for (Zone z : rateFile.getZones()) {
 			if (z.getZoneType() == ZoneType.ALPHANUMERIC_LIST) {
 				z.convertAlphaNumericPostalCodeListToString();
@@ -154,6 +167,15 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 		applyRateOperation(rateFiles, percentage, RateOperation.RAISE);
 	}
 
+	/**
+	 * Applies a RateOperation to a set of ratefiles. Concrete this means that
+	 * the values in each rateline in each ratefile will be diminished or added
+	 * with the percentage.
+	 * 
+	 * @param rateFiles
+	 * @param percentage
+	 * @param operation
+	 */
 	protected void applyRateOperation(List<RateFile> rateFiles,
 			double percentage, RateOperation operation) {
 		double rateLineMultiplier = 0.0d;
@@ -178,6 +200,13 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 		}
 	}
 
+	/**
+	 * Raises a list of ratefiles their values.
+	 * 
+	 * @param rateLineMultiplier
+	 * @param fullRateFiles
+	 * @param operation
+	 */
 	protected void raiseRateFiles(double rateLineMultiplier,
 			List<RateFile> fullRateFiles, RateOperation operation) {
 		for (RateFile rf : fullRateFiles) {
@@ -199,6 +228,13 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 		}
 	}
 
+	/**
+	 * Fetches a list of ratefiles that are fully eager loaded.
+	 * 
+	 * @param rateFiles
+	 * @param rateLineMultiplier
+	 * @return
+	 */
 	protected List<RateFile> fetchFullRateFiles(List<RateFile> rateFiles,
 			double rateLineMultiplier) {
 		List<RateFile> fullRateFiles = new ArrayList<RateFile>();

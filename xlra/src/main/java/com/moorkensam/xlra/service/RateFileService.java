@@ -60,8 +60,21 @@ public interface RateFileService {
 	 */
 	public void undoLatestRatesRaise();
 
+	/**
+	 * Deletes a zone from a ratefile. Removes all ratelines that are attached
+	 * to the zone.
+	 * 
+	 * @param zone
+	 * @return
+	 */
 	RateFile deleteZone(Zone zone);
 
+	/**
+	 * Fetches a fully eager loaded ratefile for a set of filters given.
+	 * 
+	 * @param filter
+	 * @return
+	 */
 	RateFile getFullRateFileForFilter(RateFileSearchFilter filter);
 
 }

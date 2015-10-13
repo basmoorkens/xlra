@@ -14,6 +14,12 @@ import com.moorkensam.xlra.service.RateFileService;
 import com.moorkensam.xlra.service.util.ExcelToModelMapper;
 import com.moorkensam.xlra.service.util.ExcelUploadParser;
 
+/**
+ * This service can be used to upload excel files.
+ * 
+ * @author bas
+ *
+ */
 @Stateless
 public class ExcelServiceImpl implements ExcelService {
 
