@@ -122,7 +122,7 @@ public class QuotationServiceImpl implements QuotationService {
 					query.getQuantity(), query.getPostalCode());
 			priceDTO.setBasePrice(result.getValue());
 			calculatePriceAccordingToConditions(priceDTO, rf.getCountry(),
-					rf.getConditions());
+					rf.getConditions(), query);
 			initializeOfferteEmail(query, dto, rf, result);
 			emailService.sendOfferteMail(dto);
 		} catch (RateFileException e1) {
@@ -188,7 +188,8 @@ public class QuotationServiceImpl implements QuotationService {
 	 */
 	private void calculatePriceAccordingToConditions(
 			PriceCalculationDTO priceDTO, Country country,
-			List<Condition> conditions) throws RateFileException {
+			List<Condition> conditions, QuotationQuery query)
+			throws RateFileException {
 		Configuration config = configurationDao.getXlraConfiguration();
 		calculateDieselSurchargePrice(priceDTO, config);
 		if (country.getShortName().equalsIgnoreCase("chf")) {
@@ -197,16 +198,45 @@ public class QuotationServiceImpl implements QuotationService {
 		for (Condition condition : conditions) {
 			switch (condition.getConditionKey()) {
 			case ADR_SURCHARGE:
-				calculateAddressSurcharge(priceDTO, condition);
+				if (query.isAdrSurcharge()) {
+					calculateAddressSurcharge(priceDTO, condition);
+				}
 				break;
 			case ADR_MINIMUM:
-				calculateAddressSurchargeMinimum(priceDTO, condition);
+				if (query.isAdrSurcharge()) {
+					calculateAddressSurchargeMinimum(priceDTO, condition);
+				}
 				break;
+			case IMPORT_FORM:
+				if (query.isImportFormality()) {
+					calculateImportFormality(priceDTO, condition);
+				}
+				break;
+			case EXPORT_FORM:
+				if (query.isExportFormality()) {
+					calculateExportFormality(priceDTO, condition);
+				}
 			default:
 				break;
 			}
 		}
 		applyAfterConditionLogic(priceDTO);
+	}
+
+	protected void calculateExportFormality(PriceCalculationDTO priceDTO,
+			Condition condition) {
+		BigDecimal exportFormalities = new BigDecimal(
+				Double.parseDouble(condition.getValue()));
+		exportFormalities = exportFormalities.setScale(2, RoundingMode.HALF_UP);
+		priceDTO.setExportFormalities(exportFormalities);
+	}
+
+	protected void calculateImportFormality(PriceCalculationDTO priceDTO,
+			Condition condition) {
+		BigDecimal importFormalities = new BigDecimal(
+				Double.parseDouble(condition.getValue()));
+		importFormalities = importFormalities.setScale(2, RoundingMode.HALF_UP);
+		priceDTO.setImportFormalities(importFormalities);
 	}
 
 	protected void calculateAddressSurchargeMinimum(

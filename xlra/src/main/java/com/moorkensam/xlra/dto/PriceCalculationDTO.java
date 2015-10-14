@@ -18,6 +18,10 @@ public class PriceCalculationDTO {
 
 	private BigDecimal adrSurchargeMinimum;
 
+	private BigDecimal importFormalities;
+
+	private BigDecimal exportFormalities;
+
 	public BigDecimal getFinalPrice() {
 		return finalPrice;
 	}
@@ -72,6 +76,22 @@ public class PriceCalculationDTO {
 
 	public void setResultingPriceSurcharge(BigDecimal resultingPriceSurcharge) {
 		this.resultingPriceSurcharge = resultingPriceSurcharge;
+	}
+
+	public BigDecimal getExportFormalities() {
+		return exportFormalities;
+	}
+
+	public void setExportFormalities(BigDecimal exportFormalities) {
+		this.exportFormalities = exportFormalities;
+	}
+
+	public BigDecimal getImportFormalities() {
+		return importFormalities;
+	}
+
+	public void setImportFormalities(BigDecimal importFormalities) {
+		this.importFormalities = importFormalities;
 	}
 
 }

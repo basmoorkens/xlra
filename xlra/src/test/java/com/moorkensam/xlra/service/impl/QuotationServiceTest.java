@@ -63,6 +63,26 @@ public class QuotationServiceTest extends UnitilsJUnit4 {
 	}
 
 	@Test
+	public void testcalculateExportFormality() {
+		Condition condition = new Condition();
+		condition.setValue("40.15d");
+		quotationService.calculateExportFormality(priceDTO, condition);
+		BigDecimal result = new BigDecimal(40.15d);
+		result = result.setScale(2, RoundingMode.HALF_UP);
+		Assert.assertEquals(result, priceDTO.getExportFormalities());
+	}
+
+	@Test
+	public void testCalcImportFormality() {
+		Condition condition = new Condition();
+		condition.setValue("20.33d");
+		quotationService.calculateImportFormality(priceDTO, condition);
+		BigDecimal result = new BigDecimal(20.33d);
+		result = result.setScale(2, RoundingMode.HALF_UP);
+		Assert.assertEquals(result, priceDTO.getImportFormalities());
+	}
+
+	@Test
 	public void testApplyAfterconditionLogic() {
 		priceDTO.setAdrSurchargeMinimum(new BigDecimal(20.00d));
 		priceDTO.setCalculatedAdrSurcharge(new BigDecimal(19.00d));
