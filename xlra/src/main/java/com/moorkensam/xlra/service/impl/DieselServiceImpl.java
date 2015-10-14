@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.service.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -16,6 +17,7 @@ import com.moorkensam.xlra.dao.LogDAO;
 import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.DieselRate;
 import com.moorkensam.xlra.model.configuration.LogRecord;
+import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.service.DieselService;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
 
@@ -50,7 +52,7 @@ public class DieselServiceImpl implements DieselService {
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void updateCurrentDieselValue(double value) {
+	public void updateCurrentDieselValue(BigDecimal value) {
 		Configuration config = xlraConfigurationDAO.getXlraConfiguration();
 
 		LogRecord createDieselLogRecord = LogRecordFactory
@@ -62,6 +64,20 @@ public class DieselServiceImpl implements DieselService {
 		logger.info("Saving current diesel price"
 				+ config.getCurrentDieselPrice());
 		xlraConfigurationDAO.updateXlraConfiguration(config);
+	}
+
+	@Override
+	public DieselRate getDieselRateForCurrentPrice(BigDecimal price) throws RateFileException {
+		List<DieselRate> rates = getAllDieselRates();
+		for (DieselRate rate : rates) {
+			if (rate.getInterval().getStart() <= price.doubleValue()
+					&& rate.getInterval().getEnd() > price.doubleValue()) {
+				return rate;
+			}
+		}
+		throw new RateFileException(
+				"Could not calculate diesel supplement, no multiplier found for price "
+						+ price);
 	}
 
 }

@@ -29,6 +29,7 @@ import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.rate.ZoneType;
 import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
 import com.moorkensam.xlra.service.RateFileService;
+import com.moorkensam.xlra.service.util.CalcUtil;
 
 /**
  * This service contains the business logic for ratefiles.
@@ -178,12 +179,9 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 	 */
 	protected void applyRateOperation(List<RateFile> rateFiles,
 			double percentage, RateOperation operation) {
-		double rateLineMultiplier = 0.0d;
-		rateLineMultiplier = setupRateLineMultiplier(percentage,
-				rateLineMultiplier);
-
-		List<RateFile> fullRateFiles = fetchFullRateFiles(rateFiles,
-				rateLineMultiplier);
+		BigDecimal rateLineMultiplier = new BigDecimal(0.0d);
+		rateLineMultiplier = CalcUtil.convertPercentageToMultiplier(percentage);
+		List<RateFile> fullRateFiles = fetchFullRateFiles(rateFiles);
 
 		raiseRateFiles(rateLineMultiplier, fullRateFiles, operation);
 
@@ -207,7 +205,7 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 	 * @param fullRateFiles
 	 * @param operation
 	 */
-	protected void raiseRateFiles(double rateLineMultiplier,
+	protected void raiseRateFiles(BigDecimal rateLineMultiplier,
 			List<RateFile> fullRateFiles, RateOperation operation) {
 		for (RateFile rf : fullRateFiles) {
 			if (operation == RateOperation.RAISE) {
@@ -219,10 +217,10 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 		}
 	}
 
-	protected void lowerRateLinesOfRateFile(double multiplier, RateFile rf) {
+	protected void lowerRateLinesOfRateFile(BigDecimal multiplier, RateFile rf) {
 		for (RateLine rl : rf.getRateLines()) {
 			BigDecimal bd = new BigDecimal(rl.getValue().doubleValue()
-					/ multiplier);
+					/ multiplier.doubleValue());
 			BigDecimal bd2 = bd.setScale(2, RoundingMode.HALF_UP);
 			rl.setValue(bd2);
 		}
@@ -235,20 +233,13 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 	 * @param rateLineMultiplier
 	 * @return
 	 */
-	protected List<RateFile> fetchFullRateFiles(List<RateFile> rateFiles,
-			double rateLineMultiplier) {
+	protected List<RateFile> fetchFullRateFiles(List<RateFile> rateFiles) {
 		List<RateFile> fullRateFiles = new ArrayList<RateFile>();
 		for (RateFile rf : rateFiles) {
 			fullRateFiles.add(rateFileDAO.getFullRateFile(rf.getId()));
 		}
 
 		return fullRateFiles;
-	}
-
-	protected double setupRateLineMultiplier(double percentage,
-			double rateLineMultiplier) {
-		rateLineMultiplier = convertPercentageToMultiplier(percentage);
-		return rateLineMultiplier;
 	}
 
 	private void createAndSaveRateOperationLogRecord(double percentage,
@@ -262,40 +253,14 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 		logDAO.createLogRecord(logRecord);
 	}
 
-	private void raiseRateLinesOfRateFile(double rateLineMultiplier, RateFile rf) {
+	private void raiseRateLinesOfRateFile(BigDecimal rateLineMultiplier,
+			RateFile rf) {
 		for (RateLine rl : rf.getRateLines()) {
 			BigDecimal bd = new BigDecimal(rl.getValue().doubleValue()
-					* rateLineMultiplier);
+					* rateLineMultiplier.doubleValue());
 			BigDecimal bd2 = bd.setScale(2, RoundingMode.HALF_UP);
 			rl.setValue(bd2);
 		}
-	}
-
-	/**
-	 * Converts the percentage to raise ratelines with from a value between 0
-	 * and 100 to a double with which we can multiply each rateline value.
-	 * 
-	 * @param percentage
-	 * @return
-	 */
-	protected double convertPercentageToMultiplier(double percentage) {
-		double percentagePlus100 = percentage + 100d;
-		BigDecimal bd = new BigDecimal((double) percentagePlus100 / 100d);
-		return double2Digits(bd);
-	}
-
-	private double double2Digits(BigDecimal input) {
-		DecimalFormat df = new DecimalFormat("####,##");
-		try {
-			return (double) df.parse(input.doubleValue() + "");
-		} catch (ParseException e) {
-		}
-		return 0.0d;
-	}
-
-	protected double convertPercentageToReservedMultiplier(double percentage) {
-		BigDecimal bd = new BigDecimal((percentage) / 100d);
-		return double2Digits(bd);
 	}
 
 	@Override

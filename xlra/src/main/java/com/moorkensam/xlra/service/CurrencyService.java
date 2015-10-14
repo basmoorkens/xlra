@@ -1,8 +1,11 @@
 package com.moorkensam.xlra.service;
 
+
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.moorkensam.xlra.model.configuration.CurrencyRate;
+import com.moorkensam.xlra.model.error.RateFileException;
 
 public interface CurrencyService {
 
@@ -14,5 +17,8 @@ public interface CurrencyService {
 
 	List<CurrencyRate> getAllChfRates();
 
-	void updateCurrentChfValue(double value);
+	void updateCurrentChfValue(BigDecimal value);
+
+	CurrencyRate getChfRateForCurrentPrice(BigDecimal price)
+			throws RateFileException;
 }

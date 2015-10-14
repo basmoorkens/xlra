@@ -15,9 +15,9 @@
 		<h:form id="chfRatesForm">
 			<p:growl id="msgs" showDetail="true" />
 			<p:panel id="chfRatePanel" header="Swiss franc charges">
-				<p:dataTable editable="true"
-					value="#{chfController.chfRates}" var="chfRate"
-					emptyMessage="No swiss franc rates found." id="chfRateTable">
+				<p:dataTable editable="true" value="#{chfController.chfRates}"
+					var="chfRate" emptyMessage="No swiss franc rates found."
+					id="chfRateTable">
 
 					<p:ajax event="rowEdit"
 						listener="#{chfController.onChfCurrencyRateRowEdit}"
@@ -35,13 +35,14 @@
 							</f:facet>
 						</p:cellEditor>
 					</p:column>
-					<p:column headerText="Multiplier">
+					<p:column headerText="CHF surcharge percent:">
 						<p:cellEditor>
 							<f:facet name="output">
-								<h:outputText value="#{chfRate.multiplier}" />
+								<h:outputText value="#{chfRate.surchargePercentage}" />
 							</f:facet>
 							<f:facet name="input">
-								<p:inputText value="#{chfRate.multiplier}" style="width:100%" />
+								<p:inputText value="#{chfRate.surchargePercentage}"
+									style="width:100%" />
 							</f:facet>
 						</p:cellEditor>
 					</p:column>
@@ -51,11 +52,9 @@
 				</p:dataTable>
 				<p:panel>
 					<h:outputLabel for="currentChfRateField">Current swiss franc price:</h:outputLabel>
-					<p:inputText size="50"
-						value="#{chfController.currentChfValue}"
+					<p:inputText size="50" value="#{chfController.currentChfValue}"
 						id="currentChfRateField"></p:inputText>
-					<p:commandButton
-						action="#{chfController.updateCurrentChfRate}"
+					<p:commandButton action="#{chfController.updateCurrentChfRate}"
 						value="Save new price" update=":chfRatesForm:msgs" />
 				</p:panel>
 			</p:panel>

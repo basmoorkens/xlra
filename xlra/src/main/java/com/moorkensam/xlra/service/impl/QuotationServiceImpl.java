@@ -1,5 +1,7 @@
 package com.moorkensam.xlra.service.impl;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,22 +14,31 @@ import javax.mail.MessagingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.moorkensam.xlra.dao.ConfigurationDao;
 import com.moorkensam.xlra.dao.EmailTemplateDAO;
 import com.moorkensam.xlra.dao.QuotationQueryDAO;
 import com.moorkensam.xlra.dao.QuotationResultDAO;
 import com.moorkensam.xlra.dto.OfferteMailDTO;
+import com.moorkensam.xlra.dto.PriceCalculationDTO;
 import com.moorkensam.xlra.model.FullCustomer;
 import com.moorkensam.xlra.model.QuotationQuery;
+import com.moorkensam.xlra.model.configuration.Configuration;
+import com.moorkensam.xlra.model.configuration.CurrencyRate;
+import com.moorkensam.xlra.model.configuration.DieselRate;
 import com.moorkensam.xlra.model.configuration.MailTemplate;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.error.TemplatingException;
+import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.QuotationResult;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
+import com.moorkensam.xlra.service.CurrencyService;
+import com.moorkensam.xlra.service.DieselService;
 import com.moorkensam.xlra.service.EmailService;
 import com.moorkensam.xlra.service.QuotationService;
 import com.moorkensam.xlra.service.RateFileService;
+import com.moorkensam.xlra.service.util.CalcUtil;
 
 @Stateless
 public class QuotationServiceImpl implements QuotationService {
@@ -49,7 +60,16 @@ public class QuotationServiceImpl implements QuotationService {
 	private QuotationResultDAO quotationResultDAO;
 
 	@Inject
+	private ConfigurationDao configurationDao;
+
+	@Inject
 	private EmailService emailService;
+
+	@Inject
+	private DieselService dieselService;
+
+	@Inject
+	private CurrencyService currencyService;
 
 	@PostConstruct
 	public void init() {
@@ -95,10 +115,12 @@ public class QuotationServiceImpl implements QuotationService {
 		RateFileSearchFilter filter = createRateFileSearchFilterForQuery(query);
 		RateFile rf = rateFileService.getFullRateFileForFilter(filter);
 		RateLine result;
+		PriceCalculationDTO priceDTO = new PriceCalculationDTO();
 		try {
 			result = rf.getRateLineForQuantityAndPostalCode(
 					query.getQuantity(), query.getPostalCode());
-			calculatePriceAccordingToConditions();
+			priceDTO.setBasePrice(result.getValue());
+			calculatePriceAccordingToConditions(priceDTO, rf.getCountry());
 			initializeOfferteEmail(query, dto, rf, result);
 			emailService.sendOfferteMail(dto);
 		} catch (RateFileException e1) {
@@ -142,8 +164,52 @@ public class QuotationServiceImpl implements QuotationService {
 		return templateModel;
 	}
 
-	private void calculatePriceAccordingToConditions() {
-		// TODO IMPLEMENT CONDITIONS
+	private void calculatePriceAccordingToConditions(
+			PriceCalculationDTO priceDTO, Country country)
+			throws RateFileException {
+		Configuration config = configurationDao.getXlraConfiguration();
+		calculateDieselSurchargePrice(priceDTO, config);
+		if (country.getShortName().equalsIgnoreCase("chf")) {
+			calculateChfSurchargePrice(priceDTO, config);
+		}
+	}
+
+	protected void calculateChfSurchargePrice(PriceCalculationDTO priceDTO,
+			Configuration config) throws RateFileException {
+		CurrencyRate chfRate = getCurrencyService().getChfRateForCurrentPrice(
+				config.getCurrentChfValue());
+		BigDecimal multiplier = CalcUtil
+				.convertPercentageToBaseMultiplier(chfRate
+						.getSurchargePercentage());
+		BigDecimal result = new BigDecimal(priceDTO.getBasePrice()
+				.doubleValue() * multiplier.doubleValue());
+		result = result.setScale(2, RoundingMode.HALF_UP);
+		priceDTO.setChfPrice(result);
+	}
+
+	/**
+	 * Calculates the diesel supplement for the found base price.
+	 * 
+	 * @param priceDTO
+	 *            The pricedto object to take the base price from and to save
+	 *            the diesel surcharge into.
+	 * @param config
+	 *            The config object to take the current diesel price from.
+	 * @throws RateFileException
+	 *             Thrown when no dieselpercentage multiplier can be found for
+	 *             the current diesel price.
+	 */
+	protected void calculateDieselSurchargePrice(PriceCalculationDTO priceDTO,
+			Configuration config) throws RateFileException {
+		DieselRate dieselRate = getDieselService()
+				.getDieselRateForCurrentPrice(config.getCurrentDieselPrice());
+		BigDecimal multiplier = CalcUtil
+				.convertPercentageToBaseMultiplier(dieselRate
+						.getSurchargePercentage());
+		BigDecimal result = new BigDecimal(priceDTO.getBasePrice()
+				.doubleValue() * multiplier.doubleValue());
+		result = result.setScale(2, RoundingMode.HALF_UP);
+		priceDTO.setDieselPrice(result);
 	}
 
 	private RateFileSearchFilter createRateFileSearchFilterForQuery(
@@ -156,6 +222,22 @@ public class QuotationServiceImpl implements QuotationService {
 		filter.setMeasurement(query.getMeasurement());
 		filter.setRateKind(query.getKindOfRate());
 		return filter;
+	}
+
+	public DieselService getDieselService() {
+		return dieselService;
+	}
+
+	public void setDieselService(DieselService dieselService) {
+		this.dieselService = dieselService;
+	}
+
+	public CurrencyService getCurrencyService() {
+		return currencyService;
+	}
+
+	public void setCurrencyService(CurrencyService currencyService) {
+		this.currencyService = currencyService;
 	}
 
 }

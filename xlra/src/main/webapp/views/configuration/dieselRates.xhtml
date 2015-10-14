@@ -36,13 +36,14 @@
 							</f:facet>
 						</p:cellEditor>
 					</p:column>
-					<p:column headerText="Multiplier">
+					<p:column headerText="Surcharge percentage">
 						<p:cellEditor>
 							<f:facet name="output">
-								<h:outputText value="#{dieselRate.multiplier}" />
+								<h:outputText value="#{dieselRate.surchargePercentage}" />
 							</f:facet>
 							<f:facet name="input">
-								<p:inputText value="#{dieselRate.multiplier}" style="width:100%" />
+								<p:inputText value="#{dieselRate.surchargePercentage}"
+									style="width:100%" />
 							</f:facet>
 						</p:cellEditor>
 					</p:column>

@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -31,7 +32,7 @@ public class DieselRateController {
 
 	private Configuration configuration;
 
-	private double currentDieselValue;
+	private BigDecimal currentDieselValue;
 
 	@PostConstruct
 	public void initPage() {
@@ -71,7 +72,7 @@ public class DieselRateController {
 		updateDieselRate(newRate);
 		MessageUtil.addMessage("Diesel rate updated",
 				"Updated diesel rate for " + newRate.getInterval() + " to "
-						+ newRate.getMultiplier());
+						+ newRate.getSurchargePercentage());
 		refreshDieselRates();
 	}
 
@@ -91,11 +92,11 @@ public class DieselRateController {
 		this.selectedDieselRate = selectedDieselRate;
 	}
 
-	public double getCurrentDieselValue() {
+	public BigDecimal getCurrentDieselValue() {
 		return currentDieselValue;
 	}
 
-	public void setCurrentDieselValue(double currentDieselValue) {
+	public void setCurrentDieselValue(BigDecimal currentDieselValue) {
 		this.currentDieselValue = currentDieselValue;
 	}
 

@@ -19,7 +19,7 @@ public abstract class AbstractRate extends BaseEntity {
 			@AttributeOverride(name = "end", column = @Column(name = "end")) })
 	private Interval interval;
 
-	private double multiplier;
+	private double surchargePercentage;
 
 	public Interval getInterval() {
 		return interval;
@@ -27,14 +27,6 @@ public abstract class AbstractRate extends BaseEntity {
 
 	public void setInterval(Interval interval) {
 		this.interval = interval;
-	}
-
-	public double getMultiplier() {
-		return multiplier;
-	}
-
-	public void setMultiplier(double multiplier) {
-		this.multiplier = multiplier;
 	}
 
 	@Override
@@ -47,10 +39,18 @@ public abstract class AbstractRate extends BaseEntity {
 		}
 		AbstractRate otherRate = (AbstractRate) obj;
 		if (this.getInterval().equals(otherRate.getInterval())
-				&& this.getMultiplier() == otherRate.getMultiplier()) {
+				&& this.surchargePercentage == otherRate.surchargePercentage) {
 			return true;
 		}
 		return false;
+	}
+
+	public double getSurchargePercentage() {
+		return surchargePercentage;
+	}
+
+	public void setSurchargePercentage(double surchargePercentage) {
+		this.surchargePercentage = surchargePercentage;
 	}
 
 }

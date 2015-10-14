@@ -1,5 +1,7 @@
 package com.moorkensam.xlra.model.configuration;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -11,13 +13,13 @@ public class RateLogRecord extends LogRecord {
 
 	private static final long serialVersionUID = -9102740273707056738L;
 
-	private double rate;
+	private BigDecimal rate;
 
-	public double getRate() {
+	public BigDecimal getRate() {
 		return rate;
 	}
 
-	public void setRate(double rate) {
+	public void setRate(BigDecimal rate) {
 		this.rate = rate;
 	}
 

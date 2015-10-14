@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.service.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -16,6 +17,7 @@ import com.moorkensam.xlra.dao.LogDAO;
 import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.CurrencyRate;
 import com.moorkensam.xlra.model.configuration.LogRecord;
+import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.service.CurrencyService;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
 
@@ -61,7 +63,7 @@ public class CurrencyServiceImpl implements CurrencyService {
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void updateCurrentChfValue(double value) {
+	public void updateCurrentChfValue(BigDecimal value) {
 		Configuration config = xlraConfigurationDAO.getXlraConfiguration();
 
 		LogRecord createChfLogRecord = LogRecordFactory
@@ -72,6 +74,26 @@ public class CurrencyServiceImpl implements CurrencyService {
 		config.setCurrentChfValue(value);
 		logger.info("Saving current chf rate " + config.getCurrentChfValue());
 		xlraConfigurationDAO.updateXlraConfiguration(config);
+	}
+
+	@Override
+	public CurrencyRate getChfRateForCurrentPrice(BigDecimal price)
+			throws RateFileException {
+		List<CurrencyRate> allRates = getAllChfRates();
+		if (allRates == null || allRates.isEmpty()) {
+			throw new RateFileException(
+					"No Chf rates found, please add chf rates first.");
+		}
+		for (CurrencyRate rate : allRates) {
+			if (rate.getInterval().getStart() <= price.doubleValue()
+					&& rate.getInterval().getEnd() > price.doubleValue()) {
+				return rate;
+			}
+		}
+
+		throw new RateFileException(
+				"Could not find Chf percentage multiplier for chf value of "
+						+ price);
 	}
 
 }

@@ -5,11 +5,9 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.moorkensam.xlra.model.BaseEntity;
-import com.moorkensam.xlra.model.configuration.Translation;
 import com.moorkensam.xlra.model.configuration.TranslationKey;
 
 @Entity

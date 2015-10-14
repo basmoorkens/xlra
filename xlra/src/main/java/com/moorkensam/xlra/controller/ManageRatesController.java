@@ -1,7 +1,6 @@
 package com.moorkensam.xlra.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -22,7 +21,6 @@ import com.moorkensam.xlra.model.rate.IncoTermType;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.Zone;
-import com.moorkensam.xlra.model.rate.ZoneType;
 import com.moorkensam.xlra.service.RateFileService;
 import com.moorkensam.xlra.service.util.TranslationUtil;
 

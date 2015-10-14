@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -29,7 +30,7 @@ public class ChfController {
 
 	private CurrencyRate selectedChfRate;
 
-	private double currentChfValue;
+	private BigDecimal currentChfValue;
 
 	private Configuration configuration;
 
@@ -67,7 +68,7 @@ public class ChfController {
 		updateChfRate(newRate);
 		MessageUtil.addMessage("Swiss franc rate updated",
 				"Updated swiss franc rate for " + newRate.getInterval()
-						+ " to " + newRate.getMultiplier());
+						+ " to " + newRate.getSurchargePercentage());
 		refreshCurrencyRates();
 	}
 
@@ -91,11 +92,11 @@ public class ChfController {
 		return configuration;
 	}
 
-	public double getCurrentChfValue() {
+	public BigDecimal getCurrentChfValue() {
 		return currentChfValue;
 	}
 
-	public void setCurrentChfValue(double currentChfValue) {
+	public void setCurrentChfValue(BigDecimal currentChfValue) {
 		this.currentChfValue = currentChfValue;
 	}
 

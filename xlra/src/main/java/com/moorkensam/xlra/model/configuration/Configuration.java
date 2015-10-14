@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.model.configuration;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.Cacheable;
@@ -35,26 +36,26 @@ public class Configuration extends BaseEntity {
 
 	private String configurationName;
 
-	private double currentDieselPrice;
+	private BigDecimal currentDieselPrice;
 
-	private double currentChfValue;
+	private BigDecimal currentChfValue;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "xlraConfiguration")
 	private List<MailTemplate> mailTemplates;
 
-	public double getCurrentChfValue() {
+	public BigDecimal getCurrentChfValue() {
 		return currentChfValue;
 	}
 
-	public void setCurrentChfValue(double currentChfValue) {
+	public void setCurrentChfValue(BigDecimal currentChfValue) {
 		this.currentChfValue = currentChfValue;
 	}
 
-	public double getCurrentDieselPrice() {
+	public BigDecimal getCurrentDieselPrice() {
 		return currentDieselPrice;
 	}
 
-	public void setCurrentDieselPrice(double currentDieselPrice) {
+	public void setCurrentDieselPrice(BigDecimal currentDieselPrice) {
 		this.currentDieselPrice = currentDieselPrice;
 	}
 

@@ -3,7 +3,6 @@ package com.moorkensam.xlra.model.searchfilter;
 import java.io.Serializable;
 
 import com.moorkensam.xlra.model.BaseCustomer;
-import com.moorkensam.xlra.model.FullCustomer;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Kind;
 import com.moorkensam.xlra.model.rate.Measurement;

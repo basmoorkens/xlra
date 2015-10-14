@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.dao.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -28,5 +29,6 @@ public class DieselRateDAOImpl extends BaseDAO implements DieselRateDAO {
 		Query query = getEntityManager().createNamedQuery("DieselRate.findAll");
 		return (List<DieselRate>) query.getResultList();
 	}
+
 
 }

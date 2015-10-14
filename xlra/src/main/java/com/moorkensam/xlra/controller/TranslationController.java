@@ -11,12 +11,9 @@ import javax.inject.Inject;
 import org.primefaces.event.RowEditEvent;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
-import com.moorkensam.xlra.controller.util.RateUtil;
 import com.moorkensam.xlra.model.Language;
-import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.Translation;
 import com.moorkensam.xlra.model.configuration.TranslationKey;
-import com.moorkensam.xlra.service.ApplicationConfigurationService;
 import com.moorkensam.xlra.service.TranslationService;
 import com.moorkensam.xlra.service.util.TranslationUtil;
 

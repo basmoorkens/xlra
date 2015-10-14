@@ -117,14 +117,14 @@ public class RateFileServiceImplTest extends UnitilsJUnit4 {
 
 	@Test
 	public void testfetchFullRateFilesAndApplyRaise() {
-		rateFileServiceImpl.fetchFullRateFiles(Arrays.asList(rateFile), 0.9);
+		rateFileServiceImpl.fetchFullRateFiles(Arrays.asList(rateFile));
 		rateFileDAOMock.assertInvoked().getFullRateFile(rateFile.getId());
 	}
 
 	@Test
 	public void testraiseRateFiles() {
-		rateFileServiceImpl.raiseRateFiles(1.1d, Arrays.asList(rateFile),
-				RateOperation.RAISE);
+		rateFileServiceImpl.raiseRateFiles(new BigDecimal(1.1d),
+				Arrays.asList(rateFile), RateOperation.RAISE);
 		BigDecimal result = new BigDecimal(110.00d);
 		BigDecimal r2 = result.setScale(2, RoundingMode.HALF_UP);
 		BigDecimal result2 = new BigDecimal(220.00d);
@@ -132,30 +132,4 @@ public class RateFileServiceImplTest extends UnitilsJUnit4 {
 		Assert.assertEquals(r2, rateFile.getRateLines().get(0).getValue());
 		Assert.assertEquals(r3, rateFile.getRateLines().get(2).getValue());
 	}
-
-	@Test
-	public void testsetupRateLineMultiplier() {
-		double d = 0.0d;
-		d = rateFileServiceImpl.setupRateLineMultiplier(10d, d);
-		Assert.assertEquals(1.1d, d);
-	}
-
-	@Test
-	public void testsetupRateLineMultiplierSubtract() {
-		double d = 0.0d;
-		d = rateFileServiceImpl.setupRateLineMultiplier(10d, d);
-		Assert.assertEquals(1.1d, d);
-	}
-
-	@Test
-	public void testconvertPercentageToMultiplier() {
-		double result = rateFileServiceImpl.convertPercentageToMultiplier(30);
-		Assert.assertEquals(1.30d, result);
-	}
-
-	@Test
-	public void testconvertPercentageToReservedMultiplier() {
-		rateFileServiceImpl.convertPercentageToReservedMultiplier(10);
-	}
-
 }
