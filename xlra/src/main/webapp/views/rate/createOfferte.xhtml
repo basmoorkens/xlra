@@ -13,8 +13,7 @@
 	</ui:define>
 	<ui:define name="body">
 		<h:form id="createQuotationForm">
-			<p:messages id="messages" showDetail="true" autoUpdate="true"
-				closable="true" />
+			<p:growl showDetail="true" id="growl" sticky="true" />
 			<p:wizard flowListener="#{createQuotationController.onFlowProcess}"
 				showNavBar="false" widgetVar="wizard">
 				<p:tab id="selectCustomer" title="Select / create customer">
@@ -24,6 +23,7 @@
 						value="#{createQuotationController.quotationQuery.customer}"
 						completeMethod="#{createQuotationController.completeCustomerName}"
 						var="customer" itemLabel="#{customer.name}" required="true"
+						requiredMessage="Please select a customer/create a new one"
 						itemValue="#{customer}" converter="#{customerConverter}">
 					</p:autoComplete>
 
@@ -34,6 +34,7 @@
 					<p:panel
 						style="margin-top:20px; bottom:20px;  padding:0px;border:0px;">
 						<p:commandButton value="Next" onclick="PF('wizard').next();"
+							update=":createQuotationForm"
 							style="width:150px; margin-left:20px;" />
 					</p:panel>
 				</p:tab>
@@ -67,6 +68,18 @@
 						<p:inputText required="true" style="width:100%;"
 							value="#{createQuotationController.quotationQuery.postalCode}" />
 
+						<h:outputText value="Address surcharge:" />
+						<p:selectBooleanCheckbox
+							value="#{createQuotationController.quotationQuery.adrSurcharge}" />
+
+						<h:outputText value="Import formalities:" />
+						<p:selectBooleanCheckbox
+							value="#{createQuotationController.quotationQuery.importFormality}" />
+
+						<h:outputText value="Export formalities:" />
+						<p:selectBooleanCheckbox
+							value="#{createQuotationController.quotationQuery.exportFormality}" />
+
 					</p:panelGrid>
 					<p:panel style="bottom:20px;  padding:0px;border:0px;">
 						<p:commandButton value="Back" onclick="PF('wizard').back();"
@@ -85,7 +98,6 @@
 			modal="true" height="480px" width="900px" dynamic="true">
 			<h:form id="addQuickCustomerForm">
 				<p:panel header="Add customer" style="margin-top:50px;">
-					<p:growl showDetail="true" id="growl" sticky="true" />
 					<p:panelGrid columns="2" style="width:100%;">
 						<h:outputLabel for="nameField">Name</h:outputLabel>
 						<p:inputText size="50" style="width:100%;"
@@ -110,7 +122,7 @@
 						</p:selectOneRadio>
 					</p:panelGrid>
 					<p:commandButton value="Save customer"
-						update=":createQuotationForm :addQuickCustomerForm growl "
+						update=":createQuotationForm :addQuickCustomerForm"
 						actionListener="#{createQuotationController.createCustomer}"
 						ajax="true"
 						oncomplete="handleAddCustomerRequest(xhr, status, args)" />

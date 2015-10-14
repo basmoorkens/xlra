@@ -20,3 +20,8 @@ insert into DieselRate (start, end, surchargePercentage, deleted, version) value
 insert into DieselRate (start, end, surchargePercentage, deleted, version) values (1.4, 1.5, 1.5,0, 0);
 
 insert into DieselRate (start, end, surchargePercentage, deleted, version) values (1.5, 2.0, 2, 0, 0);
+
+INSERT INTO COUNTRY (deleted, name, shortname, version, zonetype) VALUES (0, 'Belgium', 'BE', 0, 'NUMERIC_CODES');
+INSERT INTO COUNTRY (deleted, name, shortname, version, zonetype) VALUES (0, 'Netherlands', 'NL', 0, 'NUMERIC_CODES');
+INSERT INTO COUNTRY (deleted, name, shortname, version, zonetype) VALUES (0, 'Switzerland', 'CH', 0, 'ALPHANUMERIC_LIST');
+INSERT INTO COUNTRY (deleted, name, shortname, version, zonetype) VALUES (0, 'United kingdom', 'UK', 0, 'ALPHANUMERIC_LIST');

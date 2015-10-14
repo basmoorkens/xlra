@@ -13,7 +13,6 @@ import javax.persistence.Table;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Kind;
 import com.moorkensam.xlra.model.rate.Measurement;
-import com.moorkensam.xlra.model.rate.RateFile;
 
 @Entity
 @Cacheable
@@ -36,6 +35,12 @@ public class QuotationQuery extends BaseEntity {
 	private Country country;
 
 	private double quantity;
+
+	private boolean adrSurcharge;
+
+	private boolean importFormality;
+
+	private boolean exportFormality;
 
 	private String postalCode;
 
@@ -95,5 +100,29 @@ public class QuotationQuery extends BaseEntity {
 
 	public void setQuantity(double quantity) {
 		this.quantity = quantity;
+	}
+
+	public boolean isImportFormality() {
+		return importFormality;
+	}
+
+	public void setImportFormality(boolean importFormality) {
+		this.importFormality = importFormality;
+	}
+
+	public boolean isAdrSurcharge() {
+		return adrSurcharge;
+	}
+
+	public void setAdrSurcharge(boolean adrSurcharge) {
+		this.adrSurcharge = adrSurcharge;
+	}
+
+	public boolean isExportFormality() {
+		return exportFormality;
+	}
+
+	public void setExportFormality(boolean exportFormality) {
+		this.exportFormality = exportFormality;
 	}
 }

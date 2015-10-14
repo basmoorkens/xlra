@@ -17,7 +17,9 @@ import com.moorkensam.xlra.dto.PriceCalculationDTO;
 import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.CurrencyRate;
 import com.moorkensam.xlra.model.configuration.DieselRate;
+import com.moorkensam.xlra.model.configuration.TranslationKey;
 import com.moorkensam.xlra.model.error.RateFileException;
+import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.service.CurrencyService;
 import com.moorkensam.xlra.service.DieselService;
 
@@ -40,6 +42,8 @@ public class QuotationServiceTest extends UnitilsJUnit4 {
 
 	private CurrencyRate chfRate;
 
+	private Condition adrsurchargeCondition;
+
 	@Before
 	public void init() {
 		quotationService = new QuotationServiceImpl();
@@ -53,6 +57,36 @@ public class QuotationServiceTest extends UnitilsJUnit4 {
 		dieselRate.setSurchargePercentage(5.00d);
 		chfRate = new CurrencyRate();
 		chfRate.setSurchargePercentage(10);
+		adrsurchargeCondition = new Condition();
+		adrsurchargeCondition.setValue("20");
+		adrsurchargeCondition.setConditionKey(TranslationKey.ADR_SURCHARGE);
+	}
+
+	@Test
+	public void testApplyAfterconditionLogic() {
+		priceDTO.setAdrSurchargeMinimum(new BigDecimal(20.00d));
+		priceDTO.setCalculatedAdrSurcharge(new BigDecimal(19.00d));
+		quotationService.applyAfterConditionLogic(priceDTO);
+		Assert.assertEquals(priceDTO.getAdrSurchargeMinimum(),
+				priceDTO.getResultingPriceSurcharge());
+	}
+
+	@Test
+	public void testApplyAfterconditionLogicCalc() {
+		priceDTO.setAdrSurchargeMinimum(new BigDecimal(20.00d));
+		priceDTO.setCalculatedAdrSurcharge(new BigDecimal(190.00d));
+		quotationService.applyAfterConditionLogic(priceDTO);
+		Assert.assertEquals(priceDTO.getCalculatedAdrSurcharge(),
+				priceDTO.getResultingPriceSurcharge());
+	}
+
+	@Test
+	public void testCalculateAdrSurcharge() {
+		quotationService.calculateAddressSurcharge(priceDTO,
+				adrsurchargeCondition);
+		BigDecimal expected = new BigDecimal(100.00d);
+		expected = expected.setScale(2, RoundingMode.HALF_UP);
+		Assert.assertEquals(expected, priceDTO.getCalculatedAdrSurcharge());
 	}
 
 	@Test

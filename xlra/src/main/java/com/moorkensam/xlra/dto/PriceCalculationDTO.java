@@ -12,6 +12,12 @@ public class PriceCalculationDTO {
 
 	private BigDecimal chfPrice;
 
+	private BigDecimal calculatedAdrSurcharge;
+
+	private BigDecimal resultingPriceSurcharge;
+
+	private BigDecimal adrSurchargeMinimum;
+
 	public BigDecimal getFinalPrice() {
 		return finalPrice;
 	}
@@ -42,6 +48,30 @@ public class PriceCalculationDTO {
 
 	public void setChfPrice(BigDecimal chfPrice) {
 		this.chfPrice = chfPrice;
+	}
+
+	public BigDecimal getCalculatedAdrSurcharge() {
+		return calculatedAdrSurcharge;
+	}
+
+	public void setCalculatedAdrSurcharge(BigDecimal calculatedAdrSurcharge) {
+		this.calculatedAdrSurcharge = calculatedAdrSurcharge;
+	}
+
+	public BigDecimal getAdrSurchargeMinimum() {
+		return adrSurchargeMinimum;
+	}
+
+	public void setAdrSurchargeMinimum(BigDecimal adrSurchargeMinimum) {
+		this.adrSurchargeMinimum = adrSurchargeMinimum;
+	}
+
+	public BigDecimal getResultingPriceSurcharge() {
+		return resultingPriceSurcharge;
+	}
+
+	public void setResultingPriceSurcharge(BigDecimal resultingPriceSurcharge) {
+		this.resultingPriceSurcharge = resultingPriceSurcharge;
 	}
 
 }

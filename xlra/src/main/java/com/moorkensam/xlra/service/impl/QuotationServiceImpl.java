@@ -28,6 +28,7 @@ import com.moorkensam.xlra.model.configuration.DieselRate;
 import com.moorkensam.xlra.model.configuration.MailTemplate;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.error.TemplatingException;
+import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.QuotationResult;
 import com.moorkensam.xlra.model.rate.RateFile;
@@ -120,7 +121,8 @@ public class QuotationServiceImpl implements QuotationService {
 			result = rf.getRateLineForQuantityAndPostalCode(
 					query.getQuantity(), query.getPostalCode());
 			priceDTO.setBasePrice(result.getValue());
-			calculatePriceAccordingToConditions(priceDTO, rf.getCountry());
+			calculatePriceAccordingToConditions(priceDTO, rf.getCountry(),
+					rf.getConditions());
 			initializeOfferteEmail(query, dto, rf, result);
 			emailService.sendOfferteMail(dto);
 		} catch (RateFileException e1) {
@@ -138,6 +140,16 @@ public class QuotationServiceImpl implements QuotationService {
 		return null;
 	}
 
+	/**
+	 * This method fetches the email templates from the database and then parses
+	 * it with the given parameters.
+	 * 
+	 * @param query
+	 * @param dto
+	 * @param rf
+	 * @param result
+	 * @throws TemplatingException
+	 */
 	private void initializeOfferteEmail(QuotationQuery query,
 			OfferteMailDTO dto, RateFile rf, RateLine result)
 			throws TemplatingException {
@@ -152,6 +164,13 @@ public class QuotationServiceImpl implements QuotationService {
 		dto.setContent(emailMessage);
 	}
 
+	/**
+	 * Creates the template parameter map for the email.
+	 * 
+	 * @param query
+	 * @param result
+	 * @return
+	 */
 	private Map<String, Object> createTemplateParams(QuotationQuery query,
 			RateLine result) {
 		Map<String, Object> templateModel = new HashMap<String, Object>();
@@ -164,14 +183,69 @@ public class QuotationServiceImpl implements QuotationService {
 		return templateModel;
 	}
 
+	/*
+	 * Calculates the prices according to some business rules.
+	 */
 	private void calculatePriceAccordingToConditions(
-			PriceCalculationDTO priceDTO, Country country)
-			throws RateFileException {
+			PriceCalculationDTO priceDTO, Country country,
+			List<Condition> conditions) throws RateFileException {
 		Configuration config = configurationDao.getXlraConfiguration();
 		calculateDieselSurchargePrice(priceDTO, config);
 		if (country.getShortName().equalsIgnoreCase("chf")) {
 			calculateChfSurchargePrice(priceDTO, config);
 		}
+		for (Condition condition : conditions) {
+			switch (condition.getConditionKey()) {
+			case ADR_SURCHARGE:
+				calculateAddressSurcharge(priceDTO, condition);
+				break;
+			case ADR_MINIMUM:
+				calculateAddressSurchargeMinimum(priceDTO, condition);
+				break;
+			default:
+				break;
+			}
+		}
+		applyAfterConditionLogic(priceDTO);
+	}
+
+	protected void calculateAddressSurchargeMinimum(
+			PriceCalculationDTO priceDTO, Condition condition) {
+		priceDTO.setAdrSurchargeMinimum(new BigDecimal(Double
+				.parseDouble(condition.getValue())));
+	}
+
+	/**
+	 * Apply some business rules to the calculation that can only be executed
+	 * after all conditions are parsed.
+	 * 
+	 * @param priceDTO
+	 */
+	protected void applyAfterConditionLogic(PriceCalculationDTO priceDTO) {
+		if (priceDTO.getAdrSurchargeMinimum().doubleValue() > priceDTO
+				.getCalculatedAdrSurcharge().doubleValue()) {
+			priceDTO.setResultingPriceSurcharge(priceDTO
+					.getAdrSurchargeMinimum());
+		} else {
+			priceDTO.setResultingPriceSurcharge(priceDTO
+					.getCalculatedAdrSurcharge());
+		}
+	}
+
+	/**
+	 * Calculates the address surcharge.
+	 * 
+	 * @param condition
+	 */
+	protected void calculateAddressSurcharge(PriceCalculationDTO priceDTO,
+			Condition condition) {
+		BigDecimal multiplier = CalcUtil
+				.convertPercentageToBaseMultiplier(Double.parseDouble(condition
+						.getValue()));
+		BigDecimal result = new BigDecimal(priceDTO.getBasePrice()
+				.doubleValue() * multiplier.doubleValue());
+		result = result.setScale(2, RoundingMode.HALF_UP);
+		priceDTO.setCalculatedAdrSurcharge(result);
 	}
 
 	protected void calculateChfSurchargePrice(PriceCalculationDTO priceDTO,
