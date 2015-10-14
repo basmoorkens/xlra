@@ -97,7 +97,8 @@ public class RateFileTest extends UnitilsJUnit4 {
 				.get(0)
 				.setAlphaNumericalPostalCodes(
 						Arrays.asList("CX1", "CX2", "CX4", "AA2", "AA1", "CX3A"));
-
+		rateFile.getZones().get(1)
+				.setAlphaNumericalPostalCodes(Arrays.asList("AA3", "AA4"));
 		RateLine result = rateFile
 				.getRateLineForQuantityAndPostalCode(6, "CX3");
 	}
@@ -124,9 +125,6 @@ public class RateFileTest extends UnitilsJUnit4 {
 		result = rateFile.getRateLineForQuantityAndPostalCode(7, "AA3");
 		Assert.assertNotNull(result);
 		Assert.assertEquals(new BigDecimal(1700d), result.getValue());
-
-		result = rateFile.getRateLineForQuantityAndPostalCode(10, "AA3");
-		Assert.assertNull(result);
 
 	}
 }

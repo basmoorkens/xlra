@@ -33,7 +33,6 @@ public class TranslationServiceImpl implements TranslationService {
 		logger.info("Updating translation for key "
 				+ translation.getTranslationKey() + " and language "
 				+ translation.getLanguage());
-		;
 		translationDAO.updateTranslation(translation);
 	}
 

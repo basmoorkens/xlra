@@ -238,24 +238,28 @@ public class RateFile extends BaseEntity {
 					rlsWithCorrectQuantity.add(rl);
 				}
 			}
-			for (RateLine rl : rlsWithCorrectQuantity) {
-				if (rl.getZone().getZoneType() == ZoneType.ALPHANUMERIC_LIST) {
-					for (String s : rl.getZone().getAlphaNumericalPostalCodes()) {
-						if (s.equals(postalCode)) {
-							return rl;
+			if (!rlsWithCorrectQuantity.isEmpty()) {
+				for (RateLine rl : rlsWithCorrectQuantity) {
+					if (rl.getZone().getZoneType() == ZoneType.ALPHANUMERIC_LIST) {
+						for (String s : rl.getZone()
+								.getAlphaNumericalPostalCodes()) {
+							if (s.equals(postalCode)) {
+								return rl;
+							}
 						}
-					}
-				} else {
-					for (Interval interval : rl.getZone()
-							.getNumericalPostalCodes()) {
-						int postalCodeAsInt = Integer.parseInt(postalCode);
-						if (postalCodeAsInt >= interval.getStart()
-								&& postalCodeAsInt < interval.getEnd()) {
-							return rl;
-						}
+					} else {
+						for (Interval interval : rl.getZone()
+								.getNumericalPostalCodes()) {
+							int postalCodeAsInt = Integer.parseInt(postalCode);
+							if (postalCodeAsInt >= interval.getStart()
+									&& postalCodeAsInt < interval.getEnd()) {
+								return rl;
+							}
 
+						}
 					}
 				}
+
 			}
 		}
 		throw new RateFileException("Could not find price!");
