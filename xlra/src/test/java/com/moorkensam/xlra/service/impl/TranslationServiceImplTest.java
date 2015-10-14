@@ -5,12 +5,12 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
-import org.unitils.inject.annotation.InjectIntoByType;
+import org.unitils.easymock.EasyMockUnitils;
 import org.unitils.inject.annotation.TestedObject;
-import org.unitils.mock.Mock;
 
 import com.moorkensam.xlra.dao.TranslationDAO;
 import com.moorkensam.xlra.model.Language;
@@ -20,16 +20,17 @@ import com.moorkensam.xlra.service.TranslationService;
 
 public class TranslationServiceImplTest extends UnitilsJUnit4 {
 
-	@TestedObject
-	private TranslationService translationService;
+	private TranslationServiceImpl translationService;
 
-	@InjectIntoByType
-	private Mock<TranslationDAO> translationDAO;
+	@org.unitils.easymock.annotation.Mock
+	private TranslationDAO translationDAO;
 
 	private List<Translation> translations;
 
 	@Before
 	public void init() {
+		translationService = new TranslationServiceImpl();
+		translationService.setTranslationDAO(translationDAO);
 		translations = new ArrayList<Translation>();
 		Translation tr = new Translation();
 		tr.setLanguage(Language.EN);
@@ -45,8 +46,9 @@ public class TranslationServiceImplTest extends UnitilsJUnit4 {
 
 	@Test
 	public void testGetCachedEntry() {
-		translationDAO.returns(translations).getAllNonDeletedTranslations();
-
+		EasyMock.expect(translationDAO.getAllNonDeletedTranslations())
+				.andReturn(translations);
+		EasyMockUnitils.replay();
 		Translation translation = translationService
 				.findTranslationInCacheByTranslationKeyAndLanguage(
 						TranslationKey.ADR_MINIMUM, Language.EN);

@@ -33,18 +33,18 @@ public class TranslationServiceImpl implements TranslationService {
 		logger.info("Updating translation for key "
 				+ translation.getTranslationKey() + " and language "
 				+ translation.getLanguage());
-		translationDAO.updateTranslation(translation);
+		getTranslationDAO().updateTranslation(translation);
 	}
 
 	@Override
 	public List<Translation> getAllNonDeletedTranslations() {
-		return translationDAO.getAllNonDeletedTranslations();
+		return getTranslationDAO().getAllNonDeletedTranslations();
 	}
 
 	@Override
 	public void createTranslations(Translation[] translations) {
 		for (Translation translation : translations) {
-			translationDAO.createTranslation(translation);
+			getTranslationDAO().createTranslation(translation);
 		}
 	}
 
@@ -63,5 +63,13 @@ public class TranslationServiceImpl implements TranslationService {
 			}
 		}
 		return null;
+	}
+
+	public TranslationDAO getTranslationDAO() {
+		return translationDAO;
+	}
+
+	public void setTranslationDAO(TranslationDAO translationDAO) {
+		this.translationDAO = translationDAO;
 	}
 }
