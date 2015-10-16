@@ -1,6 +1,9 @@
 package com.moorkensam.xlra.dto;
 
 import java.math.BigDecimal;
+import java.util.List;
+
+import com.moorkensam.xlra.model.configuration.TranslationKey;
 
 public class PriceCalculationDTO {
 
@@ -21,6 +24,8 @@ public class PriceCalculationDTO {
 	private BigDecimal importFormalities;
 
 	private BigDecimal exportFormalities;
+
+	private List<TranslationKey> appliedOperations;
 
 	public BigDecimal getFinalPrice() {
 		return finalPrice;
@@ -92,6 +97,22 @@ public class PriceCalculationDTO {
 
 	public void setImportFormalities(BigDecimal importFormalities) {
 		this.importFormalities = importFormalities;
+	}
+
+	public void addToFinalPrice(BigDecimal toAdd) {
+		if (finalPrice == null) {
+			finalPrice = new BigDecimal(0d);
+		}
+		finalPrice = new BigDecimal(finalPrice.doubleValue()
+				+ toAdd.doubleValue());
+	}
+
+	public List<TranslationKey> getAppliedOperations() {
+		return appliedOperations;
+	}
+
+	public void setAppliedOperations(List<TranslationKey> appliedOperations) {
+		this.appliedOperations = appliedOperations;
 	}
 
 }

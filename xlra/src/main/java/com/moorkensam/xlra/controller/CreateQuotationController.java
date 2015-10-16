@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJBException;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
@@ -108,14 +109,27 @@ public class CreateQuotationController {
 			try {
 				quotationResult = quotationService
 						.generateQuotationResultForQuotationQuery(quotationQuery);
-			} catch (RateFileException e) {
-				MessageUtil
-						.addErrorMessage(
-								"Unexpected error whilst processing quotation request.",
-								e.getBusinessException());
+			} catch (RateFileException re2) {
+				showRateFileError(re2);
+			} catch (EJBException e) {
+				if (e.getCausedByException() instanceof RateFileException) {
+					RateFileException re = (RateFileException) e
+							.getCausedByException();
+					showRateFileError(re);
+				} else {
+					MessageUtil
+							.addErrorMessage("Unknown exception",
+									"An unexpected exception occurred, please contact the system admin.");
+				}
 			}
 		}
 		return event.getNewStep();
+	}
+
+	private void showRateFileError(RateFileException re) {
+		MessageUtil.addErrorMessage(
+				"Unexpected error whilst processing quotation request.",
+				re.getBusinessException());
 	}
 
 	private void setupFiltersFromExistingCustomer() {

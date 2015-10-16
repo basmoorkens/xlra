@@ -43,37 +43,37 @@ public class CurrencyServiceImpl implements CurrencyService {
 
 	@Override
 	public void updateCurrencyRate(CurrencyRate currencyRate) {
-		currencyRateDAO.updateCurrencyRate(currencyRate);
+		getCurrencyRateDAO().updateCurrencyRate(currencyRate);
 	}
 
 	@Override
 	public void createCurrencyRate(CurrencyRate currencyRate) {
-		currencyRateDAO.createCurrencyRate(currencyRate);
+		getCurrencyRateDAO().createCurrencyRate(currencyRate);
 	}
 
 	@Override
 	public List<CurrencyRate> getAllCurrencyRates() {
-		return currencyRateDAO.getAllCurrencyRates();
+		return getCurrencyRateDAO().getAllCurrencyRates();
 	}
 
 	@Override
 	public List<CurrencyRate> getAllChfRates() {
-		return currencyRateDAO.getAllChfRates();
+		return getCurrencyRateDAO().getAllChfRates();
 	}
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void updateCurrentChfValue(BigDecimal value) {
-		Configuration config = xlraConfigurationDAO.getXlraConfiguration();
+		Configuration config = getXlraConfigurationDAO().getXlraConfiguration();
 
 		LogRecord createChfLogRecord = LogRecordFactory
 				.createChfLogRecord(config.getCurrentChfValue());
 		logger.info("saving chfprice logrecord" + createChfLogRecord);
-		logDAO.createLogRecord(createChfLogRecord);
+		getLogDAO().createLogRecord(createChfLogRecord);
 
 		config.setCurrentChfValue(value);
 		logger.info("Saving current chf rate " + config.getCurrentChfValue());
-		xlraConfigurationDAO.updateXlraConfiguration(config);
+		getXlraConfigurationDAO().updateXlraConfiguration(config);
 	}
 
 	@Override
@@ -94,6 +94,30 @@ public class CurrencyServiceImpl implements CurrencyService {
 		throw new RateFileException(
 				"Could not find Chf percentage multiplier for chf value of "
 						+ price);
+	}
+
+	public CurrencyRateDAO getCurrencyRateDAO() {
+		return currencyRateDAO;
+	}
+
+	public void setCurrencyRateDAO(CurrencyRateDAO currencyRateDAO) {
+		this.currencyRateDAO = currencyRateDAO;
+	}
+
+	public LogDAO getLogDAO() {
+		return logDAO;
+	}
+
+	public void setLogDAO(LogDAO logDAO) {
+		this.logDAO = logDAO;
+	}
+
+	public ConfigurationDao getXlraConfigurationDAO() {
+		return xlraConfigurationDAO;
+	}
+
+	public void setXlraConfigurationDAO(ConfigurationDao xlraConfigurationDAO) {
+		this.xlraConfigurationDAO = xlraConfigurationDAO;
 	}
 
 }

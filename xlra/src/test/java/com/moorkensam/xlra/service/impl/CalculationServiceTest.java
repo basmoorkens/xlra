@@ -23,10 +23,9 @@ import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.service.CurrencyService;
 import com.moorkensam.xlra.service.DieselService;
 
-public class QuotationServiceTest extends UnitilsJUnit4 {
-
+public class CalculationServiceTest extends UnitilsJUnit4 {
 	@TestedObject
-	private QuotationServiceImpl quotationService;
+	private CalculationServiceImpl calcService;
 
 	private PriceCalculationDTO priceDTO;
 
@@ -46,9 +45,9 @@ public class QuotationServiceTest extends UnitilsJUnit4 {
 
 	@Before
 	public void init() {
-		quotationService = new QuotationServiceImpl();
-		quotationService.setDieselService(dieselService);
-		quotationService.setCurrencyService(currencyService);
+		calcService = new CalculationServiceImpl();
+		calcService.setDieselService(dieselService);
+		calcService.setCurrencyService(currencyService);
 		priceDTO = new PriceCalculationDTO();
 		priceDTO.setBasePrice(new BigDecimal(500d));
 		config = new Configuration();
@@ -66,7 +65,7 @@ public class QuotationServiceTest extends UnitilsJUnit4 {
 	public void testcalculateExportFormality() {
 		Condition condition = new Condition();
 		condition.setValue("40.15d");
-		quotationService.calculateExportFormality(priceDTO, condition);
+		calcService.calculateExportFormality(priceDTO, condition);
 		BigDecimal result = new BigDecimal(40.15d);
 		result = result.setScale(2, RoundingMode.HALF_UP);
 		Assert.assertEquals(result, priceDTO.getExportFormalities());
@@ -76,7 +75,7 @@ public class QuotationServiceTest extends UnitilsJUnit4 {
 	public void testCalcImportFormality() {
 		Condition condition = new Condition();
 		condition.setValue("20.33d");
-		quotationService.calculateImportFormality(priceDTO, condition);
+		calcService.calculateImportFormality(priceDTO, condition);
 		BigDecimal result = new BigDecimal(20.33d);
 		result = result.setScale(2, RoundingMode.HALF_UP);
 		Assert.assertEquals(result, priceDTO.getImportFormalities());
@@ -86,7 +85,7 @@ public class QuotationServiceTest extends UnitilsJUnit4 {
 	public void testApplyAfterconditionLogic() {
 		priceDTO.setAdrSurchargeMinimum(new BigDecimal(20.00d));
 		priceDTO.setCalculatedAdrSurcharge(new BigDecimal(19.00d));
-		quotationService.applyAfterConditionLogic(priceDTO);
+		calcService.applyAfterConditionLogic(priceDTO);
 		Assert.assertEquals(priceDTO.getAdrSurchargeMinimum(),
 				priceDTO.getResultingPriceSurcharge());
 	}
@@ -95,15 +94,14 @@ public class QuotationServiceTest extends UnitilsJUnit4 {
 	public void testApplyAfterconditionLogicCalc() {
 		priceDTO.setAdrSurchargeMinimum(new BigDecimal(20.00d));
 		priceDTO.setCalculatedAdrSurcharge(new BigDecimal(190.00d));
-		quotationService.applyAfterConditionLogic(priceDTO);
+		calcService.applyAfterConditionLogic(priceDTO);
 		Assert.assertEquals(priceDTO.getCalculatedAdrSurcharge(),
 				priceDTO.getResultingPriceSurcharge());
 	}
 
 	@Test
 	public void testCalculateAdrSurcharge() {
-		quotationService.calculateAddressSurcharge(priceDTO,
-				adrsurchargeCondition);
+		calcService.calculateAddressSurcharge(priceDTO, adrsurchargeCondition);
 		BigDecimal expected = new BigDecimal(100.00d);
 		expected = expected.setScale(2, RoundingMode.HALF_UP);
 		Assert.assertEquals(expected, priceDTO.getCalculatedAdrSurcharge());
@@ -116,7 +114,7 @@ public class QuotationServiceTest extends UnitilsJUnit4 {
 						.getCurrentChfValue())).andReturn(chfRate);
 		EasyMockUnitils.replay();
 
-		quotationService.calculateChfSurchargePrice(priceDTO, config);
+		calcService.calculateChfSurchargePrice(priceDTO, config);
 
 		BigDecimal expected = new BigDecimal(50.00d);
 		expected = expected.setScale(2, RoundingMode.HALF_UP);
@@ -129,7 +127,7 @@ public class QuotationServiceTest extends UnitilsJUnit4 {
 				dieselService.getDieselRateForCurrentPrice(config
 						.getCurrentDieselPrice())).andReturn(dieselRate);
 		EasyMockUnitils.replay();
-		quotationService.calculateDieselSurchargePrice(priceDTO, config);
+		calcService.calculateDieselSurchargePrice(priceDTO, config);
 		BigDecimal expected = new BigDecimal(25.00d);
 		expected = expected.setScale(2, RoundingMode.HALF_UP);
 		Assert.assertEquals(expected, priceDTO.getDieselPrice());
