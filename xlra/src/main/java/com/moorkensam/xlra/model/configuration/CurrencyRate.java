@@ -33,9 +33,12 @@ public class CurrencyRate extends AbstractRate {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (super.equals(obj)) {
+		if (obj instanceof CurrencyRate) {
 			CurrencyRate cr = (CurrencyRate) obj;
-			if (this.getCurrencyType().equals(cr.getCurrencyType())) {
+			if (this.getCurrencyType().equals(cr.getCurrencyType())
+					&& this.getSurchargePercentage() == cr
+							.getSurchargePercentage()
+					&& this.getInterval().equals(cr.getInterval())) {
 				return true;
 			}
 		}

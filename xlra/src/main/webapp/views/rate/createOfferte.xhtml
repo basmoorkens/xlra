@@ -34,7 +34,7 @@
 					<p:panel
 						style="margin-top:20px; bottom:20px;  padding:0px;border:0px;">
 						<p:commandButton value="Next" onclick="PF('wizard').next();"
-							update=":createQuotationForm"
+							update=":createQuotationForm growl"
 							style="width:150px; margin-left:20px;" />
 					</p:panel>
 				</p:tab>
@@ -85,7 +85,8 @@
 						<p:commandButton value="Back" onclick="PF('wizard').back();"
 							style="width:150px;" />
 						<p:commandButton value="Next" onclick="PF('wizard').next();"
-							style="width:150px; margin-left:20px;" />
+							style="width:150px; margin-left:20px;"
+							update=":createQuotationForm growl" />
 					</p:panel>
 				</p:tab>
 

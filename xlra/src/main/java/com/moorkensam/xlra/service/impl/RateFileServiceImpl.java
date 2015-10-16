@@ -98,7 +98,7 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 		return rateFile;
 	}
 
-	private void prepareRateFileForFrontend(RateFile rateFile) {
+	protected void prepareRateFileForFrontend(RateFile rateFile) {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Preparing ratefile for front end");
 		}

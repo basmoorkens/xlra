@@ -16,10 +16,12 @@ import org.unitils.inject.annotation.TestedObject;
 import org.unitils.mock.Mock;
 
 import com.moorkensam.xlra.dao.RateFileDAO;
+import com.moorkensam.xlra.model.configuration.Interval;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.RateOperation;
 import com.moorkensam.xlra.model.rate.Zone;
+import com.moorkensam.xlra.model.rate.ZoneType;
 
 public class RateFileServiceImplTest extends UnitilsJUnit4 {
 
@@ -59,6 +61,17 @@ public class RateFileServiceImplTest extends UnitilsJUnit4 {
 		rateFile.getZones().add(new Zone("Zone 1"));
 		rateFile.getZones().add(new Zone("Zone 2"));
 		rateFile.getZones().add(new Zone("Zone 3"));
+		rateFile.getZones().get(0)
+				.setAlphaNumericPostalCodesAsString("PZ1,PZ2,PZ3");
+		rateFile.getZones().get(0).setZoneType(ZoneType.ALPHANUMERIC_LIST);
+		rateFile.getZones().get(1)
+				.setAlphaNumericPostalCodesAsString("PZ6,PZ5,PZ4");
+		rateFile.getZones().get(1).setZoneType(ZoneType.ALPHANUMERIC_LIST);
+		rateFile.getZones().get(2).setNumericalPostalCodesAsString("1000-2000");
+		rateFile.getZones().get(2).setZoneType(ZoneType.NUMERIC_CODES);
+		for (Zone z : rateFile.getZones()) {
+			z.setRateFile(rateFile);
+		}
 		List<RateLine> rateLines = new ArrayList<RateLine>();
 		rl = new RateLine();
 		rl.setMeasurement(100);
@@ -131,5 +144,39 @@ public class RateFileServiceImplTest extends UnitilsJUnit4 {
 		BigDecimal r3 = result2.setScale(2, RoundingMode.HALF_UP);
 		Assert.assertEquals(r2, rateFile.getRateLines().get(0).getValue());
 		Assert.assertEquals(r3, rateFile.getRateLines().get(2).getValue());
+	}
+
+
+	@Test
+	public void testPrepareRateFileForFrontEnd() {
+		RateFile rfDb = new RateFile();
+		Zone zone1 = new Zone();
+		zone1.setAlphaNumericalPostalCodes(Arrays.asList("PZ1", "PZ2"));
+		zone1.setZoneType(ZoneType.ALPHANUMERIC_LIST);
+		Zone zone2 = new Zone();
+		zone2.setZoneType(ZoneType.NUMERIC_CODES);
+		zone2.setNumericalPostalCodes(Arrays
+				.asList(new Interval("1000", "2000")));
+		rfDb.setZones(Arrays.asList(zone1, zone2));
+		rateFileServiceImpl.prepareRateFileForFrontend(rfDb);
+
+		Assert.assertNotNull(zone1.getAlphaNumericPostalCodesAsString());
+		Assert.assertNotNull(zone2.getNumericalPostalCodesAsString());
+	}
+
+	@Test
+	public void testCreateRateFile() {
+		rateFileServiceImpl.createRateFile(rateFile);
+		Assert.assertNotNull(rateFile.getZones().get(0)
+				.getAlphaNumericalPostalCodes());
+		Assert.assertTrue(rateFile.getZones().get(0)
+				.getAlphaNumericalPostalCodes().get(0).equals("PZ1"));
+		Assert.assertTrue(rateFile.getZones().get(0)
+				.getAlphaNumericalPostalCodes().get(1).equals("PZ2"));
+		Assert.assertTrue(rateFile.getZones().get(0)
+				.getAlphaNumericalPostalCodes().get(2).equals("PZ3"));
+		Assert.assertEquals(rateFile.getZones().get(2)
+				.getNumericalPostalCodes().get(0), new Interval("1000", "2000"));
+		Assert.assertNull(rateFile.getZones().get(0).getNumericalPostalCodes());
 	}
 }
