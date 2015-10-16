@@ -24,4 +24,9 @@ public class CalcUtil {
 		bd = bd.setScale(2, RoundingMode.HALF_UP);
 		return bd;
 	}
+	
+	public static BigDecimal roundBigDecimal(BigDecimal number) {
+		number = number.setScale(2, RoundingMode.HALF_UP);
+		return number;
+	}
 }
