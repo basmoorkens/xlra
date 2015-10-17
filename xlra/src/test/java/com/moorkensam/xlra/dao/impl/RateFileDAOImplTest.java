@@ -1,4 +1,4 @@
-package com.moorkensam.xlra.service.impl;
+package com.moorkensam.xlra.dao.impl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -22,14 +22,11 @@ import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.RateOperation;
 import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.rate.ZoneType;
+import com.moorkensam.xlra.service.impl.RateFileServiceImpl;
 
-public class RateFileServiceImplTest extends UnitilsJUnit4 {
-
+public class RateFileDAOImplTest extends UnitilsJUnit4 {
 	@TestedObject
-	private RateFileServiceImpl rateFileServiceImpl;
-
-	@InjectIntoByType
-	private Mock<RateFileDAO> rateFileDAOMock;
+	private RateFileDAOImpl dao;
 
 	private RateFile rateFile;
 
@@ -107,36 +104,41 @@ public class RateFileServiceImplTest extends UnitilsJUnit4 {
 	}
 
 	@Test
-	public void testfetchFullRateFilesAndApplyRaise() {
-		rateFileServiceImpl.fetchFullRateFiles(Arrays.asList(rateFile));
-		rateFileDAOMock.assertInvoked().getFullRateFile(rateFile.getId());
+	public void testfillUpRateLineRelationalMap() {
+		dao.fillUpRateLineRelationalMap(rateFile);
+		Assert.assertEquals(2, rateFile.getRelationalRateLines().size());
+		Assert.assertEquals(rl, rateFile.getRelationalRateLines().get(0).get(0));
+		Assert.assertEquals(rl1, rateFile.getRelationalRateLines().get(0)
+				.get(1));
+		Assert.assertEquals(rl2, rateFile.getRelationalRateLines().get(0)
+				.get(2));
+		Assert.assertEquals(rl3, rateFile.getRelationalRateLines().get(1)
+				.get(0));
+		Assert.assertEquals(rl4, rateFile.getRelationalRateLines().get(1)
+				.get(1));
+		Assert.assertEquals(rl5, rateFile.getRelationalRateLines().get(1)
+				.get(2));
 	}
 
 	@Test
-	public void testraiseRateFiles() {
-		rateFileServiceImpl.raiseRateFiles(new BigDecimal(1.1d),
-				Arrays.asList(rateFile), RateOperation.RAISE);
-		BigDecimal result = new BigDecimal(110.00d);
-		BigDecimal r2 = result.setScale(2, RoundingMode.HALF_UP);
-		BigDecimal result2 = new BigDecimal(220.00d);
-		BigDecimal r3 = result2.setScale(2, RoundingMode.HALF_UP);
-		Assert.assertEquals(r2, rateFile.getRateLines().get(0).getValue());
-		Assert.assertEquals(r3, rateFile.getRateLines().get(2).getValue());
+	public void testFillUpRelationProperties() {
+		dao.fillUpRelationalProperties(rateFile);
 	}
 
 	@Test
-	public void testCreateRateFile() {
-		rateFileServiceImpl.createRateFile(rateFile);
-		Assert.assertNotNull(rateFile.getZones().get(0)
-				.getAlphaNumericalPostalCodes());
-		Assert.assertTrue(rateFile.getZones().get(0)
-				.getAlphaNumericalPostalCodes().get(0).equals("PZ1"));
-		Assert.assertTrue(rateFile.getZones().get(0)
-				.getAlphaNumericalPostalCodes().get(1).equals("PZ2"));
-		Assert.assertTrue(rateFile.getZones().get(0)
-				.getAlphaNumericalPostalCodes().get(2).equals("PZ3"));
-		Assert.assertEquals(rateFile.getZones().get(2)
-				.getNumericalPostalCodes().get(0), new Interval("1000", "2000"));
-		Assert.assertNull(rateFile.getZones().get(0).getNumericalPostalCodes());
+	public void testPrepareRateFileForFrontEnd() {
+		RateFile rfDb = new RateFile();
+		Zone zone1 = new Zone();
+		zone1.setAlphaNumericalPostalCodes(Arrays.asList("PZ1", "PZ2"));
+		zone1.setZoneType(ZoneType.ALPHANUMERIC_LIST);
+		Zone zone2 = new Zone();
+		zone2.setZoneType(ZoneType.NUMERIC_CODES);
+		zone2.setNumericalPostalCodes(Arrays
+				.asList(new Interval("1000", "2000")));
+		rfDb.setZones(Arrays.asList(zone1, zone2));
+		dao.prepareRateFileForFrontend(rfDb);
+
+		Assert.assertNotNull(zone1.getAlphaNumericPostalCodesAsString());
+		Assert.assertNotNull(zone2.getNumericalPostalCodesAsString());
 	}
 }

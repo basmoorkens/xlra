@@ -108,7 +108,7 @@ public class CalculationServiceImpl implements CalculationService {
 			Condition condition) {
 		BigDecimal exportFormalities = new BigDecimal(
 				Double.parseDouble(condition.getValue()));
-		exportFormalities = exportFormalities.setScale(2, RoundingMode.HALF_UP);
+		exportFormalities = CalcUtil.roundBigDecimal(exportFormalities);
 		priceDTO.setExportFormalities(exportFormalities);
 	}
 
@@ -116,7 +116,7 @@ public class CalculationServiceImpl implements CalculationService {
 			Condition condition) {
 		BigDecimal importFormalities = new BigDecimal(
 				Double.parseDouble(condition.getValue()));
-		importFormalities = importFormalities.setScale(2, RoundingMode.HALF_UP);
+		importFormalities = CalcUtil.roundBigDecimal(importFormalities);
 		priceDTO.setImportFormalities(importFormalities);
 	}
 
@@ -155,7 +155,7 @@ public class CalculationServiceImpl implements CalculationService {
 						.getValue()));
 		BigDecimal result = new BigDecimal(priceDTO.getBasePrice()
 				.doubleValue() * multiplier.doubleValue());
-		result = result.setScale(2, RoundingMode.HALF_UP);
+		result = CalcUtil.roundBigDecimal(result);
 		priceDTO.setCalculatedAdrSurcharge(result);
 	}
 
@@ -168,7 +168,7 @@ public class CalculationServiceImpl implements CalculationService {
 						.getSurchargePercentage());
 		BigDecimal result = new BigDecimal(priceDTO.getBasePrice()
 				.doubleValue() * multiplier.doubleValue());
-		result = result.setScale(2, RoundingMode.HALF_UP);
+		result = CalcUtil.roundBigDecimal(result);
 		priceDTO.setChfPrice(result);
 	}
 
@@ -193,7 +193,7 @@ public class CalculationServiceImpl implements CalculationService {
 						.getSurchargePercentage());
 		BigDecimal result = new BigDecimal(priceDTO.getBasePrice()
 				.doubleValue() * multiplier.doubleValue());
-		result = result.setScale(2, RoundingMode.HALF_UP);
+		result = CalcUtil.roundBigDecimal(result);
 		priceDTO.setDieselPrice(result);
 	}
 

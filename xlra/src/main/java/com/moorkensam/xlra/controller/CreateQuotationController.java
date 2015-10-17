@@ -8,9 +8,11 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJBException;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
 import org.hibernate.validator.util.SetAccessibility;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
@@ -52,12 +54,17 @@ public class CreateQuotationController {
 
 	private List<Country> allCountries;
 
+	private boolean collapseCustomerPanel, collapseFiltersPanel,
+			collapseSummaryPanel;
+
 	@PostConstruct
 	public void init() {
 		allCountries = countryService.getAllCountries();
 		initializeNewQuotationQuery();
 		refreshCustomers();
 		initializeNewCustomer();
+		collapseFiltersPanel = true;
+		collapseSummaryPanel = true;
 	}
 
 	private void initializeNewQuotationQuery() {
@@ -98,32 +105,35 @@ public class CreateQuotationController {
 		return Arrays.asList(Language.values());
 	}
 
-	public String onFlowProcess(FlowEvent event) {
-		if (event.getNewStep().equals("selectFiltersTab")) {
-			if (getQuotationQuery().getCustomer() instanceof FullCustomer) {
-				setupFiltersFromExistingCustomer();
-			}
+	public void procesCustomer() {
+		if (getQuotationQuery().getCustomer() instanceof FullCustomer) {
+			setupFiltersFromExistingCustomer();
 		}
+		collapseCustomerPanel = true;
+		collapseFiltersPanel = false;
+		collapseSummaryPanel = true;
+	}
 
-		if (event.getNewStep().equals("summaryOfferteTab")) {
-			try {
-				quotationResult = quotationService
-						.generateQuotationResultForQuotationQuery(quotationQuery);
-			} catch (RateFileException re2) {
-				showRateFileError(re2);
-			} catch (EJBException e) {
-				if (e.getCausedByException() instanceof RateFileException) {
-					RateFileException re = (RateFileException) e
-							.getCausedByException();
-					showRateFileError(re);
-				} else {
-					MessageUtil
-							.addErrorMessage("Unknown exception",
-									"An unexpected exception occurred, please contact the system admin.");
-				}
+	public void processRateFilters() {
+		try {
+			quotationResult = quotationService
+					.generateQuotationResultForQuotationQuery(quotationQuery);
+			collapseCustomerPanel = true;
+			collapseFiltersPanel = true;
+			collapseSummaryPanel = false;
+		} catch (RateFileException re2) {
+			showRateFileError(re2);
+		} catch (EJBException e) {
+			if (e.getCausedByException() instanceof RateFileException) {
+				RateFileException re = (RateFileException) e
+						.getCausedByException();
+				showRateFileError(re);
+			} else {
+				MessageUtil
+						.addErrorMessage("Unknown exception",
+								"An unexpected exception occurred, please contact the system admin.");
 			}
 		}
-		return event.getNewStep();
 	}
 
 	private void showRateFileError(RateFileException re) {
@@ -204,6 +214,30 @@ public class CreateQuotationController {
 
 	public void setQuotationResult(QuotationResult quotationResult) {
 		this.quotationResult = quotationResult;
+	}
+
+	public boolean isCollapseSummaryPanel() {
+		return collapseSummaryPanel;
+	}
+
+	public void setCollapseSummaryPanel(boolean collapseSummaryPanel) {
+		this.collapseSummaryPanel = collapseSummaryPanel;
+	}
+
+	public boolean isCollapseCustomerPanel() {
+		return collapseCustomerPanel;
+	}
+
+	public void setCollapseCustomerPanel(boolean collapseCustomerPanel) {
+		this.collapseCustomerPanel = collapseCustomerPanel;
+	}
+
+	public boolean isCollapseFiltersPanel() {
+		return collapseFiltersPanel;
+	}
+
+	public void setCollapseFiltersPanel(boolean collapseFiltersPanel) {
+		this.collapseFiltersPanel = collapseFiltersPanel;
 	}
 
 }

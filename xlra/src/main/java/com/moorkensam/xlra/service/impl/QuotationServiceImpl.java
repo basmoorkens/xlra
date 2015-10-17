@@ -8,6 +8,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
+import javax.persistence.NoResultException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 import com.moorkensam.xlra.dao.EmailTemplateDAO;
 import com.moorkensam.xlra.dao.QuotationQueryDAO;
 import com.moorkensam.xlra.dao.QuotationResultDAO;
+import com.moorkensam.xlra.dao.RateFileDAO;
 import com.moorkensam.xlra.dto.OfferteMailDTO;
 import com.moorkensam.xlra.dto.PriceCalculationDTO;
 import com.moorkensam.xlra.dto.PriceResultDTO;
@@ -50,7 +52,7 @@ public class QuotationServiceImpl implements QuotationService {
 	private EmailTemplateDAO emailTemplateDAO;
 
 	@Inject
-	private RateFileService rateFileService;
+	private RateFileDAO rateFileDAO;
 
 	@Inject
 	private QuotationQueryDAO quotationDAO;
@@ -109,11 +111,11 @@ public class QuotationServiceImpl implements QuotationService {
 			QuotationQuery query) throws RateFileException {
 		OfferteMailDTO dto = new OfferteMailDTO();
 		RateFileSearchFilter filter = createRateFileSearchFilterForQuery(query);
-		RateFile rf = rateFileService.getFullRateFileForFilter(filter);
 		RateLine result;
 		PriceCalculationDTO priceDTO = new PriceCalculationDTO();
 
 		try {
+			RateFile rf = rateFileDAO.getFullRateFileForFilter(filter);
 			result = rf.getRateLineForQuantityAndPostalCode(
 					query.getQuantity(), query.getPostalCode());
 			priceDTO.setBasePrice(result.getValue());
@@ -121,10 +123,16 @@ public class QuotationServiceImpl implements QuotationService {
 					rf.getCountry(), rf.getConditions(), query);
 			initializeOfferteEmail(query, dto, rf, priceDTO);
 			emailService.sendOfferteMail(dto);
+		} catch (NoResultException nre) {
+			throw new RateFileException("Could not find ratefile for "
+					+ filter.toString());
 		} catch (RateFileException e1) {
-			logger.error("Could not find value for parameters: " + query.toString());
+			logger.error("Could not find value for parameters: "
+					+ query.toString());
 			throw new RateFileException(
-					"Could not find price for given input parameters.");
+					"Could not find price for given input parameters. Quantity: "
+							+ query.getQuantity() + " Postal code: "
+							+ query.getPostalCode());
 		} catch (TemplatingException e) {
 			logger.error("Failed to parse Template" + e.getMessage());
 			throw new RateFileException("Failed to parse email template.");

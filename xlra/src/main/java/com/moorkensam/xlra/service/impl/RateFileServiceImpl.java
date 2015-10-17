@@ -94,71 +94,10 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 			logger.debug("Fetching details for ratefile with id " + id);
 		}
 		RateFile rateFile = rateFileDAO.getFullRateFile(id);
-		prepareRateFileForFrontend(rateFile);
 		return rateFile;
 	}
 
-	protected void prepareRateFileForFrontend(RateFile rateFile) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Preparing ratefile for front end");
-		}
-		for (Zone z : rateFile.getZones()) {
-			if (z.getZoneType() == ZoneType.ALPHANUMERIC_LIST) {
-				z.convertAlphaNumericPostalCodeListToString();
-			} else {
-				z.convertNumericalPostalCodeListToString();
-			}
-		}
-		fillUpRelationalProperties(rateFile);
-		fillUpRateLineRelationalMap(rateFile);
-	}
 
-	/**
-	 * This method fetches the details for the ratelines of the ratefile. The
-	 * details fetched are the columns and measurements.
-	 * 
-	 * @param rateFile
-	 */
-	protected void fillUpRelationalProperties(RateFile rateFile) {
-		logger.debug("Filling in measurement rows & columnheaders for ratefile");
-		rateFile.setColumns(new ArrayList<String>());
-		for (Zone z : rateFile.getZones()) {
-			rateFile.getColumns().add(z.getAsColumnHeader());
-		}
-		List<Double> measurementRows = new ArrayList<Double>();
-		for (RateLine rl : rateFile.getRateLines()) {
-			if (!measurementRows.contains(rl.getMeasurement())) {
-				measurementRows.add(rl.getMeasurement());
-			}
-		}
-		Collections.sort(measurementRows);
-		rateFile.setMeasurementRows(measurementRows);
-
-	}
-
-	/**
-	 * Fills up the transient attribute relationRatelines of the ratefile
-	 * object. In order for this to work the columns and measurements have to be
-	 * set on the ratefile object.
-	 * 
-	 * @param rateFile
-	 */
-	protected void fillUpRateLineRelationalMap(RateFile rateFile) {
-		logger.info("Building relation rateline map for ratefile "
-				+ rateFile.getId());
-		List<List<RateLine>> relationRateLines = new ArrayList<List<RateLine>>();
-		for (Double i : rateFile.getMeasurementRows()) {
-			List<RateLine> rateLines = new ArrayList<RateLine>();
-			for (RateLine rl : rateFile.getRateLines()) {
-				if (rl.getMeasurement() == (i)) {
-					rateLines.add(rl);
-				}
-			}
-			Collections.sort(rateLines);
-			relationRateLines.add(rateLines);
-		}
-		rateFile.setRelationalRateLines(relationRateLines);
-	}
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -323,15 +262,13 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 			}
 		}
 		rf = updateRateFile(rf);
-		rateFileDAO.lazyLoadRateFile(rf);
-		prepareRateFileForFrontend(rf);
+		rateFileDAO.getFullRateFile(rf.getId());
 		return rf;
 	}
 
 	@Override
 	public RateFile getFullRateFileForFilter(RateFileSearchFilter filter) {
 		RateFile rf = rateFileDAO.getFullRateFileForFilter(filter);
-		prepareRateFileForFrontend(rf);
 		return rf;
 	}
 }

@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.model.rate;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import com.moorkensam.xlra.model.FullCustomer;
 import com.moorkensam.xlra.model.Language;
 import com.moorkensam.xlra.model.configuration.Interval;
 import com.moorkensam.xlra.model.error.RateFileException;
+import com.moorkensam.xlra.service.util.CalcUtil;
 
 @Entity
 @Cacheable
@@ -231,10 +233,14 @@ public class RateFile extends BaseEntity {
 
 	public RateLine getRateLineForQuantityAndPostalCode(double quantity,
 			String postalCode) throws RateFileException {
+		BigDecimal quantityBd = new BigDecimal(quantity);
+		quantityBd = CalcUtil.roundBigDecimal(quantityBd);
 		if (rateLines != null) {
 			List<RateLine> rlsWithCorrectQuantity = new ArrayList<RateLine>();
 			for (RateLine rl : getRateLines()) {
-				if (rl.getMeasurement() == quantity) {
+				BigDecimal roundBigDecimal = CalcUtil
+						.roundBigDecimal(new BigDecimal(rl.getMeasurement()));
+				if (roundBigDecimal.doubleValue() == quantityBd.doubleValue()) {
 					rlsWithCorrectQuantity.add(rl);
 				}
 			}

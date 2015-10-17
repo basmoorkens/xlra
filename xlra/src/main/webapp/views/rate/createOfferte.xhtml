@@ -12,89 +12,101 @@
 		<h:outputText value="Create quotation" />
 	</ui:define>
 	<ui:define name="body">
-		<h:form id="createQuotationForm">
-			<p:growl showDetail="true" id="growl" sticky="true" />
-			<p:wizard flowListener="#{createQuotationController.onFlowProcess}"
-				showNavBar="false" widgetVar="wizard">
-				<p:tab id="selectCustomer" title="Select / create customer">
+		<h:form id="customerForm">
+			<p:panel id="customerPanel" header="Customer" toggleable="true"
+				collapsed="#{createQuotationController.collapseCustomerPanel}">
+				<p:growl showDetail="true" id="messages" sticky="true" />
+				<h:outputText value="Select an existing customer: " />
+				<p:autoComplete size="50" id="customerSelector" dropdown="true"
+					value="#{createQuotationController.quotationQuery.customer}"
+					completeMethod="#{createQuotationController.completeCustomerName}"
+					var="customer" itemLabel="#{customer.name}" required="true"
+					requiredMessage="Please select a customer/create a new one"
+					itemValue="#{customer}" converter="#{customerConverter}">
+				</p:autoComplete>
 
-					<h:outputText value="Select an existing customer: " />
-					<p:autoComplete size="50" id="customerSelector" dropdown="true"
-						value="#{createQuotationController.quotationQuery.customer}"
-						completeMethod="#{createQuotationController.completeCustomerName}"
-						var="customer" itemLabel="#{customer.name}" required="true"
-						requiredMessage="Please select a customer/create a new one"
-						itemValue="#{customer}" converter="#{customerConverter}">
-					</p:autoComplete>
+				<p:commandButton value="Create new customer"
+					update=":addQuickCustomerForm" immediate="true"
+					onclick="PF('addCustomerDialog').show();" />
 
-					<p:commandButton value="Create new customer"
-						update=":addQuickCustomerForm" immediate="true"
-						onclick="PF('addCustomerDialog').show();" />
-
-					<p:panel
-						style="margin-top:20px; bottom:20px;  padding:0px;border:0px;">
-						<p:commandButton value="Next" onclick="PF('wizard').next();"
-							update=":createQuotationForm growl"
-							style="width:150px; margin-left:20px;" />
-					</p:panel>
-				</p:tab>
-				<p:tab id="selectFiltersTab" title="Rate filters">
-					<p:panelGrid columns="2">
-						<h:outputText value="Country: " />
-						<p:selectOneRadio converter="#{countryConverter}" required="true"
-							value="#{createQuotationController.quotationQuery.country}">
-							<f:selectItems value="#{createQuotationController.allCountries}" />
-						</p:selectOneRadio>
-
-						<h:outputText value="Measurement: " />
-						<p:selectOneRadio required="true"
-							value="#{createQuotationController.quotationQuery.measurement}">
-							<f:selectItems
-								value="#{createQuotationController.allMeasurements}" />
-						</p:selectOneRadio>
-
-						<h:outputText value="Type: " />
-						<p:selectOneRadio required="true"
-							value="#{createQuotationController.quotationQuery.kindOfRate}">
-							<f:selectItems value="#{createQuotationController.allKinds}" />
-						</p:selectOneRadio>
-
-
-						<h:outputText value="Quantity:" />
-						<p:inputText required="true" style="width:100%;"
-							value="#{createQuotationController.quotationQuery.quantity}" />
-
-						<h:outputText value="Postal code: " />
-						<p:inputText required="true" style="width:100%;"
-							value="#{createQuotationController.quotationQuery.postalCode}" />
-
-						<h:outputText value="Address surcharge:" />
-						<p:selectBooleanCheckbox
-							value="#{createQuotationController.quotationQuery.adrSurcharge}" />
-
-						<h:outputText value="Import formalities:" />
-						<p:selectBooleanCheckbox
-							value="#{createQuotationController.quotationQuery.importFormality}" />
-
-						<h:outputText value="Export formalities:" />
-						<p:selectBooleanCheckbox
-							value="#{createQuotationController.quotationQuery.exportFormality}" />
-
-					</p:panelGrid>
-					<p:panel style="bottom:20px;  padding:0px;border:0px;">
-						<p:commandButton value="Back" onclick="PF('wizard').back();"
-							style="width:150px;" />
-						<p:commandButton value="Next" onclick="PF('wizard').next();"
-							style="width:150px; margin-left:20px;"
-							update=":createQuotationForm growl" />
-					</p:panel>
-				</p:tab>
-
-				<p:tab id="summaryOfferteTab" title="Summary">
-
-				</p:tab>
-			</p:wizard>
+				<p:panel
+					style="margin-top:20px; bottom:20px;  padding:0px;border:0px;">
+					<p:commandButton value="Next"
+						actionListener="#{createQuotationController.procesCustomer}"
+						update=":customerForm :filtersForm" ajax="true"
+						style="width:150px; margin-left:20px;" />
+				</p:panel>
+			</p:panel>
 		</h:form>
+
+		<h:form id="filtersForm">
+			<p:panel id="filterPanel" header="Rates filter"
+				collapsed="#{createQuotationController.collapseFiltersPanel}"
+				toggleable="true">
+				<p:growl showDetail="true" id="messages" sticky="true" />
+				<p:panelGrid columns="2">
+					<h:outputText value="Country: " />
+					<p:selectOneRadio converter="#{countryConverter}" required="true"
+						value="#{createQuotationController.quotationQuery.country}">
+						<f:selectItems value="#{createQuotationController.allCountries}" />
+					</p:selectOneRadio>
+
+					<h:outputText value="Measurement: " />
+					<p:selectOneRadio required="true"
+						value="#{createQuotationController.quotationQuery.measurement}">
+						<f:selectItems
+							value="#{createQuotationController.allMeasurements}" />
+					</p:selectOneRadio>
+
+					<h:outputText value="Type: " />
+					<p:selectOneRadio required="true"
+						value="#{createQuotationController.quotationQuery.kindOfRate}">
+						<f:selectItems value="#{createQuotationController.allKinds}" />
+					</p:selectOneRadio>
+
+
+					<h:outputText value="Quantity:" />
+					<p:inputText required="true" style="width:100%;"
+						value="#{createQuotationController.quotationQuery.quantity}" />
+
+					<h:outputText value="Postal code: " />
+					<p:inputText required="true" style="width:100%;"
+						value="#{createQuotationController.quotationQuery.postalCode}" />
+
+					<h:outputText value="Address surcharge:" />
+					<p:selectBooleanCheckbox
+						value="#{createQuotationController.quotationQuery.adrSurcharge}" />
+
+					<h:outputText value="Import formalities:" />
+					<p:selectBooleanCheckbox
+						value="#{createQuotationController.quotationQuery.importFormality}" />
+
+					<h:outputText value="Export formalities:" />
+					<p:selectBooleanCheckbox
+						value="#{createQuotationController.quotationQuery.exportFormality}" />
+
+				</p:panelGrid>
+				<p:panel style="bottom:20px;  padding:0px;border:0px;">
+					<p:commandButton value="Next"
+						actionListener="#{createQuotationController.processRateFilters}"
+						style="width:150px; margin-left:20px;" process=":filtersForm"
+						update=":filtersForm :summaryForm" ajax="true" />
+				</p:panel>
+			</p:panel>
+		</h:form>
+
+		<h:form id="summaryForm">
+			<p:panel id="summaryPanel" header="Summary"
+				collapsed="#{createQuotationController.collapseSummaryPanel}"
+				toggleable="true">
+				<h:outputText value="dqfuq" />
+				<p:panel style="bottom:20px;  padding:0px;border:0px;">
+					<p:commandButton value="Next"
+						style="width:150px; margin-left:20px;" ajax="true" />
+				</p:panel>
+			</p:panel>
+		</h:form>
+
 		<p:dialog header="Add condition" widgetVar="addCustomerDialog"
 			modal="true" height="480px" width="900px" dynamic="true">
 			<h:form id="addQuickCustomerForm">
@@ -123,7 +135,7 @@
 						</p:selectOneRadio>
 					</p:panelGrid>
 					<p:commandButton value="Save customer"
-						update=":createQuotationForm :addQuickCustomerForm"
+						update=":customerForm :addQuickCustomerForm"
 						actionListener="#{createQuotationController.createCustomer}"
 						ajax="true"
 						oncomplete="handleAddCustomerRequest(xhr, status, args)" />

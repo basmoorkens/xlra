@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="info">
 	<Properties>
-		<Property name="log-path">/Users/bas/xlra</Property>
+		<Property name="log-path">../xlra.log</Property>
 	</Properties>
 
 	<Appenders>
