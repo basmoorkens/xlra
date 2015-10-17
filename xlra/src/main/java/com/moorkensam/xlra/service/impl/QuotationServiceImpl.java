@@ -127,12 +127,8 @@ public class QuotationServiceImpl implements QuotationService {
 			throw new RateFileException("Could not find ratefile for "
 					+ filter.toString());
 		} catch (RateFileException e1) {
-			logger.error("Could not find value for parameters: "
-					+ query.toString());
-			throw new RateFileException(
-					"Could not find price for given input parameters. Quantity: "
-							+ query.getQuantity() + " Postal code: "
-							+ query.getPostalCode());
+			logger.error(e1.getBusinessException() + e1.getMessage());
+			throw e1;
 		} catch (TemplatingException e) {
 			logger.error("Failed to parse Template" + e.getMessage());
 			throw new RateFileException("Failed to parse email template.");

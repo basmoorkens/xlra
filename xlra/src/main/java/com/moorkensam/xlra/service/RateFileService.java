@@ -3,6 +3,7 @@ package com.moorkensam.xlra.service;
 import java.util.List;
 
 import com.moorkensam.xlra.model.RaiseRatesRecord;
+import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
@@ -76,5 +77,7 @@ public interface RateFileService {
 	 * @return
 	 */
 	RateFile getFullRateFileForFilter(RateFileSearchFilter filter);
+
+	Condition updateCondition(Condition condition);
 
 }

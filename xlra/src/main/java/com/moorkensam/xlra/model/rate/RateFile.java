@@ -268,7 +268,9 @@ public class RateFile extends BaseEntity {
 
 			}
 		}
-		throw new RateFileException("Could not find price!");
+		throw new RateFileException(
+				"Could not find price for given input parameters. Quantity: "
+						+ quantity + " Postal code: " + postalCode);
 	}
 
 	public Zone getZoneForZoneName(String zoneName) {

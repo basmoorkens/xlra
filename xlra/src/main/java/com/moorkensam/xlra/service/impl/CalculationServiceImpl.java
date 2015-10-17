@@ -1,7 +1,6 @@
 package com.moorkensam.xlra.service.impl;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,25 +104,41 @@ public class CalculationServiceImpl implements CalculationService {
 	}
 
 	protected void calculateExportFormality(PriceCalculationDTO priceDTO,
-			Condition condition) {
-		BigDecimal exportFormalities = new BigDecimal(
-				Double.parseDouble(condition.getValue()));
-		exportFormalities = CalcUtil.roundBigDecimal(exportFormalities);
-		priceDTO.setExportFormalities(exportFormalities);
+			Condition condition) throws RateFileException {
+		try {
+			BigDecimal exportFormalities = new BigDecimal(
+					Double.parseDouble(condition.getValue()));
+			exportFormalities = CalcUtil.roundBigDecimal(exportFormalities);
+			priceDTO.setExportFormalities(exportFormalities);
+		} catch (NumberFormatException exc) {
+			throw new RateFileException("Invalid value for "
+					+ condition.getConditionKey() + ": " + condition.getValue());
+		}
 	}
 
 	protected void calculateImportFormality(PriceCalculationDTO priceDTO,
-			Condition condition) {
-		BigDecimal importFormalities = new BigDecimal(
-				Double.parseDouble(condition.getValue()));
-		importFormalities = CalcUtil.roundBigDecimal(importFormalities);
-		priceDTO.setImportFormalities(importFormalities);
+			Condition condition) throws RateFileException {
+		try {
+			BigDecimal importFormalities = new BigDecimal(
+					Double.parseDouble(condition.getValue()));
+			importFormalities = CalcUtil.roundBigDecimal(importFormalities);
+			priceDTO.setImportFormalities(importFormalities);
+		} catch (NumberFormatException exc) {
+			throw new RateFileException("Invalid value for "
+					+ condition.getConditionKey() + ": " + condition.getValue());
+		}
 	}
 
 	protected void calculateAddressSurchargeMinimum(
-			PriceCalculationDTO priceDTO, Condition condition) {
-		priceDTO.setAdrSurchargeMinimum(new BigDecimal(Double
-				.parseDouble(condition.getValue())));
+			PriceCalculationDTO priceDTO, Condition condition)
+			throws RateFileException {
+		try {
+			priceDTO.setAdrSurchargeMinimum(new BigDecimal(Double
+					.parseDouble(condition.getValue())));
+		} catch (NumberFormatException exc) {
+			throw new RateFileException("Invalid value for "
+					+ condition.getConditionKey() + ": " + condition.getValue());
+		}
 	}
 
 	/**
@@ -149,14 +164,19 @@ public class CalculationServiceImpl implements CalculationService {
 	 * @param condition
 	 */
 	protected void calculateAddressSurcharge(PriceCalculationDTO priceDTO,
-			Condition condition) {
-		BigDecimal multiplier = CalcUtil
-				.convertPercentageToBaseMultiplier(Double.parseDouble(condition
-						.getValue()));
-		BigDecimal result = new BigDecimal(priceDTO.getBasePrice()
-				.doubleValue() * multiplier.doubleValue());
-		result = CalcUtil.roundBigDecimal(result);
-		priceDTO.setCalculatedAdrSurcharge(result);
+			Condition condition) throws RateFileException {
+		try {
+			BigDecimal multiplier = CalcUtil
+					.convertPercentageToBaseMultiplier(Double
+							.parseDouble(condition.getValue()));
+			BigDecimal result = new BigDecimal(priceDTO.getBasePrice()
+					.doubleValue() * multiplier.doubleValue());
+			result = CalcUtil.roundBigDecimal(result);
+			priceDTO.setCalculatedAdrSurcharge(result);
+		} catch (NumberFormatException exc) {
+			throw new RateFileException("Invalid value for "
+					+ condition.getConditionKey() + ": " + condition.getValue());
+		}
 	}
 
 	protected void calculateChfSurchargePrice(PriceCalculationDTO priceDTO,

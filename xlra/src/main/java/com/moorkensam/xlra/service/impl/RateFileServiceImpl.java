@@ -2,10 +2,7 @@ package com.moorkensam.xlra.service.impl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -19,14 +16,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.moorkensam.xlra.dao.BaseDAO;
+import com.moorkensam.xlra.dao.ConditionDAO;
 import com.moorkensam.xlra.dao.LogDAO;
 import com.moorkensam.xlra.dao.RateFileDAO;
 import com.moorkensam.xlra.model.RaiseRatesRecord;
+import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.RateOperation;
 import com.moorkensam.xlra.model.rate.Zone;
-import com.moorkensam.xlra.model.rate.ZoneType;
 import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
 import com.moorkensam.xlra.service.RateFileService;
 import com.moorkensam.xlra.service.util.CalcUtil;
@@ -41,6 +39,9 @@ import com.moorkensam.xlra.service.util.CalcUtil;
 public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 
 	private final static Logger logger = LogManager.getLogger();
+
+	@Inject
+	private ConditionDAO conditionDAO;
 
 	@Inject
 	private RateFileDAO rateFileDAO;
@@ -96,8 +97,6 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 		RateFile rateFile = rateFileDAO.getFullRateFile(id);
 		return rateFile;
 	}
-
-
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -270,5 +269,10 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 	public RateFile getFullRateFileForFilter(RateFileSearchFilter filter) {
 		RateFile rf = rateFileDAO.getFullRateFileForFilter(filter);
 		return rf;
+	}
+
+	@Override
+	public Condition updateCondition(Condition condition) {
+		return conditionDAO.updateCondition(condition);
 	}
 }
