@@ -37,6 +37,7 @@
 
 		<h3>Details</h3>
 		<h:form id="zoneDetailForm">
+			<p:growl id="message" showDetail="true" />
 			<ui:include src="/views/rate/admin/zoneDetail.xhtml">
 				<ui:param name="zones"
 					value="#{manageRatesController.selectedRateFile.zones}" />

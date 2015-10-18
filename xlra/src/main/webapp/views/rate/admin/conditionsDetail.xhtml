@@ -12,18 +12,12 @@
 		<p:dataTable editable="true" value="#{conditions}" var="condition"
 			editMode="row" emptyMessage="No conditions found."
 			id="conditionTable">
-			<c:if test="${controllerName == 'manageRatesController'}">
-				<p:ajax event="cellEdit"
-					listener="#{manageRatesController.onConditionCellEdit}"
-					update=":conditionsDetailForm:message" />
-			</c:if>
-			<c:if test="${controllerName == 'createRatesController'}">
-				<p:ajax event="cellEdit"
-					listener="#{createRatesController.onConditionCellEdit}" />
-			</c:if>
 
+			<p:ajax event="rowEdit"
+				listener="#{manageRatesController.onConditionRowEdit}"
+				update=":conditionsDetailForm:message" />
 
-			<p:column headerText="Keys">
+			<p:column headerText="Key">
 				<p:cellEditor>
 					<f:facet name="output">
 						<h:outputText value="#{condition.conditionKey}" />
@@ -39,7 +33,7 @@
 						<h:outputText value="#{condition.value}" />
 					</f:facet>
 					<f:facet name="input">
-						<p:inputText value="#{condition.value}" />
+						<p:inputText style="width:100%;" value="#{condition.value}" />
 					</f:facet>
 				</p:cellEditor>
 			</p:column>
@@ -54,14 +48,11 @@
 		</p:dataTable>
 		<p:commandButton value="Add condition"
 			onclick="PF('addConditionDialog').show();" />
-		<c:if test="${controllerName == 'manageRatesController'}">
-			<p:commandButton value="Save rates" title="Save conditions"
-				ajax="false" action="#{manageRatesController.saveRateFile}" />
-		</c:if>
 
 		<p:dialog header="Add condition" widgetVar="addConditionDialog"
 			modal="true" height="150px" width="300px" dynamic="true">
-			<p:selectOneMenu value="#{manageRatesController.keyToAdd}" style="width:200px;">
+			<p:selectOneMenu value="#{manageRatesController.keyToAdd}"
+				style="width:200px;">
 				<f:selectItems
 					value="#{manageRatesController.availableTranslationKeysForSelectedRateFile}" />
 			</p:selectOneMenu>

@@ -23,15 +23,9 @@ import com.moorkensam.xlra.dto.PriceResultDTO;
 import com.moorkensam.xlra.mapper.PriceCalculationDTOToResultMapper;
 import com.moorkensam.xlra.model.FullCustomer;
 import com.moorkensam.xlra.model.QuotationQuery;
-import com.moorkensam.xlra.model.configuration.Configuration;
-import com.moorkensam.xlra.model.configuration.CurrencyRate;
-import com.moorkensam.xlra.model.configuration.DieselRate;
 import com.moorkensam.xlra.model.configuration.MailTemplate;
-import com.moorkensam.xlra.model.configuration.TranslationKey;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.error.TemplatingException;
-import com.moorkensam.xlra.model.rate.Condition;
-import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.QuotationResult;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
@@ -39,7 +33,6 @@ import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
 import com.moorkensam.xlra.service.CalculationService;
 import com.moorkensam.xlra.service.EmailService;
 import com.moorkensam.xlra.service.QuotationService;
-import com.moorkensam.xlra.service.RateFileService;
 
 @Stateless
 public class QuotationServiceImpl implements QuotationService {
@@ -70,8 +63,8 @@ public class QuotationServiceImpl implements QuotationService {
 
 	@PostConstruct
 	public void init() {
-		templatEngine = TemplateEngine.getInstance();
-		mapper = new PriceCalculationDTOToResultMapper();
+		setTemplatEngine(TemplateEngine.getInstance());
+		setMapper(new PriceCalculationDTOToResultMapper());
 	}
 
 	@Override
@@ -150,44 +143,33 @@ public class QuotationServiceImpl implements QuotationService {
 	 * @param result
 	 * @throws TemplatingException
 	 */
-	private void initializeOfferteEmail(QuotationQuery query,
+	protected void initializeOfferteEmail(QuotationQuery query,
 			OfferteMailDTO dto, RateFile rf, PriceCalculationDTO priceDTO)
-			throws TemplatingException {
+			throws TemplatingException, RateFileException {
 		PriceResultDTO resultDTO = new PriceResultDTO();
-		mapper.map(priceDTO, resultDTO);
+		getMapper().map(priceDTO, resultDTO);
 
-		MailTemplate template = emailTemplateDAO.getMailTemplateForLanguage(rf
-				.getLanguage());
-		Map<String, Object> templateParameters = createTemplateParams(query,
-				resultDTO);
-		String emailMessage = templatEngine.parseEmailTemplate(
-				template.getTemplate(), templateParameters);
-		dto.setAddress(query.getCustomer().getEmail());
-		dto.setSubject(template.getSubject());
-		dto.setContent(emailMessage);
+		try {
+			MailTemplate template = getEmailTemplateDAO()
+					.getMailTemplateForLanguage(rf.getLanguage());
+			Map<String, Object> templateParameters = templatEngine
+					.createTemplateParams(query, resultDTO);
+			String emailMessage = getTemplatEngine().parseEmailTemplate(
+					template.getTemplate(), templateParameters);
+			dto.setAddress(query.getCustomer().getEmail());
+			dto.setSubject(template.getSubject());
+			dto.setContent(emailMessage);
+		} catch (NoResultException nre) {
+			logger.error("Could not find email template for "
+					+ rf.getLanguage());
+			throw new RateFileException(
+					"Could not find email template for language "
+							+ rf.getLanguage());
+		}
+
 	}
 
-	/**
-	 * Creates the template parameter map for the email.
-	 * 
-	 * @param query
-	 * @param result
-	 * @return
-	 */
-	private Map<String, Object> createTemplateParams(QuotationQuery query,
-			PriceResultDTO priceDTO) {
-		Map<String, Object> templateModel = new HashMap<String, Object>();
-		templateModel.put("customer", query.getCustomer().getName());
-		templateModel.put("quantity", query.getQuantity());
-		templateModel.put("measurement", query.getMeasurement());
-		templateModel.put("detailCalculation",
-				priceDTO.getDetailedCalculation());
-		templateModel.put("destination",
-				query.getCountry().getName() + query.getPostalCode());
-		return templateModel;
-	}
-
-	private RateFileSearchFilter createRateFileSearchFilterForQuery(
+	protected RateFileSearchFilter createRateFileSearchFilterForQuery(
 			QuotationQuery query) {
 		RateFileSearchFilter filter = new RateFileSearchFilter();
 		filter.setCountry(query.getCountry());
@@ -197,5 +179,29 @@ public class QuotationServiceImpl implements QuotationService {
 		filter.setMeasurement(query.getMeasurement());
 		filter.setRateKind(query.getKindOfRate());
 		return filter;
+	}
+
+	public PriceCalculationDTOToResultMapper getMapper() {
+		return mapper;
+	}
+
+	public void setMapper(PriceCalculationDTOToResultMapper mapper) {
+		this.mapper = mapper;
+	}
+
+	public EmailTemplateDAO getEmailTemplateDAO() {
+		return emailTemplateDAO;
+	}
+
+	public void setEmailTemplateDAO(EmailTemplateDAO emailTemplateDAO) {
+		this.emailTemplateDAO = emailTemplateDAO;
+	}
+
+	public TemplateEngine getTemplatEngine() {
+		return templatEngine;
+	}
+
+	public void setTemplatEngine(TemplateEngine templatEngine) {
+		this.templatEngine = templatEngine;
 	}
 }

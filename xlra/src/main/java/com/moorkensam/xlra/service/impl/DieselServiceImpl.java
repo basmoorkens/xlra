@@ -37,23 +37,23 @@ public class DieselServiceImpl implements DieselService {
 
 	@Override
 	public void updateDieselRate(DieselRate dieselRate) {
-		dieselRateDAO.updateDieselRate(dieselRate);
+		getDieselRateDAO().updateDieselRate(dieselRate);
 	}
 
 	@Override
 	public void createDieselRate(DieselRate dieselRate) {
-		dieselRateDAO.createDieselRate(dieselRate);
+		getDieselRateDAO().createDieselRate(dieselRate);
 	}
 
 	@Override
 	public List<DieselRate> getAllDieselRates() {
-		return dieselRateDAO.getAllDieselRates();
+		return getDieselRateDAO().getAllDieselRates();
 	}
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void updateCurrentDieselValue(BigDecimal value) {
-		Configuration config = xlraConfigurationDAO.getXlraConfiguration();
+		Configuration config = getXlraConfigurationDAO().getXlraConfiguration();
 
 		LogRecord createDieselLogRecord = LogRecordFactory
 				.createDieselLogRecord(config.getCurrentDieselPrice());
@@ -63,11 +63,13 @@ public class DieselServiceImpl implements DieselService {
 		config.setCurrentDieselPrice(value);
 		logger.info("Saving current diesel price"
 				+ config.getCurrentDieselPrice());
-		xlraConfigurationDAO.updateXlraConfiguration(config);
+		getXlraConfigurationDAO().updateXlraConfiguration(config);
 	}
 
+	
 	@Override
-	public DieselRate getDieselRateForCurrentPrice(BigDecimal price) throws RateFileException {
+	public DieselRate getDieselRateForCurrentPrice(BigDecimal price)
+			throws RateFileException {
 		List<DieselRate> rates = getAllDieselRates();
 		for (DieselRate rate : rates) {
 			if (rate.getInterval().getStart() <= price.doubleValue()
@@ -78,6 +80,22 @@ public class DieselServiceImpl implements DieselService {
 		throw new RateFileException(
 				"Could not calculate diesel supplement, no multiplier found for price "
 						+ price);
+	}
+
+	public DieselRateDAO getDieselRateDAO() {
+		return dieselRateDAO;
+	}
+
+	public void setDieselRateDAO(DieselRateDAO dieselRateDAO) {
+		this.dieselRateDAO = dieselRateDAO;
+	}
+
+	public ConfigurationDao getXlraConfigurationDAO() {
+		return xlraConfigurationDAO;
+	}
+
+	public void setXlraConfigurationDAO(ConfigurationDao xlraConfigurationDAO) {
+		this.xlraConfigurationDAO = xlraConfigurationDAO;
 	}
 
 }

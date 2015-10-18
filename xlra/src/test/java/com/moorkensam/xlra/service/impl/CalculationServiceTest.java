@@ -62,7 +62,7 @@ public class CalculationServiceTest extends UnitilsJUnit4 {
 	}
 
 	@Test
-	public void testcalculateExportFormality() {
+	public void testcalculateExportFormality() throws RateFileException {
 		Condition condition = new Condition();
 		condition.setValue("40.15d");
 		calcService.calculateExportFormality(priceDTO, condition);
@@ -72,7 +72,7 @@ public class CalculationServiceTest extends UnitilsJUnit4 {
 	}
 
 	@Test
-	public void testCalcImportFormality() {
+	public void testCalcImportFormality() throws RateFileException {
 		Condition condition = new Condition();
 		condition.setValue("20.33d");
 		calcService.calculateImportFormality(priceDTO, condition);
@@ -100,7 +100,7 @@ public class CalculationServiceTest extends UnitilsJUnit4 {
 	}
 
 	@Test
-	public void testCalculateAdrSurcharge() {
+	public void testCalculateAdrSurcharge() throws RateFileException {
 		calcService.calculateAddressSurcharge(priceDTO, adrsurchargeCondition);
 		BigDecimal expected = new BigDecimal(100.00d);
 		expected = expected.setScale(2, RoundingMode.HALF_UP);

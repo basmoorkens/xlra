@@ -2,11 +2,14 @@ package com.moorkensam.xlra.service.impl;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.moorkensam.xlra.dto.PriceResultDTO;
+import com.moorkensam.xlra.model.QuotationQuery;
 import com.moorkensam.xlra.model.error.TemplatingException;
 
 import freemarker.cache.StringTemplateLoader;
@@ -92,5 +95,25 @@ public class TemplateEngine {
 			throw new TemplatingException("General templating exception", e);
 		}
 		return writer.toString();
+	}
+
+	/**
+	 * Creates the template parameter map for the email.
+	 * 
+	 * @param query
+	 * @param result
+	 * @return
+	 */
+	public Map<String, Object> createTemplateParams(QuotationQuery query,
+			PriceResultDTO priceDTO) {
+		Map<String, Object> templateModel = new HashMap<String, Object>();
+		templateModel.put("customer", query.getCustomer().getName());
+		templateModel.put("quantity", query.getQuantity());
+		templateModel.put("measurement", query.getMeasurement());
+		templateModel.put("detailCalculation",
+				priceDTO.getDetailedCalculation());
+		templateModel.put("destination",
+				query.getCountry().getName() + query.getPostalCode());
+		return templateModel;
 	}
 }

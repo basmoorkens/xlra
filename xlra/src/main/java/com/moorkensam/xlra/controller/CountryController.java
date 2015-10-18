@@ -29,84 +29,25 @@ public class CountryController {
 
 	private Country selectedCountry;
 
-	private Zone selectedZone;
-
-	private boolean renderDetailGrid = false;
-
-	private boolean renderAddZoneGrid = false;
-
 	@PostConstruct
-	public void initialize() {
+	public void init() {
 		countries = countryService.getAllCountriesFullLoad();
-	}
-
-	public void setupNewZone() {
-		selectedZone = ZoneFactory.createZone(selectedCountry);
-		setRenderAddZoneGrid(true);
-	}
-
-	public void doSelectCountry(AjaxBehaviorEvent event) {
-		renderDetailGrid = true;
-		renderAddZoneGrid = false;
-	}
-
-	public void onZoneEdit(RowEditEvent event) {
-		Zone zone = (Zone) event.getObject();
-		countryService.updateZone(zone);
-		MessageUtil.addMessage("Zone update", "Changed zone information for "
-				+ zone.getName());
-		refreshSelectedCountry();
-	}
-
-	public void saveNewZone() {
-		if (isValidZone(selectedZone)) {
-			countryService.createZone(selectedZone);
-			refreshSelectedCountry();
-			renderAddZoneGrid = false;
-		}
-	}
-
-	private boolean isValidZone(Zone zone) {
-		if (isNumericCountryZone()) {
-			zone.convertNumericalPostalCodeStringToList();
-			for (Interval interval : zone.getNumericalPostalCodes()) {
-				if (interval.getEnd() == 0) {
-					MessageUtil.addMessage("Stop code is 0.",
-							"Stop postal code should not be 0.");
-					return false;
-				}
-
-				if (interval.getEnd() == interval.getStart()) {
-					MessageUtil.addMessage("Start code is equal to stop code.",
-							"Start and stop code should be different.");
-					return false;
-				}
-			}
-			return true;
-		}
-
-		if (isAlphaNumericCountryZone()) {
-			return true;
-		}
-		return false;
-	}
-
-	private void refreshSelectedCountry() {
-		selectedCountry = countryService
-				.getCountryById(selectedCountry.getId());
-	}
-
-	public void resetPage() {
-		setRenderAddZoneGrid(false);
-		selectedZone = null;
 	}
 
 	public Country getSelectedCountry() {
 		return selectedCountry;
 	}
 
-	public void setSelectedCountry(Country country) {
-		selectedCountry = country;
+	public void setSelectedCountry(Country selectedCountry) {
+		this.selectedCountry = selectedCountry;
+	}
+
+	public List<Country> getCountries() {
+		return countries;
+	}
+
+	public void setCountries(List<Country> countries) {
+		this.countries = countries;
 	}
 
 	public CountryService getCountryService() {
@@ -115,56 +56,6 @@ public class CountryController {
 
 	public void setCountryService(CountryService countryService) {
 		this.countryService = countryService;
-	}
-
-	public void setCountries(List<Country> countries) {
-		this.countries = countries;
-	}
-
-	public List<Country> getCountries() {
-		return countries;
-	}
-
-	public Zone getSelectedZone() {
-		return selectedZone;
-	}
-
-	public void setSelectedZone(Zone zone) {
-		this.selectedZone = zone;
-	}
-
-	public void setRenderDetailGrid(boolean toSet) {
-		this.renderDetailGrid = toSet;
-	}
-
-	public boolean getRenderDetailGrid() {
-		return this.renderDetailGrid;
-	}
-
-	public boolean isRenderAddZoneGrid() {
-		return renderAddZoneGrid;
-	}
-
-	public void setRenderAddZoneGrid(boolean renderAddZoneGrid) {
-		this.renderAddZoneGrid = renderAddZoneGrid;
-	}
-
-	public boolean isNumericCountryZone() {
-		if (selectedCountry != null) {
-			if (selectedCountry.getZoneType() == ZoneType.NUMERIC_CODES) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public boolean isAlphaNumericCountryZone() {
-		if (selectedCountry != null) {
-			if (selectedCountry.getZoneType() == ZoneType.ALPHANUMERIC_LIST) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 }

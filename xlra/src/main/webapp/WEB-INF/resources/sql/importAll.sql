@@ -17,3 +17,8 @@ INSERT INTO COUNTRY (deleted, name, shortname, version, zonetype) VALUES (0, 'Be
 INSERT INTO COUNTRY (deleted, name, shortname, version, zonetype) VALUES (0, 'Netherlands', 'NL', 0, 'NUMERIC_CODES');
 INSERT INTO COUNTRY (deleted, name, shortname, version, zonetype) VALUES (0, 'Switzerland', 'CH', 0, 'ALPHANUMERIC_LIST');
 INSERT INTO COUNTRY (deleted, name, shortname, version, zonetype) VALUES (0, 'United kingdom', 'UK', 0, 'ALPHANUMERIC_LIST');
+
+insert into mailTemplate(deleted, version, language, template, xlraconfigurationid) values (0, 0, 'NL', 'ok',1);
+insert into mailTemplate(deleted, version, language, template, xlraconfigurationid) values (0, 0, 'EN', 'ok',1);
+insert into mailTemplate(deleted, version, language, template, xlraconfigurationid) values (0, 0, 'FR', 'ok',1);
+insert into mailTemplate(deleted, version, language, template, xlraconfigurationid) values (0, 0, 'DE', 'ok',1);

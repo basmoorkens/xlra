@@ -78,10 +78,16 @@ public class ManageRatesController {
 	 */
 	public void onRateLineCellEdit(CellEditEvent event) {
 		RateUtil.onRateLineCellEdit(event);
+		selectedRateFile = rateFileService.updateRateFile(selectedRateFile);
 	}
 
-	public void onConditionCellEdit(CellEditEvent event) {
-		RateUtil.onConditionCellEdit(event);
+	public void onConditionRowEdit(RowEditEvent event) {
+		Condition condition = (Condition) event.getObject();
+		MessageUtil.addMessage(
+				"Condition updated",
+				"Updated " + condition.getConditionKey() + " to "
+						+ condition.getValue());
+		selectedRateFile = rateFileService.updateRateFile(selectedRateFile);
 	}
 
 	public boolean isNumericRateFileZone() {
@@ -100,8 +106,9 @@ public class ManageRatesController {
 
 	public void onZoneEdit(RowEditEvent event) {
 		Zone zone = (Zone) event.getObject();
-		MessageUtil.addMessage("Zone update", "Changed zone information for "
-				+ zone.getName());
+		MessageUtil.addMessage("Zone update", zone.getName()
+				+ " successfully updated.");
+		selectedRateFile = rateFileService.updateRateFile(selectedRateFile);
 	}
 
 	public void deleteZone(Zone zone) {
@@ -109,9 +116,11 @@ public class ManageRatesController {
 	}
 
 	public void deleteCondition(Condition condition) {
+		MessageUtil.addMessage("condition removed", condition.getConditionKey()
+				+ " was successfully removed.");
 		selectedRateFile.getConditions().remove(condition);
-		rateFileService.updateRateFile(selectedRateFile);
 		condition.setRateFile(null);
+		selectedRateFile = rateFileService.updateRateFile(selectedRateFile);
 	}
 
 	public void fetchDetailsOfRatefile(SelectEvent event) {
@@ -240,6 +249,7 @@ public class ManageRatesController {
 		c.setRateFile(selectedRateFile);
 		selectedRateFile.getConditions().add(c);
 		keyToAdd = null;
+		selectedRateFile = rateFileService.updateRateFile(selectedRateFile);
 	}
 
 	public List<TranslationKey> getAvailableTranslationKeysForSelectedRateFile() {

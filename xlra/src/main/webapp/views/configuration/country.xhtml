@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/views/template.xhtml">
+	<ui:define name="title">
+		<h:outputText value="XLRA - Configuration - Countries" />
+	</ui:define>
+	<ui:define name="pageTitle">
+		<h:outputText value="Countries" />
+	</ui:define>
+	<ui:define name="body">
+		<h:form id="chfRatesForm">
+			<p:growl id="msgs" showDetail="true" />
+			<p:panel id="chfRatePanel" header="Countries">
+				<p:dataTable editable="true" value="#{countryController.countries}"
+					var="country" emptyMessage="No countries found." id="countryTable">
+
+					<p:ajax event="rowEdit"
+						listener="#{}"
+						update=":chfRatesForm:msgs" />
+
+					<p:column headerText="Start - End">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{chfRate.interval}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{chfRate.interval.start}"
+									style="width:100%" />
+								<p:inputText value="#{chfRate.interval.end}" style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					<p:column headerText="CHF surcharge percent:">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{chfRate.surchargePercentage}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{chfRate.surchargePercentage}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					<p:column style="width:32px">
+						<p:rowEditor />
+					</p:column>
+				</p:dataTable>
+				<p:panel>
+					<h:outputLabel for="currentChfRateField">Current swiss franc price:</h:outputLabel>
+					<p:inputText size="50" value="#{chfController.currentChfValue}"
+						id="currentChfRateField"></p:inputText>
+					<p:commandButton action="#{chfController.updateCurrentChfRate}"
+						value="Save new price" update=":chfRatesForm:msgs" />
+				</p:panel>
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

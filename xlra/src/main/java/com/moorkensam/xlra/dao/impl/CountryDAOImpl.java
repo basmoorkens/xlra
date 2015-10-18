@@ -21,24 +21,12 @@ public class CountryDAOImpl extends BaseDAO implements CountryDAO {
 	@Override
 	public Country getCountryById(long id) {
 		Country c = (Country) getEntityManager().find(Country.class, id);
-		fillUpZones(c);
 		return c;
-	}
-
-	private void fillUpZones(Country c) {
-		c.getZones().size();
-		for (Zone z : c.getZones()) {
-			z.convertAlphaNumericPostalCodeListToString();
-			z.convertNumericalPostalCodeListToString();
-		}
 	}
 
 	@Override
 	public List<Country> getAllCountriesFullyLoaded() {
 		List<Country> countries = getAllCountries();
-		for (Country c : countries) {
-			fillUpZones(c);
-		}
 		return countries;
 	}
 

@@ -12,9 +12,8 @@
 			styleClass="rateLinesDetailGrid" style="width:100%">
 			<p:dataTable value="#{rateFile.relationalRateLines}" var="rateLine"
 				emptyMessage="No rate lines found." id="rateLineTable" rows="50"
-				editable="true" editMode="cell" paginator="true"
-				stickyHeader="true"
-				rowsPerPageTemplate="5,10,15,25,50" 
+				editable="true" editMode="cell" paginator="true" stickyHeader="true"
+				rowsPerPageTemplate="5,10,15,25,50"
 				paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
 
 				<c:if test="${controllerName == 'manageRatesController'}">
@@ -51,11 +50,6 @@
 					</p:column>
 				</c:forEach>
 			</p:dataTable>
-
-			<c:if test="${controllerName == 'manageRatesController'}">
-				<p:commandButton value="Save rates" title="Save rates" ajax="false"
-					action="#{manageRatesController.saveRateFile}" />
-			</c:if>
 		</p:panelGrid>
 
 	</p:panel>

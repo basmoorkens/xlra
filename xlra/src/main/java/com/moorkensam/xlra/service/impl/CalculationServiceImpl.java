@@ -99,7 +99,8 @@ public class CalculationServiceImpl implements CalculationService {
 		}
 		if (priceDTO.getResultingPriceSurcharge() != null) {
 			priceDTO.addToFinalPrice(priceDTO.getResultingPriceSurcharge());
-			priceDTO.getAppliedOperations().add(TranslationKey.ADR_SURCHARGE);
+			priceDTO.getAppliedOperations().add(
+					TranslationKey.ADR_SURCHARGE_KEY);
 		}
 	}
 

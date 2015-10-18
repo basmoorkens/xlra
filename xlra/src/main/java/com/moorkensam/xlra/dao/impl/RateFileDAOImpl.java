@@ -36,7 +36,9 @@ public class RateFileDAOImpl extends BaseDAO implements RateFileDAO {
 
 	@Override
 	public RateFile updateRateFile(RateFile rateFile) {
-		return getEntityManager().merge(rateFile);
+		RateFile rf = getEntityManager().merge(rateFile);
+		prepareRateFileForFrontend(rf);
+		return rf;
 	}
 
 	@SuppressWarnings("unchecked")
