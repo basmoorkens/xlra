@@ -11,6 +11,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapKeyColumn;
+import javax.persistence.MapKeyEnumerated;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -26,10 +27,9 @@ public class Country extends BaseEntity {
 
 	private static final long serialVersionUID = -5766329224119072846L;
 
-	private String name;
-
 	@ElementCollection
 	@MapKeyColumn(name = "language")
+	@MapKeyEnumerated(EnumType.STRING)
 	@Column(name = "name")
 	@CollectionTable(name = "countrynames", joinColumns = @JoinColumn(name = "country_id"))
 	private Map<Language, String> names;
@@ -38,14 +38,6 @@ public class Country extends BaseEntity {
 
 	@Enumerated(EnumType.STRING)
 	private ZoneType zoneType;
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	public String getShortName() {
 		return shortName;
@@ -71,8 +63,7 @@ public class Country extends BaseEntity {
 			return false;
 		}
 		Country c = (Country) obj;
-		if (c.getId() == id && c.getName().equals(name)
-				&& c.getShortName().equals(shortName)) {
+		if (c.getId() == id && c.getShortName().equals(shortName)) {
 			return true;
 		}
 		return false;
@@ -80,7 +71,7 @@ public class Country extends BaseEntity {
 
 	@Override
 	public String toString() {
-		return name + " (" + shortName + ")";
+		return " (" + shortName + ")";
 	}
 
 	public Map<Language, String> getNames() {
@@ -89,6 +80,44 @@ public class Country extends BaseEntity {
 
 	public void setNames(Map<Language, String> names) {
 		this.names = names;
+	}
+
+	public void buildEmptyLanguageMap() {
+		for (Language l : Language.values()) {
+			names.put(l, "");
+		}
+	}
+
+	public String getEnglishName() {
+		return names.get(Language.EN);
+	}
+
+	public String getDutchName() {
+		return names.get(Language.NL);
+	}
+
+	public String getGermanName() {
+		return names.get(Language.DE);
+	}
+
+	public String getFrenchName() {
+		return names.get(Language.FR);
+	}
+
+	public void setDutchName(String value) {
+		names.put(Language.NL, value);
+	}
+
+	public void setGermanName(String value) {
+		names.put(Language.DE, value);
+	}
+
+	public void setFrenchName(String value) {
+		names.put(Language.FR, value);
+	}
+
+	public void setEnglishName(String value) {
+		names.put(Language.EN, value);
 	}
 
 }

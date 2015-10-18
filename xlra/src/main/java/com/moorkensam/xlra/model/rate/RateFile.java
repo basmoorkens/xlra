@@ -65,6 +65,9 @@ public class RateFile extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private Language language;
 
+	@Enumerated(EnumType.STRING)
+	private TransportType transportType;
+
 	@Transient
 	private List<String> columns;
 
@@ -282,6 +285,14 @@ public class RateFile extends BaseEntity {
 			}
 		}
 		return null;
+	}
+
+	public TransportType getTransportType() {
+		return transportType;
+	}
+
+	public void setTransportType(TransportType transportType) {
+		this.transportType = transportType;
 	}
 
 }

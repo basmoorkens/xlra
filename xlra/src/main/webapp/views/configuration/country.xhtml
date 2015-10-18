@@ -12,36 +12,63 @@
 		<h:outputText value="Countries" />
 	</ui:define>
 	<ui:define name="body">
-		<h:form id="chfRatesForm">
+		<h:form id="countryForm">
 			<p:growl id="msgs" showDetail="true" />
-			<p:panel id="chfRatePanel" header="Countries">
+			<p:panel id="countryPanel" header="Countries">
 				<p:dataTable editable="true" value="#{countryController.countries}"
 					var="country" emptyMessage="No countries found." id="countryTable">
 
 					<p:ajax event="rowEdit"
-						listener="#{}"
-						update=":chfRatesForm:msgs" />
+						listener="#{countryController.onCountryRowEdit}"
+						update=":countryForm:msgs" />
 
-					<p:column headerText="Start - End">
+					<p:column headerText="Short name:">
 						<p:cellEditor>
 							<f:facet name="output">
-								<h:outputText value="#{chfRate.interval}" />
+								<h:outputText value="#{country.shortName}" />
 							</f:facet>
 							<f:facet name="input">
-								<p:inputText value="#{chfRate.interval.start}"
-									style="width:100%" />
-								<p:inputText value="#{chfRate.interval.end}" style="width:100%" />
+								<h:outputText value="#{country.shortName}" />
 							</f:facet>
 						</p:cellEditor>
 					</p:column>
-					<p:column headerText="CHF surcharge percent:">
+					<p:column headerText="English name:">
 						<p:cellEditor>
 							<f:facet name="output">
-								<h:outputText value="#{chfRate.surchargePercentage}" />
+								<h:outputText value="#{country.englishName}" />
 							</f:facet>
 							<f:facet name="input">
-								<p:inputText value="#{chfRate.surchargePercentage}"
-									style="width:100%" />
+								<p:inputText value="#{country.englishName}" style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					<p:column headerText="Dutch name:">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{country.dutchName}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{country.dutchName}" style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					<p:column headerText="French name:">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{country.frenchName}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{country.frenchName}" style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					<p:column headerText="German name:">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{country.germanName}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{country.germanName}" style="width:100%" />
 							</f:facet>
 						</p:cellEditor>
 					</p:column>
@@ -49,13 +76,6 @@
 						<p:rowEditor />
 					</p:column>
 				</p:dataTable>
-				<p:panel>
-					<h:outputLabel for="currentChfRateField">Current swiss franc price:</h:outputLabel>
-					<p:inputText size="50" value="#{chfController.currentChfValue}"
-						id="currentChfRateField"></p:inputText>
-					<p:commandButton action="#{chfController.updateCurrentChfRate}"
-						value="Save new price" update=":chfRatesForm:msgs" />
-				</p:panel>
 			</p:panel>
 		</h:form>
 	</ui:define>

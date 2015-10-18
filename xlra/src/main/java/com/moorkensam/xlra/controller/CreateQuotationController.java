@@ -25,6 +25,7 @@ import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Kind;
 import com.moorkensam.xlra.model.rate.Measurement;
 import com.moorkensam.xlra.model.rate.QuotationResult;
+import com.moorkensam.xlra.model.rate.TransportType;
 import com.moorkensam.xlra.service.CountryService;
 import com.moorkensam.xlra.service.CustomerService;
 import com.moorkensam.xlra.service.QuotationService;
@@ -238,6 +239,10 @@ public class CreateQuotationController {
 
 	public void setCollapseFiltersPanel(boolean collapseFiltersPanel) {
 		this.collapseFiltersPanel = collapseFiltersPanel;
+	}
+
+	public List<TransportType> getAllTransportTypes() {
+		return Arrays.asList(TransportType.values());
 	}
 
 }

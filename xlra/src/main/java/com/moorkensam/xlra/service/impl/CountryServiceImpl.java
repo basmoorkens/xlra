@@ -39,7 +39,13 @@ public class CountryServiceImpl implements CountryService {
 
 	@Override
 	public List<Country> getAllCountriesFullLoad() {
-		return countryDAO.getAllCountriesFullyLoaded();
+		List<Country> countries = countryDAO.getAllCountriesFullyLoaded();
+		for (Country c : countries) {
+			if (c.getNames().isEmpty()) {
+				c.buildEmptyLanguageMap();
+			}
+		}
+		return countries;
 	}
 
 	@Override
@@ -57,6 +63,11 @@ public class CountryServiceImpl implements CountryService {
 	public void updateZone(Zone zone) {
 		fillInPersistentPostalCodes(zone);
 		zoneDAO.updateZone(zone);
+	}
+
+	@Override
+	public Country updateCountry(Country country) {
+		return countryDAO.updateCountry(country);
 	}
 
 }

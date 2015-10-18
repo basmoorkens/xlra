@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Kind;
 import com.moorkensam.xlra.model.rate.Measurement;
+import com.moorkensam.xlra.model.rate.TransportType;
 
 @Entity
 @Cacheable
@@ -41,6 +42,9 @@ public class QuotationQuery extends BaseEntity {
 	private boolean importFormality;
 
 	private boolean exportFormality;
+
+	@Enumerated(EnumType.STRING)
+	private TransportType transportType;
 
 	private String postalCode;
 
@@ -81,7 +85,7 @@ public class QuotationQuery extends BaseEntity {
 
 	@Override
 	public String toString() {
-		return "Country: " + country.getName() + " Type: " + kindOfRate
+		return "Country: " + country.getShortName() + " Type: " + kindOfRate
 				+ " Measurement: " + measurement + " Customer: "
 				+ customer.getName();
 	}
@@ -124,5 +128,13 @@ public class QuotationQuery extends BaseEntity {
 
 	public void setExportFormality(boolean exportFormality) {
 		this.exportFormality = exportFormality;
+	}
+
+	public TransportType getTransportType() {
+		return transportType;
+	}
+
+	public void setTransportType(TransportType transportType) {
+		this.transportType = transportType;
 	}
 }

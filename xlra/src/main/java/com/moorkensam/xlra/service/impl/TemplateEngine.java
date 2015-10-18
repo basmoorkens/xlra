@@ -112,8 +112,8 @@ public class TemplateEngine {
 		templateModel.put("measurement", query.getMeasurement());
 		templateModel.put("detailCalculation",
 				priceDTO.getDetailedCalculation());
-		templateModel.put("destination",
-				query.getCountry().getName() + query.getPostalCode());
+		templateModel.put("destination", query.getCountry().getShortName()
+				+ query.getPostalCode());
 		return templateModel;
 	}
 }

@@ -5,17 +5,12 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.event.AjaxBehaviorEvent;
 import javax.inject.Inject;
 
 import org.primefaces.event.RowEditEvent;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
-import com.moorkensam.xlra.controller.util.ZoneFactory;
-import com.moorkensam.xlra.model.configuration.Interval;
 import com.moorkensam.xlra.model.rate.Country;
-import com.moorkensam.xlra.model.rate.Zone;
-import com.moorkensam.xlra.model.rate.ZoneType;
 import com.moorkensam.xlra.service.CountryService;
 
 @ManagedBean
@@ -32,6 +27,13 @@ public class CountryController {
 	@PostConstruct
 	public void init() {
 		countries = countryService.getAllCountriesFullLoad();
+	}
+
+	public void onCountryRowEdit(RowEditEvent event) {
+		Country c = (Country) event.getObject();
+		MessageUtil.addMessage("Country updated", "Country " + c.getShortName()
+				+ " was successfully");
+		c = countryService.updateCountry(c);
 	}
 
 	public Country getSelectedCountry() {
@@ -57,5 +59,4 @@ public class CountryController {
 	public void setCountryService(CountryService countryService) {
 		this.countryService = countryService;
 	}
-
 }

@@ -16,14 +16,11 @@ import org.unitils.inject.annotation.InjectIntoByType;
 import org.unitils.inject.annotation.TestedObject;
 
 import com.moorkensam.xlra.dao.ConfigurationDao;
-import com.moorkensam.xlra.dao.CurrencyRateDAO;
 import com.moorkensam.xlra.dao.DieselRateDAO;
 import com.moorkensam.xlra.dao.LogDAO;
 import com.moorkensam.xlra.model.configuration.Configuration;
-import com.moorkensam.xlra.model.configuration.CurrencyRate;
 import com.moorkensam.xlra.model.configuration.DieselRate;
 import com.moorkensam.xlra.model.configuration.Interval;
-import com.moorkensam.xlra.model.configuration.XLRACurrency;
 import com.moorkensam.xlra.model.error.RateFileException;
 
 public class DieselServiceImplTest extends UnitilsJUnit4 {

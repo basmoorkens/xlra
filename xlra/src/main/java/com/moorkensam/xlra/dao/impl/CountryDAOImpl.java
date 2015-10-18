@@ -7,7 +7,6 @@ import javax.persistence.Query;
 import com.moorkensam.xlra.dao.BaseDAO;
 import com.moorkensam.xlra.dao.CountryDAO;
 import com.moorkensam.xlra.model.rate.Country;
-import com.moorkensam.xlra.model.rate.Zone;
 
 public class CountryDAOImpl extends BaseDAO implements CountryDAO {
 
@@ -21,13 +20,28 @@ public class CountryDAOImpl extends BaseDAO implements CountryDAO {
 	@Override
 	public Country getCountryById(long id) {
 		Country c = (Country) getEntityManager().find(Country.class, id);
+		lazyLoadCountry(c);
 		return c;
+	}
+
+	private void lazyLoadCountry(Country c) {
+		c.getNames().size();
 	}
 
 	@Override
 	public List<Country> getAllCountriesFullyLoaded() {
 		List<Country> countries = getAllCountries();
+		for (Country c : countries) {
+			lazyLoadCountry(c);
+		}
 		return countries;
+	}
+
+	@Override
+	public Country updateCountry(Country country) {
+		Country c = getEntityManager().merge(country);
+		lazyLoadCountry(c);
+		return c;
 	}
 
 }

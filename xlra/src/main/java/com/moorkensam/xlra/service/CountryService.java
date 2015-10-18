@@ -17,4 +17,6 @@ public interface CountryService {
 
 	public void updateZone(Zone zone);
 
+	public Country updateCountry(Country country);
+
 }

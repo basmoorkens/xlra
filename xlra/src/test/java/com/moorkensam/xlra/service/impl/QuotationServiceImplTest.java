@@ -57,7 +57,6 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 		query.setCustomer(new BaseCustomer());
 		query.getCustomer().setEmail("test@test.com");
 		query.setCountry(new Country());
-		query.getCountry().setName("testcountry");
 		quotationService = new QuotationServiceImpl();
 		resultDTO = new PriceResultDTO();
 		priceDTO = new PriceCalculationDTO();

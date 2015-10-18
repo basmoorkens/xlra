@@ -1,6 +1,5 @@
 package com.moorkensam.xlra.service.impl;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -143,6 +142,7 @@ public class QuotationServiceImpl implements QuotationService {
 	 * @param result
 	 * @throws TemplatingException
 	 */
+
 	protected void initializeOfferteEmail(QuotationQuery query,
 			OfferteMailDTO dto, RateFile rf, PriceCalculationDTO priceDTO)
 			throws TemplatingException, RateFileException {

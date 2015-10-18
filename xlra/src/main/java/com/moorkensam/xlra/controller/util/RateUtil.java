@@ -6,7 +6,6 @@ import java.util.List;
 import org.primefaces.event.CellEditEvent;
 
 import com.moorkensam.xlra.model.Language;
-import com.moorkensam.xlra.model.configuration.TranslationKey;
 import com.moorkensam.xlra.model.rate.IncoTermType;
 
 public class RateUtil {

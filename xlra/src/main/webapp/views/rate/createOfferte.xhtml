@@ -85,6 +85,14 @@
 					<p:selectBooleanCheckbox
 						value="#{createQuotationController.quotationQuery.exportFormality}" />
 
+					<h:outputText value="" />
+					<p:selectOneRadio
+						value="#{createQuotationController.quotationQuery.transportType}">
+						<f:selectItems
+							value="#{createQuotationController.allTransportTypes}"
+							itemDescription="description" />
+					</p:selectOneRadio>
+
 				</p:panelGrid>
 				<p:panel style="bottom:20px;  padding:0px;border:0px;">
 					<p:commandButton value="Next"
