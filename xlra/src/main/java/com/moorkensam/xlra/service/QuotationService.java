@@ -31,4 +31,12 @@ public interface QuotationService {
 	public QuotationResult generateQuotationResultForQuotationQuery(
 			QuotationQuery query) throws RateFileException;
 
+	/**
+	 * This method saves a quotation result and sends out the final email to the
+	 * customer for the result.
+	 * 
+	 * @param result
+	 */
+	public void submitQuotationResult(QuotationResult result);
+
 }

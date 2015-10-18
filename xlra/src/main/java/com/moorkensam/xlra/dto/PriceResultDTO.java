@@ -73,6 +73,7 @@ public class PriceResultDTO {
 		if (adrCalc != null) {
 			fullDetail += adrCalc;
 		}
+		fullDetail += totalPrice;
 		return fullDetail;
 	}
 

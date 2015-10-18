@@ -8,6 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.moorkensam.xlra.model.rate.Country;
@@ -23,6 +24,8 @@ public class QuotationQuery extends BaseEntity {
 
 	private static final long serialVersionUID = -555523071215522763L;
 
+	@ManyToOne
+	@JoinColumn(name = "customer_id")
 	private BaseCustomer customer;
 
 	@Enumerated(EnumType.STRING)

@@ -6,7 +6,7 @@ import com.moorkensam.xlra.model.QuotationQuery;
 
 public interface QuotationQueryDAO {
 
-	public void createQuotationQuery(QuotationQuery quotation);
+	public QuotationQuery createQuotationQuery(QuotationQuery quotation);
 
 	public QuotationQuery updateQuotationQuery(QuotationQuery quotation);
 

@@ -137,6 +137,10 @@ public class CreateQuotationController {
 		}
 	}
 
+	public void submitOfferte() {
+		quotationService.submitQuotationResult(quotationResult);
+	}
+
 	private void showRateFileError(RateFileException re) {
 		MessageUtil.addErrorMessage(
 				"Unexpected error whilst processing quotation request.",

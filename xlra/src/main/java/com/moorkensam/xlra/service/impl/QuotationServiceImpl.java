@@ -19,6 +19,7 @@ import com.moorkensam.xlra.dao.RateFileDAO;
 import com.moorkensam.xlra.dto.OfferteMailDTO;
 import com.moorkensam.xlra.dto.PriceCalculationDTO;
 import com.moorkensam.xlra.dto.PriceResultDTO;
+import com.moorkensam.xlra.mapper.OfferteEmailToEmailResultMapper;
 import com.moorkensam.xlra.mapper.PriceCalculationDTOToResultMapper;
 import com.moorkensam.xlra.model.FullCustomer;
 import com.moorkensam.xlra.model.QuotationQuery;
@@ -60,10 +61,13 @@ public class QuotationServiceImpl implements QuotationService {
 
 	private PriceCalculationDTOToResultMapper mapper;
 
+	private OfferteEmailToEmailResultMapper mailMapper;
+
 	@PostConstruct
 	public void init() {
 		setTemplatEngine(TemplateEngine.getInstance());
 		setMapper(new PriceCalculationDTOToResultMapper());
+		mailMapper = new OfferteEmailToEmailResultMapper();
 	}
 
 	@Override
@@ -102,6 +106,7 @@ public class QuotationServiceImpl implements QuotationService {
 	public QuotationResult generateQuotationResultForQuotationQuery(
 			QuotationQuery query) throws RateFileException {
 		OfferteMailDTO dto = new OfferteMailDTO();
+		QuotationResult quotationResult = new QuotationResult();
 		RateFileSearchFilter filter = createRateFileSearchFilterForQuery(query);
 		RateLine result;
 		PriceCalculationDTO priceDTO = new PriceCalculationDTO();
@@ -114,7 +119,7 @@ public class QuotationServiceImpl implements QuotationService {
 			calculationService.calculatePriceAccordingToConditions(priceDTO,
 					rf.getCountry(), rf.getConditions(), query);
 			initializeOfferteEmail(query, dto, rf, priceDTO);
-			emailService.sendOfferteMail(dto);
+			fillInQuotationResult(query, dto, quotationResult);
 		} catch (NoResultException nre) {
 			throw new RateFileException("Could not find ratefile for "
 					+ filter.toString());
@@ -124,12 +129,15 @@ public class QuotationServiceImpl implements QuotationService {
 		} catch (TemplatingException e) {
 			logger.error("Failed to parse Template" + e.getMessage());
 			throw new RateFileException("Failed to parse email template.");
-		} catch (MessagingException e) {
-			logger.error("Failed to send offerte email");
-			throw new RateFileException("Failed to send email");
 		}
 		// generate pdf
-		return null;
+		return quotationResult;
+	}
+
+	private void fillInQuotationResult(QuotationQuery query,
+			OfferteMailDTO dto, QuotationResult quotationResult) {
+		quotationResult.setEmailResult(mailMapper.map(dto));
+		quotationResult.setQuery(query);
 	}
 
 	/**
@@ -203,5 +211,27 @@ public class QuotationServiceImpl implements QuotationService {
 
 	public void setTemplatEngine(TemplateEngine templatEngine) {
 		this.templatEngine = templatEngine;
+	}
+
+	public OfferteEmailToEmailResultMapper getMailMapper() {
+		return mailMapper;
+	}
+
+	public void setMailMapper(OfferteEmailToEmailResultMapper mailMapper) {
+		this.mailMapper = mailMapper;
+	}
+
+	@Override
+	public void submitQuotationResult(QuotationResult result) {
+		QuotationQuery managedQuery = quotationDAO.createQuotationQuery(result
+				.getQuery());
+		result.setQuery(managedQuery);
+		quotationResultDAO.createQuotationResult(result);
+		// send email
+		// emailService.sendOfferteMail(dto);
+		// catch (MessagingException e) {
+		// logger.error("Failed to send offerte email");
+		// throw new RateFileException("Failed to send email");
+		// }
 	}
 }

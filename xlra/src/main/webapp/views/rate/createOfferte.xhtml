@@ -6,10 +6,10 @@
 	xmlns:p="http://primefaces.org/ui">
 <ui:composition template="/views/template.xhtml">
 	<ui:define name="title">
-		<h:outputText value="XLRA - create quotation" />
+		<h:outputText value="XLRA - create offerte" />
 	</ui:define>
 	<ui:define name="pageTitle">
-		<h:outputText value="Create quotation" />
+		<h:outputText value="Create offerte" />
 	</ui:define>
 	<ui:define name="body">
 		<h:form id="customerForm">
@@ -44,7 +44,7 @@
 				collapsed="#{createQuotationController.collapseFiltersPanel}"
 				toggleable="true">
 				<p:growl showDetail="true" id="messages" sticky="true" />
-				<p:panelGrid columns="2">
+				<p:panelGrid columns="2" style="width:100%;">
 					<h:outputText value="Country: " />
 					<p:selectOneRadio converter="#{countryConverter}" required="true"
 						value="#{createQuotationController.quotationQuery.country}">
@@ -107,9 +107,20 @@
 			<p:panel id="summaryPanel" header="Summary"
 				collapsed="#{createQuotationController.collapseSummaryPanel}"
 				toggleable="true">
-				<h:outputText value="dqfuq" />
+				<p:panelGrid columns="2">
+					<h:outputText value="Receipient: " />
+					<p:inputText size="100" style="width:100%;"
+						value="#{createQuotationController.quotationResult.emailResult.toAddress}" />
+
+					<h:outputText value="Subject: " />
+					<p:inputText size="100" style="width:100%;"
+						value="#{createQuotationController.quotationResult.emailResult.subject}" />
+				</p:panelGrid>
+				<h:outputText value="Generated email:" />
+				<p:editor
+					value="#{createQuotationController.quotationResult.emailResult.email}" />
 				<p:panel style="bottom:20px;  padding:0px;border:0px;">
-					<p:commandButton value="Next"
+					<p:commandButton value="Send offerte" actionListener="#{createQuotationController.submitOfferte}"
 						style="width:150px; margin-left:20px;" ajax="true" />
 				</p:panel>
 			</p:panel>

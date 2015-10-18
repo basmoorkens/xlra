@@ -1,16 +1,21 @@
 package com.moorkensam.xlra.model.rate;
 
 import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.moorkensam.xlra.model.BaseEntity;
+import com.moorkensam.xlra.model.EmailResult;
+import com.moorkensam.xlra.model.QuotationQuery;
 
 @Entity
 @Cacheable
@@ -24,9 +29,12 @@ public class QuotationResult extends BaseEntity {
 	@Column(name = "pdf")
 	private byte[] generatedPdf;
 
-	@Lob
-	@Column(name = "email")
-	private String email;
+	@Embedded
+	private EmailResult emailResult;
+
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "quotation_query_id")
+	private QuotationQuery query;
 
 	/**
 	 * There is no guarantee that the ratefile that was used to generate this
@@ -53,12 +61,19 @@ public class QuotationResult extends BaseEntity {
 		this.generatedPdf = generatedPdf;
 	}
 
-	public String getEmail() {
-		return email;
+	public EmailResult getEmailResult() {
+		return emailResult;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setEmailResult(EmailResult emailResult) {
+		this.emailResult = emailResult;
 	}
 
+	public QuotationQuery getQuery() {
+		return query;
+	}
+
+	public void setQuery(QuotationQuery query) {
+		this.query = query;
+	}
 }

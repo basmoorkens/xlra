@@ -11,8 +11,8 @@ import com.moorkensam.xlra.model.QuotationQuery;
 public class QuotationQueryDAOImpl extends BaseDAO implements QuotationQueryDAO {
 
 	@Override
-	public void createQuotationQuery(QuotationQuery quotation) {
-		getEntityManager().persist(quotation);
+	public QuotationQuery createQuotationQuery(QuotationQuery quotation) {
+		return getEntityManager().merge(quotation);
 	}
 
 	@Override
