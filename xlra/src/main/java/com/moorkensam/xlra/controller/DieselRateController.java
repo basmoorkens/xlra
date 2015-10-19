@@ -13,6 +13,7 @@ import org.primefaces.event.RowEditEvent;
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.DieselRate;
+import com.moorkensam.xlra.model.configuration.Interval;
 import com.moorkensam.xlra.service.ApplicationConfigurationService;
 import com.moorkensam.xlra.service.DieselService;
 
@@ -34,6 +35,10 @@ public class DieselRateController {
 
 	private BigDecimal currentDieselValue;
 
+	private boolean showAddDieselRate;
+
+	private DieselRate newDieselRate;
+
 	@PostConstruct
 	public void initPage() {
 		refreshDieselRates();
@@ -51,6 +56,23 @@ public class DieselRateController {
 
 	private void updateDieselRate(DieselRate rate) {
 		dieselService.updateDieselRate(rate);
+	}
+
+	public void setupPageForNewRate() {
+		newDieselRate = new DieselRate();
+		newDieselRate.setInterval(new Interval());
+		showAddDieselRate = true;
+	}
+
+	public void cancelAddNewRate() {
+		showAddDieselRate = false;
+		newDieselRate = null;
+	}
+
+	public void saveNewDieselRate() {
+		dieselService.createDieselRate(newDieselRate);
+		refreshDieselRates();
+		showAddDieselRate = false;
 	}
 
 	public void updateCurrentDieselRate() {
@@ -115,5 +137,21 @@ public class DieselRateController {
 
 	public void setDieselService(DieselService dieselService) {
 		this.dieselService = dieselService;
+	}
+
+	public boolean isShowAddDieselRate() {
+		return showAddDieselRate;
+	}
+
+	public void setShowAddDieselRate(boolean showAddDieselRate) {
+		this.showAddDieselRate = showAddDieselRate;
+	}
+
+	public DieselRate getNewDieselRate() {
+		return newDieselRate;
+	}
+
+	public void setNewDieselRate(DieselRate newDieselRate) {
+		this.newDieselRate = newDieselRate;
 	}
 }

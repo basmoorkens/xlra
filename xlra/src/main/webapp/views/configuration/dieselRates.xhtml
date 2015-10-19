@@ -15,6 +15,12 @@
 		<h:form id="dieselPriceForm">
 			<p:panel id="dieselPanel" header="Diesel charges">
 				<p:growl id="msgs" showDetail="true" />
+
+				<p:panel>
+					<p:commandButton value="Add new diesel rate"
+						actionListener="#{dieselRateController.setupPageForNewRate}"
+						update=":dieselPriceForm" />
+				</p:panel>
 				<p:dataTable editable="true"
 					value="#{dieselRateController.dieselRates}" var="dieselRate"
 					emptyMessage="No dieselrates found." id="dieselRateTable">
@@ -51,14 +57,42 @@
 						<p:rowEditor />
 					</p:column>
 				</p:dataTable>
-				<p:panel>
-					<h:outputLabel for="currentDieselRateField">Current diesel price:</h:outputLabel>
-					<p:inputText size="50"
-						value="#{dieselRateController.currentDieselValue}"
-						id="currentDieselRateField"></p:inputText>
-					<p:commandButton
-						action="#{dieselRateController.updateCurrentDieselRate}"
-						value="Save new price" update=":dieselPriceForm:msgs" />
+			</p:panel>
+
+			<p:panel header="Current diesel price" style="margin-top:20px;"
+				rendered="#{!dieselRateController.showAddDieselRate}">
+				<h:outputLabel for="currentDieselRateField">Current diesel price:</h:outputLabel>
+				<p:inputText size="50"
+					value="#{dieselRateController.currentDieselValue}"
+					id="currentDieselRateField"></p:inputText>
+				<p:commandButton
+					action="#{dieselRateController.updateCurrentDieselRate}"
+					value="Save current diesel price" update=":dieselPriceForm:msgs" />
+			</p:panel>
+
+			<p:panel header="Create new diesel rate" style="margin-top:20px;"
+				rendered="#{dieselRateController.showAddDieselRate}">
+				<p:panelGrid columns="2">
+					<h:outputText value="Start: " />
+					<p:inputText
+						value="#{dieselRateController.newDieselRate.interval.start}" />
+
+					<h:outputText value="End: " />
+					<p:inputText
+						value="#{dieselRateController.newDieselRate.interval.end}" />
+
+					<h:outputText value="Surcharge percentage: " />
+					<p:inputText
+						value="#{dieselRateController.newDieselRate.surchargePercentage}" />
+
+				</p:panelGrid>
+				<p:panel style="margin-top:30px;">
+					<p:commandButton immediate="true" value="Cancel"
+						update=":dieselPriceForm"
+						actionListener="#{dieselRateController.cancelAddNewRate}" />
+					<p:commandButton value="Save diesel rate"
+						actionListener="#{dieselRateController.saveNewDieselRate}"
+						update=":dieselPriceForm" />
 				</p:panel>
 			</p:panel>
 		</h:form>
