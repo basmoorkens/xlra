@@ -115,6 +115,18 @@ public class CreateQuotationController {
 		collapseSummaryPanel = true;
 	}
 
+	public void backToCustomer() {
+		collapseCustomerPanel = false;
+		collapseFiltersPanel = true;
+		collapseSummaryPanel = true;
+	}
+
+	public void backToRateFilters() {
+		collapseCustomerPanel = true;
+		collapseFiltersPanel = false;
+		collapseSummaryPanel = true;
+	}
+
 	public void processRateFilters() {
 		try {
 			quotationResult = quotationService

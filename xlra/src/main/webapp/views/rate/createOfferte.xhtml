@@ -13,7 +13,7 @@
 	</ui:define>
 	<ui:define name="body">
 		<h:form id="customerForm">
-			<p:panel id="customerPanel" header="Customer" toggleable="true"
+			<p:panel id="customerPanel" header="Customer" toggleable="false"
 				collapsed="#{createQuotationController.collapseCustomerPanel}">
 				<p:growl showDetail="true" id="messages" sticky="true" />
 				<h:outputText value="Select an existing customer: " />
@@ -42,7 +42,7 @@
 		<h:form id="filtersForm">
 			<p:panel id="filterPanel" header="Rates filter"
 				collapsed="#{createQuotationController.collapseFiltersPanel}"
-				toggleable="true">
+				toggleable="false">
 				<p:growl showDetail="true" id="messages" sticky="true" />
 				<p:panelGrid columns="2" style="width:100%;">
 					<h:outputText value="Country: " />
@@ -95,6 +95,9 @@
 
 				</p:panelGrid>
 				<p:panel style="bottom:20px;  padding:0px;border:0px;">
+					<p:commandButton value="Back" style="width:150px;margin-left:20px;"
+						update=":customerForm :filtersForm" immediate="true"
+						actionListener="#{createQuotationController.backToCustomer}" />
 					<p:commandButton value="Next"
 						actionListener="#{createQuotationController.processRateFilters}"
 						style="width:150px; margin-left:20px;" process=":filtersForm"
@@ -106,7 +109,7 @@
 		<h:form id="summaryForm">
 			<p:panel id="summaryPanel" header="Summary"
 				collapsed="#{createQuotationController.collapseSummaryPanel}"
-				toggleable="true">
+				toggleable="false">
 				<p:panelGrid columns="2">
 					<h:outputText value="Receipient: " />
 					<p:inputText size="100" style="width:100%;"
@@ -120,7 +123,11 @@
 				<p:editor
 					value="#{createQuotationController.quotationResult.emailResult.email}" />
 				<p:panel style="bottom:20px;  padding:0px;border:0px;">
-					<p:commandButton value="Send offerte" actionListener="#{createQuotationController.submitOfferte}"
+					<p:commandButton value="Back" style="width:150px;margin-left:20px;"
+						update=":summaryForm :filtersForm" immediate="true"
+						actionListener="#{createQuotationController.backToRateFilters}" />
+					<p:commandButton value="Send offerte"
+						actionListener="#{createQuotationController.submitOfferte}"
 						style="width:150px; margin-left:20px;" ajax="true" />
 				</p:panel>
 			</p:panel>

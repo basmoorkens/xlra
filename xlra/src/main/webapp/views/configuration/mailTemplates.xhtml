@@ -14,6 +14,31 @@
 	<ui:define name="body">
 		<h:form id="mailTemplateForm">
 			<p:growl id="msgs" showDetail="true" />
+			<div id="helpDiv">
+				Following parameters can be filled in the email template.
+				<table>
+					<tr>
+						<td>customer</td>
+						<td>The name of the customer</td>
+					</tr>
+					<tr>
+						<td>quantity</td>
+						<td>The quantity of the order</td>
+					</tr>
+					<tr>
+						<td>measurement</td>
+						<td>The measurement (PALET, KILO, LDM)</td>
+					</tr>
+					<tr>
+						<td>destination</td>
+						<td>The destination</td>
+					</tr>
+					<tr>
+						<td>detailCalculation</td>
+						<td>The detailed info of the calculation</td>
+					</tr>
+				</table>
+			</div>
 			<p:panel id="mailTemplatePanel" header="Email templates">
 				<p:panelGrid columns="2" style="width:100%;">
 					<h:outputText
