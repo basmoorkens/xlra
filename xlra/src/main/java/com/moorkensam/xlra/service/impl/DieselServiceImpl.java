@@ -66,7 +66,6 @@ public class DieselServiceImpl implements DieselService {
 		getXlraConfigurationDAO().updateXlraConfiguration(config);
 	}
 
-	
 	@Override
 	public DieselRate getDieselRateForCurrentPrice(BigDecimal price)
 			throws RateFileException {
@@ -96,6 +95,12 @@ public class DieselServiceImpl implements DieselService {
 
 	public void setXlraConfigurationDAO(ConfigurationDao xlraConfigurationDAO) {
 		this.xlraConfigurationDAO = xlraConfigurationDAO;
+	}
+
+	@Override
+	public void deleteDieselRate(DieselRate rate) {
+		logger.info("Removing diesel rate " + rate);
+		dieselRateDAO.deleteDieselRate(rate);
 	}
 
 }

@@ -45,4 +45,10 @@ public class CurrencyRate extends AbstractRate {
 		return false;
 	}
 
+	@Override
+	public String toString() {
+		return "Id: " + id + " interval: " + getInterval() + " Value: "
+				+ getSurchargePercentage();
+	}
+
 }

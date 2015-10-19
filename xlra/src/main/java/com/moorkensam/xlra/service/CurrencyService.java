@@ -1,6 +1,5 @@
 package com.moorkensam.xlra.service;
 
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -21,4 +20,7 @@ public interface CurrencyService {
 
 	CurrencyRate getChfRateForCurrentPrice(BigDecimal price)
 			throws RateFileException;
+
+	public void deleteCurrencyRate(CurrencyRate toDelete);
+
 }

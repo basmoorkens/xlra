@@ -36,4 +36,10 @@ public class CurrencyRateDAOImpl extends BaseDAO implements CurrencyRateDAO {
 		return (List<CurrencyRate>) query.getResultList();
 	}
 
+	@Override
+	public void deleteCurrencyRate(CurrencyRate currencyRate) {
+		currencyRate = getEntityManager().merge(currencyRate);
+		getEntityManager().remove(currencyRate);
+	}
+
 }

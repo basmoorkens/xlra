@@ -120,4 +120,10 @@ public class CurrencyServiceImpl implements CurrencyService {
 		this.xlraConfigurationDAO = xlraConfigurationDAO;
 	}
 
+	@Override
+	public void deleteCurrencyRate(CurrencyRate toDelete) {
+		logger.info("Deleting currency rate " + toDelete);
+		currencyRateDAO.deleteCurrencyRate(toDelete);
+	}
+
 }

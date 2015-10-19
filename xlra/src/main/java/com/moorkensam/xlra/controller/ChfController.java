@@ -13,6 +13,8 @@ import org.primefaces.event.RowEditEvent;
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.CurrencyRate;
+import com.moorkensam.xlra.model.configuration.Interval;
+import com.moorkensam.xlra.model.configuration.XLRACurrency;
 import com.moorkensam.xlra.service.ApplicationConfigurationService;
 import com.moorkensam.xlra.service.CurrencyService;
 
@@ -34,6 +36,10 @@ public class ChfController {
 
 	private Configuration configuration;
 
+	private CurrencyRate newCurrencyRate;
+
+	private boolean showAddCurrencyPanel;
+
 	@PostConstruct
 	public void initPage() {
 		refreshCurrencyRates();
@@ -43,6 +49,38 @@ public class ChfController {
 		chfRates = currencyService.getAllChfRates();
 		configuration = applicationConfigurationService.getConfiguration();
 		setupCurrentRates();
+	}
+
+	public void setupPageForNewCurrencyRate() {
+		newCurrencyRate = new CurrencyRate();
+		newCurrencyRate.setCurrencyType(XLRACurrency.CHF);
+		newCurrencyRate.setInterval(new Interval());
+		showAddCurrencyPanel = true;
+	}
+
+	public void saveNewCurrencyRate() {
+		currencyService.createCurrencyRate(newCurrencyRate);
+		showAddCurrencyPanel = false;
+		MessageUtil.addMessage(
+				"Swiss franc rate created",
+				"Successfully created swiss franc rate for "
+						+ newCurrencyRate.getInterval()
+						+ " with surcharge percentage "
+						+ newCurrencyRate.getSurchargePercentage());
+		refreshCurrencyRates();
+		newCurrencyRate = null;
+	}
+
+	public void deleteChfRate(CurrencyRate rate) {
+		currencyService.deleteCurrencyRate(rate);
+		refreshCurrencyRates();
+		MessageUtil.addMessage("Successfully deleted rate",
+				"Sucessfully deleted Swiss franc rate.");
+	}
+
+	public void cancelAddNewCurrencyRate() {
+		showAddCurrencyPanel = false;
+		newCurrencyRate = null;
 	}
 
 	public void updateCurrentChfRate() {
@@ -106,5 +144,21 @@ public class ChfController {
 
 	public void setCurrencyService(CurrencyService currencyService) {
 		this.currencyService = currencyService;
+	}
+
+	public CurrencyRate getNewCurrencyRate() {
+		return newCurrencyRate;
+	}
+
+	public void setNewCurrencyRate(CurrencyRate newCurrencyRate) {
+		this.newCurrencyRate = newCurrencyRate;
+	}
+
+	public boolean isShowAddCurrencyPanel() {
+		return showAddCurrencyPanel;
+	}
+
+	public void setShowAddCurrencyPanel(boolean showAddCurrencyPanel) {
+		this.showAddCurrencyPanel = showAddCurrencyPanel;
 	}
 }

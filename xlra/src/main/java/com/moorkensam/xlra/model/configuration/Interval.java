@@ -3,12 +3,16 @@ package com.moorkensam.xlra.model.configuration;
 import java.io.Serializable;
 
 import javax.persistence.Embeddable;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @Embeddable
 public class Interval implements Serializable {
 
 	private static final long serialVersionUID = -5504002933410190586L;
 
+	@NotNull
+	@Min(0)
 	private double start, end;
 
 	public Interval() {
