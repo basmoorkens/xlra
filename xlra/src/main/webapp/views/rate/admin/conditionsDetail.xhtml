@@ -9,8 +9,8 @@
 		toggleable="#{controller.hasRateFileSelected}"
 		collapsed="#{controller.collapseConditionsDetailGrid}"
 		header="Terms and conditions">
-		<p:dataTable editable="true" value="#{conditions}" var="condition"
-			editMode="row" emptyMessage="No conditions found."
+		<p:dataTable editable="#{canEdit}" value="#{conditions}"
+			var="condition" editMode="row" emptyMessage="No conditions found."
 			id="conditionTable">
 
 			<p:ajax event="rowEdit"
@@ -37,10 +37,10 @@
 					</f:facet>
 				</p:cellEditor>
 			</p:column>
-			<p:column style="width:32px">
+			<p:column style="width:32px" rendered="#{canEdit}">
 				<p:rowEditor />
 			</p:column>
-			<p:column style="width:32px;">
+			<p:column style="width:32px;" rendered="#{canEdit}">
 				<p:commandButton icon="ui-icon-trash" title="Delete"
 					actionListener="#{manageRatesController.deleteCondition(condition)}"
 					ajax="true" immediate="true" update=":conditionsDetailForm">
