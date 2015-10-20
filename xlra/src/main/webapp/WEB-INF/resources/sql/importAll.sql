@@ -82,3 +82,23 @@ INSERT INTO xlratranslation (id, createdDateTime, deleted, deletedDateTime, last
 (46, '2015-10-18 21:57:36', b'0', NULL, NULL, 0, 'NL', 'Tarief geldig aan Franko voorwaarden.', 'TARIF_FRANCO_HOUSE_KEY', NULL),
 (47, '2015-10-18 21:57:36', b'0', NULL, '2015-10-18 21:59:47', 2, 'FR', 'Tarif valable aux conditions DDP.', 'TARIF_FRANCO_HOUSE_KEY', NULL),
 (48, '2015-10-18 21:57:36', b'0', NULL, '2015-10-18 21:59:46', 1, 'DE', 'Bewerten gültig auf DDP-Klauseln.', 'TARIF_FRANCO_HOUSE_KEY', NULL);
+
+
+INSERT INTO`countrynames (country_id, name, language) VALUES
+(1, 'Belgien', 'DE'),
+(1, 'Belgium', 'EN'),
+(1, 'Belgique', 'FR'),
+(1, 'België', 'NL'),
+(2, 'Niederlande', 'DE'),
+(2, 'The Netherlands', 'EN'),
+(2, 'Les pays-bas', 'FR'),
+(2, 'Nederland', 'NL'),
+(3, 'Schweiz', 'DE'),
+(3, 'Switzerland', 'EN'),
+(3, 'Suisse', 'FR'),
+(3, 'Zwitserland', 'NL'),
+(4, 'England', 'DE'),
+(4, 'England', 'EN'),
+(4, 'Allemagne', 'FR'),
+(4, 'Engeland', 'NL');
+

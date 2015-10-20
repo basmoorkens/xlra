@@ -16,6 +16,7 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
+import com.moorkensam.xlra.controller.util.RateUtil;
 import com.moorkensam.xlra.model.BaseCustomer;
 import com.moorkensam.xlra.model.FullCustomer;
 import com.moorkensam.xlra.model.Language;

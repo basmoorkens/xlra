@@ -120,4 +120,8 @@ public class Country extends BaseEntity {
 		names.put(Language.EN, value);
 	}
 
+	public String getNameForLanguage(Language language) {
+		return names.get(language);
+	}
+
 }

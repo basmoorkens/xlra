@@ -73,7 +73,6 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 	public void testInitOfferteEmail() throws TemplatingException,
 			RateFileException {
 		RateFile rf = new RateFile();
-		rf.setLanguage(Language.NL);
 		mapper.map(priceDTO, resultDTO);
 		EasyMock.expectLastCall();
 		EasyMock.expect(

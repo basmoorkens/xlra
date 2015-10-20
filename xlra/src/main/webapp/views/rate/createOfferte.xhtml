@@ -15,7 +15,7 @@
 		<h:form id="customerForm">
 			<p:panel id="customerPanel" header="Customer" toggleable="true"
 				collapsed="#{createQuotationController.collapseCustomerPanel}">
-				<p:growl showDetail="true" id="messages" sticky="true" />
+				<p:growl showDetail="true" id="messages" sticky="false" />
 				<h:outputText value="Select an existing customer: " />
 				<p:autoComplete size="50" id="customerSelector" dropdown="true"
 					value="#{createQuotationController.quotationQuery.customer}"
@@ -62,6 +62,12 @@
 					<p:selectOneRadio required="true"
 						value="#{createQuotationController.quotationQuery.kindOfRate}">
 						<f:selectItems value="#{createQuotationController.allKinds}" />
+					</p:selectOneRadio>
+
+					<h:outputText value="Language: " />
+					<p:selectOneRadio required="false"
+						value="#{createQuotationController.quotationQuery.language}">
+						<f:selectItems value="#{createQuotationController.allLanguages}" />
 					</p:selectOneRadio>
 
 
@@ -116,11 +122,13 @@
 					<p:inputText size="100" style="width:100%;"
 						value="#{createQuotationController.quotationResult.emailResult.subject}" />
 				</p:panelGrid>
-				<h:outputText value="Generated email:" />
-				<p:editor
+				
+				<h:outputText value="Generated email:" style="margin-top:20px;" />
+				<p:editor height="350"
 					value="#{createQuotationController.quotationResult.emailResult.email}" />
 				<p:panel style="bottom:20px;  padding:0px;border:0px;">
-					<p:commandButton value="Send offerte" actionListener="#{createQuotationController.submitOfferte}"
+					<p:commandButton value="Send offerte"
+						actionListener="#{createQuotationController.submitOfferte}"
 						style="width:150px; margin-left:20px;" ajax="true" />
 				</p:panel>
 			</p:panel>

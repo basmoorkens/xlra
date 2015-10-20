@@ -22,6 +22,7 @@ import com.moorkensam.xlra.dto.PriceResultDTO;
 import com.moorkensam.xlra.mapper.OfferteEmailToEmailResultMapper;
 import com.moorkensam.xlra.mapper.PriceCalculationDTOToResultMapper;
 import com.moorkensam.xlra.model.FullCustomer;
+import com.moorkensam.xlra.model.Language;
 import com.moorkensam.xlra.model.QuotationQuery;
 import com.moorkensam.xlra.model.configuration.MailTemplate;
 import com.moorkensam.xlra.model.error.RateFileException;
@@ -110,6 +111,7 @@ public class QuotationServiceImpl implements QuotationService {
 		RateFileSearchFilter filter = createRateFileSearchFilterForQuery(query);
 		RateLine result;
 		PriceCalculationDTO priceDTO = new PriceCalculationDTO();
+		fillInMailLanguage(query);
 
 		try {
 			RateFile rf = rateFileDAO.getFullRateFileForFilter(filter);
@@ -134,6 +136,18 @@ public class QuotationServiceImpl implements QuotationService {
 		return quotationResult;
 	}
 
+	/**
+	 * This method sets the language used to generate the email. If the frontend
+	 * was filled in (quotationquery) it takes that language, else it takes the
+	 * language filled in when creating the customer.
+	 * 
+	 * @param query
+	 */
+	protected void fillInMailLanguage(QuotationQuery query) {
+		query.setResultLanguage(query.getLanguage() != null ? query
+				.getLanguage() : query.getCustomer().getLanguage());
+	}
+
 	private void fillInQuotationResult(QuotationQuery query,
 			OfferteMailDTO dto, QuotationResult quotationResult) {
 		quotationResult.setEmailResult(mailMapper.map(dto));
@@ -156,10 +170,9 @@ public class QuotationServiceImpl implements QuotationService {
 			throws TemplatingException, RateFileException {
 		PriceResultDTO resultDTO = new PriceResultDTO();
 		getMapper().map(priceDTO, resultDTO);
-
 		try {
 			MailTemplate template = getEmailTemplateDAO()
-					.getMailTemplateForLanguage(rf.getLanguage());
+					.getMailTemplateForLanguage(query.getResultLanguage());
 			Map<String, Object> templateParameters = templatEngine
 					.createTemplateParams(query, resultDTO);
 			String emailMessage = getTemplatEngine().parseEmailTemplate(
@@ -169,10 +182,10 @@ public class QuotationServiceImpl implements QuotationService {
 			dto.setContent(emailMessage);
 		} catch (NoResultException nre) {
 			logger.error("Could not find email template for "
-					+ rf.getLanguage());
+					+ query.getResultLanguage());
 			throw new RateFileException(
 					"Could not find email template for language "
-							+ rf.getLanguage());
+							+ query.getResultLanguage());
 		}
 
 	}

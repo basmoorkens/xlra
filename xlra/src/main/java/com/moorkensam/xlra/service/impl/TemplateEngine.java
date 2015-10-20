@@ -112,8 +112,23 @@ public class TemplateEngine {
 		templateModel.put("measurement", query.getMeasurement());
 		templateModel.put("detailCalculation",
 				priceDTO.getDetailedCalculation());
-		templateModel.put("destination", query.getCountry().getShortName()
-				+ query.getPostalCode());
+		getCountryNameForEmail(query);
+		templateModel.put("destination", query.getPostalCode() + " "
+				+ getCountryNameForEmail(query));
 		return templateModel;
+	}
+
+	private String getCountryNameForEmail(QuotationQuery query) {
+		String countryName = query.getCountry().getNameForLanguage(
+				query.getResultLanguage());
+		if (countryName == null) {
+			logger.warn("Country name for Country "
+					+ query.getCountry().getShortName() + " and language "
+					+ query.getResultLanguage()
+					+ " not found, falling back on shortname.");
+			countryName = query.getCountry().getShortName();
+		}
+
+		return countryName;
 	}
 }
