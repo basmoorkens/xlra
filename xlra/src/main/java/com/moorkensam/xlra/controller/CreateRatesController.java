@@ -73,11 +73,6 @@ public class CreateRatesController {
 					.getCopyOfRateFileForFilter(filter);
 			copiedFile.setCustomer(rateFile.getCustomer());
 			copiedFile.setName(rateFile.getName());
-			if (rateFile.getLanguage() != null) {
-				copiedFile.setLanguage(rateFile.getLanguage());
-			} else {
-				copiedFile.setLanguage(rateFile.getCustomer().getLanguage());
-			}
 			rateFile = copiedFile;
 		}
 		return event.getNewStep();

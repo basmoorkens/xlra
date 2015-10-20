@@ -30,5 +30,10 @@ public class DieselRateDAOImpl extends BaseDAO implements DieselRateDAO {
 		return (List<DieselRate>) query.getResultList();
 	}
 
+	@Override
+	public void deleteDieselRate(DieselRate rate) {
+		rate = getEntityManager().merge(rate);
+		getEntityManager().remove(rate);
+	}
 
 }

@@ -5,7 +5,7 @@
 
 	<groupId>com.moorkensam</groupId>
 	<artifactId>xlra</artifactId>
-	<version>0.0.1</version>
+	<version>dev-SNAPSHOT</version>
 	<packaging>war</packaging>
 
 	<name>xlra</name>

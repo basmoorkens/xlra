@@ -102,6 +102,9 @@ public class CalculationServiceImpl implements CalculationService {
 			priceDTO.getAppliedOperations().add(
 					TranslationKey.ADR_SURCHARGE_KEY);
 		}
+
+		priceDTO.setFinalPrice(CalcUtil.roundBigDecimal(priceDTO
+				.getFinalPrice()));
 	}
 
 	protected void calculateExportFormality(PriceCalculationDTO priceDTO,
@@ -149,14 +152,20 @@ public class CalculationServiceImpl implements CalculationService {
 	 * @param priceDTO
 	 */
 	protected void applyAfterConditionLogic(PriceCalculationDTO priceDTO) {
-		if (priceDTO.getAdrSurchargeMinimum().doubleValue() > priceDTO
-				.getCalculatedAdrSurcharge().doubleValue()) {
-			priceDTO.setResultingPriceSurcharge(priceDTO
-					.getAdrSurchargeMinimum());
+		if (priceDTO.getAdrSurchargeMinimum() == null
+				&& priceDTO.getCalculatedAdrSurcharge() == null) {
 		} else {
-			priceDTO.setResultingPriceSurcharge(priceDTO
-					.getCalculatedAdrSurcharge());
+			if (priceDTO.getAdrSurchargeMinimum().doubleValue() > priceDTO
+					.getCalculatedAdrSurcharge().doubleValue()) {
+				priceDTO.setResultingPriceSurcharge(priceDTO
+						.getAdrSurchargeMinimum());
+			} else {
+				priceDTO.setResultingPriceSurcharge(priceDTO
+						.getCalculatedAdrSurcharge());
+			}
+
 		}
+
 	}
 
 	/**

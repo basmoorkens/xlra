@@ -73,6 +73,20 @@ public class DieselRateController {
 		dieselService.createDieselRate(newDieselRate);
 		refreshDieselRates();
 		showAddDieselRate = false;
+		MessageUtil.addMessage(
+				"New diesel rate created",
+				"successfully created diesel rate for "
+						+ newDieselRate.getInterval()
+						+ " with surcharge percentage "
+						+ newDieselRate.getSurchargePercentage());
+		newDieselRate = null;
+	}
+
+	public void deleteDieselRate(DieselRate rate) {
+		dieselService.deleteDieselRate(rate);
+		refreshDieselRates();
+		MessageUtil.addMessage("Successfully deleted rate",
+				"Sucessfully deleted diesel rate.");
 	}
 
 	public void updateCurrentDieselRate() {

@@ -19,4 +19,5 @@ public interface DieselService {
 	DieselRate getDieselRateForCurrentPrice(BigDecimal price)
 			throws RateFileException;
 
+	void deleteDieselRate(DieselRate rate);
 }

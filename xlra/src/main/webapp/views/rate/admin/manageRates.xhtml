@@ -28,8 +28,9 @@
 						listener="#{manageRatesController.fetchDetailsOfRatefile}" />
 				</p:autoComplete>
 
-				<p:commandButton value="Add new rates" title="Add new rates"
-					icon="ui-icon-check" immediate="true"
+				<p:commandButton rendered="#{manageRatesController.canEdit}"
+					value="Add new rates" title="Add new rates" icon="ui-icon-check"
+					immediate="true"
 					action="/views/rate/admin/createRateFile.xhtml?faces-redirect=true"
 					ajax="false" />
 			</p:panelGrid>
@@ -43,6 +44,7 @@
 					value="#{manageRatesController.selectedRateFile.zones}" />
 				<ui:param name="controller" value="#{manageRatesController}" />
 				<ui:param name="controllerName" value="manageRatesController" />
+				<ui:param name="canEdit" value="#{manageRatesController.canEdit}"></ui:param>
 			</ui:include>
 		</h:form>
 		<h:form id="rateLinesDetailForm">
@@ -51,6 +53,7 @@
 					value="#{manageRatesController.selectedRateFile}" />
 				<ui:param name="controller" value="#{manageRatesController}" />
 				<ui:param name="controllerName" value="manageRatesController" />
+				<ui:param name="canEdit" value="#{manageRatesController.canEdit}"></ui:param>
 			</ui:include>
 		</h:form>
 		<h:form id="conditionsDetailForm">
@@ -60,6 +63,7 @@
 					value="#{manageRatesController.selectedRateFile.conditions}" />
 				<ui:param name="controller" value="#{manageRatesController}" />
 				<ui:param name="controllerName" value="manageRatesController" />
+				<ui:param name="canEdit" value="#{manageRatesController.canEdit}"></ui:param>
 			</ui:include>
 		</h:form>
 	</ui:define>

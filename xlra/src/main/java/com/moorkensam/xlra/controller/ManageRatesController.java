@@ -279,4 +279,9 @@ public class ManageRatesController {
 	public void setCollapseZonesDetailGrid(boolean collapseZonesDetailGrid) {
 		this.collapseZonesDetailGrid = collapseZonesDetailGrid;
 	}
+
+	// TODO fill this in based on user permissions
+	public boolean isCanEdit() {
+		return true;
+	}
 }

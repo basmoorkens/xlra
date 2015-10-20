@@ -15,6 +15,8 @@ public class EmailResult {
 
 	private String toAddress;
 
+	private boolean send;
+
 	public String getToAddress() {
 		return toAddress;
 	}
@@ -37,6 +39,14 @@ public class EmailResult {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public boolean isSend() {
+		return send;
+	}
+
+	public void setSend(boolean send) {
+		this.send = send;
 	}
 
 }
