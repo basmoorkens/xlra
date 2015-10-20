@@ -32,7 +32,25 @@ INSERT INTO mailtemplate (id, createdDateTime, deleted, deletedDateTime, lastUpd
 (4, NULL, b'0', NULL, '2015-10-20 21:10:46', 1, 'DE', '', 'ok', 1);
 
 
---translations
+INSERT INTO`countrynames (country_id, name, language) VALUES
+(1, 'Belgien', 'DE'),
+(1, 'Belgium', 'EN'),
+(1, 'Belgique', 'FR'),
+(1, 'België', 'NL'),
+(2, 'Niederlande', 'DE'),
+(2, 'The Netherlands', 'EN'),
+(2, 'Les pays-bas', 'FR'),
+(2, 'Nederland', 'NL'),
+(3, 'Schweiz', 'DE'),
+(3, 'Switzerland', 'EN'),
+(3, 'Suisse', 'FR'),
+(3, 'Zwitserland', 'NL'),
+(4, 'England', 'DE'),
+(4, 'England', 'EN'),
+(4, 'Allemagne', 'FR'),
+(4, 'Engeland', 'NL');
+
+
 INSERT INTO xlratranslation (id, createdDateTime, deleted, deletedDateTime, lastUpdatedDateTime, version, language, text, translationKey, configurtionId) VALUES
 (1, '2015-10-18 21:25:23', b'0', NULL, NULL, 0, 'EN', 'Import formalities', 'IMPORT_FORM_KEY', NULL),
 (2, '2015-10-18 21:25:23', b'0', NULL, NULL, 0, 'NL', 'Import formaliteiten', 'IMPORT_FORM_KEY', NULL),
@@ -81,24 +99,16 @@ INSERT INTO xlratranslation (id, createdDateTime, deleted, deletedDateTime, last
 (45, '2015-10-18 21:57:36', b'0', NULL, NULL, 0, 'EN', 'Rate valid on DDP terms.', 'TARIF_FRANCO_HOUSE_KEY', NULL),
 (46, '2015-10-18 21:57:36', b'0', NULL, NULL, 0, 'NL', 'Tarief geldig aan Franko voorwaarden.', 'TARIF_FRANCO_HOUSE_KEY', NULL),
 (47, '2015-10-18 21:57:36', b'0', NULL, '2015-10-18 21:59:47', 2, 'FR', 'Tarif valable aux conditions DDP.', 'TARIF_FRANCO_HOUSE_KEY', NULL),
-(48, '2015-10-18 21:57:36', b'0', NULL, '2015-10-18 21:59:46', 1, 'DE', 'Bewerten gültig auf DDP-Klauseln.', 'TARIF_FRANCO_HOUSE_KEY', NULL);
-
-
-INSERT INTO`countrynames (country_id, name, language) VALUES
-(1, 'Belgien', 'DE'),
-(1, 'Belgium', 'EN'),
-(1, 'Belgique', 'FR'),
-(1, 'België', 'NL'),
-(2, 'Niederlande', 'DE'),
-(2, 'The Netherlands', 'EN'),
-(2, 'Les pays-bas', 'FR'),
-(2, 'Nederland', 'NL'),
-(3, 'Schweiz', 'DE'),
-(3, 'Switzerland', 'EN'),
-(3, 'Suisse', 'FR'),
-(3, 'Zwitserland', 'NL'),
-(4, 'England', 'DE'),
-(4, 'England', 'EN'),
-(4, 'Allemagne', 'FR'),
-(4, 'Engeland', 'NL');
-
+(48, '2015-10-18 21:57:36', b'0', NULL, '2015-10-18 21:59:46', 1, 'DE', 'Bewerten gültig auf DDP-Klauseln.', 'TARIF_FRANCO_HOUSE_KEY', NULL),
+(49, '2015-10-20 23:11:53', b'0', NULL, NULL, 0, 'EN', 'Loading Meters', 'LDM_KEY', NULL),
+(50, '2015-10-20 23:11:53', b'0', NULL, NULL, 0, 'NL', 'Laadmeter', 'LDM_KEY', NULL),
+(51, '2015-10-20 23:11:53', b'0', NULL, NULL, 0, 'FR', 'mètres de chargement', 'LDM_KEY', NULL),
+(52, '2015-10-20 23:11:53', b'0', NULL, NULL, 0, 'DE', 'Lademeter', 'LDM_KEY', NULL),
+(53, '2015-10-20 23:12:38', b'0', NULL, NULL, 0, 'EN', 'kilos', 'KILO_KEY', NULL),
+(54, '2015-10-20 23:12:38', b'0', NULL, NULL, 0, 'NL', 'kilo''s', 'KILO_KEY', NULL),
+(55, '2015-10-20 23:12:38', b'0', NULL, NULL, 0, 'FR', 'kilos', 'KILO_KEY', NULL),
+(56, '2015-10-20 23:12:38', b'0', NULL, NULL, 0, 'DE', 'Kilo', 'KILO_KEY', NULL),
+(57, '2015-10-20 23:13:10', b'0', NULL, NULL, 0, 'EN', 'paletten', 'PALET_KEY', NULL),
+(58, '2015-10-20 23:13:10', b'0', NULL, NULL, 0, 'NL', 'palettes', 'PALET_KEY', NULL),
+(59, '2015-10-20 23:13:10', b'0', NULL, NULL, 0, 'FR', 'palettes', 'PALET_KEY', NULL),
+(60, '2015-10-20 23:13:10', b'0', NULL, NULL, 0, 'DE', 'palettes', 'PALET_KEY', NULL);

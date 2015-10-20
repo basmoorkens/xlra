@@ -18,6 +18,7 @@ import com.moorkensam.xlra.dto.PriceCalculationDTO;
 import com.moorkensam.xlra.dto.PriceResultDTO;
 import com.moorkensam.xlra.mapper.PriceCalculationDTOToResultMapper;
 import com.moorkensam.xlra.model.BaseCustomer;
+import com.moorkensam.xlra.model.EmailResult;
 import com.moorkensam.xlra.model.Language;
 import com.moorkensam.xlra.model.QuotationQuery;
 import com.moorkensam.xlra.model.configuration.MailTemplate;
@@ -27,6 +28,7 @@ import com.moorkensam.xlra.model.error.TemplatingException;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Kind;
 import com.moorkensam.xlra.model.rate.Measurement;
+import com.moorkensam.xlra.model.rate.QuotationResult;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
 
@@ -70,9 +72,21 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 	}
 
 	@Test
+	public void tesTCopyRTransientLangToPersistent() {
+		QuotationResult result = new QuotationResult();
+		result.setEmailResult(new EmailResult());
+		result.setQuery(query);
+		result.getQuery().setResultLanguage(Language.FR);
+		quotationService.copyTransientResultLanguageToLanguageIfNeeded(result);
+
+		Assert.assertEquals(Language.FR, result.getQuery().getLanguage());
+	}
+
+	@Test
 	public void testInitOfferteEmail() throws TemplatingException,
 			RateFileException {
 		RateFile rf = new RateFile();
+		query.setResultLanguage(Language.NL);
 		mapper.map(priceDTO, resultDTO);
 		EasyMock.expectLastCall();
 		EasyMock.expect(

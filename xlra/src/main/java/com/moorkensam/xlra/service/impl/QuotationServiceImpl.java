@@ -60,13 +60,16 @@ public class QuotationServiceImpl implements QuotationService {
 	@Inject
 	private CalculationService calculationService;
 
+	@Inject
+	private TemplateEngine templateEngine;
+
 	private PriceCalculationDTOToResultMapper mapper;
 
 	private OfferteEmailToEmailResultMapper mailMapper;
 
 	@PostConstruct
 	public void init() {
-		setTemplatEngine(TemplateEngine.getInstance());
+		setTemplatEngine(templateEngine);
 		setMapper(new PriceCalculationDTOToResultMapper());
 		mailMapper = new OfferteEmailToEmailResultMapper();
 	}
@@ -235,16 +238,33 @@ public class QuotationServiceImpl implements QuotationService {
 	}
 
 	@Override
-	public void submitQuotationResult(QuotationResult result) {
+	public void submitQuotationResult(QuotationResult result)
+			throws RateFileException {
+		copyTransientResultLanguageToLanguageIfNeeded(result);
 		QuotationQuery managedQuery = quotationDAO.createQuotationQuery(result
 				.getQuery());
 		result.setQuery(managedQuery);
 		quotationResultDAO.createQuotationResult(result);
-		// send email
-		// emailService.sendOfferteMail(dto);
-		// catch (MessagingException e) {
-		// logger.error("Failed to send offerte email");
-		// throw new RateFileException("Failed to send email");
-		// }
+		try {
+			emailService.sendOfferteMail(result);
+		} catch (MessagingException e) {
+			logger.error("Failed to send offerte email");
+			throw new RateFileException("Failed to send email");
+		}
+	}
+
+	/**
+	 * If no language was selected for the quotation query then this method
+	 * copies the calculated language to that field. Its just done to improve
+	 * the data readability in the db so each quotationrecord has a language.
+	 * 
+	 * @param result
+	 */
+	protected void copyTransientResultLanguageToLanguageIfNeeded(
+			QuotationResult result) {
+		if (result.getQuery().getLanguage() == null) {
+			result.getQuery()
+					.setLanguage(result.getQuery().getResultLanguage());
+		}
 	}
 }

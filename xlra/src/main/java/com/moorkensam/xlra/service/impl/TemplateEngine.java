@@ -5,6 +5,9 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+import javax.ejb.Stateless;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,6 +30,7 @@ import freemarker.template.TemplateNotFoundException;
  * @author bas
  *
  */
+@Stateless
 public class TemplateEngine {
 
 	private final static Logger logger = LogManager.getLogger();
@@ -37,22 +41,8 @@ public class TemplateEngine {
 
 	private static TemplateEngine engine;
 
-	/**
-	 * Factory method to get the instance.
-	 * 
-	 * @return
-	 */
-	public static TemplateEngine getInstance() {
-		if (engine == null) {
-			engine = new TemplateEngine();
-		}
-		return engine;
-	}
-
-	/*
-	 * Private constructor.
-	 */
-	private TemplateEngine() {
+	@PostConstruct
+	public void inializeEngine() {
 		stringTemplateLoader = new StringTemplateLoader();
 		configuration = new Configuration();
 	}
