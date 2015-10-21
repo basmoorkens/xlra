@@ -10,6 +10,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Kind;
@@ -47,10 +48,16 @@ public class QuotationQuery extends BaseEntity {
 	private boolean exportFormality;
 
 	@Enumerated(EnumType.STRING)
+	private Language language;
+
+	@Enumerated(EnumType.STRING)
 	private TransportType transportType;
 
 	private String postalCode;
 
+	@Transient
+	private Language resultLanguage; 
+	
 	public QuotationQuery() {
 	}
 
@@ -139,5 +146,21 @@ public class QuotationQuery extends BaseEntity {
 
 	public void setTransportType(TransportType transportType) {
 		this.transportType = transportType;
+	}
+
+	public Language getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(Language language) {
+		this.language = language;
+	}
+
+	public Language getResultLanguage() {
+		return resultLanguage;
+	}
+
+	public void setResultLanguage(Language resultLanguage) {
+		this.resultLanguage = resultLanguage;
 	}
 }

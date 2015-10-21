@@ -8,12 +8,8 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJBException;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
-import org.hibernate.validator.util.SetAccessibility;
-import org.primefaces.context.RequestContext;
-import org.primefaces.event.FlowEvent;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.BaseCustomer;
@@ -56,7 +52,7 @@ public class CreateQuotationController {
 	private List<Country> allCountries;
 
 	private boolean collapseCustomerPanel, collapseFiltersPanel,
-			collapseSummaryPanel;
+			collapseSummaryPanel, collapseResultPanel;
 
 	@PostConstruct
 	public void init() {
@@ -66,10 +62,12 @@ public class CreateQuotationController {
 		initializeNewCustomer();
 		collapseFiltersPanel = true;
 		collapseSummaryPanel = true;
+		setCollapseResultPanel(true);
 	}
 
 	private void initializeNewQuotationQuery() {
 		QuotationQuery query = new QuotationQuery();
+		query.setTransportType(TransportType.EXPORT);
 		for (Country c : allCountries) {
 			if (c.getShortName().toLowerCase().equals("be")) {
 				query.setCountry(c);
@@ -113,6 +111,7 @@ public class CreateQuotationController {
 		collapseCustomerPanel = true;
 		collapseFiltersPanel = false;
 		collapseSummaryPanel = true;
+		setCollapseResultPanel(true);
 	}
 
 	public void backToCustomer() {
@@ -134,6 +133,7 @@ public class CreateQuotationController {
 			collapseCustomerPanel = true;
 			collapseFiltersPanel = true;
 			collapseSummaryPanel = false;
+			setCollapseResultPanel(true);
 		} catch (RateFileException re2) {
 			showRateFileError(re2);
 		} catch (EJBException e) {
@@ -150,7 +150,26 @@ public class CreateQuotationController {
 	}
 
 	public void submitOfferte() {
-		quotationService.submitQuotationResult(quotationResult);
+		try {
+			quotationService.submitQuotationResult(quotationResult);
+			MessageUtil.addMessage("Offerte successfully send",
+					"The offerte was successfully send to "
+							+ quotationResult.getEmailResult().getToAddress());
+			collapseSummaryPanel = true;
+			setCollapseResultPanel(false);
+		} catch (RateFileException re2) {
+			showRateFileError(re2);
+		} catch (EJBException e) {
+			if (e.getCausedByException() instanceof RateFileException) {
+				RateFileException re = (RateFileException) e
+						.getCausedByException();
+				showRateFileError(re);
+			} else {
+				MessageUtil
+						.addErrorMessage("Unknown exception",
+								"An unexpected exception occurred, please contact the system admin.");
+			}
+		}
 	}
 
 	private void showRateFileError(RateFileException re) {
@@ -259,6 +278,14 @@ public class CreateQuotationController {
 
 	public List<TransportType> getAllTransportTypes() {
 		return Arrays.asList(TransportType.values());
+	}
+
+	public boolean isCollapseResultPanel() {
+		return collapseResultPanel;
+	}
+
+	public void setCollapseResultPanel(boolean collapseResultPanel) {
+		this.collapseResultPanel = collapseResultPanel;
 	}
 
 }

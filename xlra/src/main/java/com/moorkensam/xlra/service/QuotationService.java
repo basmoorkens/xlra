@@ -37,6 +37,7 @@ public interface QuotationService {
 	 * 
 	 * @param result
 	 */
-	public void submitQuotationResult(QuotationResult result);
+	public void submitQuotationResult(QuotationResult result)
+			throws RateFileException;
 
 }

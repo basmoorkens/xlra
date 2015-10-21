@@ -23,7 +23,8 @@ public enum TranslationKey {
 			TARIF_VALID_TO(false), TARIF_VALID_TO_KEY(true), 
 			TRANSPORT_INSURANCE(false), TRANSPORT_INSURANCE_KEY(true),
 			DIESEL_SURCHARGE(false), DIESEL_SURCHARGE_KEY(true),
-			CHF_SURCHARGE(false), CHF_SURCHARGE_KEY(true);
+			CHF_SURCHARGE(false), CHF_SURCHARGE_KEY(true), 
+			LDM_KEY(true), KILO_KEY(true), PALET_KEY(true);
 
 	private boolean key;
 

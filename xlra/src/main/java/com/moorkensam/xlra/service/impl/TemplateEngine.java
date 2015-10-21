@@ -5,6 +5,9 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+import javax.ejb.Stateless;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,6 +30,7 @@ import freemarker.template.TemplateNotFoundException;
  * @author bas
  *
  */
+@Stateless
 public class TemplateEngine {
 
 	private final static Logger logger = LogManager.getLogger();
@@ -37,22 +41,8 @@ public class TemplateEngine {
 
 	private static TemplateEngine engine;
 
-	/**
-	 * Factory method to get the instance.
-	 * 
-	 * @return
-	 */
-	public static TemplateEngine getInstance() {
-		if (engine == null) {
-			engine = new TemplateEngine();
-		}
-		return engine;
-	}
-
-	/*
-	 * Private constructor.
-	 */
-	private TemplateEngine() {
+	@PostConstruct
+	public void inializeEngine() {
 		stringTemplateLoader = new StringTemplateLoader();
 		configuration = new Configuration();
 	}
@@ -112,8 +102,23 @@ public class TemplateEngine {
 		templateModel.put("measurement", query.getMeasurement());
 		templateModel.put("detailCalculation",
 				priceDTO.getDetailedCalculation());
-		templateModel.put("destination", query.getCountry().getShortName()
-				+ query.getPostalCode());
+		getCountryNameForEmail(query);
+		templateModel.put("destination", query.getPostalCode() + " "
+				+ getCountryNameForEmail(query));
 		return templateModel;
+	}
+
+	private String getCountryNameForEmail(QuotationQuery query) {
+		String countryName = query.getCountry().getNameForLanguage(
+				query.getResultLanguage());
+		if (countryName == null) {
+			logger.warn("Country name for Country "
+					+ query.getCountry().getShortName() + " and language "
+					+ query.getResultLanguage()
+					+ " not found, falling back on shortname.");
+			countryName = query.getCountry().getShortName();
+		}
+
+		return countryName;
 	}
 }

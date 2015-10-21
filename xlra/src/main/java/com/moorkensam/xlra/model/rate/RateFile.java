@@ -63,9 +63,6 @@ public class RateFile extends BaseEntity {
 	private List<RateLine> rateLines = new ArrayList<RateLine>();
 
 	@Enumerated(EnumType.STRING)
-	private Language language;
-
-	@Enumerated(EnumType.STRING)
 	private TransportType transportType;
 
 	@Transient
@@ -194,14 +191,6 @@ public class RateFile extends BaseEntity {
 
 		rf.setRelationalRateLines(relationRatelines);
 		return rf;
-	}
-
-	public Language getLanguage() {
-		return language;
-	}
-
-	public void setLanguage(Language language) {
-		this.language = language;
 	}
 
 	public List<Zone> getZones() {

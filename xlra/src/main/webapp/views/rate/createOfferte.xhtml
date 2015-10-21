@@ -15,7 +15,7 @@
 		<h:form id="customerForm">
 			<p:panel id="customerPanel" header="Customer" toggleable="false"
 				collapsed="#{createQuotationController.collapseCustomerPanel}">
-				<p:growl showDetail="true" id="messages" sticky="true" />
+				<p:growl showDetail="true" id="messages" sticky="false" />
 				<h:outputText value="Select an existing customer: " />
 				<p:autoComplete size="50" id="customerSelector" dropdown="true"
 					value="#{createQuotationController.quotationQuery.customer}"
@@ -64,6 +64,12 @@
 						<f:selectItems value="#{createQuotationController.allKinds}" />
 					</p:selectOneRadio>
 
+					<h:outputText value="Language: " />
+					<p:selectOneRadio required="false"
+						value="#{createQuotationController.quotationQuery.language}">
+						<f:selectItems value="#{createQuotationController.allLanguages}" />
+					</p:selectOneRadio>
+
 
 					<h:outputText value="Quantity:" />
 					<p:inputText required="true" style="width:100%;"
@@ -85,7 +91,7 @@
 					<p:selectBooleanCheckbox
 						value="#{createQuotationController.quotationQuery.exportFormality}" />
 
-					<h:outputText value="" />
+					<h:outputText value="Transport type:" />
 					<p:selectOneRadio
 						value="#{createQuotationController.quotationQuery.transportType}">
 						<f:selectItems
@@ -119,22 +125,39 @@
 					<p:inputText size="100" style="width:100%;"
 						value="#{createQuotationController.quotationResult.emailResult.subject}" />
 				</p:panelGrid>
-				<h:outputText value="Generated email:" />
-				<p:editor
+
+				<h:outputText value="Generated email:" style="margin-top:20px;" />
+				<p:editor height="350"
 					value="#{createQuotationController.quotationResult.emailResult.email}" />
 				<p:panel style="bottom:20px;  padding:0px;border:0px;">
 					<p:commandButton value="Back" style="width:150px;margin-left:20px;"
 						update=":summaryForm :filtersForm" immediate="true"
 						actionListener="#{createQuotationController.backToRateFilters}" />
 					<p:commandButton value="Send offerte"
+						update=":resultForm :summaryForm"
 						actionListener="#{createQuotationController.submitOfferte}"
 						style="width:150px; margin-left:20px;" ajax="true" />
 				</p:panel>
 			</p:panel>
 		</h:form>
 
-		<p:dialog header="Add condition" widgetVar="addCustomerDialog"
+		<h:form id="resultForm">
+			<p:panel id="resultPanel" header="Result"
+				collapsed="#{createQuotationController.collapseResultPanel}"
+				toggleable="false">
+				<p>
+					The offerte was successfully created and sent to
+					<h:outputText
+						value="#{createQuotationController.quotationResult.emailResult.toAddress}" />
+					. If you wish to review the offerte please look it up in the
+					"manage offerte" page.
+				</p>
+			</p:panel>
+		</h:form>
+
+		<p:dialog header="Add customer" widgetVar="addCustomerDialog"
 			modal="true" height="480px" width="900px" dynamic="true">
+			<p:growl showDetail="true" id="messages" sticky="false" />
 			<h:form id="addQuickCustomerForm">
 				<p:panel header="Add customer" style="margin-top:50px;">
 					<p:panelGrid columns="2" style="width:100%;">

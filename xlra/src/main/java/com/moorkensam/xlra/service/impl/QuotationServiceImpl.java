@@ -22,6 +22,7 @@ import com.moorkensam.xlra.dto.PriceResultDTO;
 import com.moorkensam.xlra.mapper.OfferteEmailToEmailResultMapper;
 import com.moorkensam.xlra.mapper.PriceCalculationDTOToResultMapper;
 import com.moorkensam.xlra.model.FullCustomer;
+import com.moorkensam.xlra.model.Language;
 import com.moorkensam.xlra.model.QuotationQuery;
 import com.moorkensam.xlra.model.configuration.MailTemplate;
 import com.moorkensam.xlra.model.error.RateFileException;
@@ -59,13 +60,16 @@ public class QuotationServiceImpl implements QuotationService {
 	@Inject
 	private CalculationService calculationService;
 
+	@Inject
+	private TemplateEngine templateEngine;
+
 	private PriceCalculationDTOToResultMapper mapper;
 
 	private OfferteEmailToEmailResultMapper mailMapper;
 
 	@PostConstruct
 	public void init() {
-		setTemplatEngine(TemplateEngine.getInstance());
+		setTemplatEngine(templateEngine);
 		setMapper(new PriceCalculationDTOToResultMapper());
 		mailMapper = new OfferteEmailToEmailResultMapper();
 	}
@@ -110,6 +114,7 @@ public class QuotationServiceImpl implements QuotationService {
 		RateFileSearchFilter filter = createRateFileSearchFilterForQuery(query);
 		RateLine result;
 		PriceCalculationDTO priceDTO = new PriceCalculationDTO();
+		fillInMailLanguage(query);
 
 		try {
 			RateFile rf = rateFileDAO.getFullRateFileForFilter(filter);
@@ -134,6 +139,18 @@ public class QuotationServiceImpl implements QuotationService {
 		return quotationResult;
 	}
 
+	/**
+	 * This method sets the language used to generate the email. If the frontend
+	 * was filled in (quotationquery) it takes that language, else it takes the
+	 * language filled in when creating the customer.
+	 * 
+	 * @param query
+	 */
+	protected void fillInMailLanguage(QuotationQuery query) {
+		query.setResultLanguage(query.getLanguage() != null ? query
+				.getLanguage() : query.getCustomer().getLanguage());
+	}
+
 	private void fillInQuotationResult(QuotationQuery query,
 			OfferteMailDTO dto, QuotationResult quotationResult) {
 		quotationResult.setEmailResult(mailMapper.map(dto));
@@ -156,10 +173,9 @@ public class QuotationServiceImpl implements QuotationService {
 			throws TemplatingException, RateFileException {
 		PriceResultDTO resultDTO = new PriceResultDTO();
 		getMapper().map(priceDTO, resultDTO);
-
 		try {
 			MailTemplate template = getEmailTemplateDAO()
-					.getMailTemplateForLanguage(rf.getLanguage());
+					.getMailTemplateForLanguage(query.getResultLanguage());
 			Map<String, Object> templateParameters = templatEngine
 					.createTemplateParams(query, resultDTO);
 			String emailMessage = getTemplatEngine().parseEmailTemplate(
@@ -169,10 +185,10 @@ public class QuotationServiceImpl implements QuotationService {
 			dto.setContent(emailMessage);
 		} catch (NoResultException nre) {
 			logger.error("Could not find email template for "
-					+ rf.getLanguage());
+					+ query.getResultLanguage());
 			throw new RateFileException(
 					"Could not find email template for language "
-							+ rf.getLanguage());
+							+ query.getResultLanguage());
 		}
 
 	}
@@ -222,16 +238,33 @@ public class QuotationServiceImpl implements QuotationService {
 	}
 
 	@Override
-	public void submitQuotationResult(QuotationResult result) {
+	public void submitQuotationResult(QuotationResult result)
+			throws RateFileException {
+		copyTransientResultLanguageToLanguageIfNeeded(result);
 		QuotationQuery managedQuery = quotationDAO.createQuotationQuery(result
 				.getQuery());
 		result.setQuery(managedQuery);
 		quotationResultDAO.createQuotationResult(result);
-		// send email
-		// emailService.sendOfferteMail(dto);
-		// catch (MessagingException e) {
-		// logger.error("Failed to send offerte email");
-		// throw new RateFileException("Failed to send email");
-		// }
+		try {
+			emailService.sendOfferteMail(result);
+		} catch (MessagingException e) {
+			logger.error("Failed to send offerte email");
+			throw new RateFileException("Failed to send email");
+		}
+	}
+
+	/**
+	 * If no language was selected for the quotation query then this method
+	 * copies the calculated language to that field. Its just done to improve
+	 * the data readability in the db so each quotationrecord has a language.
+	 * 
+	 * @param result
+	 */
+	protected void copyTransientResultLanguageToLanguageIfNeeded(
+			QuotationResult result) {
+		if (result.getQuery().getLanguage() == null) {
+			result.getQuery()
+					.setLanguage(result.getQuery().getResultLanguage());
+		}
 	}
 }

@@ -13,6 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.moorkensam.xlra.dto.OfferteMailDTO;
+import com.moorkensam.xlra.model.rate.QuotationResult;
 import com.moorkensam.xlra.service.EmailService;
 import com.moorkensam.xlra.service.util.ConfigurationLoader;
 
@@ -31,10 +32,12 @@ public class EmailServiceImpl implements EmailService {
 	private Session mailSession;
 
 	@Override
-	public void sendOfferteMail(OfferteMailDTO dto) throws MessagingException {
-		logger.info("Sending offerte mail to " + dto.getAddress()
-				+ " with subject " + dto.getSubject() + " and content "
-				+ dto.getContent());
+	public void sendOfferteMail(QuotationResult result)
+			throws MessagingException {
+		logger.info("Sending offerte mail to "
+				+ result.getEmailResult().getToAddress() + " with subject "
+				+ result.getEmailResult().getSubject()
+				+ " for content look up result " + result.getId());
 		try {
 			ConfigurationLoader configLoader = ConfigurationLoader
 					.getInstance();
@@ -42,17 +45,19 @@ public class EmailServiceImpl implements EmailService {
 					.getProperty(ConfigurationLoader.MAIL_SENDER);
 			Message message = new MimeMessage(mailSession);
 			message.setFrom(new InternetAddress(fromAddress));
-			message.setRecipients(Message.RecipientType.TO,
-					InternetAddress.parse(dto.getAddress()));
-			message.setSubject(dto.getSubject());
-			message.setContent(dto.getContent(), "text/html; charset=utf-8");
+			message.setRecipients(Message.RecipientType.TO, InternetAddress
+					.parse(result.getEmailResult().getToAddress()));
+			message.setSubject(result.getEmailResult().getSubject());
+			message.setContent(result.getEmailResult().getEmail(),
+					"text/html; charset=utf-8");
 
 			Transport.send(message);
 			if (logger.isDebugEnabled()) {
 				logger.debug("Email succesfully sent");
 			}
-
+			result.getEmailResult().setSend(true);
 		} catch (MessagingException e) {
+			result.getEmailResult().setSend(false);
 			logger.error("Error sending email: " + e);
 			throw new MessagingException("Error sending offerte email");
 		}
