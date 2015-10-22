@@ -103,6 +103,7 @@ public class TemplateEngine {
 		getCountryNameForEmail(query);
 		templateModel.put("destination", query.getPostalCode() + " "
 				+ getCountryNameForEmail(query));
+		templateModel.put("offerteKey", priceDTO.getOfferteReference());
 		return templateModel;
 	}
 

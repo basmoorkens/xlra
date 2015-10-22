@@ -16,6 +16,8 @@ public class PriceResultDTO {
 
 	private String totalPrice;
 
+	private String offerteReference;
+	
 	public String getTotalPrice() {
 		return totalPrice;
 	}
@@ -91,6 +93,14 @@ public class PriceResultDTO {
 
 	public void setDieselSurcharge(String dieselSurcharge) {
 		this.dieselSurcharge = dieselSurcharge;
+	}
+
+	public String getOfferteReference() {
+		return offerteReference;
+	}
+
+	public void setOfferteReference(String offerteReference) {
+		this.offerteReference = offerteReference;
 	}
 
 }

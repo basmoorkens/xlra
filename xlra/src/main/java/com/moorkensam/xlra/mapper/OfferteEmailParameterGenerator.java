@@ -4,9 +4,17 @@ import com.moorkensam.xlra.dto.PriceCalculationDTO;
 import com.moorkensam.xlra.dto.PriceResultDTO;
 import com.moorkensam.xlra.model.configuration.TranslationKey;
 
-public class PriceCalculationDTOToResultMapper {
+/**
+ * This class generates the parameters for the offerte email based on the
+ * pricecalculationDTO object.
+ * 
+ * @author bas
+ *
+ */
+public class OfferteEmailParameterGenerator {
 
-	public void map(final PriceCalculationDTO priceDTO, PriceResultDTO resultDTO) {
+	public void fillInParameters(final PriceCalculationDTO priceDTO,
+			PriceResultDTO resultDTO, String offerteReference) {
 		resultDTO.setBasePrice("Basis prijs: " + priceDTO.getBasePrice()
 				+ "<br />");
 		if (priceDTO.getAppliedOperations().contains(
@@ -34,6 +42,7 @@ public class PriceCalculationDTOToResultMapper {
 			resultDTO.setAdrCalc("ADR toeslag: "
 					+ priceDTO.getResultingPriceSurcharge() + "<br />");
 		}
+		resultDTO.setOfferteReference(offerteReference);
 		resultDTO.setTotalPrice("<h3>Totale prijs: " + priceDTO.getFinalPrice()
 				+ "</h3><br />");
 	}

@@ -16,7 +16,7 @@ import com.moorkensam.xlra.dao.EmailTemplateDAO;
 import com.moorkensam.xlra.dto.OfferteMailDTO;
 import com.moorkensam.xlra.dto.PriceCalculationDTO;
 import com.moorkensam.xlra.dto.PriceResultDTO;
-import com.moorkensam.xlra.mapper.PriceCalculationDTOToResultMapper;
+import com.moorkensam.xlra.mapper.OfferteEmailParameterGenerator;
 import com.moorkensam.xlra.model.BaseCustomer;
 import com.moorkensam.xlra.model.EmailResult;
 import com.moorkensam.xlra.model.Language;
@@ -37,7 +37,7 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 	private QuotationServiceImpl quotationService;
 
 	@Mock
-	private PriceCalculationDTOToResultMapper mapper;
+	private OfferteEmailParameterGenerator mapper;
 
 	private PriceCalculationDTO priceDTO;
 
@@ -66,7 +66,7 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 		template = new MailTemplate();
 		template.setTemplate("test template + ${detailCalculation}");
 		template.setSubject("SUBJECT");
-		quotationService.setMapper(mapper);
+		quotationService.setOfferteEmailParameterGenerator(mapper);
 		quotationService.setEmailTemplateDAO(emailTemplateDAO);
 		quotationService.setTemplatEngine(engine);
 	}
@@ -87,7 +87,7 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 			RateFileException {
 		RateFile rf = new RateFile();
 		query.setResultLanguage(Language.NL);
-		mapper.map(priceDTO, resultDTO);
+		mapper.fillInParameters(priceDTO, resultDTO, "REF-001");
 		EasyMock.expectLastCall();
 		EasyMock.expect(
 				emailTemplateDAO.getMailTemplateForLanguage(Language.NL))
@@ -101,8 +101,11 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 		EasyMockUnitils.replay();
 
 		OfferteMailDTO dto = new OfferteMailDTO();
+		QuotationResult result = new QuotationResult();
+		result.setQuery(query);
+		result.setOfferteUniqueIdentifier("REF-001");
 
-		quotationService.initializeOfferteEmail(query, dto, rf, priceDTO);
+		quotationService.initializeOfferteEmail(result, dto, rf, priceDTO);
 		Assert.assertNotNull(dto);
 		Assert.assertEquals("SUBJECT", dto.getSubject());
 		Assert.assertEquals("test@test.com", dto.getAddress());

@@ -49,6 +49,7 @@ public class ExcelUploadController {
 	@PostConstruct
 	public void init() {
 		ratefile = new RateFile();
+		ratefile.setTransportType(TransportType.EXPORT);
 		setCountries(countryService.getAllCountries());
 	}
 

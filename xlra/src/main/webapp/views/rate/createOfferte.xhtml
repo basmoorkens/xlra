@@ -116,7 +116,7 @@
 			<p:panel id="summaryPanel" header="Summary"
 				collapsed="#{createQuotationController.collapseSummaryPanel}"
 				toggleable="false">
-				<p:panelGrid columns="2">
+				<p:panelGrid columns="2" style="margin-bottom:20px;">
 					<h:outputText value="Receipient: " />
 					<p:inputText size="100" style="width:100%;"
 						value="#{createQuotationController.quotationResult.emailResult.toAddress}" />
@@ -126,7 +126,7 @@
 						value="#{createQuotationController.quotationResult.emailResult.subject}" />
 				</p:panelGrid>
 
-				<h:outputText value="Generated email:" style="margin-top:20px;" />
+				<h:outputText value="Generated email:" />
 				<p:editor height="350"
 					value="#{createQuotationController.quotationResult.emailResult.email}" />
 				<p:panel style="bottom:20px;  padding:0px;border:0px;">

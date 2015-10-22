@@ -20,7 +20,7 @@ import com.moorkensam.xlra.dto.OfferteMailDTO;
 import com.moorkensam.xlra.dto.PriceCalculationDTO;
 import com.moorkensam.xlra.dto.PriceResultDTO;
 import com.moorkensam.xlra.mapper.OfferteEmailToEmailResultMapper;
-import com.moorkensam.xlra.mapper.PriceCalculationDTOToResultMapper;
+import com.moorkensam.xlra.mapper.OfferteEmailParameterGenerator;
 import com.moorkensam.xlra.model.FullCustomer;
 import com.moorkensam.xlra.model.QuotationQuery;
 import com.moorkensam.xlra.model.configuration.MailTemplate;
@@ -64,14 +64,14 @@ public class QuotationServiceImpl implements QuotationService {
 
 	private IdentityService identityService;
 
-	private PriceCalculationDTOToResultMapper mapper;
+	private OfferteEmailParameterGenerator offerteEmailParameterGenerator;
 
 	private OfferteEmailToEmailResultMapper mailMapper;
 
 	@PostConstruct
 	public void init() {
 		setTemplatEngine(templateEngine);
-		setMapper(new PriceCalculationDTOToResultMapper());
+		setOfferteEmailParameterGenerator(new OfferteEmailParameterGenerator());
 		mailMapper = new OfferteEmailToEmailResultMapper();
 		identityService = IdentityService.getInstance();
 	}
@@ -112,13 +112,10 @@ public class QuotationServiceImpl implements QuotationService {
 	public QuotationResult generateQuotationResultForQuotationQuery(
 			QuotationQuery query) throws RateFileException {
 		OfferteMailDTO dto = new OfferteMailDTO();
-		QuotationResult quotationResult = new QuotationResult();
+		QuotationResult quotationResult = initializeQuotationResult(query);
 		RateFileSearchFilter filter = createRateFileSearchFilterForQuery(query);
 		RateLine result;
 		PriceCalculationDTO priceDTO = new PriceCalculationDTO();
-		fillInMailLanguage(query);
-		quotationResult.setOfferteUniqueIdentifier(identityService
-				.getNextIdentifier());
 		try {
 			RateFile rf = rateFileDAO.getFullRateFileForFilter(filter);
 			result = rf.getRateLineForQuantityAndPostalCode(
@@ -126,7 +123,7 @@ public class QuotationServiceImpl implements QuotationService {
 			priceDTO.setBasePrice(result.getValue());
 			calculationService.calculatePriceAccordingToConditions(priceDTO,
 					rf.getCountry(), rf.getConditions(), query);
-			initializeOfferteEmail(query, dto, rf, priceDTO);
+			initializeOfferteEmail(quotationResult, dto, rf, priceDTO);
 			fillInQuotationResult(query, dto, quotationResult);
 		} catch (NoResultException nre) {
 			throw new RateFileException("Could not find ratefile for "
@@ -139,6 +136,15 @@ public class QuotationServiceImpl implements QuotationService {
 			throw new RateFileException("Failed to parse email template.");
 		}
 		// generate pdf
+		return quotationResult;
+	}
+
+	private QuotationResult initializeQuotationResult(QuotationQuery query) {
+		QuotationResult quotationResult = new QuotationResult();
+		quotationResult.setQuery(query);
+		fillInMailLanguage(query);
+		quotationResult.setOfferteUniqueIdentifier(identityService
+				.getNextIdentifier());
 		return quotationResult;
 	}
 
@@ -157,7 +163,6 @@ public class QuotationServiceImpl implements QuotationService {
 	private void fillInQuotationResult(QuotationQuery query,
 			OfferteMailDTO dto, QuotationResult quotationResult) {
 		quotationResult.setEmailResult(mailMapper.map(dto));
-		quotationResult.setQuery(query);
 	}
 
 	/**
@@ -171,27 +176,29 @@ public class QuotationServiceImpl implements QuotationService {
 	 * @throws TemplatingException
 	 */
 
-	protected void initializeOfferteEmail(QuotationQuery query,
+	protected void initializeOfferteEmail(QuotationResult result,
 			OfferteMailDTO dto, RateFile rf, PriceCalculationDTO priceDTO)
 			throws TemplatingException, RateFileException {
 		PriceResultDTO resultDTO = new PriceResultDTO();
-		getMapper().map(priceDTO, resultDTO);
+		offerteEmailParameterGenerator.fillInParameters(priceDTO, resultDTO,
+				result.getOfferteUniqueIdentifier());
 		try {
 			MailTemplate template = getEmailTemplateDAO()
-					.getMailTemplateForLanguage(query.getResultLanguage());
+					.getMailTemplateForLanguage(
+							result.getQuery().getResultLanguage());
 			Map<String, Object> templateParameters = templatEngine
-					.createTemplateParams(query, resultDTO);
+					.createTemplateParams(result.getQuery(), resultDTO);
 			String emailMessage = getTemplatEngine().parseEmailTemplate(
 					template.getTemplate(), templateParameters);
-			dto.setAddress(query.getCustomer().getEmail());
+			dto.setAddress(result.getQuery().getCustomer().getEmail());
 			dto.setSubject(template.getSubject());
 			dto.setContent(emailMessage);
 		} catch (NoResultException nre) {
 			logger.error("Could not find email template for "
-					+ query.getResultLanguage());
+					+ result.getQuery().getResultLanguage());
 			throw new RateFileException(
 					"Could not find email template for language "
-							+ query.getResultLanguage());
+							+ result.getQuery().getResultLanguage());
 		}
 
 	}
@@ -208,12 +215,12 @@ public class QuotationServiceImpl implements QuotationService {
 		return filter;
 	}
 
-	public PriceCalculationDTOToResultMapper getMapper() {
-		return mapper;
+	public OfferteEmailParameterGenerator getOfferteEmailParameterGenerator() {
+		return offerteEmailParameterGenerator;
 	}
 
-	public void setMapper(PriceCalculationDTOToResultMapper mapper) {
-		this.mapper = mapper;
+	public void setOfferteEmailParameterGenerator(OfferteEmailParameterGenerator mapper) {
+		this.offerteEmailParameterGenerator = mapper;
 	}
 
 	public EmailTemplateDAO getEmailTemplateDAO() {
