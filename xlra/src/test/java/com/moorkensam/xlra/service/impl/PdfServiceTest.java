@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
-import org.unitils.inject.annotation.TestedObject;
 
 import com.itextpdf.text.DocumentException;
 import com.moorkensam.xlra.service.PdfService;

@@ -10,13 +10,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.easymock.EasyMockUnitils;
-import org.unitils.inject.annotation.TestedObject;
 
 import com.moorkensam.xlra.dao.TranslationDAO;
 import com.moorkensam.xlra.model.Language;
 import com.moorkensam.xlra.model.configuration.Translation;
 import com.moorkensam.xlra.model.configuration.TranslationKey;
-import com.moorkensam.xlra.service.TranslationService;
 
 public class TranslationServiceImplTest extends UnitilsJUnit4 {
 

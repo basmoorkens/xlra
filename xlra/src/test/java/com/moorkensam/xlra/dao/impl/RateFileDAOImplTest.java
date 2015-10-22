@@ -1,7 +1,6 @@
 package com.moorkensam.xlra.dao.impl;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,18 +10,13 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
-import org.unitils.inject.annotation.InjectIntoByType;
 import org.unitils.inject.annotation.TestedObject;
-import org.unitils.mock.Mock;
 
-import com.moorkensam.xlra.dao.RateFileDAO;
 import com.moorkensam.xlra.model.configuration.Interval;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
-import com.moorkensam.xlra.model.rate.RateOperation;
 import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.rate.ZoneType;
-import com.moorkensam.xlra.service.impl.RateFileServiceImpl;
 
 public class RateFileDAOImplTest extends UnitilsJUnit4 {
 	@TestedObject

@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
-import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
 
 public interface RateFileDAO {

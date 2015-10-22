@@ -39,8 +39,6 @@ public class TemplateEngine {
 
 	private Configuration configuration;
 
-	private static TemplateEngine engine;
-
 	@PostConstruct
 	public void inializeEngine() {
 		stringTemplateLoader = new StringTemplateLoader();

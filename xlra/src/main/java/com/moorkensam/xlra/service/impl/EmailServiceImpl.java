@@ -12,7 +12,6 @@ import javax.mail.internet.MimeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.moorkensam.xlra.dto.OfferteMailDTO;
 import com.moorkensam.xlra.model.rate.QuotationResult;
 import com.moorkensam.xlra.service.EmailService;
 import com.moorkensam.xlra.service.util.ConfigurationLoader;

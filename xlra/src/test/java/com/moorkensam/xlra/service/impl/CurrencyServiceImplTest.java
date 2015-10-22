@@ -18,7 +18,6 @@ import org.unitils.inject.annotation.TestedObject;
 import com.moorkensam.xlra.dao.ConfigurationDao;
 import com.moorkensam.xlra.dao.CurrencyRateDAO;
 import com.moorkensam.xlra.dao.LogDAO;
-import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.CurrencyRate;
 import com.moorkensam.xlra.model.configuration.Interval;
 import com.moorkensam.xlra.model.configuration.XLRACurrency;
@@ -42,7 +41,6 @@ public class CurrencyServiceImplTest extends UnitilsJUnit4 {
 
 	private CurrencyRate r1, r2;
 
-	private Configuration config;
 
 	@Before
 	public void init() {
@@ -60,7 +58,6 @@ public class CurrencyServiceImplTest extends UnitilsJUnit4 {
 		rates = new ArrayList<CurrencyRate>();
 		rates.add(r2);
 		rates.add(r1);
-		config = new Configuration();
 	}
 
 	@Test

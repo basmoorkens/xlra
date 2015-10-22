@@ -18,7 +18,6 @@ import org.unitils.inject.annotation.TestedObject;
 import com.moorkensam.xlra.dao.ConfigurationDao;
 import com.moorkensam.xlra.dao.DieselRateDAO;
 import com.moorkensam.xlra.dao.LogDAO;
-import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.DieselRate;
 import com.moorkensam.xlra.model.configuration.Interval;
 import com.moorkensam.xlra.model.error.RateFileException;
@@ -41,8 +40,6 @@ public class DieselServiceImplTest extends UnitilsJUnit4 {
 
 	private DieselRate r1, r2;
 
-	private Configuration config;
-
 	@Before
 	public void init() {
 		service = new DieselServiceImpl();
@@ -57,7 +54,6 @@ public class DieselServiceImplTest extends UnitilsJUnit4 {
 		rates = new ArrayList<DieselRate>();
 		rates.add(r2);
 		rates.add(r1);
-		config = new Configuration();
 	}
 
 	@Test

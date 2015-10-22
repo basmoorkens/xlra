@@ -45,6 +45,8 @@ public class QuotationResult extends BaseEntity {
 	@JoinColumn(name = "ratefileid")
 	private RateFile rateFile;
 
+	private String offerteUniqueIdentifier;
+
 	public RateFile getRateFile() {
 		return rateFile;
 	}
@@ -75,5 +77,13 @@ public class QuotationResult extends BaseEntity {
 
 	public void setQuery(QuotationQuery query) {
 		this.query = query;
+	}
+
+	public String getOfferteUniqueIdentifier() {
+		return offerteUniqueIdentifier;
+	}
+
+	public void setOfferteUniqueIdentifier(String offerteUniqueIdentifier) {
+		this.offerteUniqueIdentifier = offerteUniqueIdentifier;
 	}
 }

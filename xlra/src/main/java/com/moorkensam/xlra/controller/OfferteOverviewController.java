@@ -1,11 +1,12 @@
 package com.moorkensam.xlra.controller;
 
-import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
+
+import org.primefaces.model.LazyDataModel;
 
 import com.moorkensam.xlra.model.rate.QuotationResult;
 import com.moorkensam.xlra.service.QuotationService;
@@ -17,8 +18,10 @@ public class OfferteOverviewController {
 	@Inject
 	private QuotationService quotationService;
 
-	private List<QuotationResult> offertes;
-
+	private LazyDataModel<QuotationResult> lazyModel;
+	
+	
+	
 	@PostConstruct
 	public void initialize() {
 
@@ -32,12 +35,11 @@ public class OfferteOverviewController {
 		this.quotationService = quotationService;
 	}
 
-	public List<QuotationResult> getOffertes() {
-		return offertes;
+	public LazyDataModel<QuotationResult> getLazyModel() {
+		return lazyModel;
 	}
 
-	public void setOffertes(List<QuotationResult> offertes) {
-		this.offertes = offertes;
+	public void setLazyModel(LazyDataModel<QuotationResult> lazyModel) {
+		this.lazyModel = lazyModel;
 	}
-
 }

@@ -19,6 +19,7 @@ import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Kind;
 import com.moorkensam.xlra.model.rate.Measurement;
 import com.moorkensam.xlra.model.rate.RateFile;
+import com.moorkensam.xlra.model.rate.TransportType;
 import com.moorkensam.xlra.service.CountryService;
 import com.moorkensam.xlra.service.ExcelService;
 
@@ -105,6 +106,10 @@ public class ExcelUploadController {
 
 	public void setShowUpload(boolean showUpload) {
 		this.showUpload = showUpload;
+	}
+
+	public List<TransportType> getAllTransportTypes() {
+		return Arrays.asList(TransportType.values());
 	}
 
 }

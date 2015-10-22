@@ -21,7 +21,6 @@ import javax.persistence.Transient;
 
 import com.moorkensam.xlra.model.BaseEntity;
 import com.moorkensam.xlra.model.FullCustomer;
-import com.moorkensam.xlra.model.Language;
 import com.moorkensam.xlra.model.configuration.Interval;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.service.util.CalcUtil;

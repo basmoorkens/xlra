@@ -39,6 +39,13 @@
 						<f:selectItems value="#{excelUploadController.kindOfRates}" />
 					</p:selectOneRadio>
 
+					<h:outputText value="Transport type:" />
+					<p:selectOneRadio
+						value="#{excelUploadController.ratefile.transportType}">
+						<f:selectItems value="#{excelUploadController.allTransportTypes}"
+							itemDescription="description" />
+					</p:selectOneRadio>
+
 				</p:panelGrid>
 			</p:panel>
 			<p:commandButton value="Save basic info" ajax="false"

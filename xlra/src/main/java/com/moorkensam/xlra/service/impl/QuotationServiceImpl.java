@@ -22,7 +22,6 @@ import com.moorkensam.xlra.dto.PriceResultDTO;
 import com.moorkensam.xlra.mapper.OfferteEmailToEmailResultMapper;
 import com.moorkensam.xlra.mapper.PriceCalculationDTOToResultMapper;
 import com.moorkensam.xlra.model.FullCustomer;
-import com.moorkensam.xlra.model.Language;
 import com.moorkensam.xlra.model.QuotationQuery;
 import com.moorkensam.xlra.model.configuration.MailTemplate;
 import com.moorkensam.xlra.model.error.RateFileException;
@@ -63,6 +62,8 @@ public class QuotationServiceImpl implements QuotationService {
 	@Inject
 	private TemplateEngine templateEngine;
 
+	private IdentityService identityService;
+
 	private PriceCalculationDTOToResultMapper mapper;
 
 	private OfferteEmailToEmailResultMapper mailMapper;
@@ -72,6 +73,7 @@ public class QuotationServiceImpl implements QuotationService {
 		setTemplatEngine(templateEngine);
 		setMapper(new PriceCalculationDTOToResultMapper());
 		mailMapper = new OfferteEmailToEmailResultMapper();
+		identityService = IdentityService.getInstance();
 	}
 
 	@Override
@@ -115,7 +117,8 @@ public class QuotationServiceImpl implements QuotationService {
 		RateLine result;
 		PriceCalculationDTO priceDTO = new PriceCalculationDTO();
 		fillInMailLanguage(query);
-
+		quotationResult.setOfferteUniqueIdentifier(identityService
+				.getNextIdentifier());
 		try {
 			RateFile rf = rateFileDAO.getFullRateFileForFilter(filter);
 			result = rf.getRateLineForQuantityAndPostalCode(
@@ -266,5 +269,13 @@ public class QuotationServiceImpl implements QuotationService {
 			result.getQuery()
 					.setLanguage(result.getQuery().getResultLanguage());
 		}
+	}
+
+	public IdentityService getIdentityService() {
+		return identityService;
+	}
+
+	public void setIdentityService(IdentityService identityService) {
+		this.identityService = identityService;
 	}
 }

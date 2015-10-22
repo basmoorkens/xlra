@@ -18,7 +18,14 @@ public class QuotationResultDAOImpl extends BaseDAO implements
 
 	@Override
 	public QuotationResult updateQuotationResult(QuotationResult result) {
-		return getEntityManager().merge(result);
+		QuotationResult resultMerged = getEntityManager().merge(result);
+		fullLoad(resultMerged);
+		return resultMerged;
+	}
+
+	private void fullLoad(QuotationResult result) {
+		result.getQuery();
+		result.getEmailResult();
 	}
 
 	@SuppressWarnings("unchecked")
