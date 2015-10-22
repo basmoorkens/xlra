@@ -19,6 +19,7 @@ import com.moorkensam.xlra.dto.PriceResultDTO;
 import com.moorkensam.xlra.mapper.OfferteEmailParameterGenerator;
 import com.moorkensam.xlra.model.BaseCustomer;
 import com.moorkensam.xlra.model.EmailResult;
+import com.moorkensam.xlra.model.FullCustomer;
 import com.moorkensam.xlra.model.Language;
 import com.moorkensam.xlra.model.QuotationQuery;
 import com.moorkensam.xlra.model.configuration.MailTemplate;
@@ -124,5 +125,41 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 		Assert.assertEquals("BE", filter.getCountry().getShortName());
 		Assert.assertEquals(Measurement.KILO, filter.getMeasurement());
 		Assert.assertEquals(Kind.NORMAL, filter.getRateKind());
+	}
+
+	@Test
+	public void testCreateCreateSearchFilterForQueryWithFullCustomer() {
+		query.setCountry(new Country());
+		query.getCountry().setShortName("BE");
+		query.setMeasurement(Measurement.KILO);
+		query.setKindOfRate(Kind.NORMAL);
+		query.setCustomer(new FullCustomer());
+		query.getCustomer().setName("FULL");
+
+		RateFileSearchFilter filter = quotationService
+				.createRateFileSearchFilterForQuery(query);
+		Assert.assertNotNull(filter);
+		Assert.assertEquals("FULL", filter.getCustomer().getName());
+		Assert.assertNull(filter.getCountry());
+		Assert.assertNull(filter.getMeasurement());
+		Assert.assertNull(filter.getRateKind());
+	}
+
+	@Test
+	public void testCreateBaseSearchFilterForQueryWithFullCustomer() {
+		query.setCountry(new Country());
+		query.getCountry().setShortName("BE");
+		query.setMeasurement(Measurement.KILO);
+		query.setKindOfRate(Kind.NORMAL);
+		query.setCustomer(new FullCustomer());
+		query.getCustomer().setName("FULL");
+
+		RateFileSearchFilter filter = quotationService
+				.createBaseRateFileSearchFilterForQuery(query);
+		Assert.assertNotNull(filter);
+		Assert.assertNull(filter.getCustomer());
+		Assert.assertNotNull(filter.getCountry());
+		Assert.assertNotNull(filter.getMeasurement());
+		Assert.assertNotNull(filter.getRateKind());
 	}
 }

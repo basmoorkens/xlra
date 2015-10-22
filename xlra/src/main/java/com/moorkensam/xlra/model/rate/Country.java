@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.model.rate;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.Cacheable;
@@ -83,6 +84,9 @@ public class Country extends BaseEntity {
 	}
 
 	public void buildEmptyLanguageMap() {
+		if (names == null) {
+			names = new HashMap<Language, String>();
+		}
 		for (Language l : Language.values()) {
 			names.put(l, "");
 		}

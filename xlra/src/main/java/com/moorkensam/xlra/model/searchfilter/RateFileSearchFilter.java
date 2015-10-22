@@ -6,6 +6,7 @@ import com.moorkensam.xlra.model.BaseCustomer;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Kind;
 import com.moorkensam.xlra.model.rate.Measurement;
+import com.moorkensam.xlra.model.rate.TransportType;
 
 public class RateFileSearchFilter implements Serializable {
 
@@ -18,6 +19,8 @@ public class RateFileSearchFilter implements Serializable {
 	private Country country;
 
 	private BaseCustomer customer;
+
+	private TransportType transportationType;
 
 	public Kind getRateKind() {
 		return rateKind;
@@ -58,6 +61,9 @@ public class RateFileSearchFilter implements Serializable {
 		if (getCustomer() != null) {
 			result += " Customer: " + getCustomer().getName();
 		}
+		if (transportationType != null) {
+			result += "TransportationType: " + getTransportationType();
+		}
 		if (result.equals("")) {
 			result = "Empty filter";
 		}
@@ -70,5 +76,13 @@ public class RateFileSearchFilter implements Serializable {
 
 	public void setCustomer(BaseCustomer customer) {
 		this.customer = customer;
+	}
+
+	public TransportType getTransportationType() {
+		return transportationType;
+	}
+
+	public void setTransportationType(TransportType transportationType) {
+		this.transportationType = transportationType;
 	}
 }

@@ -41,8 +41,8 @@ public class TemplateEngine {
 
 	@PostConstruct
 	public void inializeEngine() {
-		stringTemplateLoader = new StringTemplateLoader();
-		configuration = new Configuration();
+		setStringTemplateLoader(new StringTemplateLoader());
+		setConfiguration(new Configuration());
 	}
 
 	/**
@@ -60,11 +60,11 @@ public class TemplateEngine {
 			Map<String, Object> dataModel) throws TemplatingException {
 		logger.debug("Parsing template " + templateFromDb);
 		StringWriter writer = new StringWriter();
-		stringTemplateLoader.putTemplate("template", templateFromDb);
-		configuration.setTemplateLoader(stringTemplateLoader);
+		getStringTemplateLoader().putTemplate("template", templateFromDb);
+		getConfiguration().setTemplateLoader(getStringTemplateLoader());
 		Template template;
 		try {
-			template = configuration.getTemplate("template");
+			template = getConfiguration().getTemplate("template");
 			template.process(dataModel, writer);
 		} catch (TemplateNotFoundException e) {
 			logger.error(e);
@@ -119,5 +119,22 @@ public class TemplateEngine {
 		}
 
 		return countryName;
+	}
+
+	public StringTemplateLoader getStringTemplateLoader() {
+		return stringTemplateLoader;
+	}
+
+	public void setStringTemplateLoader(
+			StringTemplateLoader stringTemplateLoader) {
+		this.stringTemplateLoader = stringTemplateLoader;
+	}
+
+	public Configuration getConfiguration() {
+		return configuration;
+	}
+
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
 	}
 }

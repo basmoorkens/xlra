@@ -12,6 +12,9 @@ import org.unitils.inject.annotation.TestedObject;
 
 import com.moorkensam.xlra.model.error.TemplatingException;
 
+import freemarker.cache.StringTemplateLoader;
+import freemarker.template.Configuration;
+
 public class TemplateEngineTEst extends UnitilsJUnit4 {
 
 	@TestedObject
@@ -19,7 +22,9 @@ public class TemplateEngineTEst extends UnitilsJUnit4 {
 
 	@Before
 	public void setup() {
-
+		templateEngine = new TemplateEngine();
+		templateEngine.setStringTemplateLoader(new StringTemplateLoader());
+		templateEngine.setConfiguration(new Configuration());
 	}
 
 	@Test
@@ -27,7 +32,6 @@ public class TemplateEngineTEst extends UnitilsJUnit4 {
 		String template = "Dear ${customer}, your offerte is here. please see attached pdf.";
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("customer", "Bas");
-		templateEngine = new TemplateEngine();
 		String result = templateEngine.parseEmailTemplate(template, model);
 		Assert.assertNotNull(result);
 		Assert.assertTrue(result.contains("Bas"));

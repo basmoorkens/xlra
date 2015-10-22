@@ -7,6 +7,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
+import javax.management.remote.NotificationResult;
 import javax.persistence.NoResultException;
 
 import org.apache.logging.log4j.LogManager;
@@ -113,11 +114,10 @@ public class QuotationServiceImpl implements QuotationService {
 			QuotationQuery query) throws RateFileException {
 		OfferteMailDTO dto = new OfferteMailDTO();
 		QuotationResult quotationResult = initializeQuotationResult(query);
-		RateFileSearchFilter filter = createRateFileSearchFilterForQuery(query);
 		RateLine result;
 		PriceCalculationDTO priceDTO = new PriceCalculationDTO();
 		try {
-			RateFile rf = rateFileDAO.getFullRateFileForFilter(filter);
+			RateFile rf = getRateFileForQuery(query);
 			result = rf.getRateLineForQuantityAndPostalCode(
 					query.getQuantity(), query.getPostalCode());
 			priceDTO.setBasePrice(result.getValue());
@@ -125,9 +125,6 @@ public class QuotationServiceImpl implements QuotationService {
 					rf.getCountry(), rf.getConditions(), query);
 			initializeOfferteEmail(quotationResult, dto, rf, priceDTO);
 			fillInQuotationResult(query, dto, quotationResult);
-		} catch (NoResultException nre) {
-			throw new RateFileException("Could not find ratefile for "
-					+ filter.toString());
 		} catch (RateFileException e1) {
 			logger.error(e1.getBusinessException() + e1.getMessage());
 			throw e1;
@@ -137,6 +134,25 @@ public class QuotationServiceImpl implements QuotationService {
 		}
 		// generate pdf
 		return quotationResult;
+	}
+
+	private RateFile getRateFileForQuery(QuotationQuery query)
+			throws RateFileException {
+		RateFileSearchFilter firstFilter = createRateFileSearchFilterForQuery(query);
+		RateFile rf = null;
+		try {
+			rf = rateFileDAO.getFullRateFileForFilter(firstFilter);
+		} catch (NoResultException nre) {
+			try {
+				RateFileSearchFilter fallBackFilter = createBaseRateFileSearchFilterForQuery(query);
+				rf = rateFileDAO.getFullRateFileForFilter(fallBackFilter);
+			} catch (NoResultException nre2) {
+				throw new RateFileException(
+						"Could not find ratefile for searchfilter "
+								+ firstFilter);
+			}
+		}
+		return rf;
 	}
 
 	private QuotationResult initializeQuotationResult(QuotationQuery query) {
@@ -203,15 +219,48 @@ public class QuotationServiceImpl implements QuotationService {
 
 	}
 
+	/**
+	 * Fills in the search params. If the customer is filled in and is of type
+	 * fullCustomer that is filled in. Otherwise the country / measurement /
+	 * ratekind is filled in.
+	 * 
+	 * @param query
+	 * @return
+	 */
 	protected RateFileSearchFilter createRateFileSearchFilterForQuery(
 			QuotationQuery query) {
 		RateFileSearchFilter filter = new RateFileSearchFilter();
-		filter.setCountry(query.getCountry());
 		if (query.getCustomer() instanceof FullCustomer) {
 			filter.setCustomer(query.getCustomer());
+		} else {
+			fillInBaseFilterProperties(query, filter);
 		}
+		return filter;
+	}
+
+	private void fillInBaseFilterProperties(QuotationQuery query,
+			RateFileSearchFilter filter) {
+		filter.setCountry(query.getCountry());
 		filter.setMeasurement(query.getMeasurement());
 		filter.setRateKind(query.getKindOfRate());
+		filter.setTransportationType(query.getTransportType());
+	}
+
+	/**
+	 * This method creates the searchfilter and ignores a full customer if it
+	 * would be present. Its used as the fallback search mechanism for when a
+	 * fullcustomer is selected but does not have its own ratefile.
+	 * 
+	 * @param query
+	 * @return
+	 */
+	protected RateFileSearchFilter createBaseRateFileSearchFilterForQuery(
+			QuotationQuery query) {
+		logger.warn("Could not find customer ratefile for "
+				+ query.getCustomer().getName()
+				+ ". Falling back to base ratefile search.");
+		RateFileSearchFilter filter = new RateFileSearchFilter();
+		fillInBaseFilterProperties(query, filter);
 		return filter;
 	}
 
@@ -219,7 +268,8 @@ public class QuotationServiceImpl implements QuotationService {
 		return offerteEmailParameterGenerator;
 	}
 
-	public void setOfferteEmailParameterGenerator(OfferteEmailParameterGenerator mapper) {
+	public void setOfferteEmailParameterGenerator(
+			OfferteEmailParameterGenerator mapper) {
 		this.offerteEmailParameterGenerator = mapper;
 	}
 
