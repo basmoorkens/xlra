@@ -28,6 +28,7 @@ import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
 import com.moorkensam.xlra.service.RateFileService;
 import com.moorkensam.xlra.service.util.CalcUtil;
+import com.moorkensam.xlra.service.util.LogRecordFactory;
 
 /**
  * This service contains the business logic for ratefiles.
@@ -123,8 +124,8 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 
 		raiseRateFiles(rateLineMultiplier, fullRateFiles, operation);
 
-		createAndSaveRateOperationLogRecord(percentage, fullRateFiles,
-				operation);
+		createAndSaveRateOperationLogRecord(LogRecordFactory
+				.createRaiseRatesRecord(operation, percentage, fullRateFiles));
 
 		for (RateFile rf : fullRateFiles) {
 			if (operation == RateOperation.RAISE) {
@@ -180,14 +181,7 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 		return fullRateFiles;
 	}
 
-	private void createAndSaveRateOperationLogRecord(double percentage,
-			List<RateFile> fullRateFiles, RateOperation operation) {
-		logger.debug("Creating log record for " + operation);
-		RaiseRatesRecord logRecord = new RaiseRatesRecord();
-		logRecord.setPercentage(percentage);
-		logRecord.setRateFiles(fullRateFiles);
-		logRecord.setLogDate(new Date());
-		logRecord.setOperation(operation);
+	private void createAndSaveRateOperationLogRecord(RaiseRatesRecord logRecord) {
 		logDAO.createLogRecord(logRecord);
 	}
 
