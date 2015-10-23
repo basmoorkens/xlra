@@ -29,7 +29,10 @@ public class MailTemplateDTO {
 		return getTemplateForLang(Language.FR);
 	}
 
-	private MailTemplate getTemplateForLang(Language lang) {
+	protected MailTemplate getTemplateForLang(Language lang) {
+		if (mailTemplates == null) {
+			return null;
+		}
 		for (MailTemplate template : mailTemplates) {
 			if (template.getLanguage().equals(lang)) {
 				return template;

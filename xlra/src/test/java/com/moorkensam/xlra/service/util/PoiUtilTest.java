@@ -37,8 +37,8 @@ public class PoiUtilTest extends UnitilsJUnit4 {
 	@Test
 	public void testGetSafeCellDoubleNumber() {
 		Cell cell = row.createCell(0);
-		cell.setCellValue("11.55d");
-		cell.setCellType(Cell.CELL_TYPE_STRING);
+		cell.setCellValue(11.55d);
+		cell.setCellType(Cell.CELL_TYPE_NUMERIC);
 		Double result = Poiutil.getSafeCellDouble(cell, null);
 		Assert.assertNotNull(result);
 		Assert.assertEquals(11.55d, result);
@@ -55,6 +55,15 @@ public class PoiUtilTest extends UnitilsJUnit4 {
 	}
 
 	@Test
+	public void testgetSafeCellEmpty() {
+		Cell cell = row.createCell(0);
+		cell.setCellType(Cell.CELL_TYPE_BLANK);
+		String result = Poiutil.getSafeCellString(cell, false);
+		Assert.assertNotNull(result);
+		Assert.assertEquals("", result);
+	}
+
+	@Test
 	public void testgetSafeCellStringNumber() {
 		Cell cell = row.createCell(0);
 		cell.setCellValue(11.55d);
@@ -62,5 +71,15 @@ public class PoiUtilTest extends UnitilsJUnit4 {
 		String result = Poiutil.getSafeCellString(cell, false);
 		Assert.assertNotNull(result);
 		Assert.assertEquals("11.55", result);
+	}
+
+	@Test
+	public void testgetSafeCellStringNumberAsInt() {
+		Cell cell = row.createCell(0);
+		cell.setCellValue(11.55d);
+		cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+		String result = Poiutil.getSafeCellString(cell, true);
+		Assert.assertNotNull(result);
+		Assert.assertEquals("11", result);
 	}
 }
