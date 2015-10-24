@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/views/template.xhtml">
+	<ui:define name="title">
+		<h:outputText value="XLRA - User - Role management" />
+	</ui:define>
+	<ui:define name="pageTitle">
+		<h:outputText value="Role management" />
+	</ui:define>
+	<ui:define name="body">
+		<h:form id="rolesForm">
+			<p:growl showDetail="true" id="messages" sticky="false" />
+			<p:panel>
+				<p:dataTable emptyMessage="No permissions found."
+					id="rolesTable" 
+					value="#{}" var="" rowsPerPageTemplate="5,10,15,25,50"
+					paginator="true" rows="10"
+					paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
+
+					<p:ajax event="rowEdit"
+						listener="#{permissionController.onPermissionRowEdit}"
+						update=":permissionsForm:messages" />
+
+					<p:column headerText="Name: ">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{permission.name}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{permission.name}" style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					<p:column headerText="Description: ">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{permission.description}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputTextarea cols="110" rows="5"
+									value="#{permission.description}" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					<p:column style="width:32px">
+						<p:rowEditor />
+					</p:column>
+				</p:dataTable>
+
+				<p:panel>
+					<p:commandButton value="Create new permission"
+						onclick="PF('addPermissionDialog').show();" />
+				</p:panel>
+			</p:panel>
+		</h:form>
+
+		<p:dialog header="Create new permission"
+			widgetVar="addPermissionDialog" modal="true" height="280px"
+			width="900px" dynamic="true">
+			<p:growl showDetail="true" id="messages" sticky="false" />
+			<h:form id="addPermissionsForm">
+				<p:panel>
+					<p:panelGrid columns="2">
+						<h:outputText value="Name:" />
+						<p:inputText value="#{permissionController.newPermission.name}"
+							size="75" />
+
+						<h:outputText value="Description:" />
+						<p:inputTextarea
+							value="#{permissionController.newPermission.description}"
+							cols="74" rows="5" />
+					</p:panelGrid>
+
+					<p:commandButton style="margin-top:30px" value="Save"
+						update=":addPermissionsForm :permissionsForm"
+						actionListener="#{permissionController.saveNewPermission}"
+						ajax="true"
+						oncomplete="handleAddPermissionRequest(xhr, status, args)" />
+				</p:panel>
+			</h:form>
+		</p:dialog>
+		<script type="text/javascript">
+			function handleAddPermissionRequest(xhr, status, args) {
+				if (args.validationFailed) {
+					PF('addPermissionDialog').jq.effect("shake", {
+						times : 5
+					}, 100);
+				} else {
+					PF('addPermissionDialog').hide();
+				}
+			}
+		</script>
+	</ui:define>
+</ui:composition>
+</html>

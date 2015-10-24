@@ -2,12 +2,15 @@ package com.moorkensam.xlra.model.security;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import com.moorkensam.xlra.model.BaseEntity;
 
 @Entity
 @Table(name = "permissions")
+@NamedQueries(@NamedQuery(name = "Permission.findAll", query = "SELECT p FROM Permission p"))
 public class Permission extends BaseEntity {
 
 	private static final long serialVersionUID = 5223990771708418257L;

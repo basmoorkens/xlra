@@ -32,7 +32,7 @@ INSERT INTO mailtemplate (id, createdDateTime, deleted, deletedDateTime, lastUpd
 (4, NULL, b'0', NULL, '2015-10-20 21:10:46', 1, 'DE', '', 'ok', 1);
 
 
-INSERT INTO`countrynames (country_id, name, language) VALUES
+INSERT INTO countrynames (country_id, name, language) VALUES
 (1, 'Belgien', 'DE'),
 (1, 'Belgium', 'EN'),
 (1, 'Belgique', 'FR'),
@@ -112,3 +112,4 @@ INSERT INTO xlratranslation (id, createdDateTime, deleted, deletedDateTime, last
 (58, '2015-10-20 23:13:10', b'0', NULL, NULL, 0, 'NL', 'palettes', 'PALET_KEY', NULL),
 (59, '2015-10-20 23:13:10', b'0', NULL, NULL, 0, 'FR', 'palettes', 'PALET_KEY', NULL),
 (60, '2015-10-20 23:13:10', b'0', NULL, NULL, 0, 'DE', 'palettes', 'PALET_KEY', NULL);
+
