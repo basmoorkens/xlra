@@ -15,82 +15,74 @@
 		<h:form id="rolesForm">
 			<p:growl showDetail="true" id="messages" sticky="false" />
 			<p:panel>
-				<p:dataTable emptyMessage="No permissions found."
-					id="rolesTable" 
-					value="#{}" var="" rowsPerPageTemplate="5,10,15,25,50"
-					paginator="true" rows="10"
-					paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
-
-					<p:ajax event="rowEdit"
-						listener="#{permissionController.onPermissionRowEdit}"
-						update=":permissionsForm:messages" />
-
+				<p:dataTable emptyMessage="No permissions found." id="rolesTable"
+					value="#{rolesController.allRoles}" var="role">
 					<p:column headerText="Name: ">
-						<p:cellEditor>
-							<f:facet name="output">
-								<h:outputText value="#{permission.name}" />
-							</f:facet>
-							<f:facet name="input">
-								<p:inputText value="#{permission.name}" style="width:100%" />
-							</f:facet>
-						</p:cellEditor>
+						<h:outputText value="#{role.name}" />
 					</p:column>
-					<p:column headerText="Description: ">
-						<p:cellEditor>
-							<f:facet name="output">
-								<h:outputText value="#{permission.description}" />
-							</f:facet>
-							<f:facet name="input">
-								<p:inputTextarea cols="110" rows="5"
-									value="#{permission.description}" />
-							</f:facet>
-						</p:cellEditor>
+					<p:column headerText="Permission list">
+						#{role.permissionsString}
 					</p:column>
-					<p:column style="width:32px">
-						<p:rowEditor />
+					<p:column>
+						<p:commandButton value="Edit role"
+							update=":rolesForm :addRolesForm"
+							actionListener="#{rolesController.selectRoleForEdit(role)}" />
 					</p:column>
 				</p:dataTable>
 
 				<p:panel>
-					<p:commandButton value="Create new permission"
-						onclick="PF('addPermissionDialog').show();" />
+					<p:commandButton actionListener="#{rolesController.setupNewRole}"
+						update=":rolesForm :addRolesForm" value="Create new role" />
 				</p:panel>
 			</p:panel>
 		</h:form>
 
-		<p:dialog header="Create new permission"
-			widgetVar="addPermissionDialog" modal="true" height="280px"
-			width="900px" dynamic="true">
-			<p:growl showDetail="true" id="messages" sticky="false" />
-			<h:form id="addPermissionsForm">
+		<p:dialog header="Create new role" widgetVar="addRoleDialog"
+			modal="true" height="650px" width="1024px" dynamic="true">
+			<h:form id="addRolesForm">
+				<p:growl showDetail="true" id="messages" sticky="false" />
 				<p:panel>
 					<p:panelGrid columns="2">
 						<h:outputText value="Name:" />
-						<p:inputText value="#{permissionController.newPermission.name}"
-							size="75" />
+						<p:inputText value="#{rolesController.selectedRole.name}"
+							size="85" />
 
 						<h:outputText value="Description:" />
 						<p:inputTextarea
-							value="#{permissionController.newPermission.description}"
-							cols="74" rows="5" />
+							value="#{rolesController.selectedRole.description}" cols="84"
+							rows="5" />
+
+						<h:outputText value="Permissions: " />
+						<p:pickList id="permissionsPicklist"
+							value="#{rolesController.permissions}" var="permission"
+							effect="bounce" itemValue="#{permission}"
+							itemLabel="#{permission.name}" converter="#{permissionConverter}"
+							style="width:100%;" responsive="true">
+
+							<f:facet name="sourceCaption">All available permissions</f:facet>
+							<f:facet name="targetCaption">Selected permissions</f:facet>
+
+							<p:column style="width:90%;">
+								<h:outputText value="#{permission.name}" />
+							</p:column>
+						</p:pickList>
 					</p:panelGrid>
 
-					<p:commandButton style="margin-top:30px" value="Save"
-						update=":addPermissionsForm :permissionsForm"
-						actionListener="#{permissionController.saveNewPermission}"
-						ajax="true"
-						oncomplete="handleAddPermissionRequest(xhr, status, args)" />
+					<p:commandButton value="Save" style="margin-top:30px;"
+						update=":addRolesForm :rolesForm" ajax="true"
+						actionListener="#{rolesController.createOrUpdateRole}"
+						oncomplete="handleAddRolesRequest(xhr, status, args)" />
 				</p:panel>
 			</h:form>
 		</p:dialog>
 		<script type="text/javascript">
-			function handleAddPermissionRequest(xhr, status, args) {
+			function handleAddRolesRequest(xhr, status, args) {
 				if (args.validationFailed) {
-					PF('addPermissionDialog').jq.effect("shake", {
+					PF('addRoleDialog').jq.effect("shake", {
 						times : 5
 					}, 100);
 				} else {
-					PF('addPermissionDialog').hide();
+					PF('addRoleDialog').hide();
 				}
 			}
 		</script>

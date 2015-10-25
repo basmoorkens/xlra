@@ -6,6 +6,8 @@ import com.moorkensam.xlra.model.security.Permission;
 
 public interface PermissionDAO {
 
+	public Permission getPermissionById(long id);
+
 	public List<Permission> getAllPermissions();
 
 	public void createPermission(Permission p);

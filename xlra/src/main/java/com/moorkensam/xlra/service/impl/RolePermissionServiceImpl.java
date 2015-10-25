@@ -50,4 +50,9 @@ public class RolePermissionServiceImpl implements RolePermissionService {
 		return permissionDAO.updatePermission(p);
 	}
 
+	@Override
+	public Permission getPermissionById(long id) {
+		return permissionDAO.getPermissionById(id);
+	}
+
 }

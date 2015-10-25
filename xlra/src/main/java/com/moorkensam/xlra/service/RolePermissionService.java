@@ -19,4 +19,6 @@ public interface RolePermissionService {
 
 	public Permission updatePermission(Permission p);
 
+	public Permission getPermissionById(long id);
+
 }

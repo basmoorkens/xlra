@@ -10,7 +10,9 @@ import com.moorkensam.xlra.model.BaseEntity;
 
 @Entity
 @Table(name = "permissions")
-@NamedQueries(@NamedQuery(name = "Permission.findAll", query = "SELECT p FROM Permission p"))
+@NamedQueries({
+		@NamedQuery(name = "Permission.findAll", query = "SELECT p FROM Permission p"),
+		@NamedQuery(name = "Permission.findById", query = "SELECT p FROM Permission p WHERE p.id = :id") })
 public class Permission extends BaseEntity {
 
 	private static final long serialVersionUID = 5223990771708418257L;
@@ -35,6 +37,16 @@ public class Permission extends BaseEntity {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Permission))
+			return false;
+		Permission other = (Permission) obj;
+		return other.getId() == id;
 	}
 
 }

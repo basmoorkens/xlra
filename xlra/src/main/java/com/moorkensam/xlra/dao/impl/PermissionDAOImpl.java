@@ -27,4 +27,11 @@ public class PermissionDAOImpl extends BaseDAO implements PermissionDAO {
 		return getEntityManager().merge(p);
 	}
 
+	@Override
+	public Permission getPermissionById(long id) {
+		Query query = getEntityManager()
+				.createNamedQuery("Permission.findById");
+		query.setParameter("id", id);
+		return (Permission) query.getSingleResult();
+	}
 }
