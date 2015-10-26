@@ -15,4 +15,6 @@ public interface UserService {
 	public User updateUser(User user);
 
 	public User resetPassword(User user, String generatedPassword);
+
+	public User getUserById(long id);
 }

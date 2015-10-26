@@ -15,7 +15,7 @@
 		<h:form id="rolesForm">
 			<p:growl showDetail="true" id="messages" sticky="false" />
 			<p:panel>
-				<p:dataTable emptyMessage="No permissions found." id="rolesTable"
+				<p:dataTable emptyMessage="No roles found." id="rolesTable"
 					value="#{rolesController.allRoles}" var="role">
 					<p:column headerText="Name: ">
 						<h:outputText value="#{role.name}" />

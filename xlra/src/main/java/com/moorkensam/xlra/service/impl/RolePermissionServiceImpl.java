@@ -55,4 +55,9 @@ public class RolePermissionServiceImpl implements RolePermissionService {
 		return permissionDAO.getPermissionById(id);
 	}
 
+	@Override
+	public Role getRoleById(long id) {
+		return roleDAO.getRoleById(id);
+	}
+
 }

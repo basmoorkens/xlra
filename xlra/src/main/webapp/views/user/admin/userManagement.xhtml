@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/views/template.xhtml">
+	<ui:define name="title">
+		<h:outputText value="XLRA - User - User management" />
+	</ui:define>
+	<ui:define name="pageTitle">
+		<h:outputText value="User management" />
+	</ui:define>
+	<ui:define name="body">
+		<h:form id="usersForm">
+			<p:growl showDetail="true" id="messages" sticky="false" />
+			<p:panel>
+				<p:dataTable emptyMessage="No users found." id="usersTable"
+					value="#{manageUsersController.users}" var="user">
+					<p:column headerText="Email: ">
+						<h:outputText value="#{user.email}" />
+					</p:column>
+					<p:column headerText="FirstName: ">
+						<h:outputText value="#{user.firstName}" />
+					</p:column>
+					<p:column headerText="Name: ">
+						<h:outputText value="#{user.name}" />
+					</p:column>
+					<p:column headerText="Enabled">
+						<h:selectBooleanCheckbox value="#{user.enabled}" />
+					</p:column>
+					<p:column headerText="roles list">
+						ROLES...
+					</p:column>
+					<p:column>
+						<p:commandButton value="Edit user"
+							update=":usersForm :addUserForm" style="width:120px;"
+							actionListener="#{manageUsersController.selectUserForEdit(user)}" />
+					</p:column>
+				</p:dataTable>
+
+				<p:panel>
+					<p:commandButton
+						actionListener="#{manageUsersController.setupNewUsers}"
+						update=":usersForm :addUserForm" value="Create new user" />
+				</p:panel>
+			</p:panel>
+		</h:form>
+
+		<p:dialog header="Create new user" widgetVar="addUserDialog"
+			modal="true" height="650px" width="1024px" dynamic="true">
+			<h:form id="addUserForm">
+				<p:growl showDetail="true" id="messages" sticky="false" />
+				<p:panel>
+					<p:panelGrid columns="2">
+						<h:outputText value="Email:" />
+						<p:inputText value="#{manageUsersController.selectedUser.email}"
+							size="85" />
+
+						<h:outputText value="First name:" />
+						<p:inputText size="85"
+							value="#{manageUsersController.selectedUser.firstName}" />
+
+						<h:outputText value="Name:" />
+						<p:inputText value="#{manageUsersController.selectedUser.name}"
+							size="85" />
+
+						<h:outputText value="Roles: " />
+						<p:pickList id="rolesPicklist"
+							value="#{manageUsersController.roles}" var="role" effect="bounce"
+							itemValue="#{role}" itemLabel="#{role.name}"
+							converter="#{roleConverter}" style="width:100%;"
+							responsive="true">
+
+							<f:facet name="sourceCaption">All available roles</f:facet>
+							<f:facet name="targetCaption">Selected roles</f:facet>
+
+							<p:column style="width:90%;">
+								<h:outputText value="#{role.name}" />
+							</p:column>
+						</p:pickList>
+					</p:panelGrid>
+
+					<p:commandButton value="Save" style="margin-top:30px;"
+						update=":usersForm :addUserForm" ajax="true"
+						actionListener="#{manageUsersController.createOrUpdateUser}"
+						oncomplete="handleAddUserRequest(xhr, status, args)" />
+				</p:panel>
+			</h:form>
+		</p:dialog>
+		<script type="text/javascript">
+			function handleAddUserRequest(xhr, status, args) {
+				if (args.validationFailed) {
+					PF('addUserDialog').jq.effect("shake", {
+						times : 5
+					}, 100);
+				} else {
+					PF('addUserDialog').hide();
+				}
+			}
+		</script>
+	</ui:define>
+</ui:composition>
+</html>

@@ -13,6 +13,8 @@ public interface RolePermissionService {
 
 	public List<Role> getAllRoles();
 
+	public Role getRoleById(long id);
+
 	public List<Permission> getAllPermissions();
 
 	public void createPermission(Permission p);

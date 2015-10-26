@@ -18,7 +18,9 @@ import com.moorkensam.xlra.model.BaseEntity;
 
 @Entity
 @Table(name = "role")
-@NamedQueries(@NamedQuery(name = "Role.findAll", query = "SELECT r FROM Role r"))
+@NamedQueries({
+		@NamedQuery(name = "Role.findAll", query = "SELECT r FROM Role r"),
+		@NamedQuery(name = "Role.findById", query = "SELECT r FROM Role r where r.id = :id") })
 public class Role extends BaseEntity {
 
 	private static final long serialVersionUID = 3014589161716980040L;

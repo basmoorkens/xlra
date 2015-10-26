@@ -13,4 +13,6 @@ public interface UserDAO {
 	public User updateUser(User user);
 
 	public User resetPassword(User user, String generatedPassword);
+
+	public User getUserbyId(long id);
 }

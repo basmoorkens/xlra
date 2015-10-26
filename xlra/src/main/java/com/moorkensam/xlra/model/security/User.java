@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.model.security;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -16,6 +17,7 @@ import com.moorkensam.xlra.model.BaseEntity;
 @Table(name = "user")
 @NamedQueries({
 		@NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
+		@NamedQuery(name = "User.findById", query = "SELECT u FROM User u where u.id = :id"),
 		@NamedQuery(name = "User.findAllNonDeleted", query = "SELECT u FROM User u where u.enabled = true") })
 public class User extends BaseEntity {
 
@@ -25,7 +27,16 @@ public class User extends BaseEntity {
 
 	private String password;
 
+	private String name;
+
+	private String firstName;
+
 	private boolean enabled;
+
+	public User() {
+		enabled = true;
+		roles = new ArrayList<Role>();
+	}
 
 	@ManyToMany
 	@JoinTable(name = "user_roles", joinColumns = { @JoinColumn(name = "user_id", referencedColumnName = "id") }, inverseJoinColumns = { @JoinColumn(name = "role_id", referencedColumnName = "id") })
@@ -61,6 +72,22 @@ public class User extends BaseEntity {
 
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

@@ -49,4 +49,11 @@ public class RoleDAOImpl extends BaseDAO implements RoleDAO {
 		}
 		role.setPermissionsString(permString);
 	}
+
+	@Override
+	public Role getRoleById(long id) {
+		Query query = getEntityManager().createNamedQuery("Role.findById");
+		query.setParameter("id", id);
+		return (Role) query.getSingleResult();
+	}
 }

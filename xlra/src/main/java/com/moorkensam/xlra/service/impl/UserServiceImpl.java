@@ -39,4 +39,9 @@ public class UserServiceImpl implements UserService {
 		return userDAO.resetPassword(user, generatedPassword);
 	}
 
+	@Override
+	public User getUserById(long id) {
+		return userDAO.getUserbyId(id);
+	}
+
 }
