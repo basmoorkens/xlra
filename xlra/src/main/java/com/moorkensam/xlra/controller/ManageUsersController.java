@@ -53,6 +53,19 @@ public class ManageUsersController {
 		context.execute("PF('addUserDialog').show();");
 	}
 
+	public void deleteUser(User user) {
+		userService.deleteUser(user);
+		MessageUtil.addMessage("User deleted", "The user " + user.getName()
+				+ " was successfully deleted.");
+
+	}
+
+	public void resetUserPassword() {
+		if (getCanResetPassword()) {
+			userService.resetUserPassword(selectedUser);
+		}
+	}
+
 	public void selectUserForEdit(User user) {
 		if (user.getId() > 0) {
 			user = userService.getUserById(user.getId());
@@ -130,6 +143,10 @@ public class ManageUsersController {
 
 	public void setAllRoles(List<Role> allRoles) {
 		this.allRoles = allRoles;
+	}
+
+	public boolean getCanResetPassword() {
+		return selectedUser != null && selectedUser.getId() > 0;
 	}
 
 }

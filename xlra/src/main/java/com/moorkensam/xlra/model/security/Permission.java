@@ -17,8 +17,8 @@ public class Permission extends BaseEntity {
 
 	private static final long serialVersionUID = 5223990771708418257L;
 
-	@Column(name = "permission_name")
-	private String name;
+	@Column(name = "permission_key")
+	private String key;
 
 	@Column(name = "permission_description")
 	private String description;
@@ -31,14 +31,6 @@ public class Permission extends BaseEntity {
 		this.description = description;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null)
@@ -47,6 +39,14 @@ public class Permission extends BaseEntity {
 			return false;
 		Permission other = (Permission) obj;
 		return other.getId() == id;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
 	}
 
 }

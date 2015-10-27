@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/views/template.xhtml">
+	<ui:define name="title">
+		<h:outputText value="XLRA - User - Edit profile" />
+	</ui:define>
+	<ui:define name="pageTitle">
+		<h:outputText value="Edit profile" />
+	</ui:define>
+	<ui:define name="body">
+		<h:form id="userForm">
+			<p:growl showDetail="true" id="messages" sticky="false" />
+			<p:panel>
+				<p:panelGrid columns="2">
+					<h:outputText value="First name: " />
+					<p:inputText value="#{userController.user.firstName}" />
+
+					<h:outputText value="Name: " />
+					<p:inputText value="#{userController.user.name}" />
+
+					<h:outputText value="New password:" />
+					<p:inputText value="#{userController.newPassword}" />
+
+					<h:outputText value="Retype new password:" />
+					<p:inputText value="#{userController.retypedPassword}" />
+				</p:panelGrid>
+
+				<p:commandButton value="Save"
+					actionListener="#{userController.saveUser}" update=":userForm" />
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

@@ -14,7 +14,11 @@ public class UserDAOImpl extends BaseDAO implements UserDAO {
 	@Override
 	public List<User> getAllUsers() {
 		Query query = getEntityManager().createNamedQuery("User.findAll");
-		return (List<User>) query.getResultList();
+		List<User> users = (List<User>) query.getResultList();
+		for (User user : users) {
+			lazyLoadUser(user);
+		}
+		return users;
 	}
 
 	private void lazyLoadUser(User user) {

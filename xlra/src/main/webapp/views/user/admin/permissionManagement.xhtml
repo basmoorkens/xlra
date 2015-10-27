@@ -29,10 +29,10 @@
 					<p:column headerText="Name: ">
 						<p:cellEditor>
 							<f:facet name="output">
-								<h:outputText value="#{permission.name}" />
+								<h:outputText value="#{permission.key}" />
 							</f:facet>
 							<f:facet name="input">
-								<p:inputText value="#{permission.name}" style="width:100%" />
+								<p:inputText value="#{permission.key}" style="width:100%" />
 							</f:facet>
 						</p:cellEditor>
 					</p:column>
@@ -67,7 +67,7 @@
 				<p:panel>
 					<p:panelGrid columns="2">
 						<h:outputText value="Name:" />
-						<p:inputText value="#{permissionController.newPermission.name}"
+						<p:inputText value="#{permissionController.newPermission.key}"
 							size="75" />
 
 						<h:outputText value="Description:" />

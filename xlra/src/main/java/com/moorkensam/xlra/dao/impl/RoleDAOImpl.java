@@ -41,7 +41,7 @@ public class RoleDAOImpl extends BaseDAO implements RoleDAO {
 		int counter = 0;
 		String permString = "";
 		for (Permission p : role.getPermissions()) {
-			permString += p.getName() + ",";
+			permString += p.getKey() + ",";
 			counter++;
 			if (counter % 10 == 0) {
 				permString += "\n";
