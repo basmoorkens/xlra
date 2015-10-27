@@ -31,6 +31,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void createUser(User user) {
+		user.setPassword("xlra");
 		user.setPassword(makePasswordHash(user.getPassword()));
 		userDAO.createUser(user);
 	}
@@ -72,6 +73,11 @@ public class UserServiceImpl implements UserService {
 	public void resetUserPassword(User user) {
 		// update pw
 		// send email
+	}
+
+	@Override
+	public User getUserByEmail(String email) {
+		return userDAO.getUserByEmail(email);
 	}
 
 }

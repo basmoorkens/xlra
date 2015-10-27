@@ -88,7 +88,7 @@
 						</p:pickList>
 					</p:panelGrid>
 					<p:panel style="margin-top:30px;">
-						<p:commandButton rendered="#{}" value="Reset password" ajax="true"
+						<p:commandButton rendered="true" value="Reset password" ajax="true"
 							actionListener="#{manageUsersController.resetUserPassword}"
 							update=":usersForm :addUserForm" />
 						<p:commandButton value="Save" update=":usersForm :addUserForm"

@@ -10,6 +10,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.BatchSize;
 
 import com.moorkensam.xlra.model.BaseEntity;
 
@@ -18,6 +21,7 @@ import com.moorkensam.xlra.model.BaseEntity;
 @NamedQueries({
 		@NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
 		@NamedQuery(name = "User.findById", query = "SELECT u FROM User u where u.id = :id"),
+		@NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u LEFT JOIN FETCH u.roles where u.email = :email"),
 		@NamedQuery(name = "User.findAllNonDeleted", query = "SELECT u FROM User u where u.enabled = true") })
 public class User extends BaseEntity {
 
@@ -33,6 +37,11 @@ public class User extends BaseEntity {
 
 	private boolean enabled;
 
+	@Transient
+	public String getFullName() {
+		return firstName + " " + name;
+	}
+
 	public User() {
 		enabled = true;
 		roles = new ArrayList<Role>();
@@ -40,6 +49,7 @@ public class User extends BaseEntity {
 
 	@ManyToMany
 	@JoinTable(name = "user_roles", joinColumns = { @JoinColumn(name = "user_id", referencedColumnName = "id") }, inverseJoinColumns = { @JoinColumn(name = "role_id", referencedColumnName = "id") })
+	@BatchSize(size = 2)
 	private List<Role> roles;
 
 	public String getRolesAsString() {
@@ -98,6 +108,14 @@ public class User extends BaseEntity {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public List<Permission> getAllPermissions() {
+		List<Permission> permissions = new ArrayList<Permission>();
+		for (Role r : roles) {
+			permissions.addAll(r.getPermissions());
+		}
+		return permissions;
 	}
 
 }

@@ -1,0 +1,48 @@
+package com.moorkensam.xlra.controller;
+
+import java.io.IOException;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.RequestScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.moorkensam.xlra.service.util.ConfigurationLoader;
+
+@ManagedBean
+@RequestScoped
+public class LogoutController {
+
+	private final static Logger logger = LogManager.getLogger();
+
+	private ConfigurationLoader configLoader;
+
+	@Inject
+	private UserSessionController sessionController;
+
+	@PostConstruct
+	public void init() {
+		configLoader = ConfigurationLoader.getInstance();
+	}
+
+	public void logout() throws IOException {
+		logger.info("Logging out "
+				+ sessionController.getLoggedInUser().getEmail());
+		FacesContext fc = FacesContext.getCurrentInstance();
+		HttpSession session = (HttpSession) fc.getExternalContext().getSession(
+				false);
+		session.invalidate();
+		FacesContext
+				.getCurrentInstance()
+				.getExternalContext()
+				.redirect(
+						configLoader
+								.getProperty(ConfigurationLoader.APPLICATION_BASE_URL));
+	}
+
+}

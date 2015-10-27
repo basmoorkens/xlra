@@ -28,26 +28,13 @@ public class RoleDAOImpl extends BaseDAO implements RoleDAO {
 		List<Role> roles = (List<Role>) query.getResultList();
 		for (Role role : roles) {
 			lazyLoadRole(role);
-			fillInPermissionsString(role);
+			role.fillInPermissionsString();
 		}
 		return roles;
 	}
 
 	private void lazyLoadRole(Role role) {
 		role.getPermissions().size();
-	}
-
-	private void fillInPermissionsString(Role role) {
-		int counter = 0;
-		String permString = "";
-		for (Permission p : role.getPermissions()) {
-			permString += p.getKey() + ",";
-			counter++;
-			if (counter % 10 == 0) {
-				permString += "\n";
-			}
-		}
-		role.setPermissionsString(permString);
 	}
 
 	@Override

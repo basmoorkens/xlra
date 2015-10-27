@@ -44,6 +44,10 @@ public class RaiseRatesController {
 		allRateFiles = rateFileService.getAllRateFiles();
 		rateFiles.setSource(allRateFiles);
 		selectedRateFiles = new ArrayList<RateFile>();
+		refreshLogs();
+	}
+
+	private void refreshLogs() {
 		logRecords = rateFileService.getRaiseRatesLogRecordsThatAreNotUndone();
 	}
 
@@ -51,15 +55,17 @@ public class RaiseRatesController {
 		return event.getNewStep();
 	}
 
-	public String raiseRates() {
+	public void raiseRates() {
 		rateFileService.raiseRateFileRateLinesWithPercentage(
 				rateFiles.getTarget(), percentage);
 		MessageUtil.addMessage("Rates raised", "Succesfully raised rates for");
-		return "views/rate/admin/manageRates.xhtml";
 	}
 
 	public void undoLatestRaiseRates() {
 		rateFileService.undoLatestRatesRaise();
+		refreshLogs();
+		MessageUtil.addMessage("Rates raised",
+				"Succesfully undid latest rates raise.");
 	}
 
 	public List<RateFile> getAllRateFiles() {

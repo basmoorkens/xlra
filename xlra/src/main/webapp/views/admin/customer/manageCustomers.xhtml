@@ -18,10 +18,11 @@
 				icon="ui-icon-check" ajax="false" />
 		</h:form>
 		<h:form id="customerOverviewForm">
-		
+
 			<p:panel id="customerOverview" header="Customer overview">
 				<p:dataTable value="#{customerController.allCustomers}"
-					var="customer" emptyMessage="No customers found." id="customerTable" rows="10">
+					var="customer" emptyMessage="No customers found."
+					id="customerTable" rows="10">
 					<p:column style="width:36px;text-align: center">
 						<p:commandButton
 							actionListener="#{customerController.setupPageForEditUser}"
@@ -46,7 +47,7 @@
 			</p:panel>
 		</h:form>
 		<h:form>
-			<ui:include src="/views/customer/customerDetail.xhtml">
+			<ui:include src="/views/admin/customer/customerDetail.xhtml">
 				<ui:param name="customer"
 					value="#{customerController.selectedCustomer}"></ui:param>
 			</ui:include>

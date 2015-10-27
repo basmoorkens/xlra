@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/views/template.xhtml">
+	<ui:define name="title">
+		<h:outputText value="XLRA - Rate management" />
+	</ui:define>
+	<ui:define name="pageTitle">
+		<h:outputText value="Rate management" />
+	</ui:define>
+	<ui:define name="body">
+		<h:form id="ratesForm">
+			<h3>Search options</h3>
+			<p:growl id="message" showDetail="true" />
+			<p:panelGrid columns="3" style="width:100%">
+				<p:outputLabel value="Select Rates to display:" for="rateSelector" />
+
+				<p:autoComplete size="90" id="rateSelector" dropdown="true"
+					value="#{manageRatesController.selectedRateFile}"
+					completeMethod="#{manageRatesController.completeRateName}"
+					var="rateFile" itemLabel="#{rateFile.name}" itemValue="#{rateFile}"
+					converter="#{rateFileConverter}">
+					<p:ajax event="itemSelect"
+						update=":conditionsDetailForm :rateLinesDetailForm :zoneDetailForm"
+						listener="#{manageRatesController.fetchDetailsOfRatefile}" />
+				</p:autoComplete>
+
+				<p:commandButton rendered="#{manageRatesController.canEdit}"
+					value="Add new rates" title="Add new rates" icon="ui-icon-check"
+					immediate="true"
+					action="/views/rate/admin/createRateFile.xhtml?faces-redirect=true"
+					ajax="false" />
+			</p:panelGrid>
+		</h:form>
+
+		<h3>Details</h3>
+		<h:form id="zoneDetailForm">
+			<p:growl id="message" showDetail="true" />
+			<ui:include src="/views/user/zoneDetail.xhtml">
+				<ui:param name="zones"
+					value="#{manageRatesController.selectedRateFile.zones}" />
+				<ui:param name="controller" value="#{manageRatesController}" />
+				<ui:param name="controllerName" value="manageRatesController" />
+				<ui:param name="canEdit" value="#{manageRatesController.canEdit}"></ui:param>
+			</ui:include>
+		</h:form>
+		<h:form id="rateLinesDetailForm">
+			<ui:include src="/views/user/rateLinesDetail.xhtml">
+				<ui:param name="rateFile"
+					value="#{manageRatesController.selectedRateFile}" />
+				<ui:param name="controller" value="#{manageRatesController}" />
+				<ui:param name="controllerName" value="manageRatesController" />
+				<ui:param name="canEdit" value="#{manageRatesController.canEdit}"></ui:param>
+			</ui:include>
+		</h:form>
+		<h:form id="conditionsDetailForm">
+			<p:growl id="message" showDetail="true" />
+			<ui:include src="/views/user/conditionsDetail.xhtml">
+				<ui:param name="conditions"
+					value="#{manageRatesController.selectedRateFile.conditions}" />
+				<ui:param name="controller" value="#{manageRatesController}" />
+				<ui:param name="controllerName" value="manageRatesController" />
+				<ui:param name="canEdit" value="#{manageRatesController.canEdit}"></ui:param>
+			</ui:include>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

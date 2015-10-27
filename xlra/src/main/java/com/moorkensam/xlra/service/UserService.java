@@ -18,4 +18,6 @@ public interface UserService {
 
 	public User getUserById(long id);
 
+	public User getUserByEmail(String email);
+
 }

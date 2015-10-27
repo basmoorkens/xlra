@@ -139,8 +139,8 @@
 						style="width:150px; margin-left:20px;" ajax="true" />
 				</p:panel>
 			</p:panel>
-			<p:ajaxStatus onstart="PF('statusDialog').show()"
-				onsuccess="PF('statusDialog').hide()" />
+			<p:ajaxStatus onstart="showStatusDialog();"
+				onsuccess="hideStatusDialog();" />
 
 			<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
 				closable="false" resizable="false" showHeader="false">
@@ -200,6 +200,22 @@
 			</h:form>
 		</p:dialog>
 		<script type="text/javascript">
+			var statusDlgTimer = null;
+
+			function showStatusDialog() {
+				if (statusDlgTimer === null) {
+					statusDlgTimer = setTimeout("statusDialog.show()", 500);
+				}
+			}
+
+			function hideStatusDialog() {
+				if (statusDlgTimer !== null) {
+					clearTimeout(statusDlgTimer);
+					statusDialog.hide();
+					statusDlgTimer = null;
+				}
+			}
+
 			function handleAddCustomerRequest(xhr, status, args) {
 				if (args.validationFailed) {
 					PF('addCustomerDialog').jq.effect("shake", {

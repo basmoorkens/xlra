@@ -84,4 +84,17 @@ public class Role extends BaseEntity {
 		return other.getId() == id;
 	}
 
+	public void fillInPermissionsString() {
+		int counter = 0;
+		String permString = "";
+		for (Permission p : getPermissions()) {
+			permString += p.getKey() + ",";
+			counter++;
+			if (counter % 7 == 0) {
+				permString += "\n";
+			}
+		}
+		setPermissionsString(permString);
+	}
+
 }

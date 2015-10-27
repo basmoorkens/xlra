@@ -6,6 +6,7 @@ import javax.persistence.Query;
 
 import com.moorkensam.xlra.dao.BaseDAO;
 import com.moorkensam.xlra.dao.UserDAO;
+import com.moorkensam.xlra.model.security.Role;
 import com.moorkensam.xlra.model.security.User;
 
 public class UserDAOImpl extends BaseDAO implements UserDAO {
@@ -23,6 +24,9 @@ public class UserDAOImpl extends BaseDAO implements UserDAO {
 
 	private void lazyLoadUser(User user) {
 		user.getRoles().size();
+		for (Role r : user.getRoles()) {
+			r.getPermissions().size();
+		}
 	}
 
 	@Override
@@ -45,6 +49,15 @@ public class UserDAOImpl extends BaseDAO implements UserDAO {
 	public User getUserbyId(long id) {
 		Query query = getEntityManager().createNamedQuery("User.findById");
 		query.setParameter("id", id);
+		User user = (User) query.getSingleResult();
+		lazyLoadUser(user);
+		return user;
+	}
+
+	@Override
+	public User getUserByEmail(String email) {
+		Query query = getEntityManager().createNamedQuery("User.findByEmail");
+		query.setParameter("email", email);
 		User user = (User) query.getSingleResult();
 		lazyLoadUser(user);
 		return user;

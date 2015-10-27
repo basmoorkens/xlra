@@ -14,6 +14,7 @@
 	</ui:define>
 	<ui:define name="body">
 		<h:form id="raiseRatesForm">
+			<p:growl id="msgs" showDetail="true" />
 			<p:wizard flowListener="#{raiseRatesController.onFlowProcess}"
 				showNavBar="false" widgetVar="wizard">
 				<p:tab id="selectRateFiles" title="Select rate files">
@@ -61,20 +62,22 @@
 					<h3>Raise percentage</h3>
 					<h:outputText value="#{raiseRatesController.percentage}">
 						<f:convertNumber pattern="#00.00" />
-					</h:outputText>%
+					</h:outputText>
 
 					<p:panel style=" bottom:40px; padding:0px;border:0px;">
 						<p:commandButton value="Back" onclick="PF('wizard').back();"
-							style="width:150px;" />
+							style="width:150px;" update=":raiseRatesForm" ajax="true" />
 						<p:commandButton value="Raise rates"
 							style="width:150px; margin-left:20px;"
-							action="#{raiseRatesController.raiseRates}" />
+							actionListener="#{raiseRatesController.raiseRates}"
+							update=":raiseRatesForm" ajax="true" />
 					</p:panel>
 				</p:tab>
 			</p:wizard>
 
 
-			<p:panel title="Raise history" header="Raise history" style="margin-top:50px;">
+			<p:panel title="Raise history" header="Raise history"
+				style="margin-top:50px;">
 				<p:dataTable var="logRecord"
 					value="#{raiseRatesController.logRecords}">
 					<p:column headerText="Type:">
@@ -97,7 +100,7 @@
 			</p:panel>
 
 			<p:commandButton value="Undo latest raise" immediate="true"
-				action="#{raiseRatesController.undoLatestRaiseRates}">
+				actionListener="#{raiseRatesController.undoLatestRaiseRates}">
 				<p:confirm header="Confirmation"
 					message="Are you sure you want to undo the last raise of rates?"
 					icon="ui-icon-alert" />
@@ -108,7 +111,32 @@
 				<p:commandButton value="No" type="button"
 					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
 			</p:confirmDialog>
+			<p:ajaxStatus onstart="showStatusDialog();"
+				onsuccess="hideStatusDialog();" />
+
+			<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+				closable="false" resizable="false" showHeader="false">
+				<img src="/xlra/images/ajax-loader.gif" />
+			</p:dialog>
+
 		</h:form>
+		<script type="text/javascript">
+			var statusDlgTimer = null;
+
+			function showStatusDialog() {
+				if (statusDlgTimer === null) {
+					statusDlgTimer = setTimeout("statusDialog.show()", 300);
+				}
+			}
+
+			function hideStatusDialog() {
+				if (statusDlgTimer !== null) {
+					clearTimeout(statusDlgTimer);
+					statusDialog.hide();
+					statusDlgTimer = null;
+				}
+			}
+		</script>
 	</ui:define>
 </ui:composition>
 </html>

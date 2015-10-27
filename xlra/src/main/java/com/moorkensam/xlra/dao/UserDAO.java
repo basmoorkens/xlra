@@ -15,4 +15,6 @@ public interface UserDAO {
 	public User resetPassword(User user, String generatedPassword);
 
 	public User getUserbyId(long id);
+
+	public User getUserByEmail(String email);
 }

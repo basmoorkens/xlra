@@ -19,6 +19,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.BatchSize;
+
 import com.moorkensam.xlra.model.BaseEntity;
 import com.moorkensam.xlra.model.FullCustomer;
 import com.moorkensam.xlra.model.configuration.Interval;
@@ -39,6 +41,7 @@ public class RateFile extends BaseEntity {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "rateFile", cascade = CascadeType.ALL, orphanRemoval = true)
+	@BatchSize(size = 5)
 	private List<Condition> conditions;
 
 	@OneToOne
@@ -56,9 +59,11 @@ public class RateFile extends BaseEntity {
 	private Country country;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "rateFile", cascade = CascadeType.ALL, orphanRemoval = true)
+	@BatchSize(size = 2)
 	private List<Zone> zones;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "rateFile", cascade = CascadeType.ALL, orphanRemoval = true)
+	@BatchSize(size = 10)
 	private List<RateLine> rateLines = new ArrayList<RateLine>();
 
 	@Enumerated(EnumType.STRING)

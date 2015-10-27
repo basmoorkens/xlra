@@ -56,14 +56,14 @@
 						<p:pickList id="permissionsPicklist"
 							value="#{rolesController.permissions}" var="permission"
 							effect="bounce" itemValue="#{permission}"
-							itemLabel="#{permission.name}" converter="#{permissionConverter}"
+							itemLabel="#{permission.key}" converter="#{permissionConverter}"
 							style="width:100%;" responsive="true">
 
 							<f:facet name="sourceCaption">All available permissions</f:facet>
 							<f:facet name="targetCaption">Selected permissions</f:facet>
 
 							<p:column style="width:90%;">
-								<h:outputText value="#{permission.name}" />
+								<h:outputText value="#{permission.key}" />
 							</p:column>
 						</p:pickList>
 					</p:panelGrid>
