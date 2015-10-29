@@ -8,12 +8,15 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.mail.MessagingException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.dao.UserDAO;
 import com.moorkensam.xlra.model.security.User;
+import com.moorkensam.xlra.service.EmailService;
 import com.moorkensam.xlra.service.UserService;
 
 @Stateless
@@ -23,6 +26,9 @@ public class UserServiceImpl implements UserService {
 
 	@Inject
 	private UserDAO userDAO;
+
+	@Inject
+	private EmailService emailService;
 
 	@Override
 	public List<User> getAllUsers() {
@@ -34,6 +40,14 @@ public class UserServiceImpl implements UserService {
 		user.setPassword("xlra");
 		user.setPassword(makePasswordHash(user.getPassword()));
 		userDAO.createUser(user);
+		try {
+			emailService.sendUserCreatedEmail(user);
+		} catch (MessagingException e) {
+			MessageUtil.addErrorMessage(
+					"Failed to send email",
+					"Failed to send out account created email to "
+							+ user.getEmail());
+		}
 	}
 
 	@Override
@@ -54,13 +68,21 @@ public class UserServiceImpl implements UserService {
 		userDAO.updateUser(user);
 	}
 
-	private String makePasswordHash(String password) {
+	protected String makePasswordHash(String password) {
 		MessageDigest md;
 		try {
 			md = MessageDigest.getInstance("SHA-256");
 			md.update(password.getBytes("UTF-8"));
 			byte[] digest = md.digest();
-			return new String(digest);
+
+			StringBuffer hexString = new StringBuffer();
+			for (int i = 0; i < digest.length; i++) {
+				String hex = Integer.toHexString(0xff & digest[i]);
+				if (hex.length() == 1)
+					hexString.append('0');
+				hexString.append(hex);
+			}
+			return hexString.toString();
 		} catch (NoSuchAlgorithmException e) {
 			logger.error(e.getMessage());
 		} catch (UnsupportedEncodingException e) {

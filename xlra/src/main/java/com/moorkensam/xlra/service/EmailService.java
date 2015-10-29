@@ -11,4 +11,6 @@ public interface EmailService {
 			throws MessagingException;
 
 	public void sendResetPasswordEmail(User user) throws MessagingException;
+
+	public void sendUserCreatedEmail(User user) throws MessagingException;
 }

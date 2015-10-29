@@ -90,7 +90,7 @@ public class Role extends BaseEntity {
 		for (Permission p : getPermissions()) {
 			permString += p.getKey() + ",";
 			counter++;
-			if (counter % 7 == 0) {
+			if (counter % 5 == 0) {
 				permString += "\n";
 			}
 		}

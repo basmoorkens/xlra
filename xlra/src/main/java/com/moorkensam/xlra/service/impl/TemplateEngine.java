@@ -14,6 +14,8 @@ import org.apache.logging.log4j.Logger;
 import com.moorkensam.xlra.dto.PriceResultDTO;
 import com.moorkensam.xlra.model.QuotationQuery;
 import com.moorkensam.xlra.model.error.TemplatingException;
+import com.moorkensam.xlra.model.security.User;
+import com.moorkensam.xlra.service.util.ConfigurationLoader;
 
 import freemarker.cache.StringTemplateLoader;
 import freemarker.core.ParseException;
@@ -37,12 +39,15 @@ public class TemplateEngine {
 
 	private StringTemplateLoader stringTemplateLoader;
 
-	private Configuration configuration;
+	private Configuration freemarkerConfiguration;
+
+	private ConfigurationLoader configLoader;
 
 	@PostConstruct
 	public void inializeEngine() {
 		setStringTemplateLoader(new StringTemplateLoader());
 		setConfiguration(new Configuration());
+		setConfigLoader(ConfigurationLoader.getInstance());
 	}
 
 	/**
@@ -58,7 +63,9 @@ public class TemplateEngine {
 	 */
 	public String parseEmailTemplate(String templateFromDb,
 			Map<String, Object> dataModel) throws TemplatingException {
-		logger.debug("Parsing template " + templateFromDb);
+		if (logger.isDebugEnabled()) {
+			logger.debug("Parsing email template " + templateFromDb);
+		}
 		StringWriter writer = new StringWriter();
 		getStringTemplateLoader().putTemplate("template", templateFromDb);
 		getConfiguration().setTemplateLoader(getStringTemplateLoader());
@@ -85,6 +92,49 @@ public class TemplateEngine {
 		return writer.toString();
 	}
 
+	public String parseUserCreatedTemplate(User user)
+			throws TemplatingException {
+		if (logger.isDebugEnabled()) {
+			logger.debug("Parsing user created email for " + user.getEmail());
+		}
+		Map<String, Object> dataModel = createUserTemplateParams(user);
+		freemarkerConfiguration
+				.setClassForTemplateLoading(this.getClass(), "/");
+		StringWriter writer = new StringWriter();
+		try {
+			Template template = freemarkerConfiguration
+					.getTemplate("templates/account_created.ftl");
+			template.process(dataModel, writer);
+		} catch (TemplateNotFoundException e) {
+			logger.error(e);
+			throw new TemplatingException("Template not found internaly", e);
+		} catch (MalformedTemplateNameException e) {
+			logger.error(e);
+			throw new TemplatingException("Template malformated", e);
+		} catch (ParseException e) {
+			logger.error(e);
+			throw new TemplatingException("Failed to parse template", e);
+		} catch (IOException e) {
+			logger.error(e);
+			throw new TemplatingException("Could not write template", e);
+		} catch (TemplateException e) {
+			logger.error(e);
+			throw new TemplatingException("General templating exception", e);
+		}
+
+		return writer.toString();
+	}
+
+	private Map<String, Object> createUserTemplateParams(User user) {
+		Map<String, Object> dataModel = new HashMap<String, Object>();
+		dataModel.put("fullName", user.getFirstName() + " " + user.getName());
+		dataModel.put(
+				"applicationUrl",
+				getConfigLoader().getProperty(
+						ConfigurationLoader.APPLICATION_BASE_URL));
+		return dataModel;
+	}
+
 	/**
 	 * Creates the template parameter map for the email.
 	 * 
@@ -92,8 +142,8 @@ public class TemplateEngine {
 	 * @param result
 	 * @return
 	 */
-	public Map<String, Object> createTemplateParams(QuotationQuery query,
-			PriceResultDTO priceDTO) {
+	public Map<String, Object> createOfferteEmailTemplateParams(
+			QuotationQuery query, PriceResultDTO priceDTO) {
 		Map<String, Object> templateModel = new HashMap<String, Object>();
 		templateModel.put("customer", query.getCustomer().getName());
 		templateModel.put("quantity", query.getQuantity());
@@ -131,10 +181,18 @@ public class TemplateEngine {
 	}
 
 	public Configuration getConfiguration() {
-		return configuration;
+		return freemarkerConfiguration;
 	}
 
 	public void setConfiguration(Configuration configuration) {
-		this.configuration = configuration;
+		this.freemarkerConfiguration = configuration;
+	}
+
+	public ConfigurationLoader getConfigLoader() {
+		return configLoader;
+	}
+
+	public void setConfigLoader(ConfigurationLoader configLoader) {
+		this.configLoader = configLoader;
 	}
 }

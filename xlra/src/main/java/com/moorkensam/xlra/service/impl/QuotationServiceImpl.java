@@ -203,7 +203,7 @@ public class QuotationServiceImpl implements QuotationService {
 					.getMailTemplateForLanguage(
 							result.getQuery().getResultLanguage());
 			Map<String, Object> templateParameters = templatEngine
-					.createTemplateParams(result.getQuery(), resultDTO);
+					.createOfferteEmailTemplateParams(result.getQuery(), resultDTO);
 			String emailMessage = getTemplatEngine().parseEmailTemplate(
 					template.getTemplate(), templateParameters);
 			dto.setAddress(result.getQuery().getCustomer().getEmail());

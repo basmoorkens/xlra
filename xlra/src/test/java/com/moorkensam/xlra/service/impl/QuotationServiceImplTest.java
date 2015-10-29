@@ -93,7 +93,7 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 		EasyMock.expect(
 				emailTemplateDAO.getMailTemplateForLanguage(Language.NL))
 				.andReturn(template);
-		EasyMock.expect(engine.createTemplateParams(query, resultDTO))
+		EasyMock.expect(engine.createOfferteEmailTemplateParams(query, resultDTO))
 				.andReturn(new HashMap<String, Object>());
 		EasyMock.expect(
 				engine.parseEmailTemplate(template.getTemplate(),

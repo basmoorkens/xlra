@@ -132,5 +132,10 @@ VALUES
 	(15, '2015-10-25 00:51:22', 00000000, NULL, NULL, 0, 'The permission to view ratefiles.', 'VIEW_RATEFILE'),
 	(16, '2015-10-25 00:51:38', 00000000, NULL, NULL, 0, 'The permission to edit ratefiles', 'EDIT_RATEFILE'),
 	(17, '2015-10-25 00:51:52', 00000000, NULL, NULL, 0, 'The permission to create ratefiles.', 'CREATE_RATEFILE');
+	INSERT INTO permissions (id, createdDateTime, deleted, deletedDateTime, lastUpdatedDateTime, version, permission_description, permission_key)
+VALUES
+	(22, '2015-10-28 19:42:02', 00000000, NULL, NULL, 0, 'The permission to edit a user his own profile / reset password', 'USER_EDIT_PROFILE'),
+	(23, '2015-10-28 19:43:45', 00000000, NULL, NULL, 0, 'The permission to edit a full user', 'FULL_CUSTOMER_EDIT');
+
 
 

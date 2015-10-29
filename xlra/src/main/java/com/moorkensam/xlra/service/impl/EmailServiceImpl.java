@@ -88,4 +88,29 @@ public class EmailServiceImpl implements EmailService {
 		}
 	}
 
+	@Override
+	public void sendUserCreatedEmail(User user) throws MessagingException {
+		logger.info("Sending user reset password to " + user.getEmail());
+		try {
+			ConfigurationLoader configLoader = ConfigurationLoader
+					.getInstance();
+			String fromAddress = configLoader
+					.getProperty(ConfigurationLoader.MAIL_SENDER);
+			Message message = new MimeMessage(mailSession);
+			message.setFrom(new InternetAddress(fromAddress));
+			message.setRecipients(Message.RecipientType.TO,
+					InternetAddress.parse(user.getEmail()));
+			message.setSubject("Extra logistics Rates application - account created");
+			message.setContent("TEST", "text/html; charset=utf-8");
+
+			Transport.send(message);
+			if (logger.isDebugEnabled()) {
+				logger.debug("Email succesfully sent");
+			}
+		} catch (MessagingException e) {
+			logger.error("Error sending email: " + e);
+			throw new MessagingException("Error sending password reset email");
+		}
+	}
+
 }

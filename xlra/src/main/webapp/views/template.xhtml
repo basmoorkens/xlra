@@ -13,7 +13,9 @@
 	<h3>Version: #{maven.version['com.moorkensam:xlra']}</h3>
 	<h:form>
 		<p:menubar>
-			<p:submenu label="Rates" icon="ui-icon-document">
+			<p:submenu
+				rendered="#{userSessionController.hasNonePermissions(['EDIT_RATEFILE', 'RAISE_RATES', 'EXCEL_UPLOAD'])}"
+				label="Rates" icon="ui-icon-document">
 				<p:menuitem
 					rendered="#{userSessionController.hasPermission('EDIT_RATEFILE')}"
 					value="Manage rates" url="/views/admin/rate/manageRates.xhtml" />
@@ -26,7 +28,9 @@
 					url="/views/admin/upload/excelUpload.xhtml" />
 			</p:submenu>
 
-			<p:submenu label="Offertes" icon="ui-icon-document">
+			<p:submenu
+				rendered="#{userSessionController.hasNonePermissions(['CREATE_OFFERTE', 'VIEW_OFFERTE'])}"
+				label="Offertes" icon="ui-icon-document">
 				<p:menuitem
 					rendered="#{userSessionController.hasPermission('CREATE_OFFERTE')}"
 					value="Create offerte" url="/views/user/createOfferte.xhtml" />
@@ -35,14 +39,18 @@
 					value="Overview offertes" url="/views/user/offerteOverview.xhtml" />
 			</p:submenu>
 
-			<p:submenu label="Customer" icon="ui-icon-document">
+			<p:submenu
+				rendered="#{userSessionController.hasNonePermissions(['FULL_CUSTOMER_EDIT'])}"
+				label="Customer" icon="ui-icon-document">
 				<p:menuitem
 					rendered="#{userSessionController.hasPermission('FULL_CUSTOMER_EDIT')}"
 					value="Manage customers"
 					url="/views/admin/customer/manageCustomers.xhtml" />
 			</p:submenu>
 
-			<p:submenu label="Configuration" icon="ui-icon-document">
+			<p:submenu
+				rendered="#{userSessionController.hasNonePermissions(['DIESEL_EDIT', 'TRANSLATION_EDIT', 'EMAIL_TEMPLATE_EDIT', 'COUNTRY_EDIT'])}"
+				label="Configuration" icon="ui-icon-document">
 				<p:menuitem
 					rendered="#{userSessionController.hasPermission('CHF_EDIT')}"
 					value="Swiss rates" url="/views/admin/configuration/chfRates.xhtml" />
@@ -63,7 +71,9 @@
 					value="Countries" url="/views/admin/configuration/country.xhtml" />
 			</p:submenu>
 
-			<p:submenu label="Users" icon="ui-icon-document">
+			<p:submenu
+				rendered="#{userSessionController.hasNonePermissions(['USER_EDIT_PROFILE', 'USER_EDIT', 'ROLE_EDIT', 'PERMISSION_EDIT'])}"
+				label="Users" icon="ui-icon-document">
 				<p:menuitem
 					rendered="#{userSessionController.hasPermission('USER_EDIT_PROFILE')}"
 					value="User profile" url="/views/user/editProfile.xhtml" />
@@ -82,7 +92,8 @@
 			</p:submenu>
 			<f:facet name="options">
 				<h:outputText
-					value="Welcome back #{userSessionController.loggedInUser.fullName}" />
+					value="Welcome back #{userSessionController.loggedInUser.fullName}"
+					style="margin-right:10px;color:red;" />
 				<p:commandButton value="Logout"
 					actionListener="#{logoutController.logout}"
 					style="margin-right:10px" ajax="false" icon="ui-icon-extlink" />

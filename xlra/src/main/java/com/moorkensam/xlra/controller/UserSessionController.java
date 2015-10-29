@@ -1,5 +1,7 @@
 package com.moorkensam.xlra.controller;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -53,6 +55,17 @@ public class UserSessionController {
 		for (Permission p : loggedInUser.getAllPermissions()) {
 			if (p.getKey().equalsIgnoreCase(permission)) {
 				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean hasNonePermissions(List<String> permissions) {
+		for (String p : permissions) {
+			for (Permission perm : loggedInUser.getAllPermissions()) {
+				if (perm.getKey().equalsIgnoreCase(p)) {
+					return true;
+				}
 			}
 		}
 		return false;

@@ -11,6 +11,8 @@ import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.TestedObject;
 
 import com.moorkensam.xlra.model.error.TemplatingException;
+import com.moorkensam.xlra.model.security.User;
+import com.moorkensam.xlra.service.util.ConfigurationLoader;
 
 import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Configuration;
@@ -25,6 +27,16 @@ public class TemplateEngineTEst extends UnitilsJUnit4 {
 		templateEngine = new TemplateEngine();
 		templateEngine.setStringTemplateLoader(new StringTemplateLoader());
 		templateEngine.setConfiguration(new Configuration());
+		templateEngine.setConfigLoader(ConfigurationLoader.getInstance());
+	}
+
+	@Test
+	public void testParseUSerCreatedTemplate() throws TemplatingException {
+		User user = new User();
+		user.setFirstName("bas");
+		user.setName("moorkens");
+		String generatedMail = templateEngine.parseUserCreatedTemplate(user);
+		Assert.assertTrue(generatedMail.contains("bas moorkens"));
 	}
 
 	@Test
