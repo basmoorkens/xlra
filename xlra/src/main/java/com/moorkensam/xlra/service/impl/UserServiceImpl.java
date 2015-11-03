@@ -67,7 +67,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User updateUser(User user) {
+	public User updateUser(User user, boolean updatedPw) {
+		if (updatedPw) {
+			user.setPassword(makePasswordHash(user.getPassword()));
+		}
 		return userDAO.updateUser(user);
 	}
 

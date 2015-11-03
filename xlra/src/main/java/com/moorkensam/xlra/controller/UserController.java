@@ -3,6 +3,7 @@ package com.moorkensam.xlra.controller;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
@@ -24,7 +25,9 @@ public class UserController {
 
 	@PostConstruct
 	public void initialize() {
-		// fetch user from session;..
+		String username = FacesContext.getCurrentInstance()
+				.getExternalContext().getUserPrincipal().getName();
+		user = userService.getUserByEmail(username);
 	}
 
 	public User getUser() {
@@ -60,14 +63,26 @@ public class UserController {
 	}
 
 	public void saveUser() {
-		if (newPassword.equals(retypedPassword)) {
-			user.setPassword(newPassword);
-			userService.updateUser(user);
-		} else {
-			MessageUtil
-					.addErrorMessage("Passwords do not match",
-							"The new password and the retyped new password should be the same!");
+		boolean skippws = false;
+		if (newPassword == null || newPassword.isEmpty()
+				|| retypedPassword == null || retypedPassword.isEmpty()) {
+			skippws = true;
 		}
+
+		if (newPassword.equals(retypedPassword) && !skippws) {
+			user.setPassword(newPassword);
+		} else {
+			if (!skippws) {
+				MessageUtil
+						.addErrorMessage("Passwords do not match",
+								"The new password and the retyped new password should be the same!");
+				return;
+			}
+		}
+		user = userService.updateUser(user, skippws);
+		MessageUtil.addMessage("Profile updated",
+				"Your profile was successfully updated.");
+
 	}
 
 }

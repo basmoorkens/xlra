@@ -17,16 +17,16 @@
 			<p:panel>
 				<p:panelGrid columns="2">
 					<h:outputText value="First name: " />
-					<p:inputText value="#{userController.user.firstName}" />
+					<p:inputText size="100" value="#{userController.user.firstName}" />
 
 					<h:outputText value="Name: " />
-					<p:inputText value="#{userController.user.name}" />
+					<p:inputText size="100" value="#{userController.user.name}" />
 
-					<h:outputText value="New password:" />
-					<p:inputText value="#{userController.newPassword}" />
+					<h:outputText value="New password: " />
+					<p:password size="100" value="#{userController.newPassword}" />
 
-					<h:outputText value="Retype new password:" />
-					<p:inputText value="#{userController.retypedPassword}" />
+					<h:outputText value="Retype new password: " />
+					<p:password size="100" value="#{userController.retypedPassword}" />
 				</p:panelGrid>
 
 				<p:commandButton value="Save"
