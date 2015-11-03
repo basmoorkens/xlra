@@ -57,6 +57,7 @@ public class ManageUsersController {
 		userService.deleteUser(user);
 		MessageUtil.addMessage("User deleted", "The user " + user.getName()
 				+ " was successfully deleted.");
+		refreshUsers();
 
 	}
 

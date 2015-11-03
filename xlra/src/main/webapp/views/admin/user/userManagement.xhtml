@@ -88,7 +88,8 @@
 						</p:pickList>
 					</p:panelGrid>
 					<p:panel style="margin-top:30px;">
-						<p:commandButton rendered="true" value="Reset password" ajax="true"
+						<p:commandButton rendered="true" value="Reset password"
+							ajax="true"
 							actionListener="#{manageUsersController.resetUserPassword}"
 							update=":usersForm :addUserForm" />
 						<p:commandButton value="Save" update=":usersForm :addUserForm"
@@ -97,9 +98,33 @@
 							oncomplete="handleAddUserRequest(xhr, status, args)" />
 					</p:panel>
 				</p:panel>
+				<p:ajaxStatus onstart="showStatusDialog();"
+					onsuccess="hideStatusDialog();" />
+
+				<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+					closable="false" resizable="false" showHeader="false">
+					<img src="/xlra/images/ajax-loader.gif" />
+				</p:dialog>
+
 			</h:form>
 		</p:dialog>
 		<script type="text/javascript">
+			var statusDlgTimer = null;
+
+			function showStatusDialog() {
+				if (statusDlgTimer === null) {
+					statusDlgTimer = setTimeout("statusDialog.show()", 500);
+				}
+			}
+
+			function hideStatusDialog() {
+				if (statusDlgTimer !== null) {
+					clearTimeout(statusDlgTimer);
+					statusDialog.hide();
+					statusDlgTimer = null;
+				}
+			}
+
 			function handleAddUserRequest(xhr, status, args) {
 				if (args.validationFailed) {
 					PF('addUserDialog').jq.effect("shake", {

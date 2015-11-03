@@ -20,4 +20,10 @@ public interface UserService {
 
 	public User getUserByEmail(String email);
 
+	public void resendAccountCreatedEmail(User user);
+
+	public User isValidPasswordRequest(String email, String token);
+
+	public void setPasswordAndActivateUser(User user, String password);
+
 }

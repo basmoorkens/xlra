@@ -44,7 +44,7 @@ public class TemplateEngineTEst extends UnitilsJUnit4 {
 		String template = "Dear ${customer}, your offerte is here. please see attached pdf.";
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("customer", "Bas");
-		String result = templateEngine.parseEmailTemplate(template, model);
+		String result = templateEngine.parseOfferteEmailTemplate(template, model);
 		Assert.assertNotNull(result);
 		Assert.assertTrue(result.contains("Bas"));
 	}

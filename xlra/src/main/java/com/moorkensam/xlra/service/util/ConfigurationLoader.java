@@ -13,6 +13,8 @@ public class ConfigurationLoader {
 
 	public final static String MAIL_SENDER = "email.from";
 
+	public final static String APPLICATION_PASSWORD_SETUP_URL = "application.password.setup.url";
+
 	public final static String APPLICATION_BASE_URL = "application.base.url";
 
 	public static ConfigurationLoader instance;

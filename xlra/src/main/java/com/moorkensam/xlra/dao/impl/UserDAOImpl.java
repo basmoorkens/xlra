@@ -2,14 +2,21 @@ package com.moorkensam.xlra.dao.impl;
 
 import java.util.List;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.moorkensam.xlra.dao.BaseDAO;
 import com.moorkensam.xlra.dao.UserDAO;
 import com.moorkensam.xlra.model.security.Role;
 import com.moorkensam.xlra.model.security.User;
+import com.moorkensam.xlra.model.security.UserStatus;
 
 public class UserDAOImpl extends BaseDAO implements UserDAO {
+
+	private final static Logger logger = LogManager.getLogger();
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -63,4 +70,25 @@ public class UserDAOImpl extends BaseDAO implements UserDAO {
 		return user;
 	}
 
+	@Override
+	public void deleteUser(User user) {
+		getEntityManager().remove(user);
+	}
+
+	@Override
+	public User isValidPasswordRequest(String email, String token) {
+		Query query = getEntityManager().createNamedQuery(
+				"User.findByEmailAndToken");
+		query.setParameter("email", email);
+		query.setParameter("token", token);
+		query.setParameter("userStatus", UserStatus.FIRST_TIME_LOGIN);
+		User user = null;
+		try {
+			user = (User) query.getSingleResult();
+		} catch (NoResultException nre) {
+			logger.info("Could not find user for " + email
+					+ " with specified token. Possible intrustion attempt!");
+		}
+		return user;
+	}
 }

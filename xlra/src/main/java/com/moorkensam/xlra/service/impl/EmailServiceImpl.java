@@ -2,6 +2,7 @@ package com.moorkensam.xlra.service.impl;
 
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -12,6 +13,7 @@ import javax.mail.internet.MimeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.moorkensam.xlra.model.error.TemplatingException;
 import com.moorkensam.xlra.model.rate.QuotationResult;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.EmailService;
@@ -30,6 +32,9 @@ public class EmailServiceImpl implements EmailService {
 
 	@Resource(name = "java:/mail/xlra")
 	private Session mailSession;
+
+	@Inject
+	private TemplateEngine templateEngine;
 
 	@Override
 	public void sendOfferteMail(QuotationResult result)
@@ -100,8 +105,10 @@ public class EmailServiceImpl implements EmailService {
 			message.setFrom(new InternetAddress(fromAddress));
 			message.setRecipients(Message.RecipientType.TO,
 					InternetAddress.parse(user.getEmail()));
+			String filledInTemplate = templateEngine
+					.parseUserCreatedTemplate(user);
 			message.setSubject("Extra logistics Rates application - account created");
-			message.setContent("TEST", "text/html; charset=utf-8");
+			message.setContent(filledInTemplate, "text/html; charset=utf-8");
 
 			Transport.send(message);
 			if (logger.isDebugEnabled()) {
@@ -110,6 +117,9 @@ public class EmailServiceImpl implements EmailService {
 		} catch (MessagingException e) {
 			logger.error("Error sending email: " + e);
 			throw new MessagingException("Error sending password reset email");
+		} catch (TemplatingException e) {
+			logger.error(e);
+			throw new MessagingException("Could not parse email template");
 		}
 	}
 

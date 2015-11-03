@@ -1,6 +1,6 @@
 <div>
 	<p>
-		Dear ${fullName},
+		Dear ${fullName},<br />
 		a user account was created on the Extra logistics rates application.<br />
 		<a href="${applicationUrl}">
 			Please use following link to login the application for the first time.<br />

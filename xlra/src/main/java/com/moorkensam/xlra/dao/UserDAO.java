@@ -17,4 +17,8 @@ public interface UserDAO {
 	public User getUserbyId(long id);
 
 	public User getUserByEmail(String email);
+
+	public void deleteUser(User user);
+
+	public User isValidPasswordRequest(String email, String token);
 }

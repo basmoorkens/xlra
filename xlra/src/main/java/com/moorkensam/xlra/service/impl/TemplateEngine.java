@@ -61,7 +61,7 @@ public class TemplateEngine {
 	 * @throws TemplatingException
 	 *             When the template could not be parsed
 	 */
-	public String parseEmailTemplate(String templateFromDb,
+	public String parseOfferteEmailTemplate(String templateFromDb,
 			Map<String, Object> dataModel) throws TemplatingException {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Parsing email template " + templateFromDb);
@@ -131,7 +131,10 @@ public class TemplateEngine {
 		dataModel.put(
 				"applicationUrl",
 				getConfigLoader().getProperty(
-						ConfigurationLoader.APPLICATION_BASE_URL));
+						ConfigurationLoader.APPLICATION_PASSWORD_SETUP_URL)
+						+ "?token="
+						+ user.getTokenInfo().getVerificationToken()
+						+ "&email=" + user.getEmail());
 		return dataModel;
 	}
 

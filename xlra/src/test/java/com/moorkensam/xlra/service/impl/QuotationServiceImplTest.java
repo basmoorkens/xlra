@@ -96,7 +96,7 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 		EasyMock.expect(engine.createOfferteEmailTemplateParams(query, resultDTO))
 				.andReturn(new HashMap<String, Object>());
 		EasyMock.expect(
-				engine.parseEmailTemplate(template.getTemplate(),
+				engine.parseOfferteEmailTemplate(template.getTemplate(),
 						new HashMap<String, Object>())).andReturn(
 				"test template + filled in");
 		EasyMockUnitils.replay();

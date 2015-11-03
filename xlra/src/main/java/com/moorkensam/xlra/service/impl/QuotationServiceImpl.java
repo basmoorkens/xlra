@@ -204,7 +204,7 @@ public class QuotationServiceImpl implements QuotationService {
 							result.getQuery().getResultLanguage());
 			Map<String, Object> templateParameters = templatEngine
 					.createOfferteEmailTemplateParams(result.getQuery(), resultDTO);
-			String emailMessage = getTemplatEngine().parseEmailTemplate(
+			String emailMessage = getTemplatEngine().parseOfferteEmailTemplate(
 					template.getTemplate(), templateParameters);
 			dto.setAddress(result.getQuery().getCustomer().getEmail());
 			dto.setSubject(template.getSubject());

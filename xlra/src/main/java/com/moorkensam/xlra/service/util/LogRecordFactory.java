@@ -13,6 +13,8 @@ import com.moorkensam.xlra.model.configuration.LogType;
 import com.moorkensam.xlra.model.configuration.RateLogRecord;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateOperation;
+import com.moorkensam.xlra.model.security.User;
+import com.moorkensam.xlra.model.security.UserLogRecord;
 
 public class LogRecordFactory {
 
@@ -35,6 +37,14 @@ public class LogRecordFactory {
 		fillInBasicProperties(record);
 		record.setType(LogType.DIESELRATE);
 		record.setRate(value);
+		return record;
+	}
+
+	public static LogRecord createUserRecord(User affectedUser) {
+		UserLogRecord record = new UserLogRecord();
+		record.setLogDate(new Date());
+		record.setType(LogType.USER_ACTIVATED);
+		record.setAffectedAccount(affectedUser.getEmail());
 		return record;
 	}
 

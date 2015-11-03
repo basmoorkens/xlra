@@ -53,11 +53,13 @@
 	        <transport-guarantee>NONE</transport-guarantee>
 	    </user-data-constraint>
 	</security-constraint>
+	
 	<security-constraint>
 	    <display-name>user-pages</display-name>
 	    <web-resource-collection>
 	        <web-resource-name>protected-pages</web-resource-name>
-	        <url-pattern>/views/*</url-pattern>
+	        <url-pattern>/views/user/*</url-pattern>
+	        <url-pattern>/views/protected/*</url-pattern>
 	    </web-resource-collection>
 	    <auth-constraint>
 	        <role-name>Admin</role-name>

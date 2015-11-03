@@ -3,7 +3,10 @@ package com.moorkensam.xlra.model.security;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -21,6 +24,8 @@ import com.moorkensam.xlra.model.BaseEntity;
 @NamedQueries({
 		@NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
 		@NamedQuery(name = "User.findById", query = "SELECT u FROM User u where u.id = :id"),
+		@NamedQuery(name = "User.findByEmailAndToken", query = "SELECT u FROM User u WHERE u.email = :email and u.tokenInfo.verificationToken = :token"
+				+ " and u.userStatus = :userStatus"),
 		@NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u LEFT JOIN FETCH u.roles where u.email = :email"),
 		@NamedQuery(name = "User.findAllNonDeleted", query = "SELECT u FROM User u where u.enabled = true") })
 public class User extends BaseEntity {
@@ -37,12 +42,19 @@ public class User extends BaseEntity {
 
 	private boolean enabled;
 
+	@Enumerated(EnumType.STRING)
+	private UserStatus userStatus;
+
+	@Embedded
+	private TokenInfo tokenInfo;
+
 	@Transient
 	public String getFullName() {
 		return firstName + " " + name;
 	}
 
 	public User() {
+		tokenInfo = new TokenInfo();
 		enabled = true;
 		roles = new ArrayList<Role>();
 	}
@@ -118,4 +130,19 @@ public class User extends BaseEntity {
 		return permissions;
 	}
 
+	public TokenInfo getTokenInfo() {
+		return tokenInfo;
+	}
+
+	public void setTokenInfo(TokenInfo tokenInfo) {
+		this.tokenInfo = tokenInfo;
+	}
+
+	public UserStatus getUserStatus() {
+		return userStatus;
+	}
+
+	public void setUserStatus(UserStatus userStatus) {
+		this.userStatus = userStatus;
+	}
 }

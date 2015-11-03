@@ -3,7 +3,6 @@ package com.moorkensam.xlra.service.impl;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -14,10 +13,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
+import com.moorkensam.xlra.dao.LogDAO;
 import com.moorkensam.xlra.dao.UserDAO;
+import com.moorkensam.xlra.model.configuration.LogRecord;
 import com.moorkensam.xlra.model.security.User;
+import com.moorkensam.xlra.model.security.UserStatus;
 import com.moorkensam.xlra.service.EmailService;
 import com.moorkensam.xlra.service.UserService;
+import com.moorkensam.xlra.service.util.LogRecordFactory;
+import com.moorkensam.xlra.service.util.TokenUtil;
 
 @Stateless
 public class UserServiceImpl implements UserService {
@@ -26,6 +30,9 @@ public class UserServiceImpl implements UserService {
 
 	@Inject
 	private UserDAO userDAO;
+
+	@Inject
+	private LogDAO logDAO;
 
 	@Inject
 	private EmailService emailService;
@@ -37,9 +44,18 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void createUser(User user) {
+		LogRecord record = LogRecordFactory.createUserRecord(user);
+		logDAO.createLogRecord(record);
+
 		user.setPassword("xlra");
+		user.setTokenInfo(TokenUtil.getNextToken());
 		user.setPassword(makePasswordHash(user.getPassword()));
+		user.setUserStatus(UserStatus.FIRST_TIME_LOGIN);
 		userDAO.createUser(user);
+		sendUserCreatedEmail(user);
+	}
+
+	protected void sendUserCreatedEmail(User user) {
 		try {
 			emailService.sendUserCreatedEmail(user);
 		} catch (MessagingException e) {
@@ -62,10 +78,8 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void deleteUser(User user) {
-		user.setEnabled(false);
-		user.setDeleted(true);
-		user.setDeletedDateTime(new Date());
-		userDAO.updateUser(user);
+		User toDelete = userDAO.getUserbyId(user.getId());
+		userDAO.deleteUser(toDelete);
 	}
 
 	protected String makePasswordHash(String password) {
@@ -102,4 +116,23 @@ public class UserServiceImpl implements UserService {
 		return userDAO.getUserByEmail(email);
 	}
 
+	@Override
+	public void resendAccountCreatedEmail(User user) {
+		sendUserCreatedEmail(user);
+	}
+
+	@Override
+	public User isValidPasswordRequest(String email, String token) {
+		return userDAO.isValidPasswordRequest(email, token);
+	}
+
+	@Override
+	public void setPasswordAndActivateUser(User user, String password) {
+		LogRecord record = LogRecordFactory.createUserRecord(user);
+		logDAO.createLogRecord(record);
+		user.setPassword(makePasswordHash(password));
+		user.setUserStatus(UserStatus.IN_OPERATION);
+		user.setEnabled(true);
+		userDAO.updateUser(user);
+	}
 }
