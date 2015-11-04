@@ -79,7 +79,7 @@ public class UserController {
 				return;
 			}
 		}
-		user = userService.updateUser(user, skippws);
+		user = userService.updateUser(user, !skippws);
 		MessageUtil.addMessage("Profile updated",
 				"Your profile was successfully updated.");
 

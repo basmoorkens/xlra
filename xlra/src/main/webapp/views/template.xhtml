@@ -14,11 +14,14 @@
 	<h:form>
 		<p:menubar>
 			<p:submenu
-				rendered="#{userSessionController.hasNonePermissions(['EDIT_RATEFILE', 'RAISE_RATES', 'EXCEL_UPLOAD'])}"
+				rendered="#{userSessionController.hasNonePermissions(['EDIT_RATEFILE', 'RAISE_RATES', 'VIEW_RATEFILE', 'EXCEL_UPLOAD'])}"
 				label="Rates" icon="ui-icon-document">
 				<p:menuitem
 					rendered="#{userSessionController.hasPermission('EDIT_RATEFILE')}"
 					value="Manage rates" url="/views/admin/rate/manageRates.xhtml" />
+				<p:menuitem
+					rendered="#{userSessionController.hasPermission('VIEW_RATEFILE')}"
+					value="View rates" url="/views/user/viewRates.xhtml" />
 				<p:menuitem
 					rendered="#{userSessionController.hasPermission('RAISE_RATES')}"
 					value="Raise rates" url="/views/admin/rate/raiseRates.xhtml" />

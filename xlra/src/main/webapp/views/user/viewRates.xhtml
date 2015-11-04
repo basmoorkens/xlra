@@ -39,31 +39,31 @@
 		<h3>Details</h3>
 		<h:form id="zoneDetailForm">
 			<p:growl id="message" showDetail="true" />
-			<ui:include src="/views/rate/admin/zoneDetail.xhtml">
+			<ui:include src="/views/user/zoneDetail.xhtml">
 				<ui:param name="zones"
 					value="#{manageRatesController.selectedRateFile.zones}" />
 				<ui:param name="controller" value="#{manageRatesController}" />
 				<ui:param name="controllerName" value="manageRatesController" />
-				<ui:param name="canEdit" value="#{manageRatesController.canEdit}"></ui:param>
+				<ui:param name="canEdit" value="false"></ui:param>
 			</ui:include>
 		</h:form>
 		<h:form id="rateLinesDetailForm">
-			<ui:include src="/views/rate/admin/rateLinesDetail.xhtml">
+			<ui:include src="/views/user/rateLinesDetail.xhtml">
 				<ui:param name="rateFile"
 					value="#{manageRatesController.selectedRateFile}" />
 				<ui:param name="controller" value="#{manageRatesController}" />
 				<ui:param name="controllerName" value="manageRatesController" />
-				<ui:param name="canEdit" value="#{manageRatesController.canEdit}"></ui:param>
+				<ui:param name="canEdit" value="false"></ui:param>
 			</ui:include>
 		</h:form>
 		<h:form id="conditionsDetailForm">
 			<p:growl id="message" showDetail="true" />
-			<ui:include src="/views/rate/admin/conditionsDetail.xhtml">
+			<ui:include src="/views/user/conditionsDetail.xhtml">
 				<ui:param name="conditions"
 					value="#{manageRatesController.selectedRateFile.conditions}" />
 				<ui:param name="controller" value="#{manageRatesController}" />
 				<ui:param name="controllerName" value="manageRatesController" />
-				<ui:param name="canEdit" value="#{manageRatesController.canEdit}"></ui:param>
+				<ui:param name="canEdit" value="false"></ui:param>
 			</ui:include>
 		</h:form>
 	</ui:define>

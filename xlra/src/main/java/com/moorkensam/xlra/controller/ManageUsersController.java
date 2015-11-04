@@ -101,7 +101,7 @@ public class ManageUsersController {
 			MessageUtil.addMessage("User updated",
 					"The user " + selectedUser.getName()
 							+ " was successfully updated.");
-			userService.updateUser(selectedUser);
+			userService.updateUser(selectedUser, false);
 		}
 		refreshUsers();
 	}

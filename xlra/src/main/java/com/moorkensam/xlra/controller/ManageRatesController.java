@@ -31,6 +31,9 @@ public class ManageRatesController {
 	@Inject
 	private RateFileService rateFileService;
 
+	@Inject
+	private UserSessionController sessionController;
+
 	private List<RateFile> rateFiles;
 
 	private boolean collapseConditionsDetailGrid = true;
@@ -47,8 +50,11 @@ public class ManageRatesController {
 
 	private TranslationKey keyToAdd;
 
+	private boolean editable;
+
 	@PostConstruct
 	public void initializeController() {
+		editable = sessionController.isAdmin();
 		refreshRates();
 		resetSelectedRateFile();
 	}
@@ -282,6 +288,6 @@ public class ManageRatesController {
 
 	// TODO fill this in based on user permissions
 	public boolean isCanEdit() {
-		return true;
+		return editable;
 	}
 }
