@@ -10,6 +10,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.MapKeyEnumerated;
@@ -23,12 +24,12 @@ import com.moorkensam.xlra.model.Language;
 @Entity
 @Cacheable
 @Table(name = "country")
-@NamedQueries(@NamedQuery(name = "Country.findAll", query = "SELECT c FROM Country c WHERE c.deleted = false"))
+@NamedQueries(@NamedQuery(name = "Country.findAll", query = "SELECT c FROM Country c  WHERE c.deleted = false"))
 public class Country extends BaseEntity {
 
 	private static final long serialVersionUID = -5766329224119072846L;
 
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.EAGER)
 	@MapKeyColumn(name = "language")
 	@MapKeyEnumerated(EnumType.STRING)
 	@Column(name = "name")
