@@ -18,9 +18,22 @@ import com.moorkensam.xlra.model.security.UserLogRecord;
 
 public class LogRecordFactory {
 
-	private final static Logger logger = LogManager.getLogger();
+	private final Logger logger = LogManager.getLogger();
 
-	public static LogRecord createChfLogRecord(BigDecimal value) {
+	private static LogRecordFactory instance;
+
+	private LogRecordFactory() {
+
+	}
+
+	public static LogRecordFactory getInstance() {
+		if (instance == null) {
+			instance = new LogRecordFactory();
+		}
+		return instance;
+	}
+
+	public LogRecord createChfLogRecord(BigDecimal value) {
 		RateLogRecord record = new RateLogRecord();
 		fillInBasicProperties(record);
 		record.setRate(value);
@@ -28,11 +41,11 @@ public class LogRecordFactory {
 		return record;
 	}
 
-	private static void fillInBasicProperties(LogRecord record) {
+	private void fillInBasicProperties(LogRecord record) {
 		record.setLogDate(new Date());
 	}
 
-	public static LogRecord createDieselLogRecord(BigDecimal value) {
+	public LogRecord createDieselLogRecord(BigDecimal value) {
 		RateLogRecord record = new RateLogRecord();
 		fillInBasicProperties(record);
 		record.setType(LogType.DIESELRATE);
@@ -40,17 +53,16 @@ public class LogRecordFactory {
 		return record;
 	}
 
-	public static LogRecord createUserRecord(User affectedUser) {
+	public LogRecord createUserRecord(User affectedUser, LogType logType) {
 		UserLogRecord record = new UserLogRecord();
 		record.setLogDate(new Date());
-		record.setType(LogType.USER_ACTIVATED);
+		record.setType(logType);
 		record.setAffectedAccount(affectedUser.getEmail());
 		return record;
 	}
 
-	public static RaiseRatesRecord createRaiseRatesRecord(
-			RateOperation operation, double percentage,
-			List<RateFile> fullRateFiles) {
+	public RaiseRatesRecord createRaiseRatesRecord(RateOperation operation,
+			double percentage, List<RateFile> fullRateFiles) {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Creating log record for " + operation);
 		}

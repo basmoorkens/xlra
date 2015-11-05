@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
@@ -16,6 +17,7 @@ import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.dao.LogDAO;
 import com.moorkensam.xlra.dao.UserDAO;
 import com.moorkensam.xlra.model.configuration.LogRecord;
+import com.moorkensam.xlra.model.configuration.LogType;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.model.security.UserStatus;
 import com.moorkensam.xlra.service.EmailService;
@@ -37,27 +39,35 @@ public class UserServiceImpl implements UserService {
 	@Inject
 	private EmailService emailService;
 
+	private LogRecordFactory logRecordFactory;
+
+	@PostConstruct
+	public void init() {
+		setLogRecordFactory(LogRecordFactory.getInstance());
+	}
+
 	@Override
 	public List<User> getAllUsers() {
-		return userDAO.getAllUsers();
+		return getUserDAO().getAllUsers();
 	}
 
 	@Override
 	public void createUser(User user) {
-		LogRecord record = LogRecordFactory.createUserRecord(user);
-		logDAO.createLogRecord(record);
+		LogRecord record = logRecordFactory.createUserRecord(user,
+				LogType.USER_CREATED);
+		getLogDAO().createLogRecord(record);
 
 		user.setPassword("xlra");
 		user.setTokenInfo(TokenUtil.getNextToken());
 		user.setPassword(makePasswordHash(user.getPassword()));
 		user.setUserStatus(UserStatus.FIRST_TIME_LOGIN);
-		userDAO.createUser(user);
+		getUserDAO().createUser(user);
 		sendUserCreatedEmail(user);
 	}
 
 	protected void sendUserCreatedEmail(User user) {
 		try {
-			emailService.sendUserCreatedEmail(user);
+			getEmailService().sendUserCreatedEmail(user);
 		} catch (MessagingException e) {
 			MessageUtil.addErrorMessage(
 					"Failed to send email",
@@ -71,18 +81,18 @@ public class UserServiceImpl implements UserService {
 		if (updatedPw) {
 			user.setPassword(makePasswordHash(user.getPassword()));
 		}
-		return userDAO.updateUser(user);
+		return getUserDAO().updateUser(user);
 	}
 
 	@Override
 	public User getUserById(long id) {
-		return userDAO.getUserbyId(id);
+		return getUserDAO().getUserbyId(id);
 	}
 
 	@Override
 	public void deleteUser(User user) {
-		User toDelete = userDAO.getUserbyId(user.getId());
-		userDAO.deleteUser(toDelete);
+		User toDelete = getUserDAO().getUserbyId(user.getId());
+		getUserDAO().deleteUser(toDelete);
 	}
 
 	protected String makePasswordHash(String password) {
@@ -116,7 +126,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User getUserByEmail(String email) {
-		return userDAO.getUserByEmail(email);
+		return getUserDAO().getUserByEmail(email);
 	}
 
 	@Override
@@ -126,16 +136,49 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User isValidPasswordRequest(String email, String token) {
-		return userDAO.isValidPasswordRequest(email, token);
+		return getUserDAO().isValidPasswordRequest(email, token);
 	}
 
 	@Override
 	public void setPasswordAndActivateUser(User user, String password) {
-		LogRecord record = LogRecordFactory.createUserRecord(user);
-		logDAO.createLogRecord(record);
+		LogRecord record = logRecordFactory.createUserRecord(user,
+				LogType.USER_ACTIVATED);
+		getLogDAO().createLogRecord(record);
 		user.setPassword(makePasswordHash(password));
 		user.setUserStatus(UserStatus.IN_OPERATION);
 		user.setEnabled(true);
-		userDAO.updateUser(user);
+		getUserDAO().updateUser(user);
+	}
+
+	public UserDAO getUserDAO() {
+		return userDAO;
+	}
+
+	public void setUserDAO(UserDAO userDAO) {
+		this.userDAO = userDAO;
+	}
+
+	public LogDAO getLogDAO() {
+		return logDAO;
+	}
+
+	public void setLogDAO(LogDAO logDAO) {
+		this.logDAO = logDAO;
+	}
+
+	public EmailService getEmailService() {
+		return emailService;
+	}
+
+	public void setEmailService(EmailService emailService) {
+		this.emailService = emailService;
+	}
+
+	public LogRecordFactory getLogRecordFactory() {
+		return logRecordFactory;
+	}
+
+	public void setLogRecordFactory(LogRecordFactory logRecordFactory) {
+		this.logRecordFactory = logRecordFactory;
 	}
 }

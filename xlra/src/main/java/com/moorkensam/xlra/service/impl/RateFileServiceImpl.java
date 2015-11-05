@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -49,6 +50,13 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 
 	@Inject
 	private LogDAO logDAO;
+
+	private LogRecordFactory logRecordFactory;
+
+	@PostConstruct
+	public void init() {
+		setLogRecordFactory(LogRecordFactory.getInstance());
+	}
 
 	@Override
 	public List<RateFile> getAllRateFiles() {
@@ -124,7 +132,7 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 
 		raiseRateFiles(rateLineMultiplier, fullRateFiles, operation);
 
-		createAndSaveRateOperationLogRecord(LogRecordFactory
+		createAndSaveRateOperationLogRecord(logRecordFactory
 				.createRaiseRatesRecord(operation, percentage, fullRateFiles));
 
 		for (RateFile rf : fullRateFiles) {
@@ -268,5 +276,13 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 	@Override
 	public Condition updateCondition(Condition condition) {
 		return conditionDAO.updateCondition(condition);
+	}
+
+	public LogRecordFactory getLogRecordFactory() {
+		return logRecordFactory;
+	}
+
+	public void setLogRecordFactory(LogRecordFactory logRecordFactory) {
+		this.logRecordFactory = logRecordFactory;
 	}
 }

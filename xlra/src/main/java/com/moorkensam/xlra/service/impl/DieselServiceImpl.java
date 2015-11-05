@@ -3,6 +3,7 @@ package com.moorkensam.xlra.service.impl;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -35,6 +36,13 @@ public class DieselServiceImpl implements DieselService {
 	@Inject
 	private LogDAO logDAO;
 
+	private LogRecordFactory logRecordFactory;
+
+	@PostConstruct
+	public void init() {
+		setLogRecordFactory(LogRecordFactory.getInstance());
+	}
+
 	@Override
 	public void updateDieselRate(DieselRate dieselRate) {
 		getDieselRateDAO().updateDieselRate(dieselRate);
@@ -55,7 +63,7 @@ public class DieselServiceImpl implements DieselService {
 	public void updateCurrentDieselValue(BigDecimal value) {
 		Configuration config = getXlraConfigurationDAO().getXlraConfiguration();
 
-		LogRecord createDieselLogRecord = LogRecordFactory
+		LogRecord createDieselLogRecord = logRecordFactory
 				.createDieselLogRecord(config.getCurrentDieselPrice());
 		logger.info("Saving dieselprice logrecord " + createDieselLogRecord);
 		logDAO.createLogRecord(createDieselLogRecord);
@@ -101,6 +109,14 @@ public class DieselServiceImpl implements DieselService {
 	public void deleteDieselRate(DieselRate rate) {
 		logger.info("Removing diesel rate " + rate);
 		dieselRateDAO.deleteDieselRate(rate);
+	}
+
+	public LogRecordFactory getLogRecordFactory() {
+		return logRecordFactory;
+	}
+
+	public void setLogRecordFactory(LogRecordFactory logRecordFactory) {
+		this.logRecordFactory = logRecordFactory;
 	}
 
 }
