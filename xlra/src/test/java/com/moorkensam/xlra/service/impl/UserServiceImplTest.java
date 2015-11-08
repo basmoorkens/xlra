@@ -80,4 +80,25 @@ public class UserServiceImplTest extends UnitilsJUnit4 {
 		Assert.assertEquals(xlraHash, user.getPassword());
 		Assert.assertEquals(UserStatus.FIRST_TIME_LOGIN, user.getUserStatus());
 	}
+
+	@Test
+	public void testSetPasswordAndACtivateUser() {
+		User user = new User();
+		user.setPassword("xlra");
+		LogRecord record = new UserLogRecord();
+		EasyMock.expect(
+				logRecordFactory.createUserRecord(user, LogType.USER_ACTIVATED))
+				.andReturn(record);
+		logDAO.createLogRecord(record);
+		EasyMock.expectLastCall();
+
+		EasyMock.expect(userDAO.updateUser(user)).andReturn(user);
+		EasyMockUnitils.replay();
+
+		service.setPasswordAndActivateUser(user, "xlra");
+
+		Assert.assertEquals(xlraHash, user.getPassword());
+		Assert.assertTrue(user.isEnabled());
+		Assert.assertEquals(UserStatus.IN_OPERATION, user.getUserStatus());
+	}
 }

@@ -18,6 +18,8 @@ public interface UserDAO {
 
 	public User getUserByEmail(String email);
 
+	public User getUserByUserName(String userName);
+
 	public void deleteUser(User user);
 
 	public User isValidPasswordRequest(String email, String token);

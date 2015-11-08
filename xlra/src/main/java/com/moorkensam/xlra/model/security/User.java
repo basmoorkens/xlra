@@ -3,6 +3,7 @@ package com.moorkensam.xlra.model.security;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,6 +15,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.BatchSize;
 
@@ -26,12 +28,19 @@ import com.moorkensam.xlra.model.BaseEntity;
 		@NamedQuery(name = "User.findById", query = "SELECT u FROM User u where u.id = :id"),
 		@NamedQuery(name = "User.findByEmailAndToken", query = "SELECT u FROM User u WHERE u.email = :email and u.tokenInfo.verificationToken = :token"
 				+ " and u.userStatus = :userStatus"),
-		@NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u LEFT JOIN FETCH u.roles where u.email = :email"),
+		@NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u where u.email = :email"),
+		@NamedQuery(name = "User.findByUserName", query = "SELECT u FROM User u WHERE u.userName = :userName"),
 		@NamedQuery(name = "User.findAllNonDeleted", query = "SELECT u FROM User u where u.enabled = true") })
 public class User extends BaseEntity {
 
 	private static final long serialVersionUID = -8058602514887367935L;
 
+	@Column(unique = true)
+	@NotNull
+	private String userName;
+
+	@Column(unique = true)
+	@NotNull
 	private String email;
 
 	private String password;
@@ -144,5 +153,13 @@ public class User extends BaseEntity {
 
 	public void setUserStatus(UserStatus userStatus) {
 		this.userStatus = userStatus;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 }

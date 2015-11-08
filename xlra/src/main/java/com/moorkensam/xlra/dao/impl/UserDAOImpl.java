@@ -71,6 +71,15 @@ public class UserDAOImpl extends BaseDAO implements UserDAO {
 	}
 
 	@Override
+	public User getUserByUserName(String userName) {
+		Query query = getEntityManager().createNamedQuery("User.findByUserName");
+		query.setParameter("userName", userName);
+		User user = (User) query.getSingleResult();
+		lazyLoadUser(user);
+		return user;
+	}
+	
+	@Override
 	public void deleteUser(User user) {
 		getEntityManager().remove(user);
 	}

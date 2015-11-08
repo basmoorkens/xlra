@@ -16,6 +16,12 @@
 			<p:growl showDetail="true" id="messages" sticky="false" />
 			<p:panel>
 				<p:panelGrid columns="2">
+					<h:outputText value="UserName: " />
+					<h:outputText value="#{userController.user.userName}" />
+
+					<h:outputText value="Email: " />
+					<h:outputText value="#{userController.user.email}" />
+
 					<h:outputText value="First name: " />
 					<p:inputText size="100" value="#{userController.user.firstName}" />
 

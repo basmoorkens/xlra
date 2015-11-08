@@ -30,23 +30,23 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public BaseCustomer createCustomer(BaseCustomer customer) {
 		logger.info("Creating new customer with name " + customer.getName());
-		return customerDAO.createCustomer(customer);
+		return getCustomerDAO().createCustomer(customer);
 	}
 
 	@Override
 	public void updateCustomer(BaseCustomer customer) {
-		customerDAO.updateCustomer(customer);
+		getCustomerDAO().updateCustomer(customer);
 	}
 
 	@Override
 	public List<FullCustomer> getAllFullCustomers() {
-		return customerDAO.getAllFullCustomers();
+		return getCustomerDAO().getAllFullCustomers();
 	}
 
 	@Override
 	public void deleteCustomer(BaseCustomer customer) {
 		logger.info("Deleting customer with id " + customer.getId());
-		customerDAO.deleteCustomer(customer);
+		getCustomerDAO().deleteCustomer(customer);
 	}
 
 	@Override
@@ -54,12 +54,20 @@ public class CustomerServiceImpl implements CustomerService {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Fetching customer for id " + id);
 		}
-		return customerDAO.getCustomerById(id);
+		return getCustomerDAO().getCustomerById(id);
 	}
 
 	@Override
 	public List<BaseCustomer> getAllCustomers() {
-		return customerDAO.getAllCustomers();
+		return getCustomerDAO().getAllCustomers();
+	}
+
+	public CustomerDAO getCustomerDAO() {
+		return customerDAO;
+	}
+
+	public void setCustomerDAO(CustomerDAO customerDAO) {
+		this.customerDAO = customerDAO;
 	}
 
 }

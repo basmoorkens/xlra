@@ -181,4 +181,9 @@ public class UserServiceImpl implements UserService {
 	public void setLogRecordFactory(LogRecordFactory logRecordFactory) {
 		this.logRecordFactory = logRecordFactory;
 	}
+
+	@Override
+	public User getUserByUserName(String username) {
+		return userDAO.getUserByUserName(username);
+	}
 }

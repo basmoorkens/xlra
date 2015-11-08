@@ -17,6 +17,9 @@
 			<p:panel>
 				<p:dataTable emptyMessage="No users found." id="usersTable"
 					value="#{manageUsersController.users}" var="user">
+					<p:column headerText="Username: ">
+						<h:outputText value="#{user.userName}" />
+					</p:column>
 					<p:column headerText="Email: ">
 						<h:outputText value="#{user.email}" />
 					</p:column>
@@ -60,6 +63,10 @@
 				<p:growl showDetail="true" id="messages" sticky="false" />
 				<p:panel>
 					<p:panelGrid columns="2">
+						<h:outputText value="UserName: " />
+						<p:inputText
+							value="#{manageUsersController.selectedUser.userName}" size="85" />
+
 						<h:outputText value="Email:" />
 						<p:inputText value="#{manageUsersController.selectedUser.email}"
 							size="85" />

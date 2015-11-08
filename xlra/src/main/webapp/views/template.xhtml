@@ -95,7 +95,7 @@
 			</p:submenu>
 			<f:facet name="options">
 				<h:outputText
-					value="Welcome back #{userSessionController.loggedInUser.fullName}"
+					value="Welcome back #{userSessionController.loggedInUser.userName}"
 					style="margin-right:10px;color:red;" />
 				<p:commandButton value="Logout"
 					actionListener="#{logoutController.logout}"

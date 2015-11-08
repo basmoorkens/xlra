@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.service.impl;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -7,6 +8,7 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -30,11 +32,18 @@ public class EmailServiceImpl implements EmailService {
 
 	private final static Logger logger = LogManager.getLogger();
 
+	private ConfigurationLoader configLoader;
+
 	@Resource(name = "java:/mail/xlra")
 	private Session mailSession;
 
 	@Inject
 	private TemplateEngine templateEngine;
+
+	@PostConstruct
+	public void init() {
+		setConfigLoader(ConfigurationLoader.getInstance());
+	}
 
 	@Override
 	public void sendOfferteMail(QuotationResult result)
@@ -44,17 +53,9 @@ public class EmailServiceImpl implements EmailService {
 				+ result.getEmailResult().getSubject()
 				+ " for content look up result " + result.getId());
 		try {
-			ConfigurationLoader configLoader = ConfigurationLoader
-					.getInstance();
-			String fromAddress = configLoader
-					.getProperty(ConfigurationLoader.MAIL_SENDER);
-			Message message = new MimeMessage(mailSession);
-			message.setFrom(new InternetAddress(fromAddress));
-			message.setRecipients(Message.RecipientType.TO, InternetAddress
-					.parse(result.getEmailResult().getToAddress()));
-			message.setSubject(result.getEmailResult().getSubject());
-			message.setContent(result.getEmailResult().getEmail(),
-					"text/html; charset=utf-8");
+			String fromAddress = getConfigLoader().getProperty(
+					ConfigurationLoader.MAIL_SENDER);
+			Message message = createOfferteMail(result, fromAddress);
 
 			Transport.send(message);
 			if (logger.isDebugEnabled()) {
@@ -68,6 +69,18 @@ public class EmailServiceImpl implements EmailService {
 		}
 	}
 
+	protected Message createOfferteMail(QuotationResult result,
+			String fromAddress) throws MessagingException, AddressException {
+		Message message = new MimeMessage(getMailSession());
+		message.setFrom(new InternetAddress(fromAddress));
+		message.setRecipients(Message.RecipientType.TO,
+				InternetAddress.parse(result.getEmailResult().getToAddress()));
+		message.setSubject(result.getEmailResult().getSubject());
+		message.setContent(result.getEmailResult().getEmail(),
+				"text/html; charset=utf-8");
+		return message;
+	}
+
 	@Override
 	public void sendResetPasswordEmail(User user) throws MessagingException {
 		logger.info("Sending user reset password to " + user.getEmail());
@@ -76,7 +89,7 @@ public class EmailServiceImpl implements EmailService {
 					.getInstance();
 			String fromAddress = configLoader
 					.getProperty(ConfigurationLoader.MAIL_SENDER);
-			Message message = new MimeMessage(mailSession);
+			Message message = new MimeMessage(getMailSession());
 			message.setFrom(new InternetAddress(fromAddress));
 			message.setRecipients(Message.RecipientType.TO,
 					InternetAddress.parse(user.getEmail()));
@@ -101,7 +114,7 @@ public class EmailServiceImpl implements EmailService {
 					.getInstance();
 			String fromAddress = configLoader
 					.getProperty(ConfigurationLoader.MAIL_SENDER);
-			Message message = new MimeMessage(mailSession);
+			Message message = new MimeMessage(getMailSession());
 			message.setFrom(new InternetAddress(fromAddress));
 			message.setRecipients(Message.RecipientType.TO,
 					InternetAddress.parse(user.getEmail()));
@@ -121,6 +134,22 @@ public class EmailServiceImpl implements EmailService {
 			logger.error(e);
 			throw new MessagingException("Could not parse email template");
 		}
+	}
+
+	public ConfigurationLoader getConfigLoader() {
+		return configLoader;
+	}
+
+	public void setConfigLoader(ConfigurationLoader configLoader) {
+		this.configLoader = configLoader;
+	}
+
+	public Session getMailSession() {
+		return mailSession;
+	}
+
+	public void setMailSession(Session mailSession) {
+		this.mailSession = mailSession;
 	}
 
 }

@@ -23,11 +23,12 @@ public class UserController {
 
 	private String retypedPassword;
 
+	@Inject
+	private UserSessionController userSessionController;
+
 	@PostConstruct
 	public void initialize() {
-		String username = FacesContext.getCurrentInstance()
-				.getExternalContext().getUserPrincipal().getName();
-		user = userService.getUserByEmail(username);
+		user = userSessionController.getLoggedInUser();
 	}
 
 	public User getUser() {

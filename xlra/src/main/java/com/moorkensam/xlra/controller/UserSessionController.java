@@ -31,7 +31,7 @@ public class UserSessionController {
 	public void initialize() {
 		String loggedInUserName = FacesContext.getCurrentInstance()
 				.getExternalContext().getRemoteUser();
-		loggedInUser = userService.getUserByEmail(loggedInUserName);
+		loggedInUser = userService.getUserByUserName(loggedInUserName);
 		logger.info("Start user session for " + loggedInUser.getEmail());
 	}
 

@@ -20,6 +20,8 @@ public interface UserService {
 
 	public User getUserByEmail(String email);
 
+	public User getUserByUserName(String username);
+
 	public void resendAccountCreatedEmail(User user);
 
 	public User isValidPasswordRequest(String email, String token);
