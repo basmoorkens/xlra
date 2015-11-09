@@ -15,7 +15,8 @@
 			<h:outputText value="#{createRatesController.rateFile.customer.name}" />
 
 			<h:outputText value="Country: " />
-			<h:outputText value="#{createRatesController.rateFile.country.name}" />
+			<h:outputText
+				value="#{createRatesController.rateFile.country.shortName}" />
 
 			<h:outputText value="Measurement: " />
 			<h:outputText
@@ -30,7 +31,7 @@
 		<p:dataTable
 			value="#{createRatesController.rateFile.relationalRateLines}"
 			var="rateLine" emptyMessage="No rate lines found."
-			id="rateLineSummaryTable" rows="10" editable="false">
+			id="rateLineSummaryTable" rows="50" editable="false">
 
 
 			<f:facet name="header">
@@ -52,22 +53,14 @@
 		</p:dataTable>
 
 		<h3>General conditions</h3>
-		<p:dataTable editable="true"
+		<p:dataTable editable="false"
 			value="#{createRatesController.rateFile.conditions}" var="condition"
 			emptyMessage="No conditions found." id="conditionSummaryTable">
 			<p:column headerText="Key:">
-				<p:cellEditor>
-					<f:facet name="output">
-						<h:outputText value="#{condition.conditionKey}" />
-					</f:facet>
-				</p:cellEditor>
+				<h:outputText value="#{condition.conditionKey}" />
 			</p:column>
 			<p:column headerText="Value">
-				<p:cellEditor>
-					<f:facet name="output">
-						<h:outputText value="#{condition.value}" />
-					</f:facet>
-				</p:cellEditor>
+				<h:outputText value="#{condition.value}" />
 			</p:column>
 		</p:dataTable>
 	</p:panel>

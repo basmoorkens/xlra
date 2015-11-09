@@ -13,17 +13,18 @@
 			<p:dataTable value="#{rateFile.relationalRateLines}" var="rateLine"
 				emptyMessage="No rate lines found." id="rateLineTable" rows="50"
 				editable="#{canEdit}" editMode="cell" paginator="true"
-				stickyHeader="true" rowsPerPageTemplate="5,10,15,25,50"
+				stickyHeader="#{sticky}" rowsPerPageTemplate="5,10,15,25,50"
 				paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
 
 				<c:if test="${controllerName == 'manageRatesController'}">
 					<p:ajax event="cellEdit"
 						listener="#{manageRatesController.onRateLineCellEdit}"
-						update=":ratesForm:message" />
+						update=":rateLinesDetailForm:message" />
 				</c:if>
 				<c:if test="${controllerName == 'createRatesController'}">
 					<p:ajax event="cellEdit"
-						listener="#{createRatesController.onRateLineCellEdit}" />
+						listener="#{createRatesController.onRateLineCellEdit}"
+						update=":rateLinesDetailForm:message" />
 				</c:if>
 
 

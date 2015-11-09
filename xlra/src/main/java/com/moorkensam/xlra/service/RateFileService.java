@@ -80,4 +80,6 @@ public interface RateFileService {
 
 	Condition updateCondition(Condition condition);
 
+	public RateFile getRateFileById(long id);
+
 }

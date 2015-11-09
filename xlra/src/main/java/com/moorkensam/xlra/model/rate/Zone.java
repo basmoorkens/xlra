@@ -213,9 +213,12 @@ public class Zone extends BaseEntity {
 		copy.setName(name);
 		copy.setAlphaNumericPostalCodesAsString(alphaNumericPostalCodesAsString);
 		copy.setNumericalPostalCodesAsString(numericalPostalCodesAsString);
+		copy.setAlphaNumericalPostalCodes(alphaNumericalPostalCodes);
+		copy.setNumericalPostalCodes(numericalPostalCodes);
 		copy.setCountry(country);
 		copy.setExtraInfo(extraInfo);
 		copy.setZoneType(zoneType);
+		copy.setRateFile(null);
 		return copy;
 	}
 

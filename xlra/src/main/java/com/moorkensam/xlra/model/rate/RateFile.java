@@ -2,6 +2,7 @@ package com.moorkensam.xlra.model.rate;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.Cacheable;
@@ -77,6 +78,13 @@ public class RateFile extends BaseEntity {
 
 	@Transient
 	private List<List<RateLine>> relationalRateLines;
+
+	public void addZone(Zone zone) {
+		if (zones == null) {
+			zones = new ArrayList<Zone>();
+		}
+		zones.add(zone);
+	}
 
 	private String name;
 
@@ -164,26 +172,24 @@ public class RateFile extends BaseEntity {
 	public RateFile deepCopy() {
 		RateFile rf = new RateFile();
 		rf.setName(getName());
-		rf.setColumns(getColumns());
 		rf.setCountry(getCountry());
-		rf.setCustomer(getCustomer());
 		rf.setKindOfRate(getKindOfRate());
 		rf.setMeasurement(getMeasurement());
-		rf.setMeasurementRows(getMeasurementRows());
 		rf.setRateLines(new ArrayList<RateLine>());
+		for (Zone z : zones) {
+			Zone deepCopy = z.deepCopy();
+			deepCopy.setRateFile(rf);
+			rf.addZone(deepCopy);
+		}
+
 		for (RateLine rl : getRateLines()) {
 			RateLine deepCopy = rl.deepCopy();
 			deepCopy.setRateFile(rf);
+			Zone copiedZone = rf.getZoneForZoneName(deepCopy.getZone()
+					.getName());
+			deepCopy.setZone(copiedZone);
+
 			rf.getRateLines().add(deepCopy);
-		}
-		List<List<RateLine>> relationRatelines = new ArrayList<List<RateLine>>();
-		for (List<RateLine> rateList : getRelationalRateLines()) {
-			List<RateLine> rls = new ArrayList<RateLine>();
-			for (RateLine rl : rateList) {
-				rls.add(rl);
-				rl.getZone().setRateFile(rf);
-			}
-			relationRatelines.add(rls);
 		}
 
 		rf.setConditions(new ArrayList<Condition>());
@@ -193,7 +199,8 @@ public class RateFile extends BaseEntity {
 			rf.getConditions().add(copy);
 		}
 
-		rf.setRelationalRateLines(relationRatelines);
+		rf.fillUpRelationalProperties();
+		rf.fillUpRateLineRelationalMap();
 		return rf;
 	}
 
@@ -286,6 +293,50 @@ public class RateFile extends BaseEntity {
 
 	public void setTransportType(TransportType transportType) {
 		this.transportType = transportType;
+	}
+
+	/**
+	 * This method fetches the details for the ratelines of the ratefile. The
+	 * details fetched are the columns and measurements.
+	 * 
+	 * @param rateFile
+	 */
+	public void fillUpRelationalProperties() {
+		setColumns(new ArrayList<String>());
+		for (Zone z : getZones()) {
+			getColumns().add(z.getAsColumnHeader());
+		}
+		List<Double> measurementRows = new ArrayList<Double>();
+		for (RateLine rl : getRateLines()) {
+			if (!measurementRows.contains(rl.getMeasurement())) {
+				measurementRows.add(rl.getMeasurement());
+			}
+		}
+		Collections.sort(measurementRows);
+		setMeasurementRows(measurementRows);
+
+	}
+
+	/**
+	 * Fills up the transient attribute relationRatelines of the ratefile
+	 * object. In order for this to work the columns and measurements have to be
+	 * set on the ratefile object.
+	 * 
+	 * @param rateFile
+	 */
+	public void fillUpRateLineRelationalMap() {
+		List<List<RateLine>> relationRateLines = new ArrayList<List<RateLine>>();
+		for (Double i : getMeasurementRows()) {
+			List<RateLine> rateLines = new ArrayList<RateLine>();
+			for (RateLine rl : getRateLines()) {
+				if (rl.getMeasurement() == (i)) {
+					rateLines.add(rl);
+				}
+			}
+			Collections.sort(rateLines);
+			relationRateLines.add(rateLines);
+		}
+		setRelationalRateLines(relationRateLines);
 	}
 
 }

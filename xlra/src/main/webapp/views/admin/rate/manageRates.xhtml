@@ -28,11 +28,6 @@
 						listener="#{manageRatesController.fetchDetailsOfRatefile}" />
 				</p:autoComplete>
 
-				<p:commandButton rendered="#{manageRatesController.canEdit}"
-					value="Add new rates" title="Add new rates" icon="ui-icon-check"
-					immediate="true"
-					action="/views/admin/rate/createRateFile.xhtml?faces-redirect=true"
-					ajax="false" />
 			</p:panelGrid>
 		</h:form>
 
@@ -48,12 +43,14 @@
 			</ui:include>
 		</h:form>
 		<h:form id="rateLinesDetailForm">
+			<p:growl id="message" showDetail="true" />
 			<ui:include src="/views/user/rateLinesDetail.xhtml">
 				<ui:param name="rateFile"
 					value="#{manageRatesController.selectedRateFile}" />
 				<ui:param name="controller" value="#{manageRatesController}" />
 				<ui:param name="controllerName" value="manageRatesController" />
 				<ui:param name="canEdit" value="#{manageRatesController.canEdit}"></ui:param>
+				<ui:param name="sticky" value="false"></ui:param>
 			</ui:include>
 		</h:form>
 		<h:form id="conditionsDetailForm">

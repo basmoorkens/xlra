@@ -259,23 +259,8 @@ public class ManageRatesController {
 	}
 
 	public List<TranslationKey> getAvailableTranslationKeysForSelectedRateFile() {
-		List<TranslationKey> allKeys = TranslationUtil.getTranslationsNotKey();
-		if (selectedRateFile != null
-				&& selectedRateFile.getConditions() != null
-				&& !selectedRateFile.getConditions().isEmpty()) {
-			List<TranslationKey> usedKeys = new ArrayList<TranslationKey>();
-			for (Condition c : selectedRateFile.getConditions()) {
-				usedKeys.add(c.getConditionKey());
-			}
-			List<TranslationKey> result = new ArrayList<TranslationKey>();
-			for (TranslationKey key : allKeys) {
-				if (!usedKeys.contains(key)) {
-					result.add(key);
-				}
-			}
-			return result;
-		}
-		return allKeys;
+		return TranslationUtil
+				.getAvailableTranslationKeysForSelectedRateFile(selectedRateFile);
 	}
 
 	public boolean isCollapseZonesDetailGrid() {

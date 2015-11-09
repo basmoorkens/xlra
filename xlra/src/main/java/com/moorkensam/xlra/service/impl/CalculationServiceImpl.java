@@ -42,7 +42,7 @@ public class CalculationServiceImpl implements CalculationService {
 			PriceCalculationDTO priceDTO, Country country,
 			List<Condition> conditions, QuotationQuery query)
 			throws RateFileException {
-		Configuration config = configurationDao.getXlraConfiguration();
+		Configuration config = getConfigurationDao().getXlraConfiguration();
 		calculateDieselSurchargePrice(priceDTO, config);
 		if (country.getShortName().equalsIgnoreCase("chf")) {
 			calculateChfSurchargePrice(priceDTO, config);
@@ -137,8 +137,9 @@ public class CalculationServiceImpl implements CalculationService {
 			PriceCalculationDTO priceDTO, Condition condition)
 			throws RateFileException {
 		try {
-			priceDTO.setAdrSurchargeMinimum(new BigDecimal(Double
-					.parseDouble(condition.getValue())));
+			priceDTO.setAdrSurchargeMinimum(CalcUtil
+					.roundBigDecimal(new BigDecimal(Double
+							.parseDouble(condition.getValue()))));
 		} catch (NumberFormatException exc) {
 			throw new RateFileException("Invalid value for "
 					+ condition.getConditionKey() + ": " + condition.getValue());
@@ -241,5 +242,13 @@ public class CalculationServiceImpl implements CalculationService {
 
 	public void setCurrencyService(CurrencyService currencyService) {
 		this.currencyService = currencyService;
+	}
+
+	public ConfigurationDao getConfigurationDao() {
+		return configurationDao;
+	}
+
+	public void setConfigurationDao(ConfigurationDao configurationDao) {
+		this.configurationDao = configurationDao;
 	}
 }

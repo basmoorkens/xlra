@@ -224,6 +224,7 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 		RateFile original = rateFiles.get(0);
 		RateFile fullOriginal = getFullRateFile(original.getId());
 		RateFile copy = fullOriginal.deepCopy();
+
 		return copy;
 	}
 
@@ -284,5 +285,10 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 
 	public void setLogRecordFactory(LogRecordFactory logRecordFactory) {
 		this.logRecordFactory = logRecordFactory;
+	}
+
+	@Override
+	public RateFile getRateFileById(long id) {
+		return rateFileDAO.getFullRateFile(id);
 	}
 }

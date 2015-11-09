@@ -45,6 +45,7 @@ public class Condition extends BaseEntity {
 		Condition c = new Condition();
 		c.setValue(this.value);
 		c.setRateFile(this.rateFile);
+		c.setConditionKey(conditionKey);
 		return c;
 	}
 

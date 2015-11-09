@@ -1,8 +1,7 @@
-package com.moorkensam.xlra.dao.impl;
+package com.moorkensam.xlra.dao.util;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -12,15 +11,12 @@ import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.TestedObject;
 
-import com.moorkensam.xlra.model.configuration.Interval;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.rate.ZoneType;
 
-public class RateFileDAOImplTest extends UnitilsJUnit4 {
-	@TestedObject
-	private RateFileDAOImpl dao;
+public class RateFileDAOUtilTest extends UnitilsJUnit4 {
 
 	private RateFile rateFile;
 
@@ -38,7 +34,6 @@ public class RateFileDAOImplTest extends UnitilsJUnit4 {
 
 	@Before
 	public void init() {
-		dao = new RateFileDAOImpl();
 		rateFile = new RateFile();
 		List<Double> measurements = new ArrayList<Double>();
 		measurements.add(100d);
@@ -99,19 +94,24 @@ public class RateFileDAOImplTest extends UnitilsJUnit4 {
 	}
 
 	@Test
-	public void testPrepareRateFileForFrontEnd() {
-		RateFile rfDb = new RateFile();
-		Zone zone1 = new Zone();
-		zone1.setAlphaNumericalPostalCodes(Arrays.asList("PZ1", "PZ2"));
-		zone1.setZoneType(ZoneType.ALPHANUMERIC_LIST);
-		Zone zone2 = new Zone();
-		zone2.setZoneType(ZoneType.NUMERIC_CODES);
-		zone2.setNumericalPostalCodes(Arrays
-				.asList(new Interval("1000", "2000")));
-		rfDb.setZones(Arrays.asList(zone1, zone2));
-		dao.prepareRateFileForFrontend(rfDb);
+	public void testfillUpRateLineRelationalMap() {
+		rateFile.fillUpRateLineRelationalMap();
+		Assert.assertEquals(2, rateFile.getRelationalRateLines().size());
+		Assert.assertEquals(rl, rateFile.getRelationalRateLines().get(0).get(0));
+		Assert.assertEquals(rl1, rateFile.getRelationalRateLines().get(0)
+				.get(1));
+		Assert.assertEquals(rl2, rateFile.getRelationalRateLines().get(0)
+				.get(2));
+		Assert.assertEquals(rl3, rateFile.getRelationalRateLines().get(1)
+				.get(0));
+		Assert.assertEquals(rl4, rateFile.getRelationalRateLines().get(1)
+				.get(1));
+		Assert.assertEquals(rl5, rateFile.getRelationalRateLines().get(1)
+				.get(2));
+	}
 
-		Assert.assertNotNull(zone1.getAlphaNumericPostalCodesAsString());
-		Assert.assertNotNull(zone2.getNumericalPostalCodesAsString());
+	@Test
+	public void testFillUpRelationProperties() {
+		rateFile.fillUpRelationalProperties();
 	}
 }

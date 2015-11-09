@@ -48,12 +48,14 @@
 			</ui:include>
 		</h:form>
 		<h:form id="rateLinesDetailForm">
+			<p:growl id="message" showDetail="true" />
 			<ui:include src="/views/user/rateLinesDetail.xhtml">
 				<ui:param name="rateFile"
 					value="#{manageRatesController.selectedRateFile}" />
 				<ui:param name="controller" value="#{manageRatesController}" />
 				<ui:param name="controllerName" value="manageRatesController" />
 				<ui:param name="canEdit" value="false"></ui:param>
+				<ui:param name="sticky" value="false"></ui:param>
 			</ui:include>
 		</h:form>
 		<h:form id="conditionsDetailForm">

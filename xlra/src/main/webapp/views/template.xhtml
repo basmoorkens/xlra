@@ -1,3 +1,4 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
@@ -14,8 +15,12 @@
 	<h:form>
 		<p:menubar>
 			<p:submenu
-				rendered="#{userSessionController.hasNonePermissions(['EDIT_RATEFILE', 'RAISE_RATES', 'VIEW_RATEFILE', 'EXCEL_UPLOAD'])}"
+				rendered="#{userSessionController.hasNonePermissions(['EDIT_RATEFILE', 'CREATE_RATEFILE', 'RAISE_RATES', 'VIEW_RATEFILE', 'EXCEL_UPLOAD'])}"
 				label="Rates" icon="ui-icon-document">
+				<p:menuitem
+					rendered="#{userSessionController.hasPermission('CREATE_RATEFILE')}"
+					value="Create ratefile"
+					url="/views/admin/rate/createRateFile.xhtml" />
 				<p:menuitem
 					rendered="#{userSessionController.hasPermission('EDIT_RATEFILE')}"
 					value="Manage rates" url="/views/admin/rate/manageRates.xhtml" />
