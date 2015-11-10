@@ -37,7 +37,7 @@ public class BaseCustomer extends BaseEntity {
 
 	@Enumerated(EnumType.STRING)
 	@NotNull(message = "A language has to be selected")
-	private Language language;
+	protected Language language;
 
 	public Language getLanguage() {
 		return language;

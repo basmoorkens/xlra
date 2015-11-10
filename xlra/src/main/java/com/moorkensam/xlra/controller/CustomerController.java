@@ -10,9 +10,11 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
+import com.moorkensam.xlra.model.BaseCustomer;
 import com.moorkensam.xlra.model.FullCustomer;
 import com.moorkensam.xlra.model.Language;
 import com.moorkensam.xlra.service.CustomerService;
+import com.moorkensam.xlra.service.util.CustomerUtil;
 
 @ManagedBean
 @ViewScoped
@@ -25,8 +27,8 @@ public class CustomerController {
 
 	private String detailGridTitle;
 
-	private List<FullCustomer> allCustomers;
-	
+	private List<BaseCustomer> allCustomers;
+
 	/**
 	 * Property for toggling the grid in the frontend.
 	 */
@@ -38,19 +40,20 @@ public class CustomerController {
 	}
 
 	public void createCustomerOrUpdate() {
-		if(selectedCustomer.getId()==0) { 
-			customerService.createCustomer(selectedCustomer);			
+		if (selectedCustomer.getId() == 0) {
+			customerService.createCustomer(selectedCustomer);
 		} else {
 			customerService.updateCustomer(selectedCustomer);
-		} 
-		
+		}
+
 		reInitializePage();
 	}
 
 	public void confirmDeleteCustomer() {
-		MessageUtil.addMessage("Confirm delete", "Confirm delete of customer " + selectedCustomer.getName());
+		MessageUtil.addMessage("Confirm delete", "Confirm delete of customer "
+				+ selectedCustomer.getName());
 	}
-	
+
 	public void deleteCustomer() throws IOException {
 		if (selectedCustomer.getId() != 0) {
 			customerService.deleteCustomer(selectedCustomer);
@@ -59,7 +62,7 @@ public class CustomerController {
 	}
 
 	private void reInitializePage() {
-		allCustomers = customerService.getAllFullCustomers();
+		setAllCustomers(customerService.getAllCustomers());
 		collapseDetailGrid = true;
 		detailGridTitle = "Details selected customer";
 		selectedCustomer = new FullCustomer(true);
@@ -69,13 +72,17 @@ public class CustomerController {
 		return Arrays.asList(Language.values());
 	}
 
-	public void setupPageForNewUser() {
+	public void setupPageForNewCustomer() {
 		detailGridTitle = "Details for new customer";
 		selectedCustomer = new FullCustomer(true);
 		openDetailGrid();
 	}
 
-	public void setupPageForEditUser() {
+	public void setupPageForEditCustomer() {
+		if (!(selectedCustomer instanceof FullCustomer)) {
+			selectedCustomer = CustomerUtil.getInstance()
+					.promoteToFullCustomer(selectedCustomer);
+		}
 		openDetailGrid();
 	}
 
@@ -112,11 +119,12 @@ public class CustomerController {
 		detailGridTitle = "Details for customer " + selectedCustomer.getName();
 	}
 
-	public List<FullCustomer> getAllCustomers() {
+	public List<BaseCustomer> getAllCustomers() {
 		return allCustomers;
 	}
 
-	public void setAllCustomers(List<FullCustomer> allCustomers) {
+	public void setAllCustomers(List<BaseCustomer> allCustomers) {
 		this.allCustomers = allCustomers;
 	}
+
 }

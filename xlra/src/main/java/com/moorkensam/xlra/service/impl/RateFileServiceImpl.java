@@ -3,7 +3,6 @@ package com.moorkensam.xlra.service.impl;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -12,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import javax.persistence.NoResultException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +20,9 @@ import com.moorkensam.xlra.dao.BaseDAO;
 import com.moorkensam.xlra.dao.ConditionDAO;
 import com.moorkensam.xlra.dao.LogDAO;
 import com.moorkensam.xlra.dao.RateFileDAO;
+import com.moorkensam.xlra.model.QuotationQuery;
 import com.moorkensam.xlra.model.RaiseRatesRecord;
+import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
@@ -30,6 +32,7 @@ import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
 import com.moorkensam.xlra.service.RateFileService;
 import com.moorkensam.xlra.service.util.CalcUtil;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
+import com.moorkensam.xlra.service.util.QuotationUtil;
 
 /**
  * This service contains the business logic for ratefiles.
@@ -48,6 +51,8 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 	@Inject
 	private RateFileDAO rateFileDAO;
 
+	private QuotationUtil quotationUtil;
+
 	@Inject
 	private LogDAO logDAO;
 
@@ -56,6 +61,7 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 	@PostConstruct
 	public void init() {
 		setLogRecordFactory(LogRecordFactory.getInstance());
+		quotationUtil = QuotationUtil.getInstance();
 	}
 
 	@Override
@@ -290,5 +296,36 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 	@Override
 	public RateFile getRateFileById(long id) {
 		return rateFileDAO.getFullRateFile(id);
+	}
+
+	@Override
+	public RateFile getRateFileForQuery(QuotationQuery query)
+			throws RateFileException {
+		RateFileSearchFilter firstFilter = quotationUtil
+				.createRateFileSearchFilterForQuery(query, false);
+		RateFile rf = null;
+		try {
+			rf = rateFileDAO.getFullRateFileForFilter(firstFilter);
+		} catch (NoResultException nre) {
+			try {
+				logger.warn("Could not find specific ratefile for fullcustomer, falling back on standard filter properties.");
+				RateFileSearchFilter fallBackFilter = quotationUtil
+						.createRateFileSearchFilterForQuery(query, true);
+				rf = rateFileDAO.getFullRateFileForFilter(fallBackFilter);
+			} catch (NoResultException nre2) {
+				throw new RateFileException(
+						"Could not find ratefile for searchfilter "
+								+ firstFilter);
+			}
+		}
+		return rf;
+	}
+
+	public QuotationUtil getQuotationUtil() {
+		return quotationUtil;
+	}
+
+	public void setQuotationUtil(QuotationUtil quotationUtil) {
+		this.quotationUtil = quotationUtil;
 	}
 }

@@ -23,7 +23,7 @@ public abstract class BaseEntity implements Serializable {
 	protected long id;
 
 	@Version
-	private long version;
+	protected long version;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDateTime;

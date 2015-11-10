@@ -14,7 +14,7 @@
 	<ui:define name="body">
 		<h:form>
 			<p:commandButton value="Create customer" title="Add new customer"
-				actionListener="#{customerController.setupPageForNewUser}"
+				actionListener="#{customerController.setupPageForNewCustomer}"
 				icon="ui-icon-check" ajax="false" />
 		</h:form>
 		<h:form id="customerOverviewForm">
@@ -23,14 +23,6 @@
 				<p:dataTable value="#{customerController.allCustomers}"
 					var="customer" emptyMessage="No customers found."
 					id="customerTable" rows="10">
-					<p:column style="width:36px;text-align: center">
-						<p:commandButton
-							actionListener="#{customerController.setupPageForEditUser}"
-							icon="ui-icon-search" title="View" ajax="false">
-							<f:setPropertyActionListener value="#{customer}"
-								target="#{customerController.selectedCustomer}" />
-						</p:commandButton>
-					</p:column>
 					<p:column>
 						<f:facet name="header">Name</f:facet>
 						#{customer.name}
@@ -42,6 +34,14 @@
 					<p:column>
 						<f:facet name="header">Phone</f:facet>
 						#{customer.phone}
+					</p:column>
+					<p:column style="width:36px;text-align: center">
+						<p:commandButton
+							actionListener="#{customerController.setupPageForEditCustomer}"
+							icon="ui-icon-search" title="View" ajax="false">
+							<f:setPropertyActionListener value="#{customer}"
+								target="#{customerController.selectedCustomer}" />
+						</p:commandButton>
 					</p:column>
 				</p:dataTable>
 			</p:panel>

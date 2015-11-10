@@ -2,7 +2,9 @@ package com.moorkensam.xlra.service;
 
 import java.util.List;
 
+import com.moorkensam.xlra.model.QuotationQuery;
 import com.moorkensam.xlra.model.RaiseRatesRecord;
+import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.Zone;
@@ -81,5 +83,8 @@ public interface RateFileService {
 	Condition updateCondition(Condition condition);
 
 	public RateFile getRateFileById(long id);
+
+	public RateFile getRateFileForQuery(QuotationQuery query)
+			throws RateFileException;
 
 }

@@ -24,6 +24,16 @@ public class FullCustomer extends BaseCustomer {
 		setFullCustomer(fullCustomer);
 	}
 
+	public FullCustomer(BaseCustomer base) {
+		address = new Address();
+		this.name = base.name;
+		this.email = base.email;
+		this.language = base.language;
+		this.phone = base.phone;
+		this.id = base.id;
+		this.version = base.version;
+	}
+
 	private static final long serialVersionUID = 1L;
 
 	@Embedded
