@@ -23,7 +23,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.BatchSize;
 
 import com.moorkensam.xlra.model.BaseEntity;
-import com.moorkensam.xlra.model.FullCustomer;
+import com.moorkensam.xlra.model.Customer;
 import com.moorkensam.xlra.model.configuration.Interval;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.service.util.CalcUtil;
@@ -47,7 +47,7 @@ public class RateFile extends BaseEntity {
 
 	@OneToOne
 	@JoinColumn(name = "customerId")
-	private FullCustomer customer;
+	private Customer customer;
 
 	@Enumerated(EnumType.STRING)
 	private Kind kindOfRate;
@@ -88,11 +88,11 @@ public class RateFile extends BaseEntity {
 
 	private String name;
 
-	public FullCustomer getCustomer() {
+	public Customer getCustomer() {
 		return customer;
 	}
 
-	public void setCustomer(FullCustomer customer) {
+	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
 

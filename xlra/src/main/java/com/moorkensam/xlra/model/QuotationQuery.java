@@ -26,7 +26,7 @@ public class QuotationQuery extends BaseEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "customer_id")
-	private BaseCustomer customer;
+	private Customer customer;
 
 	@Enumerated(EnumType.STRING)
 	private Kind kindOfRate;
@@ -60,11 +60,11 @@ public class QuotationQuery extends BaseEntity {
 	public QuotationQuery() {
 	}
 
-	public BaseCustomer getCustomer() {
+	public Customer getCustomer() {
 		return customer;
 	}
 
-	public void setCustomer(BaseCustomer customer) {
+	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
 

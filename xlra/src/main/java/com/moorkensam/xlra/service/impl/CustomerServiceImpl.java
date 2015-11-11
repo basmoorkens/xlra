@@ -9,8 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.moorkensam.xlra.dao.CustomerDAO;
-import com.moorkensam.xlra.model.BaseCustomer;
-import com.moorkensam.xlra.model.FullCustomer;
+import com.moorkensam.xlra.model.Customer;
 import com.moorkensam.xlra.service.CustomerService;
 
 /**
@@ -28,29 +27,29 @@ public class CustomerServiceImpl implements CustomerService {
 	private final static Logger logger = LogManager.getLogger();
 
 	@Override
-	public BaseCustomer createCustomer(BaseCustomer customer) {
+	public Customer createCustomer(Customer customer) {
 		logger.info("Creating new customer with name " + customer.getName());
 		return getCustomerDAO().createCustomer(customer);
 	}
 
 	@Override
-	public void updateCustomer(BaseCustomer customer) {
+	public void updateCustomer(Customer customer) {
 		getCustomerDAO().updateCustomer(customer);
 	}
 
 	@Override
-	public List<FullCustomer> getAllFullCustomers() {
+	public List<Customer> getAllFullCustomers() {
 		return getCustomerDAO().getAllFullCustomers();
 	}
 
 	@Override
-	public void deleteCustomer(BaseCustomer customer) {
+	public void deleteCustomer(Customer customer) {
 		logger.info("Deleting customer with id " + customer.getId());
 		getCustomerDAO().deleteCustomer(customer);
 	}
 
 	@Override
-	public BaseCustomer getCustomerById(long id) {
+	public Customer getCustomerById(long id) {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Fetching customer for id " + id);
 		}
@@ -58,7 +57,7 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public List<BaseCustomer> getAllCustomers() {
+	public List<Customer> getAllCustomers() {
 		return getCustomerDAO().getAllCustomers();
 	}
 

@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.TestedObject;
 
-import com.moorkensam.xlra.model.FullCustomer;
+import com.moorkensam.xlra.model.Customer;
 import com.moorkensam.xlra.model.QuotationQuery;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Kind;
@@ -30,7 +30,7 @@ public class QuotationUtilTest extends UnitilsJUnit4 {
 
 	@Test
 	public void testCreateRateFileSearchFilterForQueryForFullCustomer() {
-		FullCustomer fc = new FullCustomer();
+		Customer fc = new Customer();
 		fc.setName("basfull");
 		quotationQuery.setCustomer(fc);
 

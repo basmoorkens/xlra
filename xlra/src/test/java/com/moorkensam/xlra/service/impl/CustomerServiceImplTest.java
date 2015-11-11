@@ -11,7 +11,7 @@ import org.unitils.easymock.annotation.Mock;
 import org.unitils.inject.annotation.TestedObject;
 
 import com.moorkensam.xlra.dao.CustomerDAO;
-import com.moorkensam.xlra.model.BaseCustomer;
+import com.moorkensam.xlra.model.Customer;
 
 public class CustomerServiceImplTest extends UnitilsJUnit4 {
 
@@ -29,7 +29,7 @@ public class CustomerServiceImplTest extends UnitilsJUnit4 {
 
 	@Test
 	public void testGetCustomerById() {
-		BaseCustomer cust = new BaseCustomer();
+		Customer cust = new Customer();
 		cust.setId(1l);
 
 		EasyMock.expect(dao.getCustomerById(cust.getId())).andReturn(cust);
@@ -40,8 +40,8 @@ public class CustomerServiceImplTest extends UnitilsJUnit4 {
 
 	@Test
 	public void testGetAllCustomers() {
-		BaseCustomer cust1 = new BaseCustomer();
-		BaseCustomer cust2 = new BaseCustomer();
+		Customer cust1 = new Customer();
+		Customer cust2 = new Customer();
 		EasyMock.expect(dao.getAllCustomers()).andReturn(
 				Arrays.asList(cust1, cust2));
 
@@ -51,7 +51,7 @@ public class CustomerServiceImplTest extends UnitilsJUnit4 {
 
 	@Test
 	public void testCreateCustomer() {
-		BaseCustomer cust = new BaseCustomer();
+		Customer cust = new Customer();
 		EasyMock.expect(dao.createCustomer(cust)).andReturn(cust);
 		EasyMockUnitils.replay();
 
@@ -60,7 +60,7 @@ public class CustomerServiceImplTest extends UnitilsJUnit4 {
 
 	@Test
 	public void testDeleteCustomer() {
-		BaseCustomer cust = new BaseCustomer();
+		Customer cust = new Customer();
 		dao.deleteCustomer(cust);
 		EasyMock.expectLastCall();
 

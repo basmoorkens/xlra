@@ -29,19 +29,19 @@ public class CountryServiceImpl implements CountryService {
 
 	@Override
 	public List<Country> getAllCountries() {
-		return countryDAO.getAllCountries();
+		return getCountryDAO().getAllCountries();
 	}
 
 	@Override
 	public Country getCountryById(long id) {
-		return countryDAO.getCountryById(id);
+		return getCountryDAO().getCountryById(id);
 	}
 
 	@Override
 	public List<Country> getAllCountriesFullLoad() {
-		List<Country> countries = countryDAO.getAllCountriesFullyLoaded();
+		List<Country> countries = getCountryDAO().getAllCountriesFullyLoaded();
 		for (Country c : countries) {
-			if (c.getNames().isEmpty()) {
+			if (c.getNames() == null || c.getNames().isEmpty()) {
 				c.buildEmptyLanguageMap();
 			}
 		}
@@ -51,7 +51,7 @@ public class CountryServiceImpl implements CountryService {
 	@Override
 	public void createZone(Zone zone) {
 		fillInPersistentPostalCodes(zone);
-		zoneDAO.createZone(zone);
+		getZoneDAO().createZone(zone);
 	}
 
 	private void fillInPersistentPostalCodes(Zone zone) {
@@ -62,12 +62,28 @@ public class CountryServiceImpl implements CountryService {
 	@Override
 	public void updateZone(Zone zone) {
 		fillInPersistentPostalCodes(zone);
-		zoneDAO.updateZone(zone);
+		getZoneDAO().updateZone(zone);
 	}
 
 	@Override
 	public Country updateCountry(Country country) {
-		return countryDAO.updateCountry(country);
+		return getCountryDAO().updateCountry(country);
+	}
+
+	public CountryDAO getCountryDAO() {
+		return countryDAO;
+	}
+
+	public void setCountryDAO(CountryDAO countryDAO) {
+		this.countryDAO = countryDAO;
+	}
+
+	public ZoneDAO getZoneDAO() {
+		return zoneDAO;
+	}
+
+	public void setZoneDAO(ZoneDAO zoneDAO) {
+		this.zoneDAO = zoneDAO;
 	}
 
 }

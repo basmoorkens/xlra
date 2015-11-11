@@ -1,6 +1,8 @@
 package com.moorkensam.xlra.model;
 
 import javax.persistence.Cacheable;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -15,10 +17,16 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Entity
 @Cacheable
 @Table(name = "customer")
-@NamedQueries({ @NamedQuery(name = "BaseCustomer.findAll", query = "SELECT b FROM BaseCustomer b where b.deleted = false") })
-public class BaseCustomer extends BaseEntity {
+@NamedQueries({
+		@NamedQuery(name = "Customer.findAll", query = "SELECT b FROM Customer b where b.deleted = false"),
+		@NamedQuery(name = "Customer.findAllFullCustomers", query = "SELECT c FROM Customer c where c.deleted = false AND c.hasOwnRateFile = true") })
+public class Customer extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
+
+	public Customer() {
+		this.address = new Address();
+	}
 
 	@Length(max = 100)
 	@NotNull
@@ -38,6 +46,14 @@ public class BaseCustomer extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	@NotNull(message = "A language has to be selected")
 	protected Language language;
+
+	@Embedded
+	private Address address;
+
+	@Length(max = 100)
+	private String btwNumber;
+
+	private boolean hasOwnRateFile;
 
 	public Language getLanguage() {
 		return language;
@@ -69,6 +85,30 @@ public class BaseCustomer extends BaseEntity {
 
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+
+	public String getBtwNumber() {
+		return btwNumber;
+	}
+
+	public void setBtwNumber(String btwNumber) {
+		this.btwNumber = btwNumber;
+	}
+
+	public boolean isHasOwnRateFile() {
+		return hasOwnRateFile;
+	}
+
+	public void setHasOwnRateFile(boolean hasOwnRateFile) {
+		this.hasOwnRateFile = hasOwnRateFile;
 	}
 
 }

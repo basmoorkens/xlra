@@ -1,7 +1,7 @@
 package com.moorkensam.xlra.service.util;
 
-import com.moorkensam.xlra.model.BaseCustomer;
-import com.moorkensam.xlra.model.FullCustomer;
+import com.moorkensam.xlra.model.Address;
+import com.moorkensam.xlra.model.Customer;
 
 public class CustomerUtil {
 
@@ -14,9 +14,12 @@ public class CustomerUtil {
 		return instance;
 	}
 
-	public FullCustomer promoteToFullCustomer(BaseCustomer base) {
-		FullCustomer fullCustomer = new FullCustomer(base);
-		return fullCustomer;
+	public Customer promoteToFullCustomer(Customer customer) {
+		customer.setHasOwnRateFile(true);
+		if (customer.getAddress() == null) {
+			customer.setAddress(new Address());
+		}
+		return customer;
 	}
 
 	private CustomerUtil() {

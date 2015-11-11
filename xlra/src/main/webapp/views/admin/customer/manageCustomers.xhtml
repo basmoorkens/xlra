@@ -35,12 +35,13 @@
 						<f:facet name="header">Phone</f:facet>
 						#{customer.phone}
 					</p:column>
+					<p:column>
+
+					</p:column>
 					<p:column style="width:36px;text-align: center">
 						<p:commandButton
-							actionListener="#{customerController.setupPageForEditCustomer}"
+							actionListener="#{customerController.setupPageForEditCustomer(customer)}"
 							icon="ui-icon-search" title="View" ajax="false">
-							<f:setPropertyActionListener value="#{customer}"
-								target="#{customerController.selectedCustomer}" />
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>

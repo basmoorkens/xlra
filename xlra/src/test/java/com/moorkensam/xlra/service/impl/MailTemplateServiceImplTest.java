@@ -18,7 +18,7 @@ import com.moorkensam.xlra.dto.OfferteMailDTO;
 import com.moorkensam.xlra.dto.PriceCalculationDTO;
 import com.moorkensam.xlra.dto.PriceResultDTO;
 import com.moorkensam.xlra.mapper.OfferteEmailParameterGenerator;
-import com.moorkensam.xlra.model.BaseCustomer;
+import com.moorkensam.xlra.model.Customer;
 import com.moorkensam.xlra.model.Language;
 import com.moorkensam.xlra.model.QuotationQuery;
 import com.moorkensam.xlra.model.configuration.MailTemplate;
@@ -58,7 +58,7 @@ public class MailTemplateServiceImplTest extends UnitilsJUnit4 {
 	@Before
 	public void init() {
 		query = new QuotationQuery();
-		query.setCustomer(new BaseCustomer());
+		query.setCustomer(new Customer());
 		query.getCustomer().setEmail("test@test.com");
 		query.setCountry(new Country());
 		resultDTO = new PriceResultDTO();

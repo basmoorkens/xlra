@@ -2,7 +2,7 @@ package com.moorkensam.xlra.model.searchfilter;
 
 import java.io.Serializable;
 
-import com.moorkensam.xlra.model.BaseCustomer;
+import com.moorkensam.xlra.model.Customer;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Kind;
 import com.moorkensam.xlra.model.rate.Measurement;
@@ -18,7 +18,7 @@ public class RateFileSearchFilter implements Serializable {
 
 	private Country country;
 
-	private BaseCustomer customer;
+	private Customer customer;
 
 	private TransportType transportationType;
 
@@ -70,11 +70,11 @@ public class RateFileSearchFilter implements Serializable {
 		return result;
 	}
 
-	public BaseCustomer getCustomer() {
+	public Customer getCustomer() {
 		return customer;
 	}
 
-	public void setCustomer(BaseCustomer customer) {
+	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
 

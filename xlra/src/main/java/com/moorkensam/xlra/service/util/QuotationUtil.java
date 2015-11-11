@@ -3,7 +3,7 @@ package com.moorkensam.xlra.service.util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.moorkensam.xlra.model.FullCustomer;
+import com.moorkensam.xlra.model.Customer;
 import com.moorkensam.xlra.model.QuotationQuery;
 import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
 
@@ -38,7 +38,7 @@ public class QuotationUtil {
 		if (ignoreFullCustomerIfPresent) {
 			fillInBaseFilterProperties(query, filter);
 		} else {
-			if (query.getCustomer() instanceof FullCustomer) {
+			if (query.getCustomer() instanceof Customer) {
 				filter.setCustomer(query.getCustomer());
 			} else {
 				fillInBaseFilterProperties(query, filter);

@@ -11,14 +11,12 @@ import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 
 import org.primefaces.event.CellEditEvent;
-import org.primefaces.event.FlowEvent;
 import org.primefaces.event.RowEditEvent;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.controller.util.RateUtil;
-import com.moorkensam.xlra.model.FullCustomer;
+import com.moorkensam.xlra.model.Customer;
 import com.moorkensam.xlra.model.Language;
-import com.moorkensam.xlra.model.RateFileTest;
 import com.moorkensam.xlra.model.configuration.TranslationKey;
 import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.Country;
@@ -56,7 +54,7 @@ public class CreateRatesController {
 
 	private RateFile rateFile;
 
-	private List<FullCustomer> fullCustomers;
+	private List<Customer> fullCustomers;
 
 	private RateFileSearchFilter filter;
 
@@ -192,10 +190,10 @@ public class CreateRatesController {
 		this.kindOfRates = kindOfRates;
 	}
 
-	public List<FullCustomer> completeCustomerName(String input) {
-		List<FullCustomer> filteredCustomers = new ArrayList<FullCustomer>();
+	public List<Customer> completeCustomerName(String input) {
+		List<Customer> filteredCustomers = new ArrayList<Customer>();
 
-		for (FullCustomer fc : fullCustomers) {
+		for (Customer fc : fullCustomers) {
 			if (fc.getName().toLowerCase().contains(input.toLowerCase())) {
 				filteredCustomers.add(fc);
 			}
@@ -214,11 +212,11 @@ public class CreateRatesController {
 		return RateUtil.getLanguages();
 	}
 
-	public List<FullCustomer> getFullCustomers() {
+	public List<Customer> getFullCustomers() {
 		return fullCustomers;
 	}
 
-	public void setFullCustomers(List<FullCustomer> fullCustomers) {
+	public void setFullCustomers(List<Customer> fullCustomers) {
 		this.fullCustomers = fullCustomers;
 	}
 

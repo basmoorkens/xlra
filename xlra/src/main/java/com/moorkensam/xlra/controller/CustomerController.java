@@ -10,8 +10,7 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
-import com.moorkensam.xlra.model.BaseCustomer;
-import com.moorkensam.xlra.model.FullCustomer;
+import com.moorkensam.xlra.model.Customer;
 import com.moorkensam.xlra.model.Language;
 import com.moorkensam.xlra.service.CustomerService;
 import com.moorkensam.xlra.service.util.CustomerUtil;
@@ -23,11 +22,11 @@ public class CustomerController {
 	@Inject
 	private CustomerService customerService;
 
-	private FullCustomer selectedCustomer;
+	private Customer selectedCustomer;
 
 	private String detailGridTitle;
 
-	private List<BaseCustomer> allCustomers;
+	private List<Customer> allCustomers;
 
 	/**
 	 * Property for toggling the grid in the frontend.
@@ -65,7 +64,7 @@ public class CustomerController {
 		setAllCustomers(customerService.getAllCustomers());
 		collapseDetailGrid = true;
 		detailGridTitle = "Details selected customer";
-		selectedCustomer = new FullCustomer(true);
+		selectedCustomer = new Customer();
 	}
 
 	public List<Language> getAllLanguages() {
@@ -74,16 +73,19 @@ public class CustomerController {
 
 	public void setupPageForNewCustomer() {
 		detailGridTitle = "Details for new customer";
-		selectedCustomer = new FullCustomer(true);
+		selectedCustomer = new Customer();
+		selectedCustomer.setHasOwnRateFile(true);
 		openDetailGrid();
 	}
 
-	public void setupPageForEditCustomer() {
-		if (!(selectedCustomer instanceof FullCustomer)) {
-			selectedCustomer = CustomerUtil.getInstance()
-					.promoteToFullCustomer(selectedCustomer);
+	public void setupPageForEditCustomer(Customer baseCustomer) {
+		if (!baseCustomer.isHasOwnRateFile()) {
+			baseCustomer = CustomerUtil.getInstance().promoteToFullCustomer(
+					baseCustomer);
 		}
+		selectedCustomer = baseCustomer;
 		openDetailGrid();
+		detailGridTitle = "Details for customer " + selectedCustomer.getName();
 	}
 
 	public void openDetailGrid() {
@@ -110,20 +112,19 @@ public class CustomerController {
 		this.detailGridTitle = detailGridTitle;
 	}
 
-	public FullCustomer getSelectedCustomer() {
+	public Customer getSelectedCustomer() {
 		return selectedCustomer;
 	}
 
-	public void setSelectedCustomer(FullCustomer selectedCustomer) {
+	public void setSelectedCustomer(Customer selectedCustomer) {
 		this.selectedCustomer = selectedCustomer;
-		detailGridTitle = "Details for customer " + selectedCustomer.getName();
 	}
 
-	public List<BaseCustomer> getAllCustomers() {
+	public List<Customer> getAllCustomers() {
 		return allCustomers;
 	}
 
-	public void setAllCustomers(List<BaseCustomer> allCustomers) {
+	public void setAllCustomers(List<Customer> allCustomers) {
 		this.allCustomers = allCustomers;
 	}
 
