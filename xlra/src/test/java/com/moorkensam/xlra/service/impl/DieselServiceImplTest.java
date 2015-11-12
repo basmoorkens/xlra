@@ -18,9 +18,13 @@ import org.unitils.inject.annotation.TestedObject;
 import com.moorkensam.xlra.dao.ConfigurationDao;
 import com.moorkensam.xlra.dao.DieselRateDAO;
 import com.moorkensam.xlra.dao.LogDAO;
+import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.DieselRate;
 import com.moorkensam.xlra.model.configuration.Interval;
+import com.moorkensam.xlra.model.configuration.LogRecord;
+import com.moorkensam.xlra.model.configuration.RateLogRecord;
 import com.moorkensam.xlra.model.error.RateFileException;
+import com.moorkensam.xlra.service.util.LogRecordFactory;
 
 public class DieselServiceImplTest extends UnitilsJUnit4 {
 
@@ -31,9 +35,12 @@ public class DieselServiceImplTest extends UnitilsJUnit4 {
 	private DieselRateDAO dieselRateDAO;
 
 	@Mock
+	private LogRecordFactory logFactory;
+
+	@Mock
 	private ConfigurationDao configDAO;
 
-	@InjectIntoByType
+	@Mock
 	private LogDAO logDao;
 
 	private List<DieselRate> rates;
@@ -44,6 +51,8 @@ public class DieselServiceImplTest extends UnitilsJUnit4 {
 	public void init() {
 		service = new DieselServiceImpl();
 		service.setDieselRateDAO(dieselRateDAO);
+		service.setLogRecordFactory(logFactory);
+		service.setLogDAO(logDao);
 		service.setXlraConfigurationDAO(configDAO);
 		r1 = new DieselRate();
 		r1.setInterval(new Interval("1.20", "1.30"));
@@ -96,6 +105,24 @@ public class DieselServiceImplTest extends UnitilsJUnit4 {
 		DieselRate result = service
 				.getDieselRateForCurrentPrice(new BigDecimal(1.30d));
 		Assert.assertEquals(r2, result);
+	}
+
+	@Test
+	public void testDieselUpdateCurrent() {
+		Configuration config = new Configuration();
+		config.setCurrentDieselPrice(new BigDecimal(1.50d));
+		EasyMock.expect(configDAO.getXlraConfiguration()).andReturn(config);
+		LogRecord log = new RateLogRecord();
+		EasyMock.expect(
+				logFactory.createDieselLogRecord(config.getCurrentDieselPrice()))
+				.andReturn(log);
+		logDao.createLogRecord(log);
+		EasyMock.expectLastCall();
+		configDAO.updateXlraConfiguration(config);
+		EasyMock.expectLastCall();
+
+		EasyMockUnitils.replay();
+		service.updateCurrentDieselValue(new BigDecimal(2d));
 	}
 
 }

@@ -1,6 +1,5 @@
 package com.moorkensam.xlra.controller;
 
-
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -8,6 +7,7 @@ import javax.inject.Inject;
 
 import org.primefaces.model.LazyDataModel;
 
+import com.moorkensam.xlra.controller.model.LazyQuotationResultModel;
 import com.moorkensam.xlra.model.rate.QuotationResult;
 import com.moorkensam.xlra.service.QuotationService;
 
@@ -19,12 +19,11 @@ public class OfferteOverviewController {
 	private QuotationService quotationService;
 
 	private LazyDataModel<QuotationResult> lazyModel;
-	
-	
-	
+
 	@PostConstruct
 	public void initialize() {
-
+		lazyModel = new LazyQuotationResultModel(quotationService);
+		lazyModel.load(0, 25, null, null, null);
 	}
 
 	public QuotationService getQuotationService() {

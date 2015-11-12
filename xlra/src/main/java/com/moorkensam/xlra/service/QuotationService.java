@@ -1,6 +1,9 @@
 package com.moorkensam.xlra.service;
 
 import java.util.List;
+import java.util.Map;
+
+import org.primefaces.model.SortOrder;
 
 import com.moorkensam.xlra.model.QuotationQuery;
 import com.moorkensam.xlra.model.error.RateFileException;
@@ -39,5 +42,7 @@ public interface QuotationService {
 	 */
 	public void submitQuotationResult(QuotationResult result)
 			throws RateFileException;
+	
+	public List<QuotationResult> getQuotationQueries(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters);
 
 }

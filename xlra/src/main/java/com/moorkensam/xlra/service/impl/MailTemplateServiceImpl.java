@@ -2,6 +2,7 @@ package com.moorkensam.xlra.service.impl;
 
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
@@ -35,6 +36,11 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 	private TemplateEngine templateEngine;
 
 	private final static Logger logger = LogManager.getLogger();
+
+	@PostConstruct
+	public void init() {
+		offerteEmailParameterGenerator = new OfferteEmailParameterGenerator();
+	}
 
 	@Override
 	public void updateEmailTemplate(MailTemplate mailTemplate) {

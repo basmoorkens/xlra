@@ -12,7 +12,38 @@
 		<h:outputText value="Offerte overview" />
 	</ui:define>
 	<ui:define name="body">
+		<h:form id="offerteOverviewForm">
+			<p:growl id="msgs" />
 
+			<p:dataTable var="quotationResult" value="#{offerteOverviewController.lazyModel}"
+				paginator="true" rows="25"
+				paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+				rowsPerPageTemplate="10,25,50" selectionMode="single"
+				selection="#{dtLazyView.selectedCar}" id="carTable" lazy="true"
+				emptyMessage="No offertes to view...">
+
+				<p:column headerText="Offerte key: "
+					sortBy="offerteUniqueIdentifier">
+					<h:outputText value="#{quotationResult.offerteUniqueIdentifier}" />
+				</p:column>
+
+				<p:column headerText="Customer: " sortBy="query.customer.name">
+					<h:outputText value="#{quotationResult.query.customer.name}" />
+				</p:column>
+
+				<p:column headerText="Date: " sortBy="query.quotationDate">
+					<h:outputText value="#{quotationResult.query.quotationDate}" />
+				</p:column>
+
+				<p:column headerText="Country: " sortBy="query.country.shortName">
+					<h:outputText value="#{quotationResult.query.country.shortName}" />
+				</p:column>
+
+				<p:column headerText="PostalCode: " sortBy="query.postalCode">
+					<h:outputText value="#{quotationResult.query.postalCode}" />
+				</p:column>
+			</p:dataTable>
+		</h:form>
 	</ui:define>
 </ui:composition>
 </html>

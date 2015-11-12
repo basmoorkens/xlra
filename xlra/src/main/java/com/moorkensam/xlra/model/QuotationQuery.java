@@ -1,6 +1,9 @@
 package com.moorkensam.xlra.model;
 
+import java.util.Date;
+
 import javax.persistence.Cacheable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -54,9 +57,12 @@ public class QuotationQuery extends BaseEntity {
 
 	private String postalCode;
 
+	@Column(name = "quotation_date")
+	private Date quotationDate;
+
 	@Transient
-	private Language resultLanguage; 
-	
+	private Language resultLanguage;
+
 	public QuotationQuery() {
 	}
 
@@ -161,5 +167,13 @@ public class QuotationQuery extends BaseEntity {
 
 	public void setResultLanguage(Language resultLanguage) {
 		this.resultLanguage = resultLanguage;
+	}
+
+	public Date getQuotationDate() {
+		return quotationDate;
+	}
+
+	public void setQuotationDate(Date quotationDate) {
+		this.quotationDate = quotationDate;
 	}
 }

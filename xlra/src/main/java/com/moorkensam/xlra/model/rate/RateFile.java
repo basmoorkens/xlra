@@ -176,27 +176,37 @@ public class RateFile extends BaseEntity {
 		rf.setKindOfRate(getKindOfRate());
 		rf.setMeasurement(getMeasurement());
 		rf.setRateLines(new ArrayList<RateLine>());
-		for (Zone z : zones) {
-			Zone deepCopy = z.deepCopy();
-			deepCopy.setRateFile(rf);
-			rf.addZone(deepCopy);
+		if (zones != null) {
+			for (Zone z : zones) {
+				Zone deepCopy = z.deepCopy();
+				deepCopy.setRateFile(rf);
+				rf.addZone(deepCopy);
+			}
+		} else {
+			rf.setZones(new ArrayList<Zone>());
 		}
 
-		for (RateLine rl : getRateLines()) {
-			RateLine deepCopy = rl.deepCopy();
-			deepCopy.setRateFile(rf);
-			Zone copiedZone = rf.getZoneForZoneName(deepCopy.getZone()
-					.getName());
-			deepCopy.setZone(copiedZone);
+		if (rateLines != null) {
+			for (RateLine rl : getRateLines()) {
+				RateLine deepCopy = rl.deepCopy();
+				deepCopy.setRateFile(rf);
+				Zone copiedZone = rf.getZoneForZoneName(deepCopy.getZone()
+						.getName());
+				deepCopy.setZone(copiedZone);
 
-			rf.getRateLines().add(deepCopy);
+				rf.getRateLines().add(deepCopy);
+			}
+		} else {
+			rf.setRateLines(new ArrayList<RateLine>());
 		}
 
 		rf.setConditions(new ArrayList<Condition>());
-		for (Condition c : conditions) {
-			Condition copy = c.deepCopy();
-			copy.setRateFile(rf);
-			rf.getConditions().add(copy);
+		if (conditions != null) {
+			for (Condition c : conditions) {
+				Condition copy = c.deepCopy();
+				copy.setRateFile(rf);
+				rf.getConditions().add(copy);
+			}
 		}
 
 		rf.fillUpRelationalProperties();

@@ -1,6 +1,8 @@
 package com.moorkensam.xlra.service.impl;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -9,6 +11,7 @@ import javax.mail.MessagingException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.primefaces.model.SortOrder;
 
 import com.moorkensam.xlra.dao.QuotationQueryDAO;
 import com.moorkensam.xlra.dao.QuotationResultDAO;
@@ -181,6 +184,7 @@ public class QuotationServiceImpl implements QuotationService {
 	@Override
 	public void submitQuotationResult(QuotationResult result)
 			throws RateFileException {
+		result.getQuery().setQuotationDate(new Date());
 		copyTransientResultLanguageToLanguageIfNeeded(result);
 		QuotationQuery managedQuery = getQuotationDAO().createQuotationQuery(
 				result.getQuery());
@@ -263,5 +267,12 @@ public class QuotationServiceImpl implements QuotationService {
 
 	public void setMailTemplateService(MailTemplateService mailTemplateService) {
 		this.mailTemplateService = mailTemplateService;
+	}
+
+	@Override
+	public List<QuotationResult> getQuotationQueries(int first, int pageSize,
+			String sortField, SortOrder sortOrder, Map<String, String> filters) {
+		return quotationResultDAO.getQuotationResults(first, pageSize,
+				sortField, sortOrder, filters);
 	}
 }

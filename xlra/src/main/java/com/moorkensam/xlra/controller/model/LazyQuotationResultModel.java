@@ -3,20 +3,25 @@ package com.moorkensam.xlra.controller.model;
 import java.util.List;
 import java.util.Map;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 
-import com.moorkensam.xlra.model.QuotationQuery;
 import com.moorkensam.xlra.model.rate.QuotationResult;
+import com.moorkensam.xlra.service.QuotationService;
 
 public class LazyQuotationResultModel extends LazyDataModel<QuotationResult> {
 
 	private static final long serialVersionUID = 8411957900735285265L;
 
+	private final QuotationService quotationService;
+
 	private List<QuotationResult> dataSource;
 
-	public LazyQuotationResultModel(List<QuotationResult> datasource) {
-		this.setDataSource(datasource);
+	public LazyQuotationResultModel(QuotationService service) {
+		this.quotationService = service;
 	}
 
 	@Override
@@ -37,8 +42,8 @@ public class LazyQuotationResultModel extends LazyDataModel<QuotationResult> {
 	@Override
 	public List<QuotationResult> load(int first, int pageSize,
 			String sortField, SortOrder sortOrder, Map<String, String> filters) {
-		// TODO Auto-generated method stub
-		return super.load(first, pageSize, sortField, sortOrder, filters);
+		return quotationService.getQuotationQueries(first, pageSize, sortField,
+				sortOrder, filters);
 	}
 
 	public List<QuotationResult> getDataSource() {

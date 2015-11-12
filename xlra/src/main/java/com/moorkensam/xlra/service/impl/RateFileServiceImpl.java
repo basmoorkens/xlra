@@ -66,14 +66,14 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 
 	@Override
 	public List<RateFile> getAllRateFiles() {
-		return rateFileDAO.getAllRateFiles();
+		return getRateFileDAO().getAllRateFiles();
 	}
 
 	@Override
 	public void createRateFile(final RateFile rateFile) {
 		logger.info("Creating ratefile for " + rateFile.getName());
 		convertStringCodesToObjects(rateFile);
-		rateFileDAO.createRateFile(rateFile);
+		getRateFileDAO().createRateFile(rateFile);
 	}
 
 	private void convertStringCodesToObjects(final RateFile rateFile) {
@@ -86,7 +86,7 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 	@Override
 	public RateFile updateRateFile(final RateFile rateFile) {
 		convertStringCodesToObjects(rateFile);
-		return rateFileDAO.updateRateFile(rateFile);
+		return getRateFileDAO().updateRateFile(rateFile);
 	}
 
 	@Override
@@ -95,13 +95,13 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Fetch ratefiles for filter " + filter);
 		}
-		return rateFileDAO.getRateFilesForFilter(filter);
+		return getRateFileDAO().getRateFilesForFilter(filter);
 	}
 
 	@Override
 	public void deleteRateFile(final RateFile rateFile) {
 		logger.info("Deleting ratefile " + rateFile.getId());
-		rateFileDAO.deleteRateFile(rateFile);
+		getRateFileDAO().deleteRateFile(rateFile);
 	}
 
 	@Override
@@ -109,7 +109,7 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Fetching details for ratefile with id " + id);
 		}
-		RateFile rateFile = rateFileDAO.getFullRateFile(id);
+		RateFile rateFile = getRateFileDAO().getFullRateFile(id);
 		return rateFile;
 	}
 
@@ -147,7 +147,7 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 			} else {
 				logger.info("Saving subtracted rates file " + rf.getName());
 			}
-			rateFileDAO.updateRateFile(rf);
+			getRateFileDAO().updateRateFile(rf);
 		}
 	}
 
@@ -189,7 +189,7 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 	protected List<RateFile> fetchFullRateFiles(List<RateFile> rateFiles) {
 		List<RateFile> fullRateFiles = new ArrayList<RateFile>();
 		for (RateFile rf : rateFiles) {
-			fullRateFiles.add(rateFileDAO.getFullRateFile(rf.getId()));
+			fullRateFiles.add(getRateFileDAO().getFullRateFile(rf.getId()));
 		}
 
 		return fullRateFiles;
@@ -212,7 +212,7 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 	@Override
 	public RateFile getRateFileWithoutLazyLoad(Long id) {
 		logger.info("Fetching ratefiles and finding in memory");
-		List<RateFile> rfs = rateFileDAO.getAllRateFiles();
+		List<RateFile> rfs = getRateFileDAO().getAllRateFiles();
 		for (RateFile rf : rfs) {
 			if (rf.getId() == id) {
 				return rf;
@@ -223,7 +223,7 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 
 	@Override
 	public RateFile getCopyOfRateFileForFilter(RateFileSearchFilter filter) {
-		List<RateFile> rateFiles = rateFileDAO.getRateFilesForFilter(filter);
+		List<RateFile> rateFiles = getRateFileDAO().getRateFilesForFilter(filter);
 		if (rateFiles.isEmpty()) {
 			return null;
 		}
@@ -270,13 +270,13 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 			}
 		}
 		rf = updateRateFile(rf);
-		rateFileDAO.getFullRateFile(rf.getId());
+		getRateFileDAO().getFullRateFile(rf.getId());
 		return rf;
 	}
 
 	@Override
 	public RateFile getFullRateFileForFilter(RateFileSearchFilter filter) {
-		RateFile rf = rateFileDAO.getFullRateFileForFilter(filter);
+		RateFile rf = getRateFileDAO().getFullRateFileForFilter(filter);
 		return rf;
 	}
 
@@ -295,7 +295,7 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 
 	@Override
 	public RateFile getRateFileById(long id) {
-		return rateFileDAO.getFullRateFile(id);
+		return getRateFileDAO().getFullRateFile(id);
 	}
 
 	@Override
@@ -305,13 +305,13 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 				.createRateFileSearchFilterForQuery(query, false);
 		RateFile rf = null;
 		try {
-			rf = rateFileDAO.getFullRateFileForFilter(firstFilter);
+			rf = getRateFileDAO().getFullRateFileForFilter(firstFilter);
 		} catch (NoResultException nre) {
 			try {
 				logger.warn("Could not find specific ratefile for fullcustomer, falling back on standard filter properties.");
 				RateFileSearchFilter fallBackFilter = quotationUtil
 						.createRateFileSearchFilterForQuery(query, true);
-				rf = rateFileDAO.getFullRateFileForFilter(fallBackFilter);
+				rf = getRateFileDAO().getFullRateFileForFilter(fallBackFilter);
 			} catch (NoResultException nre2) {
 				throw new RateFileException(
 						"Could not find ratefile for searchfilter "
@@ -327,5 +327,13 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 
 	public void setQuotationUtil(QuotationUtil quotationUtil) {
 		this.quotationUtil = quotationUtil;
+	}
+
+	public RateFileDAO getRateFileDAO() {
+		return rateFileDAO;
+	}
+
+	public void setRateFileDAO(RateFileDAO rateFileDAO) {
+		this.rateFileDAO = rateFileDAO;
 	}
 }

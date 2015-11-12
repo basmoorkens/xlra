@@ -66,7 +66,7 @@ public class DieselServiceImpl implements DieselService {
 		LogRecord createDieselLogRecord = logRecordFactory
 				.createDieselLogRecord(config.getCurrentDieselPrice());
 		logger.info("Saving dieselprice logrecord " + createDieselLogRecord);
-		logDAO.createLogRecord(createDieselLogRecord);
+		getLogDAO().createLogRecord(createDieselLogRecord);
 
 		config.setCurrentDieselPrice(value);
 		logger.info("Saving current diesel price"
@@ -117,6 +117,14 @@ public class DieselServiceImpl implements DieselService {
 
 	public void setLogRecordFactory(LogRecordFactory logRecordFactory) {
 		this.logRecordFactory = logRecordFactory;
+	}
+
+	public LogDAO getLogDAO() {
+		return logDAO;
+	}
+
+	public void setLogDAO(LogDAO logDAO) {
+		this.logDAO = logDAO;
 	}
 
 }
