@@ -2,6 +2,8 @@ package com.moorkensam.xlra.service.impl;
 
 import java.util.Arrays;
 
+import javax.persistence.NoResultException;
+
 import junit.framework.Assert;
 
 import org.easymock.EasyMock;
@@ -13,8 +15,12 @@ import org.unitils.easymock.annotation.Mock;
 import org.unitils.inject.annotation.TestedObject;
 
 import com.moorkensam.xlra.dao.RateFileDAO;
+import com.moorkensam.xlra.model.QuotationQuery;
+import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.rate.RateFile;
+import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
+import com.moorkensam.xlra.service.util.QuotationUtil;
 
 public class RateFileServiceTest extends UnitilsJUnit4 {
 
@@ -24,10 +30,72 @@ public class RateFileServiceTest extends UnitilsJUnit4 {
 	@Mock
 	private RateFileDAO rfDao;
 
+	@Mock
+	private QuotationUtil quotationUtil;
+
 	@Before
 	public void init() {
 		rateFileService = new RateFileServiceImpl();
 		rateFileService.setRateFileDAO(rfDao);
+		rateFileService.setQuotationUtil(quotationUtil);
+	}
+
+	@Test
+	public void testgetRateFileForQuery() throws RateFileException {
+		QuotationQuery query = new QuotationQuery();
+		RateFileSearchFilter filter = new RateFileSearchFilter();
+		EasyMock.expect(
+				quotationUtil.createRateFileSearchFilterForQuery(query, false))
+				.andReturn(filter);
+		RateFile rf = new RateFile();
+		EasyMock.expect(rfDao.getFullRateFileForFilter(filter)).andReturn(rf);
+		EasyMockUnitils.replay();
+
+		RateFile result = rateFileService.getRateFileForQuery(query);
+	}
+
+	@Test
+	public void testgetRateFileQuery() throws RateFileException {
+		QuotationQuery query = new QuotationQuery();
+		RateFileSearchFilter filter = new RateFileSearchFilter();
+		EasyMock.expect(
+				quotationUtil.createRateFileSearchFilterForQuery(query, false))
+				.andReturn(filter);
+		EasyMock.expect(rfDao.getFullRateFileForFilter(filter)).andThrow(
+				new NoResultException());
+		RateFileSearchFilter backupFilter = new RateFileSearchFilter();
+		EasyMock.expect(
+				quotationUtil.createRateFileSearchFilterForQuery(query, true))
+				.andReturn(backupFilter);
+		RateFile rf = new RateFile();
+		EasyMock.expect(rfDao.getFullRateFileForFilter(backupFilter))
+				.andReturn(rf);
+		EasyMockUnitils.replay();
+
+		RateFile result = rateFileService.getRateFileForQuery(query);
+	}
+
+
+	@Test
+	public void deleteZone() {
+		Zone zone = new Zone();
+		Zone zone2 = new Zone();
+		zone.setId(1l);
+		zone2.setId(2l);
+		RateFile rf = new RateFile();
+		rf.setId(10l);
+		zone.setRateFile(rf);
+		zone2.setRateFile(rf);
+		rf.addZone(zone);
+		rf.addZone(zone2);
+		EasyMock.expect(rfDao.updateRateFile(rf)).andReturn(rf);
+		EasyMock.expect(rfDao.getFullRateFile(rf.getId())).andReturn(rf);
+		EasyMockUnitils.replay();
+
+		RateFile result = rateFileService.deleteZone(zone);
+		Assert.assertNotNull(result);
+		Assert.assertNotNull(result.getZones());
+		Assert.assertEquals(1, result.getZones().size());
 	}
 
 	@Test

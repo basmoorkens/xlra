@@ -45,6 +45,7 @@ public class QuotationResultDAOImpl extends BaseDAO implements
 			String sortField, SortOrder sortOrder, Map<String, String> filters) {
 		StringBuilder queryBuilder = new StringBuilder();
 		queryBuilder.append("SELECT q FROM QuotationResult q WHERE 1 = 1 ");
+		// TODO apply filters
 		if (sortField != null && !sortField.isEmpty()) {
 			queryBuilder.append("ORDER BY q." + sortField + " ");
 			if (sortOrder != null) {
@@ -70,5 +71,16 @@ public class QuotationResultDAOImpl extends BaseDAO implements
 			fullLoad(q);
 		}
 		return resultList;
+	}
+
+	@Override
+	public int getQuotationResultCount(Map<String, String> filters) {
+		StringBuilder queryBuilder = new StringBuilder();
+		queryBuilder
+				.append("SELECT count(q.id) FROM QuotationResult q WHERE 1 = 1 ");
+		// TODO apply filters
+		Query query = getEntityManager().createQuery(queryBuilder.toString());
+		Long result = (Long) query.getSingleResult();
+		return new Integer(result + "");
 	}
 }

@@ -1,13 +1,18 @@
 package com.moorkensam.xlra.controller;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 
 import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
 
-import com.moorkensam.xlra.controller.model.LazyQuotationResultModel;
+import com.moorkensam.xlra.model.QuotationQuery;
 import com.moorkensam.xlra.model.rate.QuotationResult;
 import com.moorkensam.xlra.service.QuotationService;
 
@@ -18,12 +23,13 @@ public class OfferteOverviewController {
 	@Inject
 	private QuotationService quotationService;
 
-	private LazyDataModel<QuotationResult> lazyModel;
+	private List<QuotationResult> quotationResults;
+
+	private QuotationQuery selectedQuery;
 
 	@PostConstruct
 	public void initialize() {
-		lazyModel = new LazyQuotationResultModel(quotationService);
-		lazyModel.load(0, 25, null, null, null);
+		quotationResults = quotationService.getAllQuotationResults();
 	}
 
 	public QuotationService getQuotationService() {
@@ -34,11 +40,19 @@ public class OfferteOverviewController {
 		this.quotationService = quotationService;
 	}
 
-	public LazyDataModel<QuotationResult> getLazyModel() {
-		return lazyModel;
+	public QuotationQuery getSelectedQuery() {
+		return selectedQuery;
 	}
 
-	public void setLazyModel(LazyDataModel<QuotationResult> lazyModel) {
-		this.lazyModel = lazyModel;
+	public void setSelectedQuery(QuotationQuery selectedQuery) {
+		this.selectedQuery = selectedQuery;
+	}
+
+	public List<QuotationResult> getQuotationResults() {
+		return quotationResults;
+	}
+
+	public void setQuotationResults(List<QuotationResult> quotationResults) {
+		this.quotationResults = quotationResults;
 	}
 }

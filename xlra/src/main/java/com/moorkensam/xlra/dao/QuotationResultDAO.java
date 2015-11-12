@@ -13,6 +13,8 @@ public interface QuotationResultDAO {
 	public List<QuotationResult> getQuotationResults(int first, int pageSize,
 			String sortField, SortOrder sortOrder, Map<String, String> filters);
 
+	public int getQuotationResultCount(Map<String, String> filters);
+
 	public void createQuotationResult(QuotationResult result);
 
 	public QuotationResult updateQuotationResult(QuotationResult result);

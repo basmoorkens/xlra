@@ -15,12 +15,13 @@
 		<h:form id="offerteOverviewForm">
 			<p:growl id="msgs" />
 
-			<p:dataTable var="quotationResult" value="#{offerteOverviewController.lazyModel}"
+			<p:dataTable var="quotationResult"
+				value="#{offerteOverviewController.quotationResults}"
 				paginator="true" rows="25"
 				paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
-				rowsPerPageTemplate="10,25,50" selectionMode="single"
-				selection="#{dtLazyView.selectedCar}" id="carTable" lazy="true"
-				emptyMessage="No offertes to view...">
+				rowsPerPageTemplate="10,25,50"
+				selection="#{offerteOverviewController.selectedQuery}"
+				id="offerteTable" emptyMessage="No offertes to view...">
 
 				<p:column headerText="Offerte key: "
 					sortBy="offerteUniqueIdentifier">

@@ -275,4 +275,9 @@ public class QuotationServiceImpl implements QuotationService {
 		return quotationResultDAO.getQuotationResults(first, pageSize,
 				sortField, sortOrder, filters);
 	}
+
+	@Override
+	public int getQuotationQueryCount(Map<String, String> filters) {
+		return  quotationResultDAO.getQuotationResultCount(filters);
+	}
 }

@@ -42,7 +42,10 @@ public interface QuotationService {
 	 */
 	public void submitQuotationResult(QuotationResult result)
 			throws RateFileException;
-	
-	public List<QuotationResult> getQuotationQueries(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters);
+
+	public List<QuotationResult> getQuotationQueries(int first, int pageSize,
+			String sortField, SortOrder sortOrder, Map<String, String> filters);
+
+	public int getQuotationQueryCount(Map<String, String> filters);
 
 }
