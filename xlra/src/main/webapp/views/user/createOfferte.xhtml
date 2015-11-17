@@ -13,22 +13,26 @@
 	</ui:define>
 	<ui:define name="body">
 		<h:form id="customerForm">
+			<p:commandButton value="test"
+				actionListener="#{createQuotationController.generateException}" />
 			<p:panel id="customerPanel" header="Customer" toggleable="false"
 				collapsed="#{createQuotationController.collapseCustomerPanel}">
+				<p:panelGrid columns="3" style="width:100%;">
+					<h:outputText value="Select an existing customer: " />
+					<p:autoComplete size="60" id="customerSelector" dropdown="true"
+						value="#{createQuotationController.quotationQuery.customer}"
+						completeMethod="#{createQuotationController.completeCustomerName}"
+						var="customer" itemLabel="#{customer.name}" required="true"
+						requiredMessage="Please select a customer/create a new one"
+						itemValue="#{customer}" converter="#{customerConverter}">
+					</p:autoComplete>
+
+					<p:commandButton value="Create new customer"
+						update=":addQuickCustomerForm" immediate="true"
+						onclick="PF('addCustomerDialog').show();" />
+
+				</p:panelGrid>
 				<p:growl showDetail="true" id="messages" sticky="false" />
-				<h:outputText value="Select an existing customer: " />
-				<p:autoComplete size="50" id="customerSelector" dropdown="true"
-					value="#{createQuotationController.quotationQuery.customer}"
-					completeMethod="#{createQuotationController.completeCustomerName}"
-					var="customer" itemLabel="#{customer.name}" required="true"
-					requiredMessage="Please select a customer/create a new one"
-					itemValue="#{customer}" converter="#{customerConverter}">
-				</p:autoComplete>
-
-				<p:commandButton value="Create new customer"
-					update=":addQuickCustomerForm" immediate="true"
-					onclick="PF('addCustomerDialog').show();" />
-
 				<p:panel
 					style="margin-top:20px; bottom:20px;  padding:0px;border:0px;">
 					<p:commandButton value="Next"
@@ -142,8 +146,9 @@
 			<p:ajaxStatus onstart="showStatusDialog();"
 				onsuccess="hideStatusDialog();" />
 
-			<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
-				closable="false" resizable="false" showHeader="false">
+			<p:dialog id="statusDialog" widgetVar="statusDialog" modal="true"
+				draggable="false" closable="false" resizable="false"
+				showHeader="false">
 				<img src="/xlra/images/ajax-loader.gif" />
 			</p:dialog>
 
@@ -204,14 +209,15 @@
 
 			function showStatusDialog() {
 				if (statusDlgTimer === null) {
-					statusDlgTimer = setTimeout("statusDialog.show()", 500);
+					statusDlgTimer = setTimeout("PF('statusDialog').show()",
+							500);
 				}
 			}
 
 			function hideStatusDialog() {
 				if (statusDlgTimer !== null) {
 					clearTimeout(statusDlgTimer);
-					statusDialog.hide();
+					PF('statusDialog').hide();
 					statusDlgTimer = null;
 				}
 			}

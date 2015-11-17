@@ -63,6 +63,10 @@ public class CreateQuotationController {
 		setCollapseResultPanel(true);
 	}
 
+	public void generateException() {
+		throw new NullPointerException();
+	}
+
 	private void initializeNewQuotationQuery() {
 		QuotationQuery query = new QuotationQuery();
 		query.setTransportType(TransportType.EXPORT);

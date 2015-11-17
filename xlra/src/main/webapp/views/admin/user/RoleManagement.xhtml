@@ -17,13 +17,13 @@
 			<p:panel>
 				<p:dataTable emptyMessage="No roles found." id="rolesTable"
 					value="#{rolesController.allRoles}" var="role">
-					<p:column headerText="Name: ">
+					<p:column headerText="Name: " width="200">
 						<h:outputText value="#{role.name}" />
 					</p:column>
 					<p:column headerText="Permission list">
 						#{role.permissionsString}
 					</p:column>
-					<p:column>
+					<p:column width="200">
 						<p:commandButton value="Edit role"
 							update=":rolesForm :addRolesForm" style="width:120px;"
 							actionListener="#{rolesController.selectRoleForEdit(role)}" />
@@ -37,7 +37,7 @@
 			</p:panel>
 		</h:form>
 
-		<p:dialog header="Create new role" widgetVar="addRoleDialog"
+		<p:dialog  header="Create new role" widgetVar="addRoleDialog"
 			modal="true" height="650px" width="1024px" dynamic="true">
 			<h:form id="addRolesForm">
 				<p:growl showDetail="true" id="messages" sticky="false" />

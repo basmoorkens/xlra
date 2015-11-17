@@ -36,7 +36,11 @@ public class RolesController {
 		permissions = new DualListModel<Permission>();
 		refreshRoles();
 		allPermissions = roleService.getAllPermissions();
-		setupNewRole();
+		setupInternalNewRole();
+	}
+
+	private void setupInternalNewRole() {
+		internalSetRole(new Role());
 	}
 
 	private void refreshRoles() {
@@ -61,11 +65,15 @@ public class RolesController {
 	}
 
 	public void selectRoleForEdit(Role role) {
+		internalSetRole(role);
+		RequestContext context = RequestContext.getCurrentInstance();
+		context.execute("PF('addRoleDialog').show();");
+	}
+
+	private void internalSetRole(Role role) {
 		selectedRole = role;
 		getPermissions().setTarget(role.getPermissions());
 		getPermissions().setSource(getSourcePermissions(selectedRole));
-		RequestContext context = RequestContext.getCurrentInstance();
-		context.execute("PF('addRoleDialog').show();");
 	}
 
 	private List<Permission> getSourcePermissions(Role role) {
@@ -82,8 +90,6 @@ public class RolesController {
 	public void setupNewRole() {
 		selectedRole = new Role();
 		selectRoleForEdit(selectedRole);
-		RequestContext context = RequestContext.getCurrentInstance();
-		context.execute("PF('addRoleDialog').show();");
 	}
 
 	public List<Role> getAllRoles() {

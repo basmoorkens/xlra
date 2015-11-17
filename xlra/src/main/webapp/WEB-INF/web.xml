@@ -15,6 +15,11 @@
 		<welcome-file>/views/protected/welcome.xhtml</welcome-file>
 	</welcome-file-list>
 	
+	<error-page>
+     <error-code>500</error-code>
+     <location>/views/error/500.xhtml</location>
+ 	</error-page>	
+	
 	 <filter>
 		 <filter-name>PrimeFaces FileUpload Filter</filter-name>
 		 <filter-class>

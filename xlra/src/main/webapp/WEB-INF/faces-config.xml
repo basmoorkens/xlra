@@ -7,4 +7,8 @@
 	<application>
 		<message-bundle>com.moorkensam.xlra.errorMessages</message-bundle>
 	</application>
+
+	<factory>
+		<exception-handler-factory>org.omnifaces.exceptionhandler.FullAjaxExceptionHandlerFactory</exception-handler-factory>
+	</factory>
 </faces-config> 
