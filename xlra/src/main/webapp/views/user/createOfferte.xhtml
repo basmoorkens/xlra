@@ -13,8 +13,8 @@
 	</ui:define>
 	<ui:define name="body">
 		<h:form id="customerForm">
-			<p:commandButton value="test"
-				actionListener="#{createQuotationController.generateException}" />
+			<p:commandButton value="test" ajax="true" update="" immediate="true"
+				actionListener="#{createQuotationController.setupException}" />
 			<p:panel id="customerPanel" header="Customer" toggleable="false"
 				collapsed="#{createQuotationController.collapseCustomerPanel}">
 				<p:panelGrid columns="3" style="width:100%;">

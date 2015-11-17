@@ -63,7 +63,8 @@ public class CreateQuotationController {
 		setCollapseResultPanel(true);
 	}
 
-	public void generateException() {
+	public void setupException() {
+		System.out.println("....Ò");
 		throw new NullPointerException();
 	}
 
