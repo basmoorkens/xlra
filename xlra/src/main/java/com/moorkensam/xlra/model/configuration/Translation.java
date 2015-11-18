@@ -33,6 +33,10 @@ public class Translation extends BaseEntity implements Comparable<Translation> {
 	@CollectionTable(name = "translationsForLanguages", joinColumns = @JoinColumn(name = "translation_id"))
 	private List<TranslationForLanguage> translations;
 
+	@ElementCollection
+	@CollectionTable(name = "translationKeysForLanguages", joinColumns = @JoinColumn(name = "translation_id"))
+	private List<TranslationForLanguage> translationKeysTranslations;
+
 	public TranslationKey getTranslationKey() {
 		return translationKey;
 	}
@@ -77,5 +81,14 @@ public class Translation extends BaseEntity implements Comparable<Translation> {
 
 	public TranslationForLanguage getDutchTranslation() {
 		return getTranslationForLanguage(Language.NL);
+	}
+
+	public List<TranslationForLanguage> getTranslationKeysTranslations() {
+		return translationKeysTranslations;
+	}
+
+	public void setTranslationKeysTranslations(
+			List<TranslationForLanguage> translationKeysTranslations) {
+		this.translationKeysTranslations = translationKeysTranslations;
 	}
 }

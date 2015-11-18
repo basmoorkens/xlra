@@ -16,6 +16,7 @@ import com.moorkensam.xlra.model.Language;
 import com.moorkensam.xlra.model.configuration.Translation;
 import com.moorkensam.xlra.model.configuration.TranslationForLanguage;
 import com.moorkensam.xlra.model.configuration.TranslationKey;
+import com.moorkensam.xlra.model.error.XlraValidationException;
 import com.moorkensam.xlra.service.TranslationService;
 import com.moorkensam.xlra.service.util.TranslationUtil;
 
@@ -48,10 +49,18 @@ public class TranslationController {
 	}
 
 	public void saveNewTranslations() {
-		translationService.createTranslation(newTranslation);
-		MessageUtil.addMessage("Translation created", "Added translations for "
-				+ newTranslation.getTranslationKey());
-		refreshPage();
+		newTranslation.setTranslationKey(selectedKey);
+		try {
+			translationService.createTranslation(newTranslation);
+			MessageUtil.addMessage(
+					"Translation created",
+					"Added translations for "
+							+ newTranslation.getTranslationKey());
+			refreshPage();
+		} catch (XlraValidationException e) {
+			MessageUtil.addErrorMessage("Error creating translation",
+					e.getBusinessException());
+		}
 	}
 
 	private void setupNewTranslations() {
@@ -87,10 +96,6 @@ public class TranslationController {
 				availableKeys.add(key);
 			}
 		}
-	}
-
-	public void createNewTranslations() {
-		translationService.createTranslation(newTranslation);
 	}
 
 	private void refreshTranslations() {

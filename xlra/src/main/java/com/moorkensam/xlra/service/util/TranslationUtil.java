@@ -21,10 +21,10 @@ public class TranslationUtil {
 		return result;
 	}
 
-	public static List<TranslationKey> getAvailableTranslationKeysForSelectedRateFile(RateFile rf) {
+	public static List<TranslationKey> getAvailableTranslationKeysForSelectedRateFile(
+			RateFile rf) {
 		List<TranslationKey> allKeys = TranslationUtil.getTranslationsNotKey();
-		if (rf != null
-				&& rf.getConditions() != null
+		if (rf != null && rf.getConditions() != null
 				&& !rf.getConditions().isEmpty()) {
 			List<TranslationKey> usedKeys = new ArrayList<TranslationKey>();
 			for (Condition c : rf.getConditions()) {
@@ -40,16 +40,10 @@ public class TranslationUtil {
 		}
 		return allKeys;
 	}
-	
+
 	public static List<TranslationKey> getTranslationKeyKeys() {
-		List<TranslationKey> keys = Arrays.asList(TranslationKey.values());
-		List<TranslationKey> result = new ArrayList<TranslationKey>();
-		for (TranslationKey key : keys) {
-			if (key.isKey()) {
-				result.add(key);
-			}
-		}
-		return result;
+		return Arrays.asList(TranslationKey.values());
+
 	}
 
 }

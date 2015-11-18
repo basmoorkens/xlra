@@ -12,6 +12,7 @@ import com.moorkensam.xlra.dao.TranslationDAO;
 import com.moorkensam.xlra.model.Language;
 import com.moorkensam.xlra.model.configuration.Translation;
 import com.moorkensam.xlra.model.configuration.TranslationKey;
+import com.moorkensam.xlra.model.error.XlraValidationException;
 import com.moorkensam.xlra.service.TranslationService;
 
 /**
@@ -41,8 +42,20 @@ public class TranslationServiceImpl implements TranslationService {
 	}
 
 	@Override
-	public void createTranslation(Translation translation) {
-		getTranslationDAO().createTranslation(translation);
+	public void createTranslation(Translation translation)
+			throws XlraValidationException {
+		if (validateTranslation(translation)) {
+			getTranslationDAO().createTranslation(translation);
+		}
+	}
+
+	private boolean validateTranslation(Translation translation)
+			throws XlraValidationException {
+		if (translation.getTranslationKey() == null) {
+			throw new XlraValidationException(
+					"You can not create a translation without a key");
+		}
+		return true;
 	}
 
 	@Override

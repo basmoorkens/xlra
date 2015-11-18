@@ -1,6 +1,7 @@
 package com.moorkensam.xlra.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -40,6 +41,7 @@ public class TranslationServiceImplTest extends UnitilsJUnit4 {
 		TranslationForLanguage tfl2 = new TranslationForLanguage();
 		tfl2.setLanguage(Language.FR);
 		tfl2.setTranslation("NOK");
+		tr.setTranslations(Arrays.asList(tfl, tfl2));
 		translations.add(tr);
 		translations.add(tr2);
 	}

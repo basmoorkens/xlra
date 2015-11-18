@@ -81,26 +81,24 @@ public class CalculationServiceImpl implements CalculationService {
 		priceDTO.addToFinalPrice(priceDTO.getBasePrice());
 		if (priceDTO.getDieselPrice() != null) {
 			priceDTO.addToFinalPrice(priceDTO.getDieselPrice());
-			priceDTO.getAppliedOperations().add(
-					TranslationKey.DIESEL_SURCHARGE_KEY);
+			priceDTO.getAppliedOperations()
+					.add(TranslationKey.DIESEL_SURCHARGE);
 		}
 		if (priceDTO.getChfPrice() != null) {
 			priceDTO.addToFinalPrice(priceDTO.getChfPrice());
-			priceDTO.getAppliedOperations().add(
-					TranslationKey.CHF_SURCHARGE_KEY);
+			priceDTO.getAppliedOperations().add(TranslationKey.CHF_SURCHARGE);
 		}
 		if (priceDTO.getImportFormalities() != null) {
 			priceDTO.addToFinalPrice(priceDTO.getImportFormalities());
-			priceDTO.getAppliedOperations().add(TranslationKey.IMPORT_FORM_KEY);
+			priceDTO.getAppliedOperations().add(TranslationKey.IMPORT_FORM);
 		}
 		if (priceDTO.getExportFormalities() != null) {
 			priceDTO.addToFinalPrice(priceDTO.getExportFormalities());
-			priceDTO.getAppliedOperations().add(TranslationKey.EXPORT_FORM_KEY);
+			priceDTO.getAppliedOperations().add(TranslationKey.EXPORT_FORM);
 		}
 		if (priceDTO.getResultingPriceSurcharge() != null) {
 			priceDTO.addToFinalPrice(priceDTO.getResultingPriceSurcharge());
-			priceDTO.getAppliedOperations().add(
-					TranslationKey.ADR_SURCHARGE_KEY);
+			priceDTO.getAppliedOperations().add(TranslationKey.ADR_SURCHARGE);
 		}
 
 		priceDTO.setFinalPrice(CalcUtil.roundBigDecimal(priceDTO
