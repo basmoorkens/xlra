@@ -1,11 +1,14 @@
 package com.moorkensam.xlra.model.configuration;
 
+import java.util.List;
+
 import javax.persistence.Cacheable;
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -23,33 +26,12 @@ public class Translation extends BaseEntity implements Comparable<Translation> {
 
 	private static final long serialVersionUID = 2952050080864430058L;
 
-	@ManyToOne
-	@JoinColumn(name = "configurtionId")
-	private Configuration configuration;
-
 	@Enumerated(EnumType.STRING)
 	private TranslationKey translationKey;
 
-	private String text;
-
-	@Enumerated(EnumType.STRING)
-	private Language language;
-
-	public String getText() {
-		return text;
-	}
-
-	public void setText(String text) {
-		this.text = text;
-	}
-
-	public Language getLanguage() {
-		return language;
-	}
-
-	public void setLanguage(Language language) {
-		this.language = language;
-	}
+	@ElementCollection
+	@CollectionTable(name = "translationsForLanguages", joinColumns = @JoinColumn(name = "translation_id"))
+	private List<TranslationForLanguage> translations;
 
 	public TranslationKey getTranslationKey() {
 		return translationKey;
@@ -59,16 +41,41 @@ public class Translation extends BaseEntity implements Comparable<Translation> {
 		this.translationKey = translationKey;
 	}
 
-	public Configuration getConfiguration() {
-		return configuration;
-	}
-
-	public void setConfiguration(Configuration configuration) {
-		this.configuration = configuration;
+	public TranslationForLanguage getTranslationForLanguage(Language language) {
+		for (TranslationForLanguage tl : translations) {
+			if (tl.getLanguage().equals(language)) {
+				return tl;
+			}
+		}
+		return null;
 	}
 
 	@Override
 	public int compareTo(Translation o) {
 		return getTranslationKey().compareTo(o.getTranslationKey());
+	}
+
+	public List<TranslationForLanguage> getTranslations() {
+		return translations;
+	}
+
+	public void setTranslations(List<TranslationForLanguage> translations) {
+		this.translations = translations;
+	}
+
+	public TranslationForLanguage getEnglishTranslation() {
+		return getTranslationForLanguage(Language.EN);
+	}
+
+	public TranslationForLanguage getFrenchTranslation() {
+		return getTranslationForLanguage(Language.FR);
+	}
+
+	public TranslationForLanguage getGermanTranslation() {
+		return getTranslationForLanguage(Language.DE);
+	}
+
+	public TranslationForLanguage getDutchTranslation() {
+		return getTranslationForLanguage(Language.NL);
 	}
 }

@@ -2,7 +2,6 @@ package com.moorkensam.xlra.service;
 
 import java.util.List;
 
-import com.moorkensam.xlra.model.Language;
 import com.moorkensam.xlra.model.configuration.Translation;
 import com.moorkensam.xlra.model.configuration.TranslationKey;
 
@@ -11,7 +10,7 @@ public interface TranslationService {
 
 	List<Translation> getAllNonDeletedTranslations();
 
-	void createTranslations(Translation[] translations);
+	void createTranslation(Translation translation);
 
 	/**
 	 * Fetches a translation from memory.
@@ -20,6 +19,5 @@ public interface TranslationService {
 	 * @param language
 	 * @return
 	 */
-	Translation findTranslationInCacheByTranslationKeyAndLanguage(
-			TranslationKey key, Language language);
+	Translation findTranslationInCacheByTranslationKey(TranslationKey key);
 }

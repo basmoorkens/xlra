@@ -1,6 +1,7 @@
 package com.moorkensam.xlra.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -13,6 +14,7 @@ import org.primefaces.event.RowEditEvent;
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.Language;
 import com.moorkensam.xlra.model.configuration.Translation;
+import com.moorkensam.xlra.model.configuration.TranslationForLanguage;
 import com.moorkensam.xlra.model.configuration.TranslationKey;
 import com.moorkensam.xlra.service.TranslationService;
 import com.moorkensam.xlra.service.util.TranslationUtil;
@@ -26,19 +28,16 @@ public class TranslationController {
 
 	private List<Translation> translations;
 
-	private Translation selectedTranslation;
-
 	private TranslationKey selectedKey;
+
+	private Translation selectedTranslation;
 
 	private List<TranslationKey> availableKeys;
 
-	private Language langEng, langNl, langFr, langDe;
-
-	private Translation[] newTranslations;
+	private Translation newTranslation;
 
 	@PostConstruct
 	public void initPage() {
-		setupLanguages();
 		refreshPage();
 	}
 
@@ -49,48 +48,29 @@ public class TranslationController {
 	}
 
 	public void saveNewTranslations() {
-		fillTranslationKeyForNewTranslations();
-		translationService.createTranslations(newTranslations);
+		translationService.createTranslation(newTranslation);
 		MessageUtil.addMessage("Translation created", "Added translations for "
-				+ newTranslations[0].getTranslationKey());
+				+ newTranslation.getTranslationKey());
 		refreshPage();
 	}
 
-	private void fillTranslationKeyForNewTranslations() {
-		for (Translation t : newTranslations) {
-			t.setTranslationKey(selectedKey);
-		}
-	}
-
-	private void setupLanguages() {
-		setLangEng(Language.EN);
-		setLangNl(Language.NL);
-		setLangDe(Language.DE);
-		setLangFr(Language.FR);
-	}
-
 	private void setupNewTranslations() {
-		Translation t1 = new Translation();
-		t1.setTranslationKey(selectedKey);
-		t1.setLanguage(langEng);
+		Translation t = new Translation();
+		TranslationForLanguage tlEng = new TranslationForLanguage();
+		tlEng.setLanguage(Language.EN);
 
-		Translation t2 = new Translation();
-		t2.setTranslationKey(selectedKey);
-		t2.setLanguage(langNl);
+		TranslationForLanguage tlNl = new TranslationForLanguage();
+		tlNl.setLanguage(Language.NL);
 
-		Translation t3 = new Translation();
-		t3.setTranslationKey(selectedKey);
-		t3.setLanguage(langFr);
+		TranslationForLanguage tlFr = new TranslationForLanguage();
+		tlFr.setLanguage(Language.FR);
 
-		Translation t4 = new Translation();
-		t4.setTranslationKey(selectedKey);
-		t4.setLanguage(langDe);
+		TranslationForLanguage tlDe = new TranslationForLanguage();
+		tlDe.setLanguage(Language.DE);
 
-		newTranslations = new Translation[4];
-		newTranslations[0] = t1;
-		newTranslations[1] = t2;
-		newTranslations[2] = t3;
-		newTranslations[3] = t4;
+		t.setTranslations(Arrays.asList(tlEng, tlNl, tlFr, tlDe));
+
+		newTranslation = t;
 	}
 
 	private void setupAvailableTranslationKeys() {
@@ -110,7 +90,7 @@ public class TranslationController {
 	}
 
 	public void createNewTranslations() {
-		translationService.createTranslations(newTranslations);
+		translationService.createTranslation(newTranslation);
 	}
 
 	private void refreshTranslations() {
@@ -128,9 +108,7 @@ public class TranslationController {
 		MessageUtil.addMessage(
 				"Translation updated",
 				"Updated translation for "
-						+ editedTranslation.getTranslationKey()
-						+ " - language "
-						+ editedTranslation.getLanguage().getDescription());
+						+ editedTranslation.getTranslationKey());
 		refreshTranslations();
 	}
 
@@ -150,14 +128,6 @@ public class TranslationController {
 		this.selectedTranslation = selectedTranslation;
 	}
 
-	public TranslationKey getSelectedKey() {
-		return selectedKey;
-	}
-
-	public void setSelectedKey(TranslationKey selectedKey) {
-		this.selectedKey = selectedKey;
-	}
-
 	public List<TranslationKey> getAvailableKeys() {
 		return availableKeys;
 	}
@@ -166,43 +136,19 @@ public class TranslationController {
 		this.availableKeys = availableKeys;
 	}
 
-	public Language getLangEng() {
-		return langEng;
+	public Translation getNewTranslation() {
+		return newTranslation;
 	}
 
-	public void setLangEng(Language langEng) {
-		this.langEng = langEng;
+	public void setNewTranslation(Translation newTranslation) {
+		this.newTranslation = newTranslation;
 	}
 
-	public Language getLangNl() {
-		return langNl;
+	public TranslationKey getSelectedKey() {
+		return selectedKey;
 	}
 
-	public void setLangNl(Language langNl) {
-		this.langNl = langNl;
-	}
-
-	public Language getLangFr() {
-		return langFr;
-	}
-
-	public void setLangFr(Language langFr) {
-		this.langFr = langFr;
-	}
-
-	public Language getLangDe() {
-		return langDe;
-	}
-
-	public void setLangDe(Language langDe) {
-		this.langDe = langDe;
-	}
-
-	public Translation[] getNewTranslations() {
-		return newTranslations;
-	}
-
-	public void setNewTranslations(Translation[] newTranslations) {
-		this.newTranslations = newTranslations;
+	public void setSelectedKey(TranslationKey selectedKey) {
+		this.selectedKey = selectedKey;
 	}
 }

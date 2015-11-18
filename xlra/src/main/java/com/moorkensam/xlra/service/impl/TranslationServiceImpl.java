@@ -31,8 +31,7 @@ public class TranslationServiceImpl implements TranslationService {
 	@Override
 	public void updateTranslation(Translation translation) {
 		logger.info("Updating translation for key "
-				+ translation.getTranslationKey() + " and language "
-				+ translation.getLanguage());
+				+ translation.getTranslationKey());
 		getTranslationDAO().updateTranslation(translation);
 	}
 
@@ -42,23 +41,18 @@ public class TranslationServiceImpl implements TranslationService {
 	}
 
 	@Override
-	public void createTranslations(Translation[] translations) {
-		for (Translation translation : translations) {
-			getTranslationDAO().createTranslation(translation);
-		}
+	public void createTranslation(Translation translation) {
+		getTranslationDAO().createTranslation(translation);
 	}
 
 	@Override
-	public Translation findTranslationInCacheByTranslationKeyAndLanguage(
-			TranslationKey key, Language language) {
+	public Translation findTranslationInCacheByTranslationKey(TranslationKey key) {
 		if (logger.isDebugEnabled()) {
-			logger.debug("Fetching translations in memory for " + key
-					+ " and lang " + language);
+			logger.debug("Fetching translations in memory for " + key);
 		}
 		List<Translation> translations = getAllNonDeletedTranslations();
 		for (Translation translation : translations) {
-			if (translation.getTranslationKey() == key
-					&& translation.getLanguage() == language) {
+			if (translation.getTranslationKey() == key) {
 				return translation;
 			}
 		}

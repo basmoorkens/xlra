@@ -70,21 +70,25 @@
 						<f:selectItems value="#{translationController.availableKeys}" />
 					</p:selectOneMenu>
 
-					<h:outputText value="#{translationController.langEng}" />
+					<h:outputText
+						value="#{translationController.newTranslation.englishTranslation.language}" />
 					<h:inputText style="width:100%;"
-						value="#{translationController.newTranslations[0].text}" />
+						value="#{translationController.newTranslation.englishTranslation.translation}" />
 
-					<h:outputText value="#{translationController.langNl}" />
+					<h:outputText
+						value="#{translationController.newTranslation.dutchTranslation.language}" />
 					<h:inputText style="width:100%;"
-						value="#{translationController.newTranslations[1].text}" />
+						value="#{translationController.newTranslation.dutchTranslation.translation}" />
 
-					<h:outputText value="#{translationController.langFr}" />
+					<h:outputText
+						value="#{translationController.newTranslation.frenchTranslation.language}" />
 					<h:inputText style="width:100%;"
-						value="#{translationController.newTranslations[2].text}" />
+						value="#{translationController.newTranslation.frenchTranslation.translation}" />
 
-					<h:outputText value="#{translationController.langDe}" />
+					<h:outputText
+						value="#{translationController.newTranslation.germanTranslation.language}" />
 					<h:inputText style="width:100%;"
-						value="#{translationController.newTranslations[3].text}" />
+						value="#{translationController.newTranslation.germanTranslation.translation}" />
 
 				</p:panelGrid>
 				<p:panel>

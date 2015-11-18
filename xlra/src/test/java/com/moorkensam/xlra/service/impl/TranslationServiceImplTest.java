@@ -14,6 +14,7 @@ import org.unitils.easymock.EasyMockUnitils;
 import com.moorkensam.xlra.dao.TranslationDAO;
 import com.moorkensam.xlra.model.Language;
 import com.moorkensam.xlra.model.configuration.Translation;
+import com.moorkensam.xlra.model.configuration.TranslationForLanguage;
 import com.moorkensam.xlra.model.configuration.TranslationKey;
 
 public class TranslationServiceImplTest extends UnitilsJUnit4 {
@@ -31,13 +32,14 @@ public class TranslationServiceImplTest extends UnitilsJUnit4 {
 		translationService.setTranslationDAO(translationDAO);
 		translations = new ArrayList<Translation>();
 		Translation tr = new Translation();
-		tr.setLanguage(Language.EN);
+		TranslationForLanguage tfl = new TranslationForLanguage();
+		tfl.setLanguage(Language.EN);
 		tr.setTranslationKey(TranslationKey.ADR_MINIMUM);
-		tr.setText("OK");
+		tfl.setTranslation("OK");
 		Translation tr2 = new Translation();
-		tr2.setLanguage(Language.FR);
-		tr2.setText("NOK");
-		tr2.setTranslationKey(TranslationKey.ADR_MINIMUM);
+		TranslationForLanguage tfl2 = new TranslationForLanguage();
+		tfl2.setLanguage(Language.FR);
+		tfl2.setTranslation("NOK");
 		translations.add(tr);
 		translations.add(tr2);
 	}
@@ -48,10 +50,12 @@ public class TranslationServiceImplTest extends UnitilsJUnit4 {
 				.andReturn(translations);
 		EasyMockUnitils.replay();
 		Translation translation = translationService
-				.findTranslationInCacheByTranslationKeyAndLanguage(
-						TranslationKey.ADR_MINIMUM, Language.EN);
+				.findTranslationInCacheByTranslationKey(TranslationKey.ADR_MINIMUM);
 
-		Assert.assertEquals(translation.getText(), "OK");
+		Assert.assertEquals(translation.getTranslationForLanguage(Language.EN)
+				.getTranslation(), "OK");
+		Assert.assertEquals(translation.getTranslationForLanguage(Language.FR)
+				.getTranslation(), "NOK");
 	}
 
 }
