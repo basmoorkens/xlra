@@ -15,85 +15,107 @@
 		<h:form id="translationsForm">
 			<p:panel id="translationsPanel" header="Translations">
 				<p:growl id="msgs" showDetail="true" />
-				<p:dataTable editable="true"
-					value="#{translationController.translations}" var="translation"
-					paginator="true" rowsPerPageTemplate="10,25,50" rows="10"
+				<p:dataTable value="#{translationController.translations}"
+					var="translation" paginator="true" rowsPerPageTemplate="10,25,50"
+					rows="10"
 					paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
 					emptyMessage="No translations found." id="translationTable">
 
-					<p:ajax event="rowEdit"
-						listener="#{translationController.onTranslationRowEdit}"
-						update=":translationsForm:msgs" />
-
 					<p:column headerText="Translation key">
-						<p:cellEditor>
-							<f:facet name="output">
-								<h:outputText value="#{translation.translationKey}" />
-							</f:facet>
-							<f:facet name="input">
-								<h:outputText value="#{translation.translationKey}" />
-							</f:facet>
-						</p:cellEditor>
+						<h:outputText value="#{translation.translationKey}" />
 					</p:column>
-					<p:column headerText="Language">
-						<p:cellEditor>
-							<f:facet name="output">
-								<h:outputText value="#{translation.language}" />
-							</f:facet>
-							<f:facet name="input">
-								<h:outputText value="#{translation.language}" />
-							</f:facet>
-						</p:cellEditor>
+
+					<p:column headerText="Translated in">
+						<h:outputText value="#{translation.translationsString}" />
 					</p:column>
-					<p:column headerText="Translation">
-						<p:cellEditor>
-							<f:facet name="output">
-								<h:outputText value="#{translation.text}" />
-							</f:facet>
-							<f:facet name="input">
-								<p:inputText value="#{translation.text}" style="width:100%" />
-							</f:facet>
-						</p:cellEditor>
+					<p:column headerText="Key translated in">
+						<h:outputText value="#{translation.translationKeysString}" />
 					</p:column>
-					<p:column style="width:32px">
-						<p:rowEditor />
+					<p:column style="width:36px;text-align: center">
+						<p:commandButton
+							actionListener="#{translationController.setupPageForEdit(translation)}"
+							icon="ui-icon-search" title="View" ajax="false">
+						</p:commandButton>
 					</p:column>
 				</p:dataTable>
+
+				<p:panel>
+					<p:commandButton immediate="true" update=":translationsForm"
+						actionListener="#{translationController.setupNewTranslation}"
+						value="Create new translation" />
+				</p:panel>
 			</p:panel>
 
-			<p:panel header="Setup new Translation" style="width:100%;">
-				<p:panelGrid columns="2" style="width:100%;">
-					<h:outputText value="Translation key: " />
-					<p:selectOneMenu style="width:100%;" required="true"
-						value="#{translationController.selectedKey}">
-						<f:selectItem itemValue="" itemLabel="Please select a key" />
-						<f:selectItems value="#{translationController.availableKeys}" />
-					</p:selectOneMenu>
+			<p:panel header="Translation detail" style="width:100%;"
+				rendered="#{translationController.editMode}">
+				<p:panel header="Key">
+					<p:panelGrid columns="2" style="width:100%;">
+						<h:outputText value="Translation key: " />
+						<p:selectOneMenu style="width:100%;" required="true"
+							disabled="#{translationController.updateMode}"
+							value="#{translationController.selectedKey}">
+							<f:selectItem itemValue="" itemLabel="Please select a key" />
+							<f:selectItems value="#{translationController.availableKeys}" />
+						</p:selectOneMenu>
+					</p:panelGrid>
+				</p:panel>
 
-					<h:outputText
-						value="#{translationController.newTranslation.englishTranslation.language}" />
-					<h:inputText style="width:100%;"
-						value="#{translationController.newTranslation.englishTranslation.translation}" />
+				<p:panel header="Translations">
+					<p:panelGrid columns="2" style="width:100%;">
+						<h:outputText
+							value="#{translationController.activeTranslation.englishTranslation.language}" />
+						<h:inputText style="width:100%;"
+							value="#{translationController.activeTranslation.englishTranslation.translation}" />
 
-					<h:outputText
-						value="#{translationController.newTranslation.dutchTranslation.language}" />
-					<h:inputText style="width:100%;"
-						value="#{translationController.newTranslation.dutchTranslation.translation}" />
+						<h:outputText
+							value="#{translationController.activeTranslation.dutchTranslation.language}" />
+						<h:inputText style="width:100%;"
+							value="#{translationController.activeTranslation.dutchTranslation.translation}" />
 
-					<h:outputText
-						value="#{translationController.newTranslation.frenchTranslation.language}" />
-					<h:inputText style="width:100%;"
-						value="#{translationController.newTranslation.frenchTranslation.translation}" />
+						<h:outputText
+							value="#{translationController.activeTranslation.frenchTranslation.language}" />
+						<h:inputText style="width:100%;"
+							value="#{translationController.activeTranslation.frenchTranslation.translation}" />
 
-					<h:outputText
-						value="#{translationController.newTranslation.germanTranslation.language}" />
-					<h:inputText style="width:100%;"
-						value="#{translationController.newTranslation.germanTranslation.translation}" />
+						<h:outputText
+							value="#{translationController.activeTranslation.germanTranslation.language}" />
+						<h:inputText style="width:100%;"
+							value="#{translationController.activeTranslation.germanTranslation.translation}" />
+					</p:panelGrid>
+				</p:panel>
 
-				</p:panelGrid>
+
+				<p:panel header="Translation for keys">
+					<p:panelGrid columns="2" style="width:100%;">
+						<h:outputText
+							value="#{translationController.activeTranslation.englishTranslationKey.language}" />
+						<h:inputText style="width:100%;"
+							value="#{translationController.activeTranslation.englishTranslationKey.translation}" />
+
+						<h:outputText
+							value="#{translationController.activeTranslation.dutchTranslationKey.language}" />
+						<h:inputText style="width:100%;"
+							value="#{translationController.activeTranslation.dutchTranslationKey.translation}" />
+
+						<h:outputText
+							value="#{translationController.activeTranslation.frenchTranslationKey.language}" />
+						<h:inputText style="width:100%;"
+							value="#{translationController.activeTranslation.frenchTranslationKey.translation}" />
+
+						<h:outputText
+							value="#{translationController.activeTranslation.germanTranslationKey.language}" />
+						<h:inputText style="width:100%;"
+							value="#{translationController.activeTranslation.germanTranslationKey.translation}" />
+					</p:panelGrid>
+				</p:panel>
+
 				<p:panel>
+					<p:commandButton action="#{translationController.cancel}"
+						value="Cancel" immediate="true"
+						update=":translationsForm :translationsForm:msgs" />
+
 					<p:commandButton
-						action="#{translationController.saveNewTranslations}" ajax="false"
+						action="#{translationController.saveActiveTranslations}"
 						value="Save new translations"
 						update=":translationsForm :translationsForm:msgs" />
 				</p:panel>

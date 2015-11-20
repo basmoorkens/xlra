@@ -8,7 +8,7 @@ import com.moorkensam.xlra.model.Language;
 public class TranslationForLanguage {
 
 	private String translation;
-	
+
 	private Language language;
 
 	public Language getLanguage() {
@@ -26,5 +26,12 @@ public class TranslationForLanguage {
 	public void setTranslation(String translation) {
 		this.translation = translation;
 	}
-	
+
+	public TranslationForLanguage deepCopy() {
+		TranslationForLanguage copy = new TranslationForLanguage();
+		copy.setLanguage(this.language);
+		copy.setTranslation(this.translation);
+		return copy;
+	}
+
 }

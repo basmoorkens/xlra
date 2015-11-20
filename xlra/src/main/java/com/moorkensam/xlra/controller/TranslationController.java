@@ -31,11 +31,13 @@ public class TranslationController {
 
 	private TranslationKey selectedKey;
 
-	private Translation selectedTranslation;
-
 	private List<TranslationKey> availableKeys;
 
-	private Translation newTranslation;
+	private Translation activeTranslation;
+
+	private boolean editMode;
+
+	private boolean updateMode;
 
 	@PostConstruct
 	public void initPage() {
@@ -45,17 +47,22 @@ public class TranslationController {
 	private void refreshPage() {
 		refreshTranslations();
 		setupAvailableTranslationKeys();
-		setupNewTranslations();
 	}
 
-	public void saveNewTranslations() {
-		newTranslation.setTranslationKey(selectedKey);
+	public void saveActiveTranslations() {
+		if (activeTranslation.getId() <= 0) {
+			getActiveTranslation().setTranslationKey(selectedKey);
+			doCreateTranslation();
+		}
+		updateTranslation();
+	}
+
+	private void doCreateTranslation() {
 		try {
-			translationService.createTranslation(newTranslation);
-			MessageUtil.addMessage(
-					"Translation created",
+			translationService.createTranslation(getActiveTranslation());
+			MessageUtil.addMessage("Translation created",
 					"Added translations for "
-							+ newTranslation.getTranslationKey());
+							+ getActiveTranslation().getTranslationKey());
 			refreshPage();
 		} catch (XlraValidationException e) {
 			MessageUtil.addErrorMessage("Error creating translation",
@@ -63,7 +70,14 @@ public class TranslationController {
 		}
 	}
 
-	private void setupNewTranslations() {
+	public void cancel() {
+		editMode = false;
+		updateMode = false;
+		activeTranslation = null;
+	}
+
+	public void setupNewTranslation() {
+		editMode = true;
 		Translation t = new Translation();
 		TranslationForLanguage tlEng = new TranslationForLanguage();
 		tlEng.setLanguage(Language.EN);
@@ -78,8 +92,10 @@ public class TranslationController {
 		tlDe.setLanguage(Language.DE);
 
 		t.setTranslations(Arrays.asList(tlEng, tlNl, tlFr, tlDe));
+		t.setTranslationKeysTranslations(Arrays.asList(tlEng.deepCopy(),
+				tlNl.deepCopy(), tlFr.deepCopy(), tlDe.deepCopy()));
 
-		newTranslation = t;
+		setActiveTranslation(t);
 	}
 
 	private void setupAvailableTranslationKeys() {
@@ -102,19 +118,20 @@ public class TranslationController {
 		translations = translationService.getAllNonDeletedTranslations();
 	}
 
-	private void updateTranslation(Translation translation) {
-		translationService.updateTranslation(translation);
-	}
-
-	public void onTranslationRowEdit(RowEditEvent event) {
-		Translation editedTranslation = (Translation) event.getObject();
-
-		updateTranslation(editedTranslation);
+	private void updateTranslation() {
+		translationService.updateTranslation(activeTranslation);
 		MessageUtil.addMessage(
 				"Translation updated",
 				"Updated translation for "
-						+ editedTranslation.getTranslationKey());
+						+ activeTranslation.getTranslationKey());
 		refreshTranslations();
+	}
+
+	public void setupPageForEdit(Translation translation) {
+		selectedKey = translation.getTranslationKey();
+		activeTranslation = translation;
+		editMode = true;
+		updateMode = true;
 	}
 
 	public List<Translation> getTranslations() {
@@ -125,14 +142,6 @@ public class TranslationController {
 		this.translations = translations;
 	}
 
-	public Translation getSelectedTranslation() {
-		return selectedTranslation;
-	}
-
-	public void setSelectedTranslation(Translation selectedTranslation) {
-		this.selectedTranslation = selectedTranslation;
-	}
-
 	public List<TranslationKey> getAvailableKeys() {
 		return availableKeys;
 	}
@@ -141,19 +150,35 @@ public class TranslationController {
 		this.availableKeys = availableKeys;
 	}
 
-	public Translation getNewTranslation() {
-		return newTranslation;
-	}
-
-	public void setNewTranslation(Translation newTranslation) {
-		this.newTranslation = newTranslation;
-	}
-
 	public TranslationKey getSelectedKey() {
 		return selectedKey;
 	}
 
 	public void setSelectedKey(TranslationKey selectedKey) {
 		this.selectedKey = selectedKey;
+	}
+
+	public boolean isEditMode() {
+		return editMode;
+	}
+
+	public void setEditMode(boolean editMode) {
+		this.editMode = editMode;
+	}
+
+	public Translation getActiveTranslation() {
+		return activeTranslation;
+	}
+
+	public void setActiveTranslation(Translation activeTranslation) {
+		this.activeTranslation = activeTranslation;
+	}
+
+	public boolean isUpdateMode() {
+		return updateMode;
+	}
+
+	public void setUpdateMode(boolean updateMode) {
+		this.updateMode = updateMode;
 	}
 }

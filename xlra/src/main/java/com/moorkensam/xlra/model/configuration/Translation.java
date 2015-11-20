@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.model.configuration;
 
+import java.beans.Transient;
 import java.util.List;
 
 import javax.persistence.Cacheable;
@@ -54,6 +55,15 @@ public class Translation extends BaseEntity implements Comparable<Translation> {
 		return null;
 	}
 
+	public TranslationForLanguage getTranslationKeyForLanguage(Language language) {
+		for (TranslationForLanguage tl : translationKeysTranslations) {
+			if (tl.getLanguage().equals(language)) {
+				return tl;
+			}
+		}
+		return null;
+	}
+
 	@Override
 	public int compareTo(Translation o) {
 		return getTranslationKey().compareTo(o.getTranslationKey());
@@ -83,6 +93,22 @@ public class Translation extends BaseEntity implements Comparable<Translation> {
 		return getTranslationForLanguage(Language.NL);
 	}
 
+	public TranslationForLanguage getEnglishTranslationKey() {
+		return getTranslationKeyForLanguage(Language.EN);
+	}
+
+	public TranslationForLanguage getFrenchTranslationKey() {
+		return getTranslationKeyForLanguage(Language.FR);
+	}
+
+	public TranslationForLanguage getGermanTranslationKey() {
+		return getTranslationKeyForLanguage(Language.DE);
+	}
+
+	public TranslationForLanguage getDutchTranslationKey() {
+		return getTranslationKeyForLanguage(Language.NL);
+	}
+
 	public List<TranslationForLanguage> getTranslationKeysTranslations() {
 		return translationKeysTranslations;
 	}
@@ -90,5 +116,33 @@ public class Translation extends BaseEntity implements Comparable<Translation> {
 	public void setTranslationKeysTranslations(
 			List<TranslationForLanguage> translationKeysTranslations) {
 		this.translationKeysTranslations = translationKeysTranslations;
+	}
+
+	public String getTranslationKeysString() {
+		String result = "";
+		if (translationKeysTranslations == null) {
+			return result;
+		}
+		for (TranslationForLanguage tl : translationKeysTranslations) {
+			result += tl.getLanguage().getDescription() + ", ";
+		}
+		if (result.isEmpty() || result.length() == 1) {
+			return result;
+		}
+		return result.substring(0, result.length() - 2);
+	}
+
+	public String getTranslationsString() {
+		String result = "";
+		if (translations == null) {
+			return result;
+		}
+		for (TranslationForLanguage tl : translations) {
+			result += tl.getLanguage().getDescription() + ", ";
+		}
+		if (result.isEmpty() || result.length() == 1) {
+			return result;
+		}
+		return result.substring(0, result.length() - 2);
 	}
 }
