@@ -15,19 +15,19 @@ import org.unitils.inject.annotation.TestedObject;
 
 import com.moorkensam.xlra.dao.EmailTemplateDAO;
 import com.moorkensam.xlra.dto.OfferteMailDTO;
-import com.moorkensam.xlra.dto.PriceCalculationDTO;
 import com.moorkensam.xlra.dto.PriceResultDTO;
 import com.moorkensam.xlra.mapper.OfferteEmailParameterGenerator;
-import com.moorkensam.xlra.model.Customer;
-import com.moorkensam.xlra.model.Language;
-import com.moorkensam.xlra.model.QuotationQuery;
-import com.moorkensam.xlra.model.configuration.MailTemplate;
-import com.moorkensam.xlra.model.configuration.TranslationKey;
+import com.moorkensam.xlra.model.configuration.Language;
+import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.error.TemplatingException;
+import com.moorkensam.xlra.model.mail.MailTemplate;
+import com.moorkensam.xlra.model.offerte.PriceCalculation;
+import com.moorkensam.xlra.model.offerte.QuotationQuery;
+import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.rate.Country;
-import com.moorkensam.xlra.model.rate.QuotationResult;
 import com.moorkensam.xlra.model.rate.RateFile;
+import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.EmailService;
 
 public class MailTemplateServiceImplTest extends UnitilsJUnit4 {
@@ -38,7 +38,7 @@ public class MailTemplateServiceImplTest extends UnitilsJUnit4 {
 	@Mock
 	private OfferteEmailParameterGenerator mapper;
 
-	private PriceCalculationDTO priceDTO;
+	private PriceCalculation priceDTO;
 
 	@Mock
 	private EmailService mailService;
@@ -62,7 +62,7 @@ public class MailTemplateServiceImplTest extends UnitilsJUnit4 {
 		query.getCustomer().setEmail("test@test.com");
 		query.setCountry(new Country());
 		resultDTO = new PriceResultDTO();
-		priceDTO = new PriceCalculationDTO();
+		priceDTO = new PriceCalculation();
 		priceDTO.setAppliedOperations(new ArrayList<TranslationKey>());
 		template = new MailTemplate();
 		template.setTemplate("test template + ${detailCalculation}");

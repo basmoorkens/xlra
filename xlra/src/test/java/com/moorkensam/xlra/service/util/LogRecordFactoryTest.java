@@ -10,9 +10,9 @@ import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.TestedObject;
 
-import com.moorkensam.xlra.model.RaiseRatesRecord;
 import com.moorkensam.xlra.model.configuration.LogRecord;
 import com.moorkensam.xlra.model.configuration.LogType;
+import com.moorkensam.xlra.model.configuration.RaiseRatesRecord;
 import com.moorkensam.xlra.model.configuration.RateLogRecord;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateOperation;

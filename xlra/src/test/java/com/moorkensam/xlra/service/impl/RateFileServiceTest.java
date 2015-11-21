@@ -15,11 +15,11 @@ import org.unitils.easymock.annotation.Mock;
 import org.unitils.inject.annotation.TestedObject;
 
 import com.moorkensam.xlra.dao.RateFileDAO;
-import com.moorkensam.xlra.model.QuotationQuery;
 import com.moorkensam.xlra.model.error.RateFileException;
+import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.rate.RateFile;
+import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
 import com.moorkensam.xlra.model.rate.Zone;
-import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
 import com.moorkensam.xlra.service.util.QuotationUtil;
 
 public class RateFileServiceTest extends UnitilsJUnit4 {

@@ -9,7 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.moorkensam.xlra.dao.CustomerDAO;
-import com.moorkensam.xlra.model.Customer;
+import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.service.CustomerService;
 
 /**

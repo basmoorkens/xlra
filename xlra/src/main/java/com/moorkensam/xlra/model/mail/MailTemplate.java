@@ -1,4 +1,4 @@
-package com.moorkensam.xlra.model.configuration;
+package com.moorkensam.xlra.model.mail;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -11,7 +11,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import com.moorkensam.xlra.model.BaseEntity;
-import com.moorkensam.xlra.model.Language;
+import com.moorkensam.xlra.model.configuration.Configuration;
+import com.moorkensam.xlra.model.configuration.Language;
 
 @Entity
 @Table(name = "mailTemplate")

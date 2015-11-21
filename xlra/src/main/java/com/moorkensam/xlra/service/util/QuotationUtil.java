@@ -3,9 +3,9 @@ package com.moorkensam.xlra.service.util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.moorkensam.xlra.model.Customer;
-import com.moorkensam.xlra.model.QuotationQuery;
-import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
+import com.moorkensam.xlra.model.customer.Customer;
+import com.moorkensam.xlra.model.offerte.QuotationQuery;
+import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
 
 public class QuotationUtil {
 

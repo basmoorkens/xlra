@@ -1,4 +1,4 @@
-package com.moorkensam.xlra.model;
+package com.moorkensam.xlra.model.customer;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
@@ -13,6 +13,9 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
+
+import com.moorkensam.xlra.model.BaseEntity;
+import com.moorkensam.xlra.model.configuration.Language;
 
 @Entity
 @Cacheable

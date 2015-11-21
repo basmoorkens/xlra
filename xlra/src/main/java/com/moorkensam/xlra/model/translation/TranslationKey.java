@@ -1,4 +1,4 @@
-package com.moorkensam.xlra.model.configuration;
+package com.moorkensam.xlra.model.translation;
 
 /**
  * These are the translation keys used in the application. USe this in the excel

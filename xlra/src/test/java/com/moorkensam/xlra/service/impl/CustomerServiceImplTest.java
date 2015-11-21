@@ -11,7 +11,7 @@ import org.unitils.easymock.annotation.Mock;
 import org.unitils.inject.annotation.TestedObject;
 
 import com.moorkensam.xlra.dao.CustomerDAO;
-import com.moorkensam.xlra.model.Customer;
+import com.moorkensam.xlra.model.customer.Customer;
 
 public class CustomerServiceImplTest extends UnitilsJUnit4 {
 

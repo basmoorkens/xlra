@@ -1,7 +1,7 @@
 package com.moorkensam.xlra.service.util;
 
-import com.moorkensam.xlra.model.Address;
-import com.moorkensam.xlra.model.Customer;
+import com.moorkensam.xlra.model.customer.Address;
+import com.moorkensam.xlra.model.customer.Customer;
 
 public class CustomerUtil {
 

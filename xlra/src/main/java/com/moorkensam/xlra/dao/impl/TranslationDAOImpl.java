@@ -7,8 +7,8 @@ import javax.persistence.Query;
 
 import com.moorkensam.xlra.dao.BaseDAO;
 import com.moorkensam.xlra.dao.TranslationDAO;
-import com.moorkensam.xlra.model.configuration.Translation;
-import com.moorkensam.xlra.model.configuration.TranslationKey;
+import com.moorkensam.xlra.model.translation.Translation;
+import com.moorkensam.xlra.model.translation.TranslationKey;
 
 public class TranslationDAOImpl extends BaseDAO implements TranslationDAO {
 

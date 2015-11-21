@@ -12,16 +12,48 @@
 		<h:outputText value="Offerte overview" />
 	</ui:define>
 	<ui:define name="body">
-		<h:form id="offerteOverviewForm">
+		<h:form id="searchForm">
 			<p:growl id="msgs" />
 
+			<p:panel id="filtersPanel" header="Search filters:">
+				<p:panelGrid columns="6" style="width:100%;">
+					<h:outputLabel value="Offerte key:" />
+					<p:inputText
+						value="#{offerteOverviewController.searchFilter.offerteKey}"
+						size="35" />
+
+					<h:outputLabel value="Country" />
+					<p:selectOneMenu style="width:10em;"
+						value="#{offerteOverviewController.searchFilter.country}">
+						<f:selectItem itemLabel="" itemValue="" />
+						<f:selectItems value="#{offerteOverviewController.allCountrys}" />
+					</p:selectOneMenu>
+
+					<h:outputLabel value="Postal code" />
+					<p:inputText
+						value="#{offerteOverviewController.searchFilter.postalCode}" />
+
+					<h:outputLabel value="Customer" />
+					<p:inputText
+						value="#{offerteOverviewController.searchFilter.customerName}"
+						size="35" />
+
+					<h:outputLabel value="Date: " />
+					<p:calendar
+						value="#{offerteOverviewController.searchFilter.startDate}" />
+				</p:panelGrid>
+
+				<p:commandButton value="Search" update=":offertesForm"
+					actionListener="#{offerteOverviewController.search}" />
+			</p:panel>
+		</h:form>
+		<h:form id="offertesForm">
 			<p:dataTable var="quotationResult"
 				value="#{offerteOverviewController.quotationResults}"
 				paginator="true" rows="25"
 				paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
-				rowsPerPageTemplate="10,25,50"
-				selection="#{offerteOverviewController.selectedQuery}"
-				id="offerteTable" emptyMessage="No offertes to view...">
+				rowsPerPageTemplate="10,25,50" id="offerteTable"
+				emptyMessage="No offertes to view...">
 
 				<p:column headerText="Offerte key: "
 					sortBy="offerteUniqueIdentifier">
@@ -43,8 +75,16 @@
 				<p:column headerText="PostalCode: " sortBy="query.postalCode">
 					<h:outputText value="#{quotationResult.query.postalCode}" />
 				</p:column>
+				<p:column style="width:36px;text-align: center">
+					<p:commandButton
+						actionListener="#{offerteOverviewController.setupOfferteDetail(quotationResult)}"
+						icon="ui-icon-search" title="View" ajax="false">
+					</p:commandButton>
+				</p:column>
 			</p:dataTable>
 		</h:form>
+
+		<ui:include src="/views/user/offerteDetail.xhtml" />
 	</ui:define>
 </ui:composition>
 </html>

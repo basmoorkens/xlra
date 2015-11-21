@@ -7,7 +7,7 @@ import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.TestedObject;
 
 import com.moorkensam.xlra.dto.OfferteMailDTO;
-import com.moorkensam.xlra.model.EmailResult;
+import com.moorkensam.xlra.model.mail.EmailResult;
 
 public class OfferteMailToEmailResultMapperTest extends UnitilsJUnit4 {
 

@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.moorkensam.xlra.model.BaseEntity;
+import com.moorkensam.xlra.model.mail.MailTemplate;
 
 /**
  * Configuration object for the application. Contains all necessairy parameters

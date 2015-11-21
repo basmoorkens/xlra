@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 import com.moorkensam.xlra.dao.ConfigurationDao;
 import com.moorkensam.xlra.dao.EmailTemplateDAO;
 import com.moorkensam.xlra.model.configuration.Configuration;
-import com.moorkensam.xlra.model.configuration.MailTemplate;
+import com.moorkensam.xlra.model.mail.MailTemplate;
 import com.moorkensam.xlra.service.ApplicationConfigurationService;
 
 //TODO Implement diesel and chf 4 ciphers after.

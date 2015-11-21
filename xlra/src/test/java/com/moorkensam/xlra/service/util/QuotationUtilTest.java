@@ -7,13 +7,13 @@ import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.TestedObject;
 
-import com.moorkensam.xlra.model.Customer;
-import com.moorkensam.xlra.model.QuotationQuery;
+import com.moorkensam.xlra.model.customer.Customer;
+import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Kind;
 import com.moorkensam.xlra.model.rate.Measurement;
+import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
 import com.moorkensam.xlra.model.rate.TransportType;
-import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
 
 public class QuotationUtilTest extends UnitilsJUnit4 {
 

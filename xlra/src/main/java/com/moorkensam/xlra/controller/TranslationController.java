@@ -12,11 +12,11 @@ import javax.inject.Inject;
 import org.primefaces.event.RowEditEvent;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
-import com.moorkensam.xlra.model.Language;
-import com.moorkensam.xlra.model.configuration.Translation;
+import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.configuration.TranslationForLanguage;
-import com.moorkensam.xlra.model.configuration.TranslationKey;
 import com.moorkensam.xlra.model.error.XlraValidationException;
+import com.moorkensam.xlra.model.translation.Translation;
+import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.TranslationService;
 import com.moorkensam.xlra.service.util.TranslationUtil;
 
@@ -41,6 +41,7 @@ public class TranslationController {
 
 	@PostConstruct
 	public void initPage() {
+		activeTranslation = new Translation();
 		refreshPage();
 	}
 
@@ -73,7 +74,7 @@ public class TranslationController {
 	public void cancel() {
 		editMode = false;
 		updateMode = false;
-		activeTranslation = null;
+		activeTranslation = new Translation();
 	}
 
 	public void setupNewTranslation() {

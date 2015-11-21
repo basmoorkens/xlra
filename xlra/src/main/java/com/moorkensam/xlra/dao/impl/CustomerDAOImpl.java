@@ -7,7 +7,7 @@ import javax.persistence.Query;
 
 import com.moorkensam.xlra.dao.BaseDAO;
 import com.moorkensam.xlra.dao.CustomerDAO;
-import com.moorkensam.xlra.model.Customer;
+import com.moorkensam.xlra.model.customer.Customer;
 
 public class CustomerDAOImpl extends BaseDAO implements CustomerDAO {
 

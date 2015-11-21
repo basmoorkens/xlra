@@ -1,4 +1,4 @@
-package com.moorkensam.xlra.model;
+package com.moorkensam.xlra.model.configuration;
 
 public enum Language {
 

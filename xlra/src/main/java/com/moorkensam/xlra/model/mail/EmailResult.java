@@ -1,4 +1,4 @@
-package com.moorkensam.xlra.model;
+package com.moorkensam.xlra.model.mail;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

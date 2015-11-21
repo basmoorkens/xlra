@@ -1,8 +1,8 @@
 package com.moorkensam.xlra.mapper;
 
-import com.moorkensam.xlra.dto.PriceCalculationDTO;
 import com.moorkensam.xlra.dto.PriceResultDTO;
-import com.moorkensam.xlra.model.configuration.TranslationKey;
+import com.moorkensam.xlra.model.offerte.PriceCalculation;
+import com.moorkensam.xlra.model.translation.TranslationKey;
 
 /**
  * This class generates the parameters for the offerte email based on the
@@ -13,7 +13,7 @@ import com.moorkensam.xlra.model.configuration.TranslationKey;
  */
 public class OfferteEmailParameterGenerator {
 
-	public void fillInParameters(final PriceCalculationDTO priceDTO,
+	public void fillInParameters(final PriceCalculation priceDTO,
 			PriceResultDTO resultDTO, String offerteReference) {
 		resultDTO.setBasePrice("Basis prijs: " + priceDTO.getBasePrice()
 				+ "<br />");

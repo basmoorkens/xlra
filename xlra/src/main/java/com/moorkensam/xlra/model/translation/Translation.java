@@ -1,4 +1,4 @@
-package com.moorkensam.xlra.model.configuration;
+package com.moorkensam.xlra.model.translation;
 
 import java.beans.Transient;
 import java.util.List;
@@ -15,7 +15,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import com.moorkensam.xlra.model.BaseEntity;
-import com.moorkensam.xlra.model.Language;
+import com.moorkensam.xlra.model.configuration.Language;
+import com.moorkensam.xlra.model.configuration.TranslationForLanguage;
 
 @Entity
 @Cacheable
@@ -37,6 +38,14 @@ public class Translation extends BaseEntity implements Comparable<Translation> {
 	@ElementCollection
 	@CollectionTable(name = "translationKeysForLanguages", joinColumns = @JoinColumn(name = "translation_id"))
 	private List<TranslationForLanguage> translationKeysTranslations;
+
+	@Transient
+	public String getTranslationKeyAsString() {
+		if (translationKey == null) {
+			return "";
+		}
+		return translationKey.toString();
+	}
 
 	public TranslationKey getTranslationKey() {
 		return translationKey;

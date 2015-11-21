@@ -15,15 +15,15 @@ import org.unitils.easymock.annotation.Mock;
 import org.unitils.inject.annotation.TestedObject;
 
 import com.moorkensam.xlra.dao.ConfigurationDao;
-import com.moorkensam.xlra.dto.PriceCalculationDTO;
-import com.moorkensam.xlra.model.QuotationQuery;
 import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.CurrencyRate;
 import com.moorkensam.xlra.model.configuration.DieselRate;
-import com.moorkensam.xlra.model.configuration.TranslationKey;
 import com.moorkensam.xlra.model.error.RateFileException;
+import com.moorkensam.xlra.model.offerte.PriceCalculation;
+import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.Country;
+import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.CurrencyService;
 import com.moorkensam.xlra.service.DieselService;
 import com.moorkensam.xlra.service.util.CalcUtil;
@@ -32,7 +32,7 @@ public class CalculationServiceTest extends UnitilsJUnit4 {
 	@TestedObject
 	private CalculationServiceImpl calcService;
 
-	private PriceCalculationDTO priceDTO;
+	private PriceCalculation priceDTO;
 
 	private Configuration config;
 
@@ -57,7 +57,7 @@ public class CalculationServiceTest extends UnitilsJUnit4 {
 		calcService.setDieselService(dieselService);
 		calcService.setConfigurationDao(configurationDAO);
 		calcService.setCurrencyService(currencyService);
-		priceDTO = new PriceCalculationDTO();
+		priceDTO = new PriceCalculation();
 		priceDTO.setBasePrice(new BigDecimal(500d));
 		config = new Configuration();
 		config.setCurrentDieselPrice(new BigDecimal(1.20d));
@@ -149,7 +149,7 @@ public class CalculationServiceTest extends UnitilsJUnit4 {
 		Country country = new Country();
 		country.setShortName("chf");
 
-		PriceCalculationDTO priceDTO = new PriceCalculationDTO();
+		PriceCalculation priceDTO = new PriceCalculation();
 		priceDTO.setBasePrice(new BigDecimal(100d));
 		DieselRate dr = new DieselRate();
 		dr.setSurchargePercentage(10d);

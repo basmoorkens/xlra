@@ -1,4 +1,4 @@
-package com.moorkensam.xlra.model;
+package com.moorkensam.xlra.model.customer;
 
 import javax.persistence.Embeddable;
 

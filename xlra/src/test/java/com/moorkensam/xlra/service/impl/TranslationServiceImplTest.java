@@ -13,10 +13,10 @@ import org.unitils.UnitilsJUnit4;
 import org.unitils.easymock.EasyMockUnitils;
 
 import com.moorkensam.xlra.dao.TranslationDAO;
-import com.moorkensam.xlra.model.Language;
-import com.moorkensam.xlra.model.configuration.Translation;
+import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.configuration.TranslationForLanguage;
-import com.moorkensam.xlra.model.configuration.TranslationKey;
+import com.moorkensam.xlra.model.translation.Translation;
+import com.moorkensam.xlra.model.translation.TranslationKey;
 
 public class TranslationServiceImplTest extends UnitilsJUnit4 {
 

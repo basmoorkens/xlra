@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<h:form id="offerteDetailForm">
+		<p:growl id="msgs" />
+		<p:panel header="Offerte detail"
+			rendered="#{offerteOverviewController.detail}">
+
+			<p:panel header="Input parameters">
+				<p:panelGrid columns="2" style="width:100%;">
+					<h:outputText value="Customer: " />
+					<h:outputText
+						value="#{offerteOverviewController.selectedOfferte.query.customer.name}" />
+
+					<h:outputText value="Kind of rate: " />
+					<h:outputText
+						value="#{offerteOverviewController.selectedOfferte.query.kindOfRate.description}" />
+
+					<h:outputText value="Measurement: " />
+					<h:outputText
+						value="#{offerteOverviewController.selectedOfferte.query.measurement}" />
+
+					<h:outputText value="Country: " />
+					<h:outputText
+						value="#{offerteOverviewController.selectedOfferte.query.country.englishName}" />
+
+					<h:outputText value="Quantity: " />
+					<h:outputText
+						value="#{offerteOverviewController.selectedOfferte.query.quantity}" />
+
+					<h:outputText value="Language: " />
+					<h:outputText
+						value="#{offerteOverviewController.selectedOfferte.query.language.description}" />
+
+					<h:outputText value="Transport type: " />
+					<h:outputText
+						value="#{offerteOverviewController.selectedOfferte.query.transportType.description}" />
+
+					<h:outputText value="Postal code: " />
+					<h:outputText
+						value="#{offerteOverviewController.selectedOfferte.query.postalCode}" />
+
+					<h:outputText value="Date: " />
+					<h:outputText
+						value="#{offerteOverviewController.selectedOfferte.query.quotationDate}" />
+				</p:panelGrid>
+			</p:panel>
+
+			<p:panel header="Email">
+				<p:panelGrid columns="2" style="width:100%;">
+					<h:outputText value="Recipient: " />
+					<h:outputText
+						value="#{offerteOverviewController.selectedOfferte.emailResult.toAddress}" />
+
+					<h:outputText value="Subject: " />
+					<h:outputText
+						value="#{offerteOverviewController.selectedOfferte.emailResult.subject}" />
+
+					<h:outputText value="Email: " />
+					<h:outputText escape="false"
+						value="#{offerteOverviewController.selectedOfferte.emailResult.email}" />
+
+				</p:panelGrid>
+			</p:panel>
+
+			<p:panel header="Calculation">
+				<p:panelGrid columns="2" style="width:100%;">
+					<h:outputText value="Base price: " />
+					<h:outputText
+						value="#{offerteOverviewController.selectedOfferte.calculation.basePrice}" />
+
+					<h:outputText value="Diesel supplement: " />
+					<h:outputText
+						value="#{offerteOverviewController.selectedOfferte.calculation.dieselPrice}" />
+
+					<h:outputText value="Swiss franc supplement: " />
+					<h:outputText
+						value="#{offerteOverviewController.selectedOfferte.calculation.chfPrice}" />
+
+					<h:outputText value="Adr surcharge: " />
+					<h:outputText
+						value="#{offerteOverviewController.selectedOfferte.calculation.resultingPriceSurcharge}" />
+
+					<h:outputText value="Import formalities: " />
+					<h:outputText
+						value="#{offerteOverviewController.selectedOfferte.calculation.importFormalities}" />
+
+					<h:outputText value="Export formalities: " />
+					<h:outputText
+						value="#{offerteOverviewController.selectedOfferte.calculation.exportFormalities}" />
+
+					<h:outputText value="Final price: " />
+					<h:outputText
+						value="#{offerteOverviewController.selectedOfferte.calculation.finalPrice}" />
+				</p:panelGrid>
+			</p:panel>
+		</p:panel>
+	</h:form>
+</ui:composition>

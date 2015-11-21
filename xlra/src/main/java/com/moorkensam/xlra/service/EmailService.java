@@ -2,7 +2,7 @@ package com.moorkensam.xlra.service;
 
 import javax.mail.MessagingException;
 
-import com.moorkensam.xlra.model.rate.QuotationResult;
+import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.security.User;
 
 public interface EmailService {

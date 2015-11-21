@@ -16,13 +16,13 @@ import org.unitils.inject.annotation.TestedObject;
 
 import com.moorkensam.xlra.model.ExcelUploadUtilData;
 import com.moorkensam.xlra.model.RateLineExcelImportDTO;
-import com.moorkensam.xlra.model.configuration.TranslationKey;
 import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.rate.ZoneType;
+import com.moorkensam.xlra.model.translation.TranslationKey;
 
 public class ExcelToModelMapperTest extends UnitilsJUnit4 {
 

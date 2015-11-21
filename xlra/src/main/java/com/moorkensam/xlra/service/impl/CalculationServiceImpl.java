@@ -8,15 +8,15 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import com.moorkensam.xlra.dao.ConfigurationDao;
-import com.moorkensam.xlra.dto.PriceCalculationDTO;
-import com.moorkensam.xlra.model.QuotationQuery;
 import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.CurrencyRate;
 import com.moorkensam.xlra.model.configuration.DieselRate;
-import com.moorkensam.xlra.model.configuration.TranslationKey;
 import com.moorkensam.xlra.model.error.RateFileException;
+import com.moorkensam.xlra.model.offerte.PriceCalculation;
+import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.Country;
+import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.CalculationService;
 import com.moorkensam.xlra.service.CurrencyService;
 import com.moorkensam.xlra.service.DieselService;
@@ -39,7 +39,7 @@ public class CalculationServiceImpl implements CalculationService {
 	 * Calculates the prices according to some business rules.
 	 */
 	public void calculatePriceAccordingToConditions(
-			PriceCalculationDTO priceDTO, Country country,
+			PriceCalculation priceDTO, Country country,
 			List<Condition> conditions, QuotationQuery query)
 			throws RateFileException {
 		Configuration config = getConfigurationDao().getXlraConfiguration();
@@ -76,7 +76,7 @@ public class CalculationServiceImpl implements CalculationService {
 		calculateTotalPrice(priceDTO);
 	}
 
-	private void calculateTotalPrice(PriceCalculationDTO priceDTO) {
+	private void calculateTotalPrice(PriceCalculation priceDTO) {
 		priceDTO.setAppliedOperations(new ArrayList<TranslationKey>());
 		priceDTO.addToFinalPrice(priceDTO.getBasePrice());
 		if (priceDTO.getDieselPrice() != null) {
@@ -105,7 +105,7 @@ public class CalculationServiceImpl implements CalculationService {
 				.getFinalPrice()));
 	}
 
-	protected void calculateExportFormality(PriceCalculationDTO priceDTO,
+	protected void calculateExportFormality(PriceCalculation priceDTO,
 			Condition condition) throws RateFileException {
 		try {
 			BigDecimal exportFormalities = new BigDecimal(
@@ -118,7 +118,7 @@ public class CalculationServiceImpl implements CalculationService {
 		}
 	}
 
-	protected void calculateImportFormality(PriceCalculationDTO priceDTO,
+	protected void calculateImportFormality(PriceCalculation priceDTO,
 			Condition condition) throws RateFileException {
 		try {
 			BigDecimal importFormalities = new BigDecimal(
@@ -132,7 +132,7 @@ public class CalculationServiceImpl implements CalculationService {
 	}
 
 	protected void calculateAddressSurchargeMinimum(
-			PriceCalculationDTO priceDTO, Condition condition)
+			PriceCalculation priceDTO, Condition condition)
 			throws RateFileException {
 		try {
 			priceDTO.setAdrSurchargeMinimum(CalcUtil
@@ -150,7 +150,7 @@ public class CalculationServiceImpl implements CalculationService {
 	 * 
 	 * @param priceDTO
 	 */
-	protected void applyAfterConditionLogic(PriceCalculationDTO priceDTO) {
+	protected void applyAfterConditionLogic(PriceCalculation priceDTO) {
 		if (priceDTO.getAdrSurchargeMinimum() == null
 				&& priceDTO.getCalculatedAdrSurcharge() == null) {
 		} else {
@@ -172,7 +172,7 @@ public class CalculationServiceImpl implements CalculationService {
 	 * 
 	 * @param condition
 	 */
-	protected void calculateAddressSurcharge(PriceCalculationDTO priceDTO,
+	protected void calculateAddressSurcharge(PriceCalculation priceDTO,
 			Condition condition) throws RateFileException {
 		try {
 			BigDecimal multiplier = CalcUtil
@@ -188,7 +188,7 @@ public class CalculationServiceImpl implements CalculationService {
 		}
 	}
 
-	protected void calculateChfSurchargePrice(PriceCalculationDTO priceDTO,
+	protected void calculateChfSurchargePrice(PriceCalculation priceDTO,
 			Configuration config) throws RateFileException {
 		CurrencyRate chfRate = getCurrencyService().getChfRateForCurrentPrice(
 				config.getCurrentChfValue());
@@ -213,7 +213,7 @@ public class CalculationServiceImpl implements CalculationService {
 	 *             Thrown when no dieselpercentage multiplier can be found for
 	 *             the current diesel price.
 	 */
-	protected void calculateDieselSurchargePrice(PriceCalculationDTO priceDTO,
+	protected void calculateDieselSurchargePrice(PriceCalculation priceDTO,
 			Configuration config) throws RateFileException {
 		DieselRate dieselRate = getDieselService()
 				.getDieselRateForCurrentPrice(config.getCurrentDieselPrice());

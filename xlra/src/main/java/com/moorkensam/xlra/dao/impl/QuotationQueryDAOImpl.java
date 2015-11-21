@@ -9,7 +9,7 @@ import org.primefaces.model.SortOrder;
 
 import com.moorkensam.xlra.dao.BaseDAO;
 import com.moorkensam.xlra.dao.QuotationQueryDAO;
-import com.moorkensam.xlra.model.QuotationQuery;
+import com.moorkensam.xlra.model.offerte.QuotationQuery;
 
 public class QuotationQueryDAOImpl extends BaseDAO implements QuotationQueryDAO {
 

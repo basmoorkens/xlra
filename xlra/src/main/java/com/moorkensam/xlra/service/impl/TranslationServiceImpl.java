@@ -9,10 +9,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.moorkensam.xlra.dao.TranslationDAO;
-import com.moorkensam.xlra.model.Language;
-import com.moorkensam.xlra.model.configuration.Translation;
-import com.moorkensam.xlra.model.configuration.TranslationKey;
+import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.error.XlraValidationException;
+import com.moorkensam.xlra.model.translation.Translation;
+import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.TranslationService;
 
 /**

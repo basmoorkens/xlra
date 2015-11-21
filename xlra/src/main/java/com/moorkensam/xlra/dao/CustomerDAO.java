@@ -2,7 +2,7 @@ package com.moorkensam.xlra.dao;
 
 import java.util.List;
 
-import com.moorkensam.xlra.model.Customer;
+import com.moorkensam.xlra.model.customer.Customer;
 
 public interface CustomerDAO {
 

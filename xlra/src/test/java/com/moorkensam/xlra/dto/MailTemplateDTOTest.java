@@ -9,8 +9,8 @@ import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.TestedObject;
 
-import com.moorkensam.xlra.model.Language;
-import com.moorkensam.xlra.model.configuration.MailTemplate;
+import com.moorkensam.xlra.model.configuration.Language;
+import com.moorkensam.xlra.model.mail.MailTemplate;
 
 public class MailTemplateDTOTest extends UnitilsJUnit4 {
 

@@ -2,8 +2,6 @@ package com.moorkensam.xlra.model.configuration;
 
 import javax.persistence.Embeddable;
 
-import com.moorkensam.xlra.model.Language;
-
 @Embeddable
 public class TranslationForLanguage {
 

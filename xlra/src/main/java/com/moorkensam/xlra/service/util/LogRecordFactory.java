@@ -7,9 +7,9 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.moorkensam.xlra.model.RaiseRatesRecord;
 import com.moorkensam.xlra.model.configuration.LogRecord;
 import com.moorkensam.xlra.model.configuration.LogType;
+import com.moorkensam.xlra.model.configuration.RaiseRatesRecord;
 import com.moorkensam.xlra.model.configuration.RateLogRecord;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateOperation;

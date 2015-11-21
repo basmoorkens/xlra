@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.primefaces.model.SortOrder;
 
-import com.moorkensam.xlra.model.QuotationQuery;
+import com.moorkensam.xlra.model.offerte.QuotationQuery;
 
 public interface QuotationQueryDAO {
 

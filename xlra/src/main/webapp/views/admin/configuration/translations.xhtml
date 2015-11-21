@@ -3,7 +3,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
 <ui:composition template="/views/template.xhtml">
 	<ui:define name="title">
 		<h:outputText value="XLRA - Configuration - Translations" />
@@ -34,29 +35,39 @@
 					<p:column style="width:36px;text-align: center">
 						<p:commandButton
 							actionListener="#{translationController.setupPageForEdit(translation)}"
-							icon="ui-icon-search" title="View" ajax="false">
+							icon="ui-icon-search" title="View" ajax="false"
+							update=":translationDetailForm" immediate="true">
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>
 
 				<p:panel>
-					<p:commandButton immediate="true" update=":translationsForm"
+					<p:commandButton immediate="true" update=":translationDetailForm"
+						rendered="#{!translationController.editMode}"
 						actionListener="#{translationController.setupNewTranslation}"
 						value="Create new translation" />
 				</p:panel>
 			</p:panel>
+		</h:form>
 
+		<h:form id="translationDetailForm">
 			<p:panel header="Translation detail" style="width:100%;"
 				rendered="#{translationController.editMode}">
 				<p:panel header="Key">
 					<p:panelGrid columns="2" style="width:100%;">
 						<h:outputText value="Translation key: " />
-						<p:selectOneMenu style="width:100%;" required="true"
-							disabled="#{translationController.updateMode}"
-							value="#{translationController.selectedKey}">
-							<f:selectItem itemValue="" itemLabel="Please select a key" />
-							<f:selectItems value="#{translationController.availableKeys}" />
-						</p:selectOneMenu>
+						<c:if test="#{!translationController.updateMode}">
+							<p:selectOneMenu style="width:100%;" required="true"
+								rendered="#{!translationController.updateMode}"
+								value="#{translationController.selectedKey}">
+								<f:selectItem itemValue="" itemLabel="Please select a key" />
+								<f:selectItems value="#{translationController.availableKeys}" />
+							</p:selectOneMenu>
+						</c:if>
+						<c:if test="#{translationController.updateMode}">
+							<h:outputLabel
+								value="#{translationController.activeTranslation.translationKeyAsString}" />
+						</c:if>
 					</p:panelGrid>
 				</p:panel>
 
@@ -112,12 +123,12 @@
 				<p:panel>
 					<p:commandButton action="#{translationController.cancel}"
 						value="Cancel" immediate="true"
-						update=":translationsForm :translationsForm:msgs" />
+						update=":translationsForm :translationsForm:msgs :translationDetailForm" />
 
 					<p:commandButton
 						action="#{translationController.saveActiveTranslations}"
 						value="Save new translations"
-						update=":translationsForm :translationsForm:msgs" />
+						update=":translationsForm :translationsForm:msgs :translationDetailForm" />
 				</p:panel>
 			</p:panel>
 		</h:form>

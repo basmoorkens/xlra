@@ -12,8 +12,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.moorkensam.xlra.dto.PriceResultDTO;
-import com.moorkensam.xlra.model.QuotationQuery;
 import com.moorkensam.xlra.model.error.TemplatingException;
+import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.util.ConfigurationLoader;
 

@@ -5,9 +5,10 @@ import java.util.Map;
 
 import org.primefaces.model.SortOrder;
 
-import com.moorkensam.xlra.model.QuotationQuery;
 import com.moorkensam.xlra.model.error.RateFileException;
-import com.moorkensam.xlra.model.rate.QuotationResult;
+import com.moorkensam.xlra.model.offerte.OfferteSearchFilter;
+import com.moorkensam.xlra.model.offerte.QuotationQuery;
+import com.moorkensam.xlra.model.offerte.QuotationResult;
 
 public interface QuotationService {
 
@@ -47,5 +48,8 @@ public interface QuotationService {
 			String sortField, SortOrder sortOrder, Map<String, String> filters);
 
 	public int getQuotationQueryCount(Map<String, String> filters);
+
+	public List<QuotationResult> getQuotationResultsForFilters(
+			OfferteSearchFilter filter);
 
 }

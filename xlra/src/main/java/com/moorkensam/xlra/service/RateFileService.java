@@ -2,13 +2,13 @@ package com.moorkensam.xlra.service;
 
 import java.util.List;
 
-import com.moorkensam.xlra.model.QuotationQuery;
-import com.moorkensam.xlra.model.RaiseRatesRecord;
+import com.moorkensam.xlra.model.configuration.RaiseRatesRecord;
 import com.moorkensam.xlra.model.error.RateFileException;
+import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.RateFile;
+import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
 import com.moorkensam.xlra.model.rate.Zone;
-import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
 
 public interface RateFileService {
 

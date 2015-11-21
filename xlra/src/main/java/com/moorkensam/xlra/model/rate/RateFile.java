@@ -23,8 +23,8 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.BatchSize;
 
 import com.moorkensam.xlra.model.BaseEntity;
-import com.moorkensam.xlra.model.Customer;
 import com.moorkensam.xlra.model.configuration.Interval;
+import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.service.util.CalcUtil;
 

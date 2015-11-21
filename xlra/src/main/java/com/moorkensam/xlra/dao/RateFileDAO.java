@@ -3,8 +3,8 @@ package com.moorkensam.xlra.dao;
 import java.util.List;
 
 import com.moorkensam.xlra.model.rate.RateFile;
+import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
 import com.moorkensam.xlra.model.rate.RateLine;
-import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
 
 public interface RateFileDAO {
 

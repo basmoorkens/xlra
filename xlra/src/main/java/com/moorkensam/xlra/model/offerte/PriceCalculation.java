@@ -1,11 +1,22 @@
-package com.moorkensam.xlra.dto;
+package com.moorkensam.xlra.model.offerte;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.moorkensam.xlra.model.configuration.TranslationKey;
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.Table;
 
-public class PriceCalculationDTO {
+import com.moorkensam.xlra.model.BaseEntity;
+import com.moorkensam.xlra.model.translation.TranslationKey;
+
+@Entity
+@Table(name = "priceCalculation")
+public class PriceCalculation extends BaseEntity {
+
+	private static final long serialVersionUID = 1L;
 
 	private BigDecimal basePrice;
 
@@ -25,6 +36,8 @@ public class PriceCalculationDTO {
 
 	private BigDecimal exportFormalities;
 
+	@ElementCollection
+	@CollectionTable(name = "appliedOperations", joinColumns = @JoinColumn(name = "calculation_id"))
 	private List<TranslationKey> appliedOperations;
 
 	public BigDecimal getFinalPrice() {

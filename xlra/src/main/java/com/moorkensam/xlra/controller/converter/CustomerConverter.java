@@ -9,7 +9,7 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.inject.Inject;
 
-import com.moorkensam.xlra.model.Customer;
+import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.service.CustomerService;
 
 @ManagedBean

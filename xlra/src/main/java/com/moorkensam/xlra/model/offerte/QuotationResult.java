@@ -1,4 +1,4 @@
-package com.moorkensam.xlra.model.rate;
+package com.moorkensam.xlra.model.offerte;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
@@ -14,8 +14,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.moorkensam.xlra.model.BaseEntity;
-import com.moorkensam.xlra.model.EmailResult;
-import com.moorkensam.xlra.model.QuotationQuery;
+import com.moorkensam.xlra.model.mail.EmailResult;
+import com.moorkensam.xlra.model.rate.RateFile;
 
 @Entity
 @Cacheable
@@ -24,6 +24,10 @@ import com.moorkensam.xlra.model.QuotationQuery;
 public class QuotationResult extends BaseEntity {
 
 	private static final long serialVersionUID = -8105357874994501600L;
+
+	@OneToOne
+	@JoinColumn(name = "calculation_id")
+	private PriceCalculation calculation;
 
 	@Lob
 	@Column(name = "pdf")
@@ -85,5 +89,13 @@ public class QuotationResult extends BaseEntity {
 
 	public void setOfferteUniqueIdentifier(String offerteUniqueIdentifier) {
 		this.offerteUniqueIdentifier = offerteUniqueIdentifier;
+	}
+
+	public PriceCalculation getCalculation() {
+		return calculation;
+	}
+
+	public void setCalculation(PriceCalculation calculation) {
+		this.calculation = calculation;
 	}
 }

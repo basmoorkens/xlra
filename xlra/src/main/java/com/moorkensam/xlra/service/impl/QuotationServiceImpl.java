@@ -13,16 +13,18 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.primefaces.model.SortOrder;
 
+import com.moorkensam.xlra.dao.PriceCalculationDAO;
 import com.moorkensam.xlra.dao.QuotationQueryDAO;
 import com.moorkensam.xlra.dao.QuotationResultDAO;
 import com.moorkensam.xlra.dto.OfferteMailDTO;
-import com.moorkensam.xlra.dto.PriceCalculationDTO;
 import com.moorkensam.xlra.mapper.OfferteEmailParameterGenerator;
 import com.moorkensam.xlra.mapper.OfferteEmailToEmailResultMapper;
-import com.moorkensam.xlra.model.QuotationQuery;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.error.TemplatingException;
-import com.moorkensam.xlra.model.rate.QuotationResult;
+import com.moorkensam.xlra.model.offerte.OfferteSearchFilter;
+import com.moorkensam.xlra.model.offerte.PriceCalculation;
+import com.moorkensam.xlra.model.offerte.QuotationQuery;
+import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.service.CalculationService;
@@ -41,6 +43,9 @@ public class QuotationServiceImpl implements QuotationService {
 
 	@Inject
 	private QuotationResultDAO quotationResultDAO;
+
+	@Inject
+	private PriceCalculationDAO priceCalculationDAO;
 
 	@Inject
 	private EmailService emailService;
@@ -105,16 +110,16 @@ public class QuotationServiceImpl implements QuotationService {
 		OfferteMailDTO dto = new OfferteMailDTO();
 		QuotationResult quotationResult = initializeQuotationResult(query);
 		RateLine result;
-		PriceCalculationDTO priceDTO = new PriceCalculationDTO();
 		try {
 			RateFile rf = rateFileService.getRateFileForQuery(query);
 			result = rf.getRateLineForQuantityAndPostalCode(
 					query.getQuantity(), query.getPostalCode());
-			priceDTO.setBasePrice(result.getValue());
+			quotationResult.getCalculation().setBasePrice(result.getValue());
 			getCalculationService().calculatePriceAccordingToConditions(
-					priceDTO, rf.getCountry(), rf.getConditions(), query);
+					quotationResult.getCalculation(), rf.getCountry(),
+					rf.getConditions(), query);
 			mailTemplateService.initializeOfferteEmail(quotationResult, dto,
-					rf, priceDTO);
+					rf, quotationResult.getCalculation());
 			fillInQuotationResult(dto, quotationResult);
 		} catch (RateFileException e1) {
 			logger.error(e1.getBusinessException() + e1.getMessage());
@@ -133,6 +138,8 @@ public class QuotationServiceImpl implements QuotationService {
 		fillInMailLanguage(query);
 		quotationResult.setOfferteUniqueIdentifier(identityService
 				.getNextIdentifier());
+		PriceCalculation priceCalculation = new PriceCalculation();
+		quotationResult.setCalculation(priceCalculation);
 		return quotationResult;
 	}
 
@@ -184,18 +191,25 @@ public class QuotationServiceImpl implements QuotationService {
 	@Override
 	public void submitQuotationResult(QuotationResult result)
 			throws RateFileException {
-		result.getQuery().setQuotationDate(new Date());
 		copyTransientResultLanguageToLanguageIfNeeded(result);
-		QuotationQuery managedQuery = getQuotationDAO().createQuotationQuery(
-				result.getQuery());
-		result.setQuery(managedQuery);
-		getQuotationResultDAO().createQuotationResult(result);
+		createAndSaveFullOfferte(result);
 		try {
 			getEmailService().sendOfferteMail(result);
 		} catch (MessagingException e) {
 			logger.error("Failed to send offerte email");
 			throw new RateFileException("Failed to send email");
 		}
+	}
+
+	private void createAndSaveFullOfferte(QuotationResult offerte) {
+		offerte.getQuery().setQuotationDate(new Date());
+		QuotationQuery managedQuery = getQuotationDAO().createQuotationQuery(
+				offerte.getQuery());
+		offerte.setQuery(managedQuery);
+		PriceCalculation managedCalculation = priceCalculationDAO
+				.createCalculation(offerte.getCalculation());
+		offerte.setCalculation(managedCalculation);
+		getQuotationResultDAO().createQuotationResult(offerte);
 	}
 
 	/**
@@ -278,6 +292,20 @@ public class QuotationServiceImpl implements QuotationService {
 
 	@Override
 	public int getQuotationQueryCount(Map<String, String> filters) {
-		return  quotationResultDAO.getQuotationResultCount(filters);
+		return quotationResultDAO.getQuotationResultCount(filters);
+	}
+
+	@Override
+	public List<QuotationResult> getQuotationResultsForFilters(
+			OfferteSearchFilter filter) {
+		return quotationResultDAO.getQuotationResultsForFilter(filter);
+	}
+
+	public PriceCalculationDAO getPriceCalculationDAO() {
+		return priceCalculationDAO;
+	}
+
+	public void setPriceCalculationDAO(PriceCalculationDAO priceCalculationDAO) {
+		this.priceCalculationDAO = priceCalculationDAO;
 	}
 }

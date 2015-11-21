@@ -2,7 +2,7 @@ package com.moorkensam.xlra.service;
 
 import java.util.List;
 
-import com.moorkensam.xlra.model.Customer;
+import com.moorkensam.xlra.model.customer.Customer;
 
 public interface CustomerService {
 
