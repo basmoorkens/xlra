@@ -27,7 +27,7 @@ public class CustomerConverter implements Converter {
 			} catch (NumberFormatException e) {
 				throw new ConverterException(new FacesMessage(
 						FacesMessage.SEVERITY_ERROR, "Conversion Error",
-						"Not a valid rate file."));
+						"Not a valid  customer."));
 			}
 		}
 		return null;

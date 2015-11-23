@@ -141,6 +141,11 @@
 			<version>5.5.6</version>
 		</dependency>
 		<dependency>
+			<groupId>com.itextpdf.tool</groupId>
+			<artifactId>xmlworker</artifactId>
+			<version>5.5.6</version>
+		</dependency>
+		<dependency>
 			<groupId>org.unitils</groupId>
 			<artifactId>unitils-easymock</artifactId>
 			<version>3.4.2</version>

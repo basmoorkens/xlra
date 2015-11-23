@@ -38,9 +38,8 @@ public class CalculationServiceImpl implements CalculationService {
 	/**
 	 * Calculates the prices according to some business rules.
 	 */
-	public void calculatePriceAccordingToConditions(
-			PriceCalculation priceDTO, Country country,
-			List<Condition> conditions, QuotationQuery query)
+	public void calculatePriceAccordingToConditions(PriceCalculation priceDTO,
+			Country country, List<Condition> conditions, QuotationQuery query)
 			throws RateFileException {
 		Configuration config = getConfigurationDao().getXlraConfiguration();
 		calculateDieselSurchargePrice(priceDTO, config);
@@ -73,37 +72,9 @@ public class CalculationServiceImpl implements CalculationService {
 			}
 		}
 		applyAfterConditionLogic(priceDTO);
-		calculateTotalPrice(priceDTO);
+		priceDTO.calculateTotalPrice();
 	}
 
-	private void calculateTotalPrice(PriceCalculation priceDTO) {
-		priceDTO.setAppliedOperations(new ArrayList<TranslationKey>());
-		priceDTO.addToFinalPrice(priceDTO.getBasePrice());
-		if (priceDTO.getDieselPrice() != null) {
-			priceDTO.addToFinalPrice(priceDTO.getDieselPrice());
-			priceDTO.getAppliedOperations()
-					.add(TranslationKey.DIESEL_SURCHARGE);
-		}
-		if (priceDTO.getChfPrice() != null) {
-			priceDTO.addToFinalPrice(priceDTO.getChfPrice());
-			priceDTO.getAppliedOperations().add(TranslationKey.CHF_SURCHARGE);
-		}
-		if (priceDTO.getImportFormalities() != null) {
-			priceDTO.addToFinalPrice(priceDTO.getImportFormalities());
-			priceDTO.getAppliedOperations().add(TranslationKey.IMPORT_FORM);
-		}
-		if (priceDTO.getExportFormalities() != null) {
-			priceDTO.addToFinalPrice(priceDTO.getExportFormalities());
-			priceDTO.getAppliedOperations().add(TranslationKey.EXPORT_FORM);
-		}
-		if (priceDTO.getResultingPriceSurcharge() != null) {
-			priceDTO.addToFinalPrice(priceDTO.getResultingPriceSurcharge());
-			priceDTO.getAppliedOperations().add(TranslationKey.ADR_SURCHARGE);
-		}
-
-		priceDTO.setFinalPrice(CalcUtil.roundBigDecimal(priceDTO
-				.getFinalPrice()));
-	}
 
 	protected void calculateExportFormality(PriceCalculation priceDTO,
 			Condition condition) throws RateFileException {
@@ -131,9 +102,8 @@ public class CalculationServiceImpl implements CalculationService {
 		}
 	}
 
-	protected void calculateAddressSurchargeMinimum(
-			PriceCalculation priceDTO, Condition condition)
-			throws RateFileException {
+	protected void calculateAddressSurchargeMinimum(PriceCalculation priceDTO,
+			Condition condition) throws RateFileException {
 		try {
 			priceDTO.setAdrSurchargeMinimum(CalcUtil
 					.roundBigDecimal(new BigDecimal(Double

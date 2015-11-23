@@ -37,12 +37,12 @@ public class EmailServiceImpl implements EmailService {
 	@Resource(name = "java:/mail/xlra")
 	private Session mailSession;
 
-	@Inject
-	private TemplateEngine templateEngine;
+	private TemplateParseService templateEngine;
 
 	@PostConstruct
 	public void init() {
 		setConfigLoader(ConfigurationLoader.getInstance());
+		templateEngine = TemplateParseService.getInstance();
 	}
 
 	@Override

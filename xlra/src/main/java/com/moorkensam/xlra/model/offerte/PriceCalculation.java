@@ -1,16 +1,20 @@
 package com.moorkensam.xlra.model.offerte;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 import com.moorkensam.xlra.model.BaseEntity;
 import com.moorkensam.xlra.model.translation.TranslationKey;
+import com.moorkensam.xlra.service.util.CalcUtil;
 
 @Entity
 @Table(name = "priceCalculation")
@@ -37,6 +41,7 @@ public class PriceCalculation extends BaseEntity {
 	private BigDecimal exportFormalities;
 
 	@ElementCollection
+	@Enumerated(EnumType.STRING)
 	@CollectionTable(name = "appliedOperations", joinColumns = @JoinColumn(name = "calculation_id"))
 	private List<TranslationKey> appliedOperations;
 
@@ -126,6 +131,33 @@ public class PriceCalculation extends BaseEntity {
 
 	public void setAppliedOperations(List<TranslationKey> appliedOperations) {
 		this.appliedOperations = appliedOperations;
+	}
+
+	public void calculateTotalPrice() {
+		setAppliedOperations(new ArrayList<TranslationKey>());
+		addToFinalPrice(getBasePrice());
+		if (getDieselPrice() != null) {
+			addToFinalPrice(getDieselPrice());
+			getAppliedOperations().add(TranslationKey.DIESEL_SURCHARGE);
+		}
+		if (getChfPrice() != null) {
+			addToFinalPrice(getChfPrice());
+			getAppliedOperations().add(TranslationKey.CHF_SURCHARGE);
+		}
+		if (getImportFormalities() != null) {
+			addToFinalPrice(getImportFormalities());
+			getAppliedOperations().add(TranslationKey.IMPORT_FORM);
+		}
+		if (getExportFormalities() != null) {
+			addToFinalPrice(getExportFormalities());
+			getAppliedOperations().add(TranslationKey.EXPORT_FORM);
+		}
+		if (getResultingPriceSurcharge() != null) {
+			addToFinalPrice(getResultingPriceSurcharge());
+			getAppliedOperations().add(TranslationKey.ADR_SURCHARGE);
+		}
+
+		setFinalPrice(CalcUtil.roundBigDecimal(getFinalPrice()));
 	}
 
 }

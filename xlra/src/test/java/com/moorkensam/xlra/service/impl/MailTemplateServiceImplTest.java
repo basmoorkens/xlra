@@ -15,8 +15,7 @@ import org.unitils.inject.annotation.TestedObject;
 
 import com.moorkensam.xlra.dao.EmailTemplateDAO;
 import com.moorkensam.xlra.dto.OfferteMailDTO;
-import com.moorkensam.xlra.dto.PriceResultDTO;
-import com.moorkensam.xlra.mapper.OfferteEmailParameterGenerator;
+import com.moorkensam.xlra.mapper.PriceCalculationToHtmlConverter;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.RateFileException;
@@ -36,7 +35,7 @@ public class MailTemplateServiceImplTest extends UnitilsJUnit4 {
 	private MailTemplateServiceImpl mailTemplateService;
 
 	@Mock
-	private OfferteEmailParameterGenerator mapper;
+	private PriceCalculationToHtmlConverter mapper;
 
 	private PriceCalculation priceDTO;
 
@@ -47,13 +46,11 @@ public class MailTemplateServiceImplTest extends UnitilsJUnit4 {
 	private EmailTemplateDAO emailTemplateDAO;
 
 	@Mock
-	private TemplateEngine templateEngine;
+	private TemplateParseService templateEngine;
 
 	private MailTemplate template;
 
 	private QuotationQuery query;
-
-	private PriceResultDTO resultDTO;
 
 	@Before
 	public void init() {
@@ -61,7 +58,6 @@ public class MailTemplateServiceImplTest extends UnitilsJUnit4 {
 		query.setCustomer(new Customer());
 		query.getCustomer().setEmail("test@test.com");
 		query.setCountry(new Country());
-		resultDTO = new PriceResultDTO();
 		priceDTO = new PriceCalculation();
 		priceDTO.setAppliedOperations(new ArrayList<TranslationKey>());
 		template = new MailTemplate();
@@ -77,19 +73,20 @@ public class MailTemplateServiceImplTest extends UnitilsJUnit4 {
 	public void testInitOfferteEmail() throws TemplatingException,
 			RateFileException {
 		RateFile rf = new RateFile();
+		QuotationResult offerte = new QuotationResult();
+		offerte.setQuery(query);
 		query.setResultLanguage(Language.NL);
-		mapper.fillInParameters(priceDTO, resultDTO, "REF-001");
+		EasyMock.expect(
+				mapper.generateHtmlFullDetailCalculation(priceDTO, "REF-001"))
+				.andReturn("blabla");
 		EasyMock.expectLastCall();
 		EasyMock.expect(
 				emailTemplateDAO.getMailTemplateForLanguage(Language.NL))
 				.andReturn(template);
 		EasyMock.expect(
-				templateEngine.createOfferteEmailTemplateParams(query,
-						resultDTO)).andReturn(new HashMap<String, Object>());
-		EasyMock.expect(
 				templateEngine.parseOfferteEmailTemplate(
-						template.getTemplate(), new HashMap<String, Object>()))
-				.andReturn("test template + filled in");
+						template.getTemplate(), offerte, "blabla")).andReturn(
+				"test template + filled in");
 		EasyMockUnitils.replay();
 
 		OfferteMailDTO dto = new OfferteMailDTO();
@@ -102,5 +99,4 @@ public class MailTemplateServiceImplTest extends UnitilsJUnit4 {
 		Assert.assertEquals("SUBJECT", dto.getSubject());
 		Assert.assertEquals("test@test.com", dto.getAddress());
 	}
-
 }

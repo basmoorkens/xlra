@@ -5,15 +5,14 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.moorkensam.xlra.dto.PriceResultDTO;
+import com.moorkensam.xlra.mapper.PriceCalculationToHtmlConverter;
+import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.error.TemplatingException;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
+import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.util.ConfigurationLoader;
 
@@ -32,8 +31,7 @@ import freemarker.template.TemplateNotFoundException;
  * @author bas
  *
  */
-@Stateless
-public class TemplateEngine {
+public class TemplateParseService {
 
 	private final static Logger logger = LogManager.getLogger();
 
@@ -43,11 +41,27 @@ public class TemplateEngine {
 
 	private ConfigurationLoader configLoader;
 
-	@PostConstruct
-	public void inializeEngine() {
+	private PriceCalculationToHtmlConverter priceCalculationToHtmlConverter;
+
+	private void inializeEngine() {
 		setStringTemplateLoader(new StringTemplateLoader());
 		setConfiguration(new Configuration());
 		setConfigLoader(ConfigurationLoader.getInstance());
+		priceCalculationToHtmlConverter = new PriceCalculationToHtmlConverter();
+	}
+
+	private static TemplateParseService instance;
+
+	private TemplateParseService() {
+		super();
+		inializeEngine();
+	}
+
+	public static TemplateParseService getInstance() {
+		if (instance == null) {
+			instance = new TemplateParseService();
+		}
+		return instance;
 	}
 
 	/**
@@ -62,10 +76,13 @@ public class TemplateEngine {
 	 *             When the template could not be parsed
 	 */
 	public String parseOfferteEmailTemplate(String templateFromDb,
-			Map<String, Object> dataModel) throws TemplatingException {
+			QuotationResult offerte, String fullDetail)
+			throws TemplatingException {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Parsing email template " + templateFromDb);
 		}
+		Map<String, Object> dataModel = createOfferteEmailTemplateParams(
+				offerte, fullDetail);
 		StringWriter writer = new StringWriter();
 		getStringTemplateLoader().putTemplate("template", templateFromDb);
 		getConfiguration().setTemplateLoader(getStringTemplateLoader());
@@ -92,28 +109,55 @@ public class TemplateEngine {
 		return writer.toString();
 	}
 
+	public String parseOffertePdf(QuotationResult offerte, Language language)
+			throws TemplatingException {
+		String templateName = "templates/offertepdf_" + language + ".ftl";
+		StringWriter writer = new StringWriter();
+		Map<String, Object> parameters = createOffertePdfParameterMap(offerte,
+				language);
+		try {
+			Template template = loadTemplate(templateName);
+			template.process(parameters, writer);
+		} catch (IOException e) {
+			logger.error(e);
+			throw new TemplatingException("Could not write template", e);
+		} catch (TemplateException e) {
+			logger.error(e);
+			throw new TemplatingException("General templating exception", e);
+		}
+		return writer.toString();
+	}
+
+	private Map<String, Object> createOffertePdfParameterMap(
+			QuotationResult offerte, Language language) {
+		Map<String, Object> parameterMap = new HashMap<String, Object>();
+		parameterMap.put("offerteDate", offerte.getQuery().getQuotationDate());
+		parameterMap.put("country", offerte.getQuery().getCountry()
+				.getNameForLanguage(language));
+		parameterMap.put("postalCode", offerte.getQuery().getPostalCode());
+		parameterMap.put("quantityAndMeasurement", offerte.getQuery()
+				.getQuantity()
+				+ " "
+				+ offerte.getQuery().getMeasurement().getDescription());
+		parameterMap.put("transportType", offerte.getQuery().getKindOfRate()
+				.getDescription());
+		String fullDetailAsHtml = getPriceCalculationToHtmlConverter()
+				.generateHtmlFullDetailCalculation(offerte.getCalculation(),
+						offerte.getOfferteUniqueIdentifier());
+		parameterMap.put("detailCalculation", fullDetailAsHtml);
+		return parameterMap;
+	}
+
 	public String parseUserCreatedTemplate(User user)
 			throws TemplatingException {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Parsing user created email for " + user.getEmail());
 		}
 		Map<String, Object> dataModel = createUserTemplateParams(user);
-		freemarkerConfiguration
-				.setClassForTemplateLoading(this.getClass(), "/");
 		StringWriter writer = new StringWriter();
 		try {
-			Template template = freemarkerConfiguration
-					.getTemplate("templates/account_created.ftl");
+			Template template = loadTemplate("templates/account_created.ftl");
 			template.process(dataModel, writer);
-		} catch (TemplateNotFoundException e) {
-			logger.error(e);
-			throw new TemplatingException("Template not found internaly", e);
-		} catch (MalformedTemplateNameException e) {
-			logger.error(e);
-			throw new TemplatingException("Template malformated", e);
-		} catch (ParseException e) {
-			logger.error(e);
-			throw new TemplatingException("Failed to parse template", e);
 		} catch (IOException e) {
 			logger.error(e);
 			throw new TemplatingException("Could not write template", e);
@@ -138,6 +182,27 @@ public class TemplateEngine {
 		return dataModel;
 	}
 
+	private Template loadTemplate(String templateName)
+			throws TemplatingException {
+		try {
+			freemarkerConfiguration.setClassForTemplateLoading(this.getClass(),
+					"/");
+			return freemarkerConfiguration.getTemplate(templateName);
+		} catch (TemplateNotFoundException e) {
+			logger.error(e);
+			throw new TemplatingException("Template not found internaly", e);
+		} catch (MalformedTemplateNameException e) {
+			logger.error(e);
+			throw new TemplatingException("Template malformated", e);
+		} catch (ParseException e) {
+			logger.error(e);
+			throw new TemplatingException("Failed to parse template", e);
+		} catch (IOException e) {
+			logger.error(e);
+			throw new TemplatingException("Could not write template", e);
+		}
+	}
+
 	/**
 	 * Creates the template parameter map for the email.
 	 * 
@@ -145,18 +210,18 @@ public class TemplateEngine {
 	 * @param result
 	 * @return
 	 */
-	public Map<String, Object> createOfferteEmailTemplateParams(
-			QuotationQuery query, PriceResultDTO priceDTO) {
+	private Map<String, Object> createOfferteEmailTemplateParams(
+			QuotationResult offerte, String fullDetail) {
 		Map<String, Object> templateModel = new HashMap<String, Object>();
-		templateModel.put("customer", query.getCustomer().getName());
-		templateModel.put("quantity", query.getQuantity());
-		templateModel.put("measurement", query.getMeasurement());
-		templateModel.put("detailCalculation",
-				priceDTO.getDetailedCalculation());
-		getCountryNameForEmail(query);
-		templateModel.put("destination", query.getPostalCode() + " "
-				+ getCountryNameForEmail(query));
-		templateModel.put("offerteKey", priceDTO.getOfferteReference());
+		templateModel.put("customer", offerte.getQuery().getCustomer()
+				.getName());
+		templateModel.put("quantity", offerte.getQuery().getQuantity());
+		templateModel.put("measurement", offerte.getQuery().getMeasurement());
+		templateModel.put("detailCalculation", fullDetail);
+		getCountryNameForEmail(offerte.getQuery());
+		templateModel.put("destination", offerte.getQuery().getPostalCode()
+				+ " " + getCountryNameForEmail(offerte.getQuery()));
+		templateModel.put("offerteKey", offerte.getOfferteUniqueIdentifier());
 		return templateModel;
 	}
 
@@ -198,4 +263,14 @@ public class TemplateEngine {
 	public void setConfigLoader(ConfigurationLoader configLoader) {
 		this.configLoader = configLoader;
 	}
+
+	public PriceCalculationToHtmlConverter getPriceCalculationToHtmlConverter() {
+		return priceCalculationToHtmlConverter;
+	}
+
+	public void setPriceCalculationToHtmlConverter(
+			PriceCalculationToHtmlConverter priceCalculationToHtmlConverter) {
+		this.priceCalculationToHtmlConverter = priceCalculationToHtmlConverter;
+	}
+
 }

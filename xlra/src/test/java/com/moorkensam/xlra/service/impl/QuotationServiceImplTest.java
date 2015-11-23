@@ -20,8 +20,7 @@ import com.moorkensam.xlra.dao.QuotationQueryDAO;
 import com.moorkensam.xlra.dao.QuotationResultDAO;
 import com.moorkensam.xlra.dao.impl.PriceCalculationDAOImpl;
 import com.moorkensam.xlra.dto.OfferteMailDTO;
-import com.moorkensam.xlra.dto.PriceResultDTO;
-import com.moorkensam.xlra.mapper.OfferteEmailParameterGenerator;
+import com.moorkensam.xlra.mapper.PriceCalculationToHtmlConverter;
 import com.moorkensam.xlra.mapper.OfferteEmailToEmailResultMapper;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Customer;
@@ -47,7 +46,7 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 	private QuotationServiceImpl quotationService;
 
 	@Mock
-	private OfferteEmailParameterGenerator mapper;
+	private PriceCalculationToHtmlConverter mapper;
 
 	private PriceCalculation priceDTO;
 
@@ -85,7 +84,6 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 
 	private QuotationQuery query;
 
-	private PriceResultDTO resultDTO;
 
 	@Before
 	public void init() {
@@ -94,7 +92,6 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 		query.getCustomer().setEmail("test@test.com");
 		query.setCountry(new Country());
 		quotationService = new QuotationServiceImpl();
-		resultDTO = new PriceResultDTO();
 		priceDTO = new PriceCalculation();
 		priceDTO.setAppliedOperations(new ArrayList<TranslationKey>());
 		template = new MailTemplate();

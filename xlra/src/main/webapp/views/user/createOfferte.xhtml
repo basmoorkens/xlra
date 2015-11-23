@@ -76,11 +76,13 @@
 
 
 					<h:outputText value="Quantity:" />
-					<p:inputText required="true" style="width:100%;"
+					<p:inputText required="true"
+						requiredMessage="Quantity is required!" style="width:100%;"
 						value="#{createQuotationController.quotationQuery.quantity}" />
 
 					<h:outputText value="Postal code: " />
 					<p:inputText required="true" style="width:100%;"
+						requiredMessage="Postal code is required!"
 						value="#{createQuotationController.quotationQuery.postalCode}" />
 
 					<h:outputText value="Address surcharge:" />

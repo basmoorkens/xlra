@@ -13,8 +13,7 @@ import org.apache.logging.log4j.Logger;
 import com.moorkensam.xlra.dao.EmailTemplateDAO;
 import com.moorkensam.xlra.dto.MailTemplateDTO;
 import com.moorkensam.xlra.dto.OfferteMailDTO;
-import com.moorkensam.xlra.dto.PriceResultDTO;
-import com.moorkensam.xlra.mapper.OfferteEmailParameterGenerator;
+import com.moorkensam.xlra.mapper.PriceCalculationToHtmlConverter;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.error.TemplatingException;
@@ -30,16 +29,16 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 	@Inject
 	private EmailTemplateDAO mailTemplateDAO;
 
-	private OfferteEmailParameterGenerator offerteEmailParameterGenerator;
+	private PriceCalculationToHtmlConverter offerteEmailParameterGenerator;
 
-	@Inject
-	private TemplateEngine templateEngine;
+	private TemplateParseService templateEngine;
 
 	private final static Logger logger = LogManager.getLogger();
 
 	@PostConstruct
 	public void init() {
-		offerteEmailParameterGenerator = new OfferteEmailParameterGenerator();
+		offerteEmailParameterGenerator = new PriceCalculationToHtmlConverter();
+		templateEngine = TemplateParseService.getInstance();
 	}
 
 	@Override
@@ -69,18 +68,15 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 	public void initializeOfferteEmail(QuotationResult result,
 			OfferteMailDTO dto, RateFile rf, PriceCalculation priceDTO)
 			throws TemplatingException, RateFileException {
-		PriceResultDTO resultDTO = new PriceResultDTO();
-		getOfferteEmailParameterGenerator().fillInParameters(priceDTO,
-				resultDTO, result.getOfferteUniqueIdentifier());
+		String fullDetailAsHtml = getOfferteEmailParameterGenerator()
+				.generateHtmlFullDetailCalculation(priceDTO,
+						result.getOfferteUniqueIdentifier());
 		try {
 			MailTemplate template = getMailTemplateDAO()
 					.getMailTemplateForLanguage(
 							result.getQuery().getResultLanguage());
-			Map<String, Object> templateParameters = templateEngine
-					.createOfferteEmailTemplateParams(result.getQuery(),
-							resultDTO);
 			String emailMessage = templateEngine.parseOfferteEmailTemplate(
-					template.getTemplate(), templateParameters);
+					template.getTemplate(), result, fullDetailAsHtml);
 			dto.setAddress(result.getQuery().getCustomer().getEmail());
 			dto.setSubject(template.getSubject());
 			dto.setContent(emailMessage);
@@ -94,12 +90,12 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 
 	}
 
-	public OfferteEmailParameterGenerator getOfferteEmailParameterGenerator() {
+	public PriceCalculationToHtmlConverter getOfferteEmailParameterGenerator() {
 		return offerteEmailParameterGenerator;
 	}
 
 	public void setOfferteEmailParameterGenerator(
-			OfferteEmailParameterGenerator offerteEmailParameterGenerator) {
+			PriceCalculationToHtmlConverter offerteEmailParameterGenerator) {
 		this.offerteEmailParameterGenerator = offerteEmailParameterGenerator;
 	}
 
@@ -111,11 +107,11 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 		this.mailTemplateDAO = mailTemplateDAO;
 	}
 
-	public TemplateEngine getTemplateEngine() {
+	public TemplateParseService getTemplateEngine() {
 		return templateEngine;
 	}
 
-	public void setTemplateEngine(TemplateEngine templateEngine) {
+	public void setTemplateEngine(TemplateParseService templateEngine) {
 		this.templateEngine = templateEngine;
 	}
 
