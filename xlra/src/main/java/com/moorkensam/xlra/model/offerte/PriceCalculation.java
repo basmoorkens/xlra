@@ -156,8 +156,8 @@ public class PriceCalculation extends BaseEntity {
 			addToFinalPrice(getResultingPriceSurcharge());
 			getAppliedOperations().add(TranslationKey.ADR_SURCHARGE);
 		}
-
-		setFinalPrice(CalcUtil.roundBigDecimal(getFinalPrice()));
+		CalcUtil calcUtil = CalcUtil.getInstance();
+		setFinalPrice(calcUtil.roundBigDecimal(getFinalPrice()));
 	}
 
 }

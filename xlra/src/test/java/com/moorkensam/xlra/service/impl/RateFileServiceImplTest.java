@@ -108,24 +108,6 @@ public class RateFileServiceImplTest extends UnitilsJUnit4 {
 	}
 
 	@Test
-	public void testfetchFullRateFilesAndApplyRaise() {
-		rateFileServiceImpl.fetchFullRateFiles(Arrays.asList(rateFile));
-		rateFileDAOMock.assertInvoked().getFullRateFile(rateFile.getId());
-	}
-
-	@Test
-	public void testraiseRateFiles() {
-		rateFileServiceImpl.raiseRateFiles(new BigDecimal(1.1d),
-				Arrays.asList(rateFile), RateOperation.RAISE);
-		BigDecimal result = new BigDecimal(110.00d);
-		BigDecimal r2 = result.setScale(2, RoundingMode.HALF_UP);
-		BigDecimal result2 = new BigDecimal(220.00d);
-		BigDecimal r3 = result2.setScale(2, RoundingMode.HALF_UP);
-		Assert.assertEquals(r2, rateFile.getRateLines().get(0).getValue());
-		Assert.assertEquals(r3, rateFile.getRateLines().get(2).getValue());
-	}
-
-	@Test
 	public void testCreateRateFile() {
 		rateFileServiceImpl.createRateFile(rateFile);
 		Assert.assertNotNull(rateFile.getZones().get(0)

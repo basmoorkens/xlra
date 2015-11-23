@@ -42,6 +42,8 @@ public class CalculationServiceTest extends UnitilsJUnit4 {
 	@Mock
 	private CurrencyService currencyService;
 
+	private CalcUtil calcUtil;
+
 	@Mock
 	private ConfigurationDao configurationDAO;
 
@@ -68,6 +70,8 @@ public class CalculationServiceTest extends UnitilsJUnit4 {
 		adrsurchargeCondition = new Condition();
 		adrsurchargeCondition.setValue("20");
 		adrsurchargeCondition.setConditionKey(TranslationKey.ADR_SURCHARGE);
+		calcUtil = CalcUtil.getInstance();
+		calcService.setCalcUtil(calcUtil);
 	}
 
 	@Test
@@ -187,18 +191,18 @@ public class CalculationServiceTest extends UnitilsJUnit4 {
 		calcService.calculatePriceAccordingToConditions(priceDTO, country,
 				Arrays.asList(adrCondition, adrMinCondition, importCondition,
 						expoCondition), query);
-
-		Assert.assertEquals(CalcUtil.roundBigDecimal(new BigDecimal(10.00d)),
+		CalcUtil calcUtil = CalcUtil.getInstance();
+		Assert.assertEquals(calcUtil.roundBigDecimal(new BigDecimal(10.00d)),
 				priceDTO.getChfPrice());
-		Assert.assertEquals(CalcUtil.roundBigDecimal(new BigDecimal(10.00d)),
+		Assert.assertEquals(calcUtil.roundBigDecimal(new BigDecimal(10.00d)),
 				priceDTO.getDieselPrice());
-		Assert.assertEquals(CalcUtil.roundBigDecimal(new BigDecimal(10.00d)),
+		Assert.assertEquals(calcUtil.roundBigDecimal(new BigDecimal(10.00d)),
 				priceDTO.getCalculatedAdrSurcharge());
-		Assert.assertEquals(CalcUtil.roundBigDecimal(new BigDecimal(50.00d)),
+		Assert.assertEquals(calcUtil.roundBigDecimal(new BigDecimal(50.00d)),
 				priceDTO.getAdrSurchargeMinimum());
-		Assert.assertEquals(CalcUtil.roundBigDecimal(new BigDecimal(100.00d)),
+		Assert.assertEquals(calcUtil.roundBigDecimal(new BigDecimal(100.00d)),
 				priceDTO.getImportFormalities());
-		Assert.assertEquals(CalcUtil.roundBigDecimal(new BigDecimal(100.00d)),
+		Assert.assertEquals(calcUtil.roundBigDecimal(new BigDecimal(100.00d)),
 				priceDTO.getExportFormalities());
 	}
 }

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -33,6 +34,13 @@ public class CalculationServiceImpl implements CalculationService {
 
 	@Inject
 	private ConfigurationDao configurationDao;
+
+	private CalcUtil calcUtil;
+
+	@PostConstruct
+	public void init() {
+		setCalcUtil(CalcUtil.getInstance());
+	}
 
 	@Override
 	/**
@@ -75,13 +83,12 @@ public class CalculationServiceImpl implements CalculationService {
 		priceDTO.calculateTotalPrice();
 	}
 
-
 	protected void calculateExportFormality(PriceCalculation priceDTO,
 			Condition condition) throws RateFileException {
 		try {
 			BigDecimal exportFormalities = new BigDecimal(
 					Double.parseDouble(condition.getValue()));
-			exportFormalities = CalcUtil.roundBigDecimal(exportFormalities);
+			exportFormalities = getCalcUtil().roundBigDecimal(exportFormalities);
 			priceDTO.setExportFormalities(exportFormalities);
 		} catch (NumberFormatException exc) {
 			throw new RateFileException("Invalid value for "
@@ -94,7 +101,7 @@ public class CalculationServiceImpl implements CalculationService {
 		try {
 			BigDecimal importFormalities = new BigDecimal(
 					Double.parseDouble(condition.getValue()));
-			importFormalities = CalcUtil.roundBigDecimal(importFormalities);
+			importFormalities = getCalcUtil().roundBigDecimal(importFormalities);
 			priceDTO.setImportFormalities(importFormalities);
 		} catch (NumberFormatException exc) {
 			throw new RateFileException("Invalid value for "
@@ -105,7 +112,7 @@ public class CalculationServiceImpl implements CalculationService {
 	protected void calculateAddressSurchargeMinimum(PriceCalculation priceDTO,
 			Condition condition) throws RateFileException {
 		try {
-			priceDTO.setAdrSurchargeMinimum(CalcUtil
+			priceDTO.setAdrSurchargeMinimum(getCalcUtil()
 					.roundBigDecimal(new BigDecimal(Double
 							.parseDouble(condition.getValue()))));
 		} catch (NumberFormatException exc) {
@@ -145,12 +152,12 @@ public class CalculationServiceImpl implements CalculationService {
 	protected void calculateAddressSurcharge(PriceCalculation priceDTO,
 			Condition condition) throws RateFileException {
 		try {
-			BigDecimal multiplier = CalcUtil
+			BigDecimal multiplier = getCalcUtil()
 					.convertPercentageToBaseMultiplier(Double
 							.parseDouble(condition.getValue()));
 			BigDecimal result = new BigDecimal(priceDTO.getBasePrice()
 					.doubleValue() * multiplier.doubleValue());
-			result = CalcUtil.roundBigDecimal(result);
+			result = getCalcUtil().roundBigDecimal(result);
 			priceDTO.setCalculatedAdrSurcharge(result);
 		} catch (NumberFormatException exc) {
 			throw new RateFileException("Invalid value for "
@@ -162,12 +169,12 @@ public class CalculationServiceImpl implements CalculationService {
 			Configuration config) throws RateFileException {
 		CurrencyRate chfRate = getCurrencyService().getChfRateForCurrentPrice(
 				config.getCurrentChfValue());
-		BigDecimal multiplier = CalcUtil
+		BigDecimal multiplier = getCalcUtil()
 				.convertPercentageToBaseMultiplier(chfRate
 						.getSurchargePercentage());
 		BigDecimal result = new BigDecimal(priceDTO.getBasePrice()
 				.doubleValue() * multiplier.doubleValue());
-		result = CalcUtil.roundBigDecimal(result);
+		result = getCalcUtil().roundBigDecimal(result);
 		priceDTO.setChfPrice(result);
 	}
 
@@ -187,12 +194,12 @@ public class CalculationServiceImpl implements CalculationService {
 			Configuration config) throws RateFileException {
 		DieselRate dieselRate = getDieselService()
 				.getDieselRateForCurrentPrice(config.getCurrentDieselPrice());
-		BigDecimal multiplier = CalcUtil
+		BigDecimal multiplier = getCalcUtil()
 				.convertPercentageToBaseMultiplier(dieselRate
 						.getSurchargePercentage());
 		BigDecimal result = new BigDecimal(priceDTO.getBasePrice()
 				.doubleValue() * multiplier.doubleValue());
-		result = CalcUtil.roundBigDecimal(result);
+		result = getCalcUtil().roundBigDecimal(result);
 		priceDTO.setDieselPrice(result);
 	}
 
@@ -218,5 +225,13 @@ public class CalculationServiceImpl implements CalculationService {
 
 	public void setConfigurationDao(ConfigurationDao configurationDao) {
 		this.configurationDao = configurationDao;
+	}
+
+	public CalcUtil getCalcUtil() {
+		return calcUtil;
+	}
+
+	public void setCalcUtil(CalcUtil calcUtil) {
+		this.calcUtil = calcUtil;
 	}
 }

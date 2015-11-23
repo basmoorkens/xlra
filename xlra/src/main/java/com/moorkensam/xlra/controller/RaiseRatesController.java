@@ -14,6 +14,7 @@ import org.primefaces.model.DualListModel;
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.configuration.RaiseRatesRecord;
 import com.moorkensam.xlra.model.rate.RateFile;
+import com.moorkensam.xlra.service.RaiseRateFileService;
 import com.moorkensam.xlra.service.RateFileService;
 
 @ManagedBean
@@ -22,6 +23,9 @@ public class RaiseRatesController {
 
 	@Inject
 	private RateFileService rateFileService;
+
+	@Inject
+	private RaiseRateFileService raiseRatesService;
 
 	private List<RateFile> allRateFiles;
 
@@ -48,7 +52,8 @@ public class RaiseRatesController {
 	}
 
 	private void refreshLogs() {
-		logRecords = rateFileService.getRaiseRatesLogRecordsThatAreNotUndone();
+		logRecords = raiseRatesService
+				.getRaiseRatesLogRecordsThatAreNotUndone();
 	}
 
 	public String onFlowProcess(FlowEvent event) {
@@ -56,13 +61,13 @@ public class RaiseRatesController {
 	}
 
 	public void raiseRates() {
-		rateFileService.raiseRateFileRateLinesWithPercentage(
+		raiseRatesService.raiseRateFileRateLinesWithPercentage(
 				rateFiles.getTarget(), percentage);
 		MessageUtil.addMessage("Rates raised", "Succesfully raised rates for");
 	}
 
 	public void undoLatestRaiseRates() {
-		rateFileService.undoLatestRatesRaise();
+		raiseRatesService.undoLatestRatesRaise();
 		refreshLogs();
 		MessageUtil.addMessage("Rates raised",
 				"Succesfully undid latest rates raise.");

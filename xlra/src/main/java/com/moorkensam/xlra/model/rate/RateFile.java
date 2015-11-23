@@ -246,12 +246,13 @@ public class RateFile extends BaseEntity {
 
 	public RateLine getRateLineForQuantityAndPostalCode(double quantity,
 			String postalCode) throws RateFileException {
+		CalcUtil calcUtil = CalcUtil.getInstance();
 		BigDecimal quantityBd = new BigDecimal(quantity);
-		quantityBd = CalcUtil.roundBigDecimal(quantityBd);
+		quantityBd = calcUtil.roundBigDecimal(quantityBd);
 		if (rateLines != null) {
 			List<RateLine> rlsWithCorrectQuantity = new ArrayList<RateLine>();
 			for (RateLine rl : getRateLines()) {
-				BigDecimal roundBigDecimal = CalcUtil
+				BigDecimal roundBigDecimal = calcUtil
 						.roundBigDecimal(new BigDecimal(rl.getMeasurement()));
 				if (roundBigDecimal.doubleValue() == quantityBd.doubleValue()) {
 					rlsWithCorrectQuantity.add(rl);
