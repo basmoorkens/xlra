@@ -6,11 +6,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 
-import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
-import org.unitils.easymock.annotation.Mock;
 
 import com.itextpdf.text.DocumentException;
 import com.moorkensam.xlra.model.configuration.Language;
@@ -22,7 +20,6 @@ import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Kind;
 import com.moorkensam.xlra.model.rate.Measurement;
 import com.moorkensam.xlra.model.translation.TranslationKey;
-import com.moorkensam.xlra.service.PdfService;
 import com.moorkensam.xlra.service.util.ConfigurationLoader;
 
 public class PdfServiceTest extends UnitilsJUnit4 {

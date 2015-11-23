@@ -75,7 +75,6 @@ public class RateFileServiceTest extends UnitilsJUnit4 {
 		RateFile result = rateFileService.getRateFileForQuery(query);
 	}
 
-
 	@Test
 	public void deleteZone() {
 		Zone zone = new Zone();
@@ -112,5 +111,35 @@ public class RateFileServiceTest extends UnitilsJUnit4 {
 				.getCopyOfRateFileForFilter(new RateFileSearchFilter());
 		Assert.assertNotNull(rs);
 		Assert.assertEquals("test", rs.getName());
+	}
+
+	@Test
+	public void testGetRateFileWithoutLazyLoda() {
+		RateFile rf1 = new RateFile();
+		rf1.setId(1l);
+		rf1.setName("bla");
+		RateFile rf2 = new RateFile();
+		rf2.setId(2l);
+
+		EasyMock.expect(rfDao.getAllRateFiles()).andReturn(
+				Arrays.asList(rf1, rf2));
+		EasyMockUnitils.replay();
+		RateFile result = rateFileService.getRateFileWithoutLazyLoad(1l);
+		Assert.assertNotNull(result);
+		Assert.assertEquals("bla", result.getName());
+	}
+
+	@Test
+	public void testGetRateFileWithoutLazyLodaNotFound() {
+		RateFile rf1 = new RateFile();
+		rf1.setId(1l);
+		RateFile rf2 = new RateFile();
+		rf2.setId(2l);
+
+		EasyMock.expect(rfDao.getAllRateFiles()).andReturn(
+				Arrays.asList(rf1, rf2));
+		EasyMockUnitils.replay();
+		RateFile result = rateFileService.getRateFileWithoutLazyLoad(3l);
+		Assert.assertNull(result);
 	}
 }

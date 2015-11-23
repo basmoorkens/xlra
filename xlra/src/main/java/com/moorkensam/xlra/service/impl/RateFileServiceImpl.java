@@ -211,7 +211,6 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 
 	@Override
 	public RateFile getRateFileWithoutLazyLoad(Long id) {
-		logger.info("Fetching ratefiles and finding in memory");
 		List<RateFile> rfs = getRateFileDAO().getAllRateFiles();
 		for (RateFile rf : rfs) {
 			if (rf.getId() == id) {
@@ -223,7 +222,8 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 
 	@Override
 	public RateFile getCopyOfRateFileForFilter(RateFileSearchFilter filter) {
-		List<RateFile> rateFiles = getRateFileDAO().getRateFilesForFilter(filter);
+		List<RateFile> rateFiles = getRateFileDAO().getRateFilesForFilter(
+				filter);
 		if (rateFiles.isEmpty()) {
 			return null;
 		}

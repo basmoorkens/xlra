@@ -140,4 +140,6 @@ public class RateFileServiceImplTest extends UnitilsJUnit4 {
 				.getNumericalPostalCodes().get(0), new Interval("1000", "2000"));
 		Assert.assertNull(rateFile.getZones().get(0).getNumericalPostalCodes());
 	}
+
 }
+
