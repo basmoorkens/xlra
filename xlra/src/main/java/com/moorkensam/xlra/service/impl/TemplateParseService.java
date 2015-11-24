@@ -115,7 +115,7 @@ public class TemplateParseService {
 
 	public String parseOffertePdf(QuotationResult offerte, Language language)
 			throws TemplatingException {
-		String templateName = "templates/offertepdf_" + language + ".ftl";
+		String templateName = "templates/offertepdf.ftl";
 		StringWriter writer = new StringWriter();
 		Map<String, Object> parameters = createOffertePdfParameterMap(offerte,
 				language);

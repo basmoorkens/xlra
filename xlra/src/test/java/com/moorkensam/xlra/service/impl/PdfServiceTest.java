@@ -54,6 +54,7 @@ public class PdfServiceTest extends UnitilsJUnit4 {
 		query.setCountry(new Country());
 		query.getCountry().setNames(new HashMap<Language, String>());
 		query.getCountry().setDutchName("Belgie");
+		query.getCountry().setEnglishName("Belgium");
 		query.setPostalCode("2222");
 		query.setQuantity(10d);
 		query.setMeasurement(Measurement.PALET);
@@ -78,7 +79,7 @@ public class PdfServiceTest extends UnitilsJUnit4 {
 	@Test
 	public void testGeneratePdf() throws FileNotFoundException,
 			DocumentException, TemplatingException {
-		pdfService.generateOffertePdf(offerte, offerteLanguage);
+		pdfService.generateOffertePdf(offerte, Language.EN);
 	}
 
 }
