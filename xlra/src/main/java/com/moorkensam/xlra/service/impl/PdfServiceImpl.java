@@ -41,13 +41,7 @@ public class PdfServiceImpl implements PdfService {
 		PdfWriter pdfWriter = PdfWriter.getInstance(document,
 				new FileOutputStream("test.pdf"));
 		document.open();
-		document.addAuthor(configLoader
-				.getProperty(ConfigurationLoader.PDF_AUTHOR));
-		document.addCreator(configLoader
-				.getProperty(ConfigurationLoader.PDF_AUTHOR));
-		document.addCreationDate();
-		document.addTitle(configLoader
-				.getProperty(ConfigurationLoader.PDF_TITLE_PREFIX));
+		fillInHeaderProperties(document);
 		XMLWorkerHelper worker = XMLWorkerHelper.getInstance();
 		String pdfBody = templateParseService
 				.parseOffertePdf(offerte, language);
@@ -59,6 +53,16 @@ public class PdfServiceImpl implements PdfService {
 			logger.error("Error creating inputstream from pdfbod text", e);
 		}
 		System.err.println("generated somethign..");
+	}
+
+	private void fillInHeaderProperties(Document document) {
+		document.addAuthor(configLoader
+				.getProperty(ConfigurationLoader.PDF_AUTHOR));
+		document.addCreator(configLoader
+				.getProperty(ConfigurationLoader.PDF_AUTHOR));
+		document.addCreationDate();
+		document.addTitle(configLoader
+				.getProperty(ConfigurationLoader.PDF_TITLE_PREFIX));
 	}
 
 	public ConfigurationLoader getConfigLoader() {

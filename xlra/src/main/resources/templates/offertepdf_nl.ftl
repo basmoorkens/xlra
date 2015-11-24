@@ -1,10 +1,10 @@
-<h1>Offerte aanvraag</h1>
+<h1>${pdf.title}</h1>
 
-<h2>Uw aanvraag</h2>
+<h2>${pdf.request.title}</h2>
 <table>
 	<tr>
 		<td>
-			Datum aanvraag:
+			${pdf.request.date}
 		</td>
 		<td>
 			${offerteDate?date}
@@ -12,7 +12,7 @@
 	</tr>
 	<tr>
 		<td>
-			Land aanvraag:
+			${pdf.request.country}
 		</td>
 		<td>
 			${country}
@@ -20,7 +20,7 @@
 	</tr>
 	<tr>
 		<td>
-			Postcode: 
+			${pdf.request.postalcode}
 		</td>
 		<td>
 			${postalCode}
@@ -28,7 +28,7 @@
 	</tr>
 	<tr>
 		<td>
-			Hoeveelheid:
+			${pdf.request.quantity}
 		</td>
 		<td>
 			${quantityAndMeasurement}
@@ -36,7 +36,7 @@
 	</tr>
 	<tr>
 		<td>
-			Transport type:
+			${pdf.request.transporttype}
 		</td>
 		<td>
 			${transportType}
@@ -44,6 +44,6 @@
 	</tr>
 </table>
 
-<h2>Extra logistics offerte</h2>
+<h2>${pdf.offerte.title}</h2>
 ${detailCalculation}
 

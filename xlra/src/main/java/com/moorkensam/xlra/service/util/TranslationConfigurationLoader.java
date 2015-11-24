@@ -31,11 +31,15 @@ public class TranslationConfigurationLoader {
 		}
 	}
 
-	public TranslationConfigurationLoader getInstance() {
+	public static TranslationConfigurationLoader getInstance() {
 		if (instance == null) {
 			instance = new TranslationConfigurationLoader();
 		}
 		return instance;
+	}
+
+	public String getProperty(String propertyToFind, Language l) {
+		return i8nProperties.get(l).getProperty(propertyToFind);
 	}
 
 	public void reloadProperties() {
@@ -46,9 +50,9 @@ public class TranslationConfigurationLoader {
 		for (Language l : i8nProperties.keySet()) {
 			try {
 				Properties p = i8nProperties.get(l);
+				String fileName = "/translations_" + l + ".properties";
 				InputStream in = ConfigurationLoader.class
-						.getResourceAsStream("/translations_" + l
-								+ ".properties");
+						.getResourceAsStream(fileName.toLowerCase());
 				p.load(in);
 				in.close();
 			} catch (IOException e) {

@@ -15,6 +15,7 @@ import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.util.ConfigurationLoader;
+import com.moorkensam.xlra.service.util.TranslationConfigurationLoader;
 
 import freemarker.cache.StringTemplateLoader;
 import freemarker.core.ParseException;
@@ -41,6 +42,8 @@ public class TemplateParseService {
 
 	private ConfigurationLoader configLoader;
 
+	private TranslationConfigurationLoader translationLoader;
+
 	private PriceCalculationToHtmlConverter priceCalculationToHtmlConverter;
 
 	private void inializeEngine() {
@@ -48,6 +51,7 @@ public class TemplateParseService {
 		setConfiguration(new Configuration());
 		setConfigLoader(ConfigurationLoader.getInstance());
 		priceCalculationToHtmlConverter = new PriceCalculationToHtmlConverter();
+		translationLoader = TranslationConfigurationLoader.getInstance();
 	}
 
 	private static TemplateParseService instance;
@@ -145,7 +149,29 @@ public class TemplateParseService {
 				.generateHtmlFullDetailCalculation(offerte.getCalculation(),
 						offerte.getOfferteUniqueIdentifier());
 		parameterMap.put("detailCalculation", fullDetailAsHtml);
+		fillInOfferteEmailTranslations(parameterMap, language);
 		return parameterMap;
+	}
+
+	protected void fillInOfferteEmailTranslations(
+			Map<String, Object> parameterMap, Language language) {
+		parameterMap.put("pdf.title",
+				translationLoader.getProperty("pdf.title", language));
+		parameterMap.put("pdf.request.date",
+				translationLoader.getProperty("pdf.request.date", language));
+		parameterMap.put("pdf.request.country",
+				translationLoader.getProperty("pdf.request.country", language));
+		parameterMap.put("pdf.request.postalcode", translationLoader
+				.getProperty("pdf.request.postalcode", language));
+		parameterMap
+				.put("pdf.request.quantity", translationLoader.getProperty(
+						"pdf.request.quantity", language));
+		parameterMap.put("pdf.request.transporttype", translationLoader
+				.getProperty("pdf.request.transporttype", language));
+		parameterMap.put("pdf.request.title",
+				translationLoader.getProperty("pdf.request.title", language));
+		parameterMap.put("pdf.offerte.title",
+				translationLoader.getProperty("pdf.offerte.title", language));
 	}
 
 	public String parseUserCreatedTemplate(User user)
@@ -271,6 +297,15 @@ public class TemplateParseService {
 	public void setPriceCalculationToHtmlConverter(
 			PriceCalculationToHtmlConverter priceCalculationToHtmlConverter) {
 		this.priceCalculationToHtmlConverter = priceCalculationToHtmlConverter;
+	}
+
+	public TranslationConfigurationLoader getTranslationLoader() {
+		return translationLoader;
+	}
+
+	public void setTranslationLoader(
+			TranslationConfigurationLoader translationLoader) {
+		this.translationLoader = translationLoader;
 	}
 
 }
