@@ -21,6 +21,7 @@ import com.moorkensam.xlra.model.rate.Kind;
 import com.moorkensam.xlra.model.rate.Measurement;
 import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.util.ConfigurationLoader;
+import com.moorkensam.xlra.service.util.TranslationConfigurationLoader;
 
 public class PdfServiceTest extends UnitilsJUnit4 {
 
@@ -34,12 +35,16 @@ public class PdfServiceTest extends UnitilsJUnit4 {
 
 	private TemplateParseService templateParseService;
 
+	private TranslationConfigurationLoader translationLoader;
+
 	@Before
 	public void init() {
+		translationLoader = TranslationConfigurationLoader.getInstance();
 		configLoader = ConfigurationLoader.getInstance();
 		pdfService = new PdfServiceImpl();
 		offerte = new QuotationResult();
 		templateParseService = TemplateParseService.getInstance();
+		templateParseService.setTranslationLoader(translationLoader);
 		pdfService.setTemplateParseService(templateParseService);
 		pdfService.setConfigLoader(configLoader);
 		offerteLanguage = Language.NL;
