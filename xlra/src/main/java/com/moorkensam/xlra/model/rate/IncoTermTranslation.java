@@ -9,7 +9,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import com.moorkensam.xlra.model.BaseEntity;
-import com.moorkensam.xlra.model.Language;
+import com.moorkensam.xlra.model.configuration.Language;
 
 @Entity
 @Cacheable

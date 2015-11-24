@@ -1,7 +1,6 @@
 package com.moorkensam.xlra.dao.impl;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,18 +10,13 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
-import org.unitils.inject.annotation.InjectIntoByType;
 import org.unitils.inject.annotation.TestedObject;
-import org.unitils.mock.Mock;
 
-import com.moorkensam.xlra.dao.RateFileDAO;
 import com.moorkensam.xlra.model.configuration.Interval;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
-import com.moorkensam.xlra.model.rate.RateOperation;
 import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.rate.ZoneType;
-import com.moorkensam.xlra.service.impl.RateFileServiceImpl;
 
 public class RateFileDAOImplTest extends UnitilsJUnit4 {
 	@TestedObject
@@ -44,6 +38,7 @@ public class RateFileDAOImplTest extends UnitilsJUnit4 {
 
 	@Before
 	public void init() {
+		dao = new RateFileDAOImpl();
 		rateFile = new RateFile();
 		List<Double> measurements = new ArrayList<Double>();
 		measurements.add(100d);
@@ -101,28 +96,6 @@ public class RateFileDAOImplTest extends UnitilsJUnit4 {
 		rl5.setValue(new BigDecimal(260));
 		rateLines.add(rl5);
 		rateFile.setRateLines(rateLines);
-	}
-
-	@Test
-	public void testfillUpRateLineRelationalMap() {
-		dao.fillUpRateLineRelationalMap(rateFile);
-		Assert.assertEquals(2, rateFile.getRelationalRateLines().size());
-		Assert.assertEquals(rl, rateFile.getRelationalRateLines().get(0).get(0));
-		Assert.assertEquals(rl1, rateFile.getRelationalRateLines().get(0)
-				.get(1));
-		Assert.assertEquals(rl2, rateFile.getRelationalRateLines().get(0)
-				.get(2));
-		Assert.assertEquals(rl3, rateFile.getRelationalRateLines().get(1)
-				.get(0));
-		Assert.assertEquals(rl4, rateFile.getRelationalRateLines().get(1)
-				.get(1));
-		Assert.assertEquals(rl5, rateFile.getRelationalRateLines().get(1)
-				.get(2));
-	}
-
-	@Test
-	public void testFillUpRelationProperties() {
-		dao.fillUpRelationalProperties(rateFile);
 	}
 
 	@Test

@@ -1,10 +1,9 @@
 package com.moorkensam.xlra.dao.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Query;
 
 import org.apache.logging.log4j.LogManager;
@@ -13,14 +12,18 @@ import org.apache.logging.log4j.Logger;
 import com.moorkensam.xlra.dao.BaseDAO;
 import com.moorkensam.xlra.dao.RateFileDAO;
 import com.moorkensam.xlra.model.rate.RateFile;
+import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.rate.ZoneType;
-import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
 
 public class RateFileDAOImpl extends BaseDAO implements RateFileDAO {
 
 	private final static Logger logger = LogManager.getLogger();
+
+	@PostConstruct
+	public void init() {
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -150,54 +153,8 @@ public class RateFileDAOImpl extends BaseDAO implements RateFileDAO {
 				z.convertNumericalPostalCodeListToString();
 			}
 		}
-		fillUpRelationalProperties(rateFile);
-		fillUpRateLineRelationalMap(rateFile);
+		rateFile.fillUpRelationalProperties();
+		rateFile.fillUpRateLineRelationalMap();
 	}
 
-	/**
-	 * This method fetches the details for the ratelines of the ratefile. The
-	 * details fetched are the columns and measurements.
-	 * 
-	 * @param rateFile
-	 */
-	protected void fillUpRelationalProperties(RateFile rateFile) {
-		logger.debug("Filling in measurement rows & columnheaders for ratefile");
-		rateFile.setColumns(new ArrayList<String>());
-		for (Zone z : rateFile.getZones()) {
-			rateFile.getColumns().add(z.getAsColumnHeader());
-		}
-		List<Double> measurementRows = new ArrayList<Double>();
-		for (RateLine rl : rateFile.getRateLines()) {
-			if (!measurementRows.contains(rl.getMeasurement())) {
-				measurementRows.add(rl.getMeasurement());
-			}
-		}
-		Collections.sort(measurementRows);
-		rateFile.setMeasurementRows(measurementRows);
-
-	}
-
-	/**
-	 * Fills up the transient attribute relationRatelines of the ratefile
-	 * object. In order for this to work the columns and measurements have to be
-	 * set on the ratefile object.
-	 * 
-	 * @param rateFile
-	 */
-	protected void fillUpRateLineRelationalMap(RateFile rateFile) {
-		logger.info("Building relation rateline map for ratefile "
-				+ rateFile.getId());
-		List<List<RateLine>> relationRateLines = new ArrayList<List<RateLine>>();
-		for (Double i : rateFile.getMeasurementRows()) {
-			List<RateLine> rateLines = new ArrayList<RateLine>();
-			for (RateLine rl : rateFile.getRateLines()) {
-				if (rl.getMeasurement() == (i)) {
-					rateLines.add(rl);
-				}
-			}
-			Collections.sort(rateLines);
-			relationRateLines.add(rateLines);
-		}
-		rateFile.setRelationalRateLines(relationRateLines);
-	}
 }

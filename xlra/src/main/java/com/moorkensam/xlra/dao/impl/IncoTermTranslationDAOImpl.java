@@ -4,7 +4,7 @@ import javax.persistence.Query;
 
 import com.moorkensam.xlra.dao.BaseDAO;
 import com.moorkensam.xlra.dao.IncoTermTranslationDAO;
-import com.moorkensam.xlra.model.Language;
+import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.rate.IncoTermTranslation;
 import com.moorkensam.xlra.model.rate.IncoTermType;
 

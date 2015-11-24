@@ -9,7 +9,7 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.inject.Inject;
 
-import com.moorkensam.xlra.model.BaseCustomer;
+import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.service.CustomerService;
 
 @ManagedBean
@@ -27,7 +27,7 @@ public class CustomerConverter implements Converter {
 			} catch (NumberFormatException e) {
 				throw new ConverterException(new FacesMessage(
 						FacesMessage.SEVERITY_ERROR, "Conversion Error",
-						"Not a valid rate file."));
+						"Not a valid  customer."));
 			}
 		}
 		return null;
@@ -36,7 +36,7 @@ public class CustomerConverter implements Converter {
 	@Override
 	public String getAsString(FacesContext arg0, UIComponent arg1, Object object) {
 		if (object != null) {
-			BaseCustomer fc = (BaseCustomer) object;
+			Customer fc = (Customer) object;
 			return fc.getId() + "";
 		}
 		return null;

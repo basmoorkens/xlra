@@ -9,12 +9,12 @@ import org.apache.logging.log4j.Logger;
 
 import com.moorkensam.xlra.model.ExcelUploadUtilData;
 import com.moorkensam.xlra.model.RateLineExcelImportDTO;
-import com.moorkensam.xlra.model.configuration.TranslationKey;
 import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.rate.ZoneType;
+import com.moorkensam.xlra.model.translation.TranslationKey;
 
 /**
  * This class actualy maps our parsed excel data model to the application model.

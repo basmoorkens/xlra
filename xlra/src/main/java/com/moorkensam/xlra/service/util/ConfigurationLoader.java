@@ -13,6 +13,16 @@ public class ConfigurationLoader {
 
 	public final static String MAIL_SENDER = "email.from";
 
+	public final static String APPLICATION_PASSWORD_SETUP_URL = "application.password.setup.url";
+
+	public final static String APPLICATION_BASE_URL = "application.base.url";
+
+	public final static String PDF_GENERATION_PATH = "pdf.generate.path";
+
+	public final static String PDF_AUTHOR = "pdf.author";
+
+	public final static String PDF_TITLE_PREFIX = "pdf.title.prefix";
+
 	public static ConfigurationLoader instance;
 
 	private Properties properties;

@@ -7,16 +7,16 @@ import javax.persistence.Query;
 
 import com.moorkensam.xlra.dao.BaseDAO;
 import com.moorkensam.xlra.dao.TranslationDAO;
-import com.moorkensam.xlra.model.configuration.Translation;
-import com.moorkensam.xlra.model.configuration.TranslationKey;
+import com.moorkensam.xlra.model.translation.Translation;
+import com.moorkensam.xlra.model.translation.TranslationKey;
 
 public class TranslationDAOImpl extends BaseDAO implements TranslationDAO {
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public List<TranslationKey> getDistinctTranslationKeys() {
 		Query query = getEntityManager().createNamedQuery(
 				"Translation.findDistinctKeys");
-		@SuppressWarnings("unchecked")
 		List<Translation> translations = (List<Translation>) query
 				.getResultList();
 		List<TranslationKey> keys = new ArrayList<TranslationKey>();
@@ -33,7 +33,18 @@ public class TranslationDAOImpl extends BaseDAO implements TranslationDAO {
 	public List<Translation> getAllNonDeletedTranslations() {
 		Query query = getEntityManager().createNamedQuery(
 				"Translation.findAllNonDeleted");
-		return (List<Translation>) query.getResultList();
+		List<Translation> resultList = (List<Translation>) query
+				.getResultList();
+		lazyLoadTranslations(resultList);
+		return resultList;
+	}
+
+	private void lazyLoadTranslations(List<Translation> resultList) {
+		for (Translation t : resultList) {
+			t.getTranslationKeysTranslations().size();
+			t.getTranslations().size();
+		}
+
 	}
 
 	@Override

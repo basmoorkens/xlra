@@ -2,6 +2,7 @@ package com.moorkensam.xlra.model.rate;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.Cacheable;
@@ -19,10 +20,11 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.BatchSize;
+
 import com.moorkensam.xlra.model.BaseEntity;
-import com.moorkensam.xlra.model.FullCustomer;
-import com.moorkensam.xlra.model.Language;
 import com.moorkensam.xlra.model.configuration.Interval;
+import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.service.util.CalcUtil;
 
@@ -40,11 +42,12 @@ public class RateFile extends BaseEntity {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "rateFile", cascade = CascadeType.ALL, orphanRemoval = true)
+	@BatchSize(size = 5)
 	private List<Condition> conditions;
 
 	@OneToOne
 	@JoinColumn(name = "customerId")
-	private FullCustomer customer;
+	private Customer customer;
 
 	@Enumerated(EnumType.STRING)
 	private Kind kindOfRate;
@@ -57,9 +60,11 @@ public class RateFile extends BaseEntity {
 	private Country country;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "rateFile", cascade = CascadeType.ALL, orphanRemoval = true)
+	@BatchSize(size = 2)
 	private List<Zone> zones;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "rateFile", cascade = CascadeType.ALL, orphanRemoval = true)
+	@BatchSize(size = 10)
 	private List<RateLine> rateLines = new ArrayList<RateLine>();
 
 	@Enumerated(EnumType.STRING)
@@ -74,13 +79,20 @@ public class RateFile extends BaseEntity {
 	@Transient
 	private List<List<RateLine>> relationalRateLines;
 
+	public void addZone(Zone zone) {
+		if (zones == null) {
+			zones = new ArrayList<Zone>();
+		}
+		zones.add(zone);
+	}
+
 	private String name;
 
-	public FullCustomer getCustomer() {
+	public Customer getCustomer() {
 		return customer;
 	}
 
-	public void setCustomer(FullCustomer customer) {
+	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
 
@@ -160,36 +172,45 @@ public class RateFile extends BaseEntity {
 	public RateFile deepCopy() {
 		RateFile rf = new RateFile();
 		rf.setName(getName());
-		rf.setColumns(getColumns());
 		rf.setCountry(getCountry());
-		rf.setCustomer(getCustomer());
 		rf.setKindOfRate(getKindOfRate());
 		rf.setMeasurement(getMeasurement());
-		rf.setMeasurementRows(getMeasurementRows());
 		rf.setRateLines(new ArrayList<RateLine>());
-		for (RateLine rl : getRateLines()) {
-			RateLine deepCopy = rl.deepCopy();
-			deepCopy.setRateFile(rf);
-			rf.getRateLines().add(deepCopy);
-		}
-		List<List<RateLine>> relationRatelines = new ArrayList<List<RateLine>>();
-		for (List<RateLine> rateList : getRelationalRateLines()) {
-			List<RateLine> rls = new ArrayList<RateLine>();
-			for (RateLine rl : rateList) {
-				rls.add(rl);
-				rl.getZone().setRateFile(rf);
+		if (zones != null) {
+			for (Zone z : zones) {
+				Zone deepCopy = z.deepCopy();
+				deepCopy.setRateFile(rf);
+				rf.addZone(deepCopy);
 			}
-			relationRatelines.add(rls);
+		} else {
+			rf.setZones(new ArrayList<Zone>());
+		}
+
+		if (rateLines != null) {
+			for (RateLine rl : getRateLines()) {
+				RateLine deepCopy = rl.deepCopy();
+				deepCopy.setRateFile(rf);
+				Zone copiedZone = rf.getZoneForZoneName(deepCopy.getZone()
+						.getName());
+				deepCopy.setZone(copiedZone);
+
+				rf.getRateLines().add(deepCopy);
+			}
+		} else {
+			rf.setRateLines(new ArrayList<RateLine>());
 		}
 
 		rf.setConditions(new ArrayList<Condition>());
-		for (Condition c : conditions) {
-			Condition copy = c.deepCopy();
-			copy.setRateFile(rf);
-			rf.getConditions().add(copy);
+		if (conditions != null) {
+			for (Condition c : conditions) {
+				Condition copy = c.deepCopy();
+				copy.setRateFile(rf);
+				rf.getConditions().add(copy);
+			}
 		}
 
-		rf.setRelationalRateLines(relationRatelines);
+		rf.fillUpRelationalProperties();
+		rf.fillUpRateLineRelationalMap();
 		return rf;
 	}
 
@@ -225,12 +246,13 @@ public class RateFile extends BaseEntity {
 
 	public RateLine getRateLineForQuantityAndPostalCode(double quantity,
 			String postalCode) throws RateFileException {
+		CalcUtil calcUtil = CalcUtil.getInstance();
 		BigDecimal quantityBd = new BigDecimal(quantity);
-		quantityBd = CalcUtil.roundBigDecimal(quantityBd);
+		quantityBd = calcUtil.roundBigDecimal(quantityBd);
 		if (rateLines != null) {
 			List<RateLine> rlsWithCorrectQuantity = new ArrayList<RateLine>();
 			for (RateLine rl : getRateLines()) {
-				BigDecimal roundBigDecimal = CalcUtil
+				BigDecimal roundBigDecimal = calcUtil
 						.roundBigDecimal(new BigDecimal(rl.getMeasurement()));
 				if (roundBigDecimal.doubleValue() == quantityBd.doubleValue()) {
 					rlsWithCorrectQuantity.add(rl);
@@ -282,6 +304,50 @@ public class RateFile extends BaseEntity {
 
 	public void setTransportType(TransportType transportType) {
 		this.transportType = transportType;
+	}
+
+	/**
+	 * This method fetches the details for the ratelines of the ratefile. The
+	 * details fetched are the columns and measurements.
+	 * 
+	 * @param rateFile
+	 */
+	public void fillUpRelationalProperties() {
+		setColumns(new ArrayList<String>());
+		for (Zone z : getZones()) {
+			getColumns().add(z.getAsColumnHeader());
+		}
+		List<Double> measurementRows = new ArrayList<Double>();
+		for (RateLine rl : getRateLines()) {
+			if (!measurementRows.contains(rl.getMeasurement())) {
+				measurementRows.add(rl.getMeasurement());
+			}
+		}
+		Collections.sort(measurementRows);
+		setMeasurementRows(measurementRows);
+
+	}
+
+	/**
+	 * Fills up the transient attribute relationRatelines of the ratefile
+	 * object. In order for this to work the columns and measurements have to be
+	 * set on the ratefile object.
+	 * 
+	 * @param rateFile
+	 */
+	public void fillUpRateLineRelationalMap() {
+		List<List<RateLine>> relationRateLines = new ArrayList<List<RateLine>>();
+		for (Double i : getMeasurementRows()) {
+			List<RateLine> rateLines = new ArrayList<RateLine>();
+			for (RateLine rl : getRateLines()) {
+				if (rl.getMeasurement() == (i)) {
+					rateLines.add(rl);
+				}
+			}
+			Collections.sort(rateLines);
+			relationRateLines.add(rateLines);
+		}
+		setRelationalRateLines(relationRateLines);
 	}
 
 }

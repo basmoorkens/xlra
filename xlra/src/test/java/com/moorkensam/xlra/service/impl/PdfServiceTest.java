@@ -1,28 +1,79 @@
 package com.moorkensam.xlra.service.impl;
 
 import java.io.FileNotFoundException;
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
-import org.unitils.inject.annotation.TestedObject;
 
 import com.itextpdf.text.DocumentException;
-import com.moorkensam.xlra.service.PdfService;
+import com.moorkensam.xlra.model.configuration.Language;
+import com.moorkensam.xlra.model.error.TemplatingException;
+import com.moorkensam.xlra.model.offerte.PriceCalculation;
+import com.moorkensam.xlra.model.offerte.QuotationQuery;
+import com.moorkensam.xlra.model.offerte.QuotationResult;
+import com.moorkensam.xlra.model.rate.Country;
+import com.moorkensam.xlra.model.rate.Kind;
+import com.moorkensam.xlra.model.rate.Measurement;
+import com.moorkensam.xlra.model.translation.TranslationKey;
+import com.moorkensam.xlra.service.util.ConfigurationLoader;
 
 public class PdfServiceTest extends UnitilsJUnit4 {
 
-	private PdfService pdfService;
+	private PdfServiceImpl pdfService;
+
+	private QuotationResult offerte;
+
+	private Language offerteLanguage;
+
+	private ConfigurationLoader configLoader;
+
+	private TemplateParseService templateParseService;
 
 	@Before
 	public void init() {
+		configLoader = ConfigurationLoader.getInstance();
 		pdfService = new PdfServiceImpl();
+		offerte = new QuotationResult();
+		templateParseService = TemplateParseService.getInstance();
+		pdfService.setTemplateParseService(templateParseService);
+		pdfService.setConfigLoader(configLoader);
+		offerteLanguage = Language.NL;
+		QuotationQuery query = new QuotationQuery();
+		offerte.setQuery(query);
+		query.setQuotationDate(new Date());
+		query.setCountry(new Country());
+		query.getCountry().setNames(new HashMap<Language, String>());
+		query.getCountry().setDutchName("Belgie");
+		query.setPostalCode("2222");
+		query.setQuantity(10d);
+		query.setMeasurement(Measurement.PALET);
+		query.setKindOfRate(Kind.EXPRES);
+		PriceCalculation calculation = new PriceCalculation();
+		calculation.setAppliedOperations(Arrays.asList(
+				TranslationKey.DIESEL_SURCHARGE, TranslationKey.EXPORT_FORM,
+				TranslationKey.IMPORT_FORM, TranslationKey.CHF_SURCHARGE,
+				TranslationKey.ADR_SURCHARGE));
+		calculation.setBasePrice(new BigDecimal(100d));
+		calculation.setChfPrice(new BigDecimal(10d));
+		calculation.setAdrSurchargeMinimum(new BigDecimal(15d));
+		calculation.setCalculatedAdrSurcharge(new BigDecimal(20d));
+		calculation.setDieselPrice(new BigDecimal(10d));
+		calculation.setExportFormalities(new BigDecimal(10d));
+		calculation.setImportFormalities(new BigDecimal(10d));
+		calculation.calculateTotalPrice();
+		offerte.setCalculation(calculation);
+
 	}
 
 	@Test
 	public void testGeneratePdf() throws FileNotFoundException,
-			DocumentException {
-		pdfService.generatePdf();
+			DocumentException, TemplatingException {
+		pdfService.generateOffertePdf(offerte, offerteLanguage);
 	}
 
 }

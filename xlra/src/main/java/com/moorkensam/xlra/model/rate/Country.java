@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.model.rate;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.Cacheable;
@@ -9,6 +10,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.MapKeyEnumerated;
@@ -17,17 +19,17 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import com.moorkensam.xlra.model.BaseEntity;
-import com.moorkensam.xlra.model.Language;
+import com.moorkensam.xlra.model.configuration.Language;
 
 @Entity
 @Cacheable
 @Table(name = "country")
-@NamedQueries(@NamedQuery(name = "Country.findAll", query = "SELECT c FROM Country c WHERE c.deleted = false"))
+@NamedQueries(@NamedQuery(name = "Country.findAll", query = "SELECT c FROM Country c  WHERE c.deleted = false"))
 public class Country extends BaseEntity {
 
 	private static final long serialVersionUID = -5766329224119072846L;
 
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.EAGER)
 	@MapKeyColumn(name = "language")
 	@MapKeyEnumerated(EnumType.STRING)
 	@Column(name = "name")
@@ -83,6 +85,9 @@ public class Country extends BaseEntity {
 	}
 
 	public void buildEmptyLanguageMap() {
+		if (names == null) {
+			names = new HashMap<Language, String>();
+		}
 		for (Language l : Language.values()) {
 			names.put(l, "");
 		}

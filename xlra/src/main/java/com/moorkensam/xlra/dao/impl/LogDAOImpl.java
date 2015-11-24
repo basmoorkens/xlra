@@ -7,8 +7,8 @@ import javax.persistence.Query;
 
 import com.moorkensam.xlra.dao.BaseDAO;
 import com.moorkensam.xlra.dao.LogDAO;
-import com.moorkensam.xlra.model.RaiseRatesRecord;
 import com.moorkensam.xlra.model.configuration.LogRecord;
+import com.moorkensam.xlra.model.configuration.RaiseRatesRecord;
 
 public class LogDAOImpl extends BaseDAO implements LogDAO {
 

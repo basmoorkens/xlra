@@ -7,24 +7,29 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 
 import org.primefaces.event.CellEditEvent;
-import org.primefaces.event.FlowEvent;
+import org.primefaces.event.RowEditEvent;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.controller.util.RateUtil;
-import com.moorkensam.xlra.model.FullCustomer;
-import com.moorkensam.xlra.model.Language;
+import com.moorkensam.xlra.model.configuration.Language;
+import com.moorkensam.xlra.model.customer.Customer;
+import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.IncoTermType;
 import com.moorkensam.xlra.model.rate.Kind;
 import com.moorkensam.xlra.model.rate.Measurement;
 import com.moorkensam.xlra.model.rate.RateFile;
-import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
+import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
+import com.moorkensam.xlra.model.rate.TransportType;
+import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.CountryService;
 import com.moorkensam.xlra.service.CustomerService;
 import com.moorkensam.xlra.service.RateFileService;
+import com.moorkensam.xlra.service.util.TranslationUtil;
 
 @ViewScoped
 @ManagedBean
@@ -43,11 +48,13 @@ public class CreateRatesController {
 
 	private List<Measurement> measurements;
 
+	private TranslationKey keyToAdd;
+
 	private List<Kind> kindOfRates;
 
 	private RateFile rateFile;
 
-	private List<FullCustomer> fullCustomers;
+	private List<Customer> fullCustomers;
 
 	private RateFileSearchFilter filter;
 
@@ -56,6 +63,15 @@ public class CreateRatesController {
 	private boolean collapseRateLinesDetailGrid = false;
 
 	private boolean collapseConditionsDetailGrid = false;
+
+	/** Collapsed for panels of the create rates page */
+	private boolean collapseBasicInfoGrid = false;
+
+	private boolean collapseRateLineEditor = true;
+
+	private boolean collapseConditionsEditor = true;
+
+	private boolean collapseSummary = true;
 
 	@PostConstruct
 	public void init() {
@@ -67,23 +83,71 @@ public class CreateRatesController {
 		kindOfRates = Arrays.asList(Kind.values());
 	}
 
-	public String onFlowProcess(FlowEvent event) {
-		if (event.getNewStep().equals("rateLineEditor")) {
-			RateFile copiedFile = rateFileService
-					.getCopyOfRateFileForFilter(filter);
-			copiedFile.setCustomer(rateFile.getCustomer());
-			copiedFile.setName(rateFile.getName());
-			rateFile = copiedFile;
-		}
-		return event.getNewStep();
+	public void goToRateLineEditor() {
+		RateFile copiedFile = rateFileService
+				.getCopyOfRateFileForFilter(filter);
+		copiedFile.setCustomer(rateFile.getCustomer());
+		copiedFile.setName(rateFile.getName());
+		rateFile = copiedFile;
+		collapseBasicInfoGrid = true;
+		collapseRateLineEditor = false;
+		collapseConditionsEditor = true;
+		collapseSummary = true;
+	}
+
+	public void goToSummary() {
+
+		collapseBasicInfoGrid = true;
+		collapseRateLineEditor = true;
+		collapseConditionsEditor = true;
+		collapseSummary = false;
+	}
+
+	public void goToBasicInfo() {
+		collapseBasicInfoGrid = false;
+		collapseRateLineEditor = true;
+		collapseConditionsEditor = true;
+		collapseSummary = true;
+	}
+
+	public void goToConditionsEditor() {
+		collapseBasicInfoGrid = true;
+		collapseRateLineEditor = true;
+		collapseConditionsEditor = false;
+		collapseSummary = true;
 	}
 
 	public void onRateLineCellEdit(CellEditEvent event) {
 		RateUtil.onRateLineCellEdit(event);
 	}
 
-	public void onConditionCellEdit(CellEditEvent event) {
-		RateUtil.onConditionCellEdit(event);
+	public void onConditionRowEdit(RowEditEvent event) {
+		Condition condition = (Condition) event.getObject();
+		MessageUtil.addMessage(
+				"Condition updated",
+				"Updated " + condition.getConditionKey() + " to "
+						+ condition.getValue());
+	}
+
+	public void deleteCondition(Condition condition) {
+		MessageUtil.addMessage("condition removed", condition.getConditionKey()
+				+ " was successfully removed.");
+		rateFile.getConditions().remove(condition);
+		condition.setRateFile(null);
+	}
+
+	public List<TranslationKey> getAvailableTranslationKeysForSelectedRateFile() {
+		return TranslationUtil
+				.getAvailableTranslationKeysForSelectedRateFile(rateFile);
+	}
+
+	public void createConditionForSelectedTranslationKey(ActionEvent event) {
+		Condition c = new Condition();
+		c.setValue("");
+		c.setConditionKey(getKeyToAdd());
+		c.setRateFile(rateFile);
+		rateFile.getConditions().add(c);
+		setKeyToAdd(null);
 	}
 
 	public RateFileService getRateFileService() {
@@ -126,10 +190,10 @@ public class CreateRatesController {
 		this.kindOfRates = kindOfRates;
 	}
 
-	public List<FullCustomer> completeCustomerName(String input) {
-		List<FullCustomer> filteredCustomers = new ArrayList<FullCustomer>();
+	public List<Customer> completeCustomerName(String input) {
+		List<Customer> filteredCustomers = new ArrayList<Customer>();
 
-		for (FullCustomer fc : fullCustomers) {
+		for (Customer fc : fullCustomers) {
 			if (fc.getName().toLowerCase().contains(input.toLowerCase())) {
 				filteredCustomers.add(fc);
 			}
@@ -148,11 +212,11 @@ public class CreateRatesController {
 		return RateUtil.getLanguages();
 	}
 
-	public List<FullCustomer> getFullCustomers() {
+	public List<Customer> getFullCustomers() {
 		return fullCustomers;
 	}
 
-	public void setFullCustomers(List<FullCustomer> fullCustomers) {
+	public void setFullCustomers(List<Customer> fullCustomers) {
 		this.fullCustomers = fullCustomers;
 	}
 
@@ -190,7 +254,51 @@ public class CreateRatesController {
 		this.collapseConditionsDetailGrid = collapseConditionsDetailGrid;
 	}
 
+	public List<TransportType> getAllTransportTypes() {
+		return Arrays.asList(TransportType.values());
+	}
+
 	public List<IncoTermType> getIncoTermTypes() {
 		return RateUtil.getIncoTermTypes();
+	}
+
+	public boolean isCollapseRateLineEditor() {
+		return collapseRateLineEditor;
+	}
+
+	public void setCollapseRateLineEditor(boolean collapseRateLineEditor) {
+		this.collapseRateLineEditor = collapseRateLineEditor;
+	}
+
+	public boolean isCollapseBasicInfoGrid() {
+		return collapseBasicInfoGrid;
+	}
+
+	public void setCollapseBasicInfoGrid(boolean collapseBasicInfoGrid) {
+		this.collapseBasicInfoGrid = collapseBasicInfoGrid;
+	}
+
+	public boolean isCollapseConditionsEditor() {
+		return collapseConditionsEditor;
+	}
+
+	public void setCollapseConditionsEditor(boolean collapseConditionsEditor) {
+		this.collapseConditionsEditor = collapseConditionsEditor;
+	}
+
+	public boolean isCollapseSummary() {
+		return collapseSummary;
+	}
+
+	public void setCollapseSummary(boolean collapseSummary) {
+		this.collapseSummary = collapseSummary;
+	}
+
+	public TranslationKey getKeyToAdd() {
+		return keyToAdd;
+	}
+
+	public void setKeyToAdd(TranslationKey keyToAdd) {
+		this.keyToAdd = keyToAdd;
 	}
 }

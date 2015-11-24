@@ -1,6 +1,6 @@
 package com.moorkensam.xlra.dao;
 
-import com.moorkensam.xlra.model.Language;
+import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.rate.IncoTermTranslation;
 import com.moorkensam.xlra.model.rate.IncoTermType;
 

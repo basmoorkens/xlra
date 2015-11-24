@@ -8,7 +8,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.moorkensam.xlra.model.BaseEntity;
-import com.moorkensam.xlra.model.configuration.TranslationKey;
+import com.moorkensam.xlra.model.translation.TranslationKey;
 
 @Entity
 @Table(name = "conditions")
@@ -45,6 +45,7 @@ public class Condition extends BaseEntity {
 		Condition c = new Condition();
 		c.setValue(this.value);
 		c.setRateFile(this.rateFile);
+		c.setConditionKey(conditionKey);
 		return c;
 	}
 

@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/views/template.xhtml">
+	<ui:define name="title">
+		<h:outputText value="XLRA - User - Role management" />
+	</ui:define>
+	<ui:define name="pageTitle">
+		<h:outputText value="Role management" />
+	</ui:define>
+	<ui:define name="body">
+		<h:form id="rolesForm">
+			<p:growl showDetail="true" id="messages" sticky="false" />
+			<p:panel>
+				<p:dataTable emptyMessage="No roles found." id="rolesTable"
+					value="#{rolesController.allRoles}" var="role">
+					<p:column headerText="Name: " width="200">
+						<h:outputText value="#{role.name}" />
+					</p:column>
+					<p:column headerText="Permission list">
+						#{role.permissionsString}
+					</p:column>
+					<p:column width="200">
+						<p:commandButton value="Edit role"
+							update=":rolesForm :addRolesForm" style="width:120px;"
+							actionListener="#{rolesController.selectRoleForEdit(role)}" />
+					</p:column>
+				</p:dataTable>
+
+				<p:panel>
+					<p:commandButton actionListener="#{rolesController.setupNewRole}"
+						update=":rolesForm :addRolesForm" value="Create new role" />
+				</p:panel>
+			</p:panel>
+		</h:form>
+
+		<p:dialog  header="Create new role" widgetVar="addRoleDialog"
+			modal="true" height="650px" width="1024px" dynamic="true">
+			<h:form id="addRolesForm">
+				<p:growl showDetail="true" id="messages" sticky="false" />
+				<p:panel>
+					<p:panelGrid columns="2">
+						<h:outputText value="Name:" />
+						<p:inputText value="#{rolesController.selectedRole.name}"
+							size="85" />
+
+						<h:outputText value="Description:" />
+						<p:inputTextarea
+							value="#{rolesController.selectedRole.description}" cols="84"
+							rows="5" />
+
+						<h:outputText value="Permissions: " />
+						<p:pickList id="permissionsPicklist"
+							value="#{rolesController.permissions}" var="permission"
+							effect="bounce" itemValue="#{permission}"
+							itemLabel="#{permission.key}" converter="#{permissionConverter}"
+							style="width:100%;" responsive="true">
+
+							<f:facet name="sourceCaption">All available permissions</f:facet>
+							<f:facet name="targetCaption">Selected permissions</f:facet>
+
+							<p:column style="width:90%;">
+								<h:outputText value="#{permission.key}" />
+							</p:column>
+						</p:pickList>
+					</p:panelGrid>
+
+					<p:commandButton value="Save" style="margin-top:30px;"
+						update=":addRolesForm :rolesForm" ajax="true"
+						actionListener="#{rolesController.createOrUpdateRole}"
+						oncomplete="handleAddRolesRequest(xhr, status, args)" />
+				</p:panel>
+			</h:form>
+		</p:dialog>
+		<script type="text/javascript">
+			function handleAddRolesRequest(xhr, status, args) {
+				if (args.validationFailed) {
+					PF('addRoleDialog').jq.effect("shake", {
+						times : 5
+					}, 100);
+				} else {
+					PF('addRoleDialog').hide();
+				}
+			}
+		</script>
+	</ui:define>
+</ui:composition>
+</html>

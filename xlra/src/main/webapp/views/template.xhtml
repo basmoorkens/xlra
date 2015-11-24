@@ -1,3 +1,4 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
@@ -7,46 +8,110 @@
 	xmlns:p="http://primefaces.org/ui">
 <h:head>
 	<title><ui:insert name="title">Extra logistics Rates application</ui:insert></title>
-	<link type="text/css" rel="stylesheet" href="/xlra/css/main.css" />
+	<h:outputStylesheet library="css" name="main.css" />
 </h:head>
 <h:body>
+	<h3>Version: #{maven.version['com.moorkensam:xlra']}</h3>
+	<h:form>
+		<p:menubar>
+			<p:submenu
+				rendered="#{userSessionController.hasNonePermissions(['EDIT_RATEFILE', 'CREATE_RATEFILE', 'RAISE_RATES', 'VIEW_RATEFILE', 'EXCEL_UPLOAD'])}"
+				label="Rates" icon="ui-icon-document">
+				<p:menuitem
+					rendered="#{userSessionController.hasPermission('CREATE_RATEFILE')}"
+					value="Create ratefile"
+					url="/views/admin/rate/createRateFile.xhtml" />
+				<p:menuitem
+					rendered="#{userSessionController.hasPermission('EDIT_RATEFILE')}"
+					value="Manage rates" url="/views/admin/rate/manageRates.xhtml" />
+				<p:menuitem
+					rendered="#{userSessionController.hasPermission('VIEW_RATEFILE')}"
+					value="View rates" url="/views/user/viewRates.xhtml" />
+				<p:menuitem
+					rendered="#{userSessionController.hasPermission('RAISE_RATES')}"
+					value="Raise rates" url="/views/admin/rate/raiseRates.xhtml" />
+				<p:menuitem
+					rendered="#{userSessionController.hasPermission('EXCEL_UPLOAD')}"
+					value="Upload rate excel"
+					url="/views/admin/upload/excelUpload.xhtml" />
+			</p:submenu>
+
+			<p:submenu
+				rendered="#{userSessionController.hasNonePermissions(['CREATE_OFFERTE', 'VIEW_OFFERTE'])}"
+				label="Offertes" icon="ui-icon-document">
+				<p:menuitem
+					rendered="#{userSessionController.hasPermission('CREATE_OFFERTE')}"
+					value="Create offerte" url="/views/user/createOfferte.xhtml" />
+				<p:menuitem
+					rendered="#{userSessionController.hasPermission('VIEW_OFFERTE')}"
+					value="Overview offertes" url="/views/user/offerteOverview.xhtml" />
+			</p:submenu>
+
+			<p:submenu
+				rendered="#{userSessionController.hasNonePermissions(['FULL_CUSTOMER_EDIT'])}"
+				label="Customer" icon="ui-icon-document">
+				<p:menuitem
+					rendered="#{userSessionController.hasPermission('FULL_CUSTOMER_EDIT')}"
+					value="Manage customers"
+					url="/views/admin/customer/manageCustomers.xhtml" />
+			</p:submenu>
+
+			<p:submenu
+				rendered="#{userSessionController.hasNonePermissions(['DIESEL_EDIT', 'TRANSLATION_EDIT', 'EMAIL_TEMPLATE_EDIT', 'COUNTRY_EDIT'])}"
+				label="Configuration" icon="ui-icon-document">
+				<p:menuitem
+					rendered="#{userSessionController.hasPermission('CHF_EDIT')}"
+					value="Swiss rates" url="/views/admin/configuration/chfRates.xhtml" />
+				<p:menuitem
+					rendered="#{userSessionController.hasPermission('DIESEL_EDIT')}"
+					value="Diesel prices"
+					url="/views/admin/configuration/dieselRates.xhtml" />
+				<p:menuitem
+					rendered="#{userSessionController.hasPermission('TRANSLATION_EDIT')}"
+					value="Application translations"
+					url="/views/admin/configuration/translations.xhtml" />
+				<p:menuitem
+					rendered="#{userSessionController.hasPermission('EMAIL_TEMPLATE_EDIT')}"
+					value="Email templates"
+					url="/views/admin/configuration/mailTemplates.xhtml" />
+				<p:menuitem
+					rendered="#{userSessionController.hasPermission('COUNTRY_EDIT')}"
+					value="Countries" url="/views/admin/configuration/country.xhtml" />
+			</p:submenu>
+
+			<p:submenu
+				rendered="#{userSessionController.hasNonePermissions(['USER_EDIT_PROFILE', 'USER_EDIT', 'ROLE_EDIT', 'PERMISSION_EDIT'])}"
+				label="Users" icon="ui-icon-document">
+				<p:menuitem
+					rendered="#{userSessionController.hasPermission('USER_EDIT_PROFILE')}"
+					value="User profile" url="/views/user/editProfile.xhtml" />
+				<p:menuitem
+					rendered="#{userSessionController.hasPermission('USER_EDIT')}"
+					value="User management"
+					url="/views/admin/user/userManagement.xhtml" />
+				<p:menuitem
+					rendered="#{userSessionController.hasPermission('ROLE_EDIT')}"
+					value="Role management"
+					url="/views/admin/user/RoleManagement.xhtml" />
+				<p:menuitem
+					rendered="#{userSessionController.hasPermission('PERMISSION_EDIT')}"
+					value="Permission management"
+					url="/views/admin/user/PermissionManagement.xhtml" />
+			</p:submenu>
+			<f:facet name="options">
+				<h:outputText
+					value="Welcome back #{userSessionController.loggedInUser.userName}"
+					style="margin-right:10px;color:red;" />
+				<p:commandButton value="Logout"
+					actionListener="#{logoutController.logout}"
+					style="margin-right:10px" ajax="false" icon="ui-icon-extlink" />
+			</f:facet>
+		</p:menubar>
+	</h:form>
+	<h1>
+		<ui:insert name="pageTitle">Extra logistics Rates application</ui:insert>
+	</h1>
 	<p:panel>
-		<h:panelGrid columns="2" cellpadding="10">
-			<h:panelGroup>
-				<h3>Version: #{maven.version['com.moorkensam:xlra']}</h3>
-				<p:menubar>
-					<p:submenu label="Rates" icon="ui-icon-document">
-						<p:menuitem value="Manage rates"
-							url="/views/rate/admin/manageRates.xhtml" />
-						<p:menuitem value="Raise rates"
-							url="/views/rate/admin/raiseRates.xhtml" />
-						<p:menuitem value="Upload rate excel"
-							url="/views/upload/excelUpload.xhtml" />
-						<p:menuitem value="Create offerte"
-							url="/views/rate/createOfferte.xhtml" />
-					</p:submenu>
-					<p:submenu label="Customer" icon="ui-icon-document">
-						<p:menuitem value="Manage customers"
-							url="/views/customer/manageCustomers.xhtml" />
-					</p:submenu>
-					<p:submenu label="Configuration" icon="ui-icon-document">
-						<p:menuitem value="Swiss rates"
-							url="/views/configuration/chfRates.xhtml" />
-						<p:menuitem value="Diesel prices"
-							url="/views/configuration/dieselRates.xhtml" />
-						<p:menuitem value="Application translations"
-							url="/views/configuration/translations.xhtml" />
-						<p:menuitem value="Email templates"
-							url="/views/configuration/mailTemplates.xhtml" />
-						<p:menuitem value="Countries"
-							url="/views/configuration/country.xhtml" />
-					</p:submenu>
-				</p:menubar>
-				<h1>
-					<ui:insert name="pageTitle">Extra logistics Rates application</ui:insert>
-				</h1>
-			</h:panelGroup>
-		</h:panelGrid>
 		<ui:insert name="body">Welcome to the Extra logistics Rates application</ui:insert>
 	</p:panel>
 </h:body>

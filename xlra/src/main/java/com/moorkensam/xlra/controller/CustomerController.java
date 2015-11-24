@@ -10,9 +10,10 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
-import com.moorkensam.xlra.model.FullCustomer;
-import com.moorkensam.xlra.model.Language;
+import com.moorkensam.xlra.model.configuration.Language;
+import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.service.CustomerService;
+import com.moorkensam.xlra.service.util.CustomerUtil;
 
 @ManagedBean
 @ViewScoped
@@ -21,12 +22,12 @@ public class CustomerController {
 	@Inject
 	private CustomerService customerService;
 
-	private FullCustomer selectedCustomer;
+	private Customer selectedCustomer;
 
 	private String detailGridTitle;
 
-	private List<FullCustomer> allCustomers;
-	
+	private List<Customer> allCustomers;
+
 	/**
 	 * Property for toggling the grid in the frontend.
 	 */
@@ -38,19 +39,20 @@ public class CustomerController {
 	}
 
 	public void createCustomerOrUpdate() {
-		if(selectedCustomer.getId()==0) { 
-			customerService.createCustomer(selectedCustomer);			
+		if (selectedCustomer.getId() == 0) {
+			customerService.createCustomer(selectedCustomer);
 		} else {
 			customerService.updateCustomer(selectedCustomer);
-		} 
-		
+		}
+
 		reInitializePage();
 	}
 
 	public void confirmDeleteCustomer() {
-		MessageUtil.addMessage("Confirm delete", "Confirm delete of customer " + selectedCustomer.getName());
+		MessageUtil.addMessage("Confirm delete", "Confirm delete of customer "
+				+ selectedCustomer.getName());
 	}
-	
+
 	public void deleteCustomer() throws IOException {
 		if (selectedCustomer.getId() != 0) {
 			customerService.deleteCustomer(selectedCustomer);
@@ -59,24 +61,31 @@ public class CustomerController {
 	}
 
 	private void reInitializePage() {
-		allCustomers = customerService.getAllFullCustomers();
+		setAllCustomers(customerService.getAllCustomers());
 		collapseDetailGrid = true;
 		detailGridTitle = "Details selected customer";
-		selectedCustomer = new FullCustomer(true);
+		selectedCustomer = new Customer();
 	}
 
 	public List<Language> getAllLanguages() {
 		return Arrays.asList(Language.values());
 	}
 
-	public void setupPageForNewUser() {
+	public void setupPageForNewCustomer() {
 		detailGridTitle = "Details for new customer";
-		selectedCustomer = new FullCustomer(true);
+		selectedCustomer = new Customer();
+		selectedCustomer.setHasOwnRateFile(true);
 		openDetailGrid();
 	}
 
-	public void setupPageForEditUser() {
+	public void setupPageForEditCustomer(Customer baseCustomer) {
+		if (!baseCustomer.isHasOwnRateFile()) {
+			baseCustomer = CustomerUtil.getInstance().promoteToFullCustomer(
+					baseCustomer);
+		}
+		selectedCustomer = baseCustomer;
 		openDetailGrid();
+		detailGridTitle = "Details for customer " + selectedCustomer.getName();
 	}
 
 	public void openDetailGrid() {
@@ -103,20 +112,20 @@ public class CustomerController {
 		this.detailGridTitle = detailGridTitle;
 	}
 
-	public FullCustomer getSelectedCustomer() {
+	public Customer getSelectedCustomer() {
 		return selectedCustomer;
 	}
 
-	public void setSelectedCustomer(FullCustomer selectedCustomer) {
+	public void setSelectedCustomer(Customer selectedCustomer) {
 		this.selectedCustomer = selectedCustomer;
-		detailGridTitle = "Details for customer " + selectedCustomer.getName();
 	}
 
-	public List<FullCustomer> getAllCustomers() {
+	public List<Customer> getAllCustomers() {
 		return allCustomers;
 	}
 
-	public void setAllCustomers(List<FullCustomer> allCustomers) {
+	public void setAllCustomers(List<Customer> allCustomers) {
 		this.allCustomers = allCustomers;
 	}
+
 }

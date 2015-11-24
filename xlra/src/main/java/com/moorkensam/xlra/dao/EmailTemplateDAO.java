@@ -2,8 +2,8 @@ package com.moorkensam.xlra.dao;
 
 import java.util.List;
 
-import com.moorkensam.xlra.model.Language;
-import com.moorkensam.xlra.model.configuration.MailTemplate;
+import com.moorkensam.xlra.model.configuration.Language;
+import com.moorkensam.xlra.model.mail.MailTemplate;
 
 public interface EmailTemplateDAO {
 

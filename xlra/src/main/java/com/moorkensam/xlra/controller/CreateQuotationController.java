@@ -8,24 +8,17 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJBException;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
-import org.hibernate.validator.util.SetAccessibility;
-import org.primefaces.context.RequestContext;
-import org.primefaces.event.FlowEvent;
-
 import com.moorkensam.xlra.controller.util.MessageUtil;
-import com.moorkensam.xlra.controller.util.RateUtil;
-import com.moorkensam.xlra.model.BaseCustomer;
-import com.moorkensam.xlra.model.FullCustomer;
-import com.moorkensam.xlra.model.Language;
-import com.moorkensam.xlra.model.QuotationQuery;
+import com.moorkensam.xlra.model.configuration.Language;
+import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.RateFileException;
+import com.moorkensam.xlra.model.offerte.QuotationQuery;
+import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Kind;
 import com.moorkensam.xlra.model.rate.Measurement;
-import com.moorkensam.xlra.model.rate.QuotationResult;
 import com.moorkensam.xlra.model.rate.TransportType;
 import com.moorkensam.xlra.service.CountryService;
 import com.moorkensam.xlra.service.CustomerService;
@@ -44,13 +37,13 @@ public class CreateQuotationController {
 	@Inject
 	private CountryService countryService;
 
-	private List<BaseCustomer> customers;
+	private List<Customer> customers;
 
 	private QuotationQuery quotationQuery;
 
 	private QuotationResult quotationResult;
 
-	private BaseCustomer customerToAdd;
+	private Customer customerToAdd;
 
 	private boolean renderAddCustomerGrid;
 
@@ -68,6 +61,11 @@ public class CreateQuotationController {
 		collapseFiltersPanel = true;
 		collapseSummaryPanel = true;
 		setCollapseResultPanel(true);
+	}
+
+	public void setupException() {
+		System.out.println("....Ò");
+		throw new NullPointerException();
 	}
 
 	private void initializeNewQuotationQuery() {
@@ -88,7 +86,7 @@ public class CreateQuotationController {
 	}
 
 	private void initializeNewCustomer() {
-		customerToAdd = new BaseCustomer();
+		customerToAdd = new Customer();
 	}
 
 	public void setupPageForNewCustomer() {
@@ -102,7 +100,7 @@ public class CreateQuotationController {
 				+ customerToAdd.getName());
 		refreshCustomers();
 		renderAddCustomerGrid = false;
-		customerToAdd = new BaseCustomer();
+		customerToAdd = new Customer();
 	}
 
 	public List<Language> getAllLanguages() {
@@ -110,13 +108,25 @@ public class CreateQuotationController {
 	}
 
 	public void procesCustomer() {
-		if (getQuotationQuery().getCustomer() instanceof FullCustomer) {
+		if (getQuotationQuery().getCustomer().isHasOwnRateFile()) {
 			setupFiltersFromExistingCustomer();
 		}
 		collapseCustomerPanel = true;
 		collapseFiltersPanel = false;
 		collapseSummaryPanel = true;
 		setCollapseResultPanel(true);
+	}
+
+	public void backToCustomer() {
+		collapseCustomerPanel = false;
+		collapseFiltersPanel = true;
+		collapseSummaryPanel = true;
+	}
+
+	public void backToRateFilters() {
+		collapseCustomerPanel = true;
+		collapseFiltersPanel = false;
+		collapseSummaryPanel = true;
 	}
 
 	public void processRateFilters() {
@@ -172,14 +182,13 @@ public class CreateQuotationController {
 	}
 
 	private void setupFiltersFromExistingCustomer() {
-		FullCustomer fc = (FullCustomer) getQuotationQuery().getCustomer();
 		// TODO implements loading of filters based on customer ratefile present
 	}
 
-	public List<BaseCustomer> completeCustomerName(String input) {
-		List<BaseCustomer> filteredCustomers = new ArrayList<BaseCustomer>();
+	public List<Customer> completeCustomerName(String input) {
+		List<Customer> filteredCustomers = new ArrayList<Customer>();
 		if (customers != null) {
-			for (BaseCustomer baseCustomer : customers) {
+			for (Customer baseCustomer : customers) {
 				if (baseCustomer.getName().toLowerCase()
 						.contains(input.toLowerCase())) {
 					filteredCustomers.add(baseCustomer);
@@ -197,19 +206,19 @@ public class CreateQuotationController {
 		return Arrays.asList(Kind.values());
 	}
 
-	public List<BaseCustomer> getCustomers() {
+	public List<Customer> getCustomers() {
 		return customers;
 	}
 
-	public void setCustomers(List<BaseCustomer> customers) {
+	public void setCustomers(List<Customer> customers) {
 		this.customers = customers;
 	}
 
-	public BaseCustomer getCustomerToAdd() {
+	public Customer getCustomerToAdd() {
 		return customerToAdd;
 	}
 
-	public void setCustomerToAdd(BaseCustomer customerToAdd) {
+	public void setCustomerToAdd(Customer customerToAdd) {
 		this.customerToAdd = customerToAdd;
 	}
 

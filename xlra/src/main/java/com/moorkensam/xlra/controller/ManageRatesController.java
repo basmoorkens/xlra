@@ -15,12 +15,12 @@ import org.primefaces.event.SelectEvent;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.controller.util.RateUtil;
-import com.moorkensam.xlra.model.configuration.TranslationKey;
 import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.IncoTermType;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.Zone;
+import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.RateFileService;
 import com.moorkensam.xlra.service.util.TranslationUtil;
 
@@ -30,6 +30,9 @@ public class ManageRatesController {
 
 	@Inject
 	private RateFileService rateFileService;
+
+	@Inject
+	private UserSessionController sessionController;
 
 	private List<RateFile> rateFiles;
 
@@ -47,8 +50,11 @@ public class ManageRatesController {
 
 	private TranslationKey keyToAdd;
 
+	private boolean editable;
+
 	@PostConstruct
 	public void initializeController() {
+		editable = sessionController.isAdmin();
 		refreshRates();
 		resetSelectedRateFile();
 	}
@@ -253,23 +259,8 @@ public class ManageRatesController {
 	}
 
 	public List<TranslationKey> getAvailableTranslationKeysForSelectedRateFile() {
-		List<TranslationKey> allKeys = TranslationUtil.getTranslationsNotKey();
-		if (selectedRateFile != null
-				&& selectedRateFile.getConditions() != null
-				&& !selectedRateFile.getConditions().isEmpty()) {
-			List<TranslationKey> usedKeys = new ArrayList<TranslationKey>();
-			for (Condition c : selectedRateFile.getConditions()) {
-				usedKeys.add(c.getConditionKey());
-			}
-			List<TranslationKey> result = new ArrayList<TranslationKey>();
-			for (TranslationKey key : allKeys) {
-				if (!usedKeys.contains(key)) {
-					result.add(key);
-				}
-			}
-			return result;
-		}
-		return allKeys;
+		return TranslationUtil
+				.getAvailableTranslationKeysForSelectedRateFile(selectedRateFile);
 	}
 
 	public boolean isCollapseZonesDetailGrid() {
@@ -282,6 +273,6 @@ public class ManageRatesController {
 
 	// TODO fill this in based on user permissions
 	public boolean isCanEdit() {
-		return true;
+		return editable;
 	}
 }

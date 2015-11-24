@@ -2,20 +2,19 @@ package com.moorkensam.xlra.dao;
 
 import java.util.List;
 
-import com.moorkensam.xlra.model.BaseCustomer;
-import com.moorkensam.xlra.model.FullCustomer;
+import com.moorkensam.xlra.model.customer.Customer;
 
 public interface CustomerDAO {
 
-	public BaseCustomer getCustomerById(long id);
+	public Customer getCustomerById(long id);
 
-	public BaseCustomer createCustomer(BaseCustomer customer);
+	public Customer createCustomer(Customer customer);
 
-	public BaseCustomer updateCustomer(BaseCustomer customer);
+	public Customer updateCustomer(Customer customer);
 
-	public List<FullCustomer> getAllFullCustomers();
+	public List<Customer> getAllFullCustomers();
 
-	public void deleteCustomer(BaseCustomer customer);
+	public void deleteCustomer(Customer customer);
 
-	public List<BaseCustomer> getAllCustomers();
+	public List<Customer> getAllCustomers();
 }

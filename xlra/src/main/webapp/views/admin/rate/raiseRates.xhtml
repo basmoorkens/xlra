@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<ui:composition template="/views/template.xhtml">
+	<ui:define name="title">
+		<h:outputText value="XLRA - Raise rates" />
+	</ui:define>
+	<ui:define name="pageTitle">
+		<h:outputText value="Raise rates" />
+	</ui:define>
+	<ui:define name="body">
+		<h:form id="raiseRatesForm">
+			<p:growl id="msgs" showDetail="true" />
+			<p:wizard flowListener="#{raiseRatesController.onFlowProcess}"
+				showNavBar="false" widgetVar="wizard">
+				<p:tab id="selectRateFiles" title="Select rate files">
+					<p:panelGrid columns="1" style="width:100%;">
+						<p:pickList id="rateFilePickList" required="true"
+							requiredMessage="Please select a rate file to raise"
+							value="#{raiseRatesController.rateFiles}" var="rateFile"
+							effect="bounce" itemValue="#{rateFile}"
+							itemLabel="#{rateFile.name}" showSourceControls="false"
+							showTargetControls="false" showCheckbox="true"
+							showSourceFilter="true" showTargetFilter="true"
+							filterMatchMode="contains" converter="#{rateFileSimpleConverter}"
+							style="width:100%;">
+
+							<f:facet name="sourceCaption">All rate files</f:facet>
+							<f:facet name="targetCaption">Selected rate files</f:facet>
+
+							<p:column style="width:90%;">
+								<h:outputText value="#{rateFile.name}" />
+							</p:column>
+						</p:pickList>
+						<p:panel>
+							<h:outputText value="Percentage to raise ratefiles by: " />
+							<p:inputText value="#{raiseRatesController.percentage}">
+								<f:convertNumber pattern="#00.00" />
+							</p:inputText>%
+					</p:panel>
+					</p:panelGrid>
+
+					<p:panel style="bottom:20px;  padding:0px;border:0px;">
+						<p:commandButton value="Back" onclick="PF('wizard').back();"
+							style="width:150px;" />
+						<p:commandButton value="Next" onclick="PF('wizard').next();"
+							style="width:150px; margin-left:20px;" />
+					</p:panel>
+				</p:tab>
+
+				<p:tab id="raiseSummary" title="Summary">
+					<h3>Selected rate files</h3>
+					<p:dataList value="#{raiseRatesController.rateFiles.target}"
+						var="rateFile">
+						#{rateFile.name}
+					</p:dataList>
+
+					<h3>Raise percentage</h3>
+					<h:outputText value="#{raiseRatesController.percentage}">
+						<f:convertNumber pattern="#00.00" />
+					</h:outputText>
+
+					<p:panel style=" bottom:40px; padding:0px;border:0px;">
+						<p:commandButton value="Back" onclick="PF('wizard').back();"
+							style="width:150px;" update=":raiseRatesForm" ajax="true" />
+						<p:commandButton value="Raise rates"
+							style="width:150px; margin-left:20px;"
+							actionListener="#{raiseRatesController.raiseRates}"
+							update=":raiseRatesForm" ajax="true" />
+					</p:panel>
+				</p:tab>
+			</p:wizard>
+
+
+			<p:panel title="Raise history" header="Raise history"
+				style="margin-top:50px;">
+				<p:dataTable var="logRecord"
+					value="#{raiseRatesController.logRecords}">
+					<p:column headerText="Type:">
+						<h:outputText value="#{logRecord.operation}" />
+					</p:column>
+					<p:column headerText="Date:">
+						<h:outputText value="#{logRecord.createdDateTime}">
+							<f:convertDateTime type="datetime" pattern="dd-mm-YYYY HH:mm:ss" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Percentage">
+						<h:outputText value="#{logRecord.percentage}" />
+					</p:column>
+					<p:column headerText="RateFiles">
+						<p:dataList value="#{logRecord.rateFiles}" var="rf">
+							<h:outputText value="#{rf.name}" />
+						</p:dataList>
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+
+			<p:commandButton value="Undo latest raise" immediate="true"
+				actionListener="#{raiseRatesController.undoLatestRaiseRates}">
+				<p:confirm header="Confirmation"
+					message="Are you sure you want to undo the last raise of rates?"
+					icon="ui-icon-alert" />
+			</p:commandButton>
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				<p:commandButton value="Yes" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+			<p:ajaxStatus onstart="showStatusDialog();"
+				onsuccess="hideStatusDialog();" />
+
+			<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+				closable="false" resizable="false" showHeader="false">
+				<img src="/xlra/images/ajax-loader.gif" />
+			</p:dialog>
+
+		</h:form>
+		<script type="text/javascript">
+			var statusDlgTimer = null;
+
+			function showStatusDialog() {
+				if (statusDlgTimer === null) {
+					statusDlgTimer = setTimeout("statusDialog.show()", 300);
+				}
+			}
+
+			function hideStatusDialog() {
+				if (statusDlgTimer !== null) {
+					clearTimeout(statusDlgTimer);
+					statusDialog.hide();
+					statusDlgTimer = null;
+				}
+			}
+		</script>
+	</ui:define>
+</ui:composition>
+</html>

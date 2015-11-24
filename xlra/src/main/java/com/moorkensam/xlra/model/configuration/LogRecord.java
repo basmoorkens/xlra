@@ -21,6 +21,8 @@ public abstract class LogRecord extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	protected LogType type;
 
+	private String userName;
+
 	public Date getLogDate() {
 		return logDate;
 	}
@@ -42,6 +44,12 @@ public abstract class LogRecord extends BaseEntity {
 		return getLogDate() + " - " + type;
 	}
 
-	
-	
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
 }

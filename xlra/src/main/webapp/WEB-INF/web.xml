@@ -12,8 +12,13 @@
 		<url-pattern>*.xhtml</url-pattern>
 	</servlet-mapping>
 	<welcome-file-list>
-		<welcome-file>/views/welcome.xhtml</welcome-file>
+		<welcome-file>/views/protected/welcome.xhtml</welcome-file>
 	</welcome-file-list>
+	
+	<error-page>
+     <error-code>500</error-code>
+     <location>/views/error/500.xhtml</location>
+ 	</error-page>	
 	
 	 <filter>
 		 <filter-name>PrimeFaces FileUpload Filter</filter-name>
@@ -25,4 +30,56 @@
 	 	<filter-name>PrimeFaces FileUpload Filter</filter-name>
 	 	<servlet-name>Faces Servlet</servlet-name>
 	 </filter-mapping>
+	 
+	 <security-constraint>
+	    <display-name>admin-pages</display-name>
+	    <web-resource-collection>
+	        <web-resource-name>protected-pages</web-resource-name>
+	        <url-pattern>/views/admin/*</url-pattern>
+	    </web-resource-collection>
+	    <auth-constraint>
+	        <role-name>Admin</role-name>
+	    </auth-constraint>
+	    <user-data-constraint>
+	        <transport-guarantee>NONE</transport-guarantee>
+	    </user-data-constraint>
+	</security-constraint>
+	<security-constraint>
+	    <display-name>user-pages</display-name>
+	    <web-resource-collection>
+	        <web-resource-name>protected-pages</web-resource-name>
+	        <url-pattern>/views/user/*</url-pattern>
+	    </web-resource-collection>
+	    <auth-constraint>
+	        <role-name>Admin</role-name>
+	        <role-name>User</role-name>
+	    </auth-constraint>
+	    <user-data-constraint>
+	        <transport-guarantee>NONE</transport-guarantee>
+	    </user-data-constraint>
+	</security-constraint>
+	
+	<security-constraint>
+	    <display-name>user-pages</display-name>
+	    <web-resource-collection>
+	        <web-resource-name>protected-pages</web-resource-name>
+	        <url-pattern>/views/user/*</url-pattern>
+	        <url-pattern>/views/protected/*</url-pattern>
+	    </web-resource-collection>
+	    <auth-constraint>
+	        <role-name>Admin</role-name>
+	        <role-name>User</role-name>
+	    </auth-constraint>
+	    <user-data-constraint>
+	        <transport-guarantee>NONE</transport-guarantee>
+	    </user-data-constraint>
+	</security-constraint>
+	 <login-config>
+	    <auth-method>FORM</auth-method>
+	    <realm-name>jdbc-security-domain</realm-name>
+	    <form-login-config>
+	        <form-login-page>/views/login.jsp</form-login-page>
+	        <form-error-page>/views/loginError.jsp</form-error-page>
+	    </form-login-config>
+	</login-config>
 </web-app>

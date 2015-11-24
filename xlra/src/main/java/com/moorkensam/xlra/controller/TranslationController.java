@@ -1,6 +1,7 @@
 package com.moorkensam.xlra.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -11,9 +12,11 @@ import javax.inject.Inject;
 import org.primefaces.event.RowEditEvent;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
-import com.moorkensam.xlra.model.Language;
-import com.moorkensam.xlra.model.configuration.Translation;
-import com.moorkensam.xlra.model.configuration.TranslationKey;
+import com.moorkensam.xlra.model.configuration.Language;
+import com.moorkensam.xlra.model.configuration.TranslationForLanguage;
+import com.moorkensam.xlra.model.error.XlraValidationException;
+import com.moorkensam.xlra.model.translation.Translation;
+import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.TranslationService;
 import com.moorkensam.xlra.service.util.TranslationUtil;
 
@@ -26,71 +29,74 @@ public class TranslationController {
 
 	private List<Translation> translations;
 
-	private Translation selectedTranslation;
-
 	private TranslationKey selectedKey;
 
 	private List<TranslationKey> availableKeys;
 
-	private Language langEng, langNl, langFr, langDe;
+	private Translation activeTranslation;
 
-	private Translation[] newTranslations;
+	private boolean editMode;
+
+	private boolean updateMode;
 
 	@PostConstruct
 	public void initPage() {
-		setupLanguages();
+		activeTranslation = new Translation();
 		refreshPage();
 	}
 
 	private void refreshPage() {
 		refreshTranslations();
 		setupAvailableTranslationKeys();
-		setupNewTranslations();
 	}
 
-	public void saveNewTranslations() {
-		fillTranslationKeyForNewTranslations();
-		translationService.createTranslations(newTranslations);
-		MessageUtil.addMessage("Translation created", "Added translations for "
-				+ newTranslations[0].getTranslationKey());
-		refreshPage();
+	public void saveActiveTranslations() {
+		if (activeTranslation.getId() <= 0) {
+			getActiveTranslation().setTranslationKey(selectedKey);
+			doCreateTranslation();
+		}
+		updateTranslation();
 	}
 
-	private void fillTranslationKeyForNewTranslations() {
-		for (Translation t : newTranslations) {
-			t.setTranslationKey(selectedKey);
+	private void doCreateTranslation() {
+		try {
+			translationService.createTranslation(getActiveTranslation());
+			MessageUtil.addMessage("Translation created",
+					"Added translations for "
+							+ getActiveTranslation().getTranslationKey());
+			refreshPage();
+		} catch (XlraValidationException e) {
+			MessageUtil.addErrorMessage("Error creating translation",
+					e.getBusinessException());
 		}
 	}
 
-	private void setupLanguages() {
-		setLangEng(Language.EN);
-		setLangNl(Language.NL);
-		setLangDe(Language.DE);
-		setLangFr(Language.FR);
+	public void cancel() {
+		editMode = false;
+		updateMode = false;
+		activeTranslation = new Translation();
 	}
 
-	private void setupNewTranslations() {
-		Translation t1 = new Translation();
-		t1.setTranslationKey(selectedKey);
-		t1.setLanguage(langEng);
+	public void setupNewTranslation() {
+		editMode = true;
+		Translation t = new Translation();
+		TranslationForLanguage tlEng = new TranslationForLanguage();
+		tlEng.setLanguage(Language.EN);
 
-		Translation t2 = new Translation();
-		t2.setTranslationKey(selectedKey);
-		t2.setLanguage(langNl);
+		TranslationForLanguage tlNl = new TranslationForLanguage();
+		tlNl.setLanguage(Language.NL);
 
-		Translation t3 = new Translation();
-		t3.setTranslationKey(selectedKey);
-		t3.setLanguage(langFr);
+		TranslationForLanguage tlFr = new TranslationForLanguage();
+		tlFr.setLanguage(Language.FR);
 
-		Translation t4 = new Translation();
-		t4.setTranslationKey(selectedKey);
-		t4.setLanguage(langDe);
+		TranslationForLanguage tlDe = new TranslationForLanguage();
+		tlDe.setLanguage(Language.DE);
 
-		newTranslations = new Translation[4];
-		newTranslations[0] = t1;
-		newTranslations[1] = t2;
-		newTranslations[2] = t3;
-		newTranslations[3] = t4;
+		t.setTranslations(Arrays.asList(tlEng, tlNl, tlFr, tlDe));
+		t.setTranslationKeysTranslations(Arrays.asList(tlEng.deepCopy(),
+				tlNl.deepCopy(), tlFr.deepCopy(), tlDe.deepCopy()));
+
+		setActiveTranslation(t);
 	}
 
 	private void setupAvailableTranslationKeys() {
@@ -109,29 +115,24 @@ public class TranslationController {
 		}
 	}
 
-	public void createNewTranslations() {
-		translationService.createTranslations(newTranslations);
-	}
-
 	private void refreshTranslations() {
 		translations = translationService.getAllNonDeletedTranslations();
 	}
 
-	private void updateTranslation(Translation translation) {
-		translationService.updateTranslation(translation);
-	}
-
-	public void onTranslationRowEdit(RowEditEvent event) {
-		Translation editedTranslation = (Translation) event.getObject();
-
-		updateTranslation(editedTranslation);
+	private void updateTranslation() {
+		translationService.updateTranslation(activeTranslation);
 		MessageUtil.addMessage(
 				"Translation updated",
 				"Updated translation for "
-						+ editedTranslation.getTranslationKey()
-						+ " - language "
-						+ editedTranslation.getLanguage().getDescription());
+						+ activeTranslation.getTranslationKey());
 		refreshTranslations();
+	}
+
+	public void setupPageForEdit(Translation translation) {
+		selectedKey = translation.getTranslationKey();
+		activeTranslation = translation;
+		editMode = true;
+		updateMode = true;
 	}
 
 	public List<Translation> getTranslations() {
@@ -142,12 +143,12 @@ public class TranslationController {
 		this.translations = translations;
 	}
 
-	public Translation getSelectedTranslation() {
-		return selectedTranslation;
+	public List<TranslationKey> getAvailableKeys() {
+		return availableKeys;
 	}
 
-	public void setSelectedTranslation(Translation selectedTranslation) {
-		this.selectedTranslation = selectedTranslation;
+	public void setAvailableKeys(List<TranslationKey> availableKeys) {
+		this.availableKeys = availableKeys;
 	}
 
 	public TranslationKey getSelectedKey() {
@@ -158,51 +159,27 @@ public class TranslationController {
 		this.selectedKey = selectedKey;
 	}
 
-	public List<TranslationKey> getAvailableKeys() {
-		return availableKeys;
+	public boolean isEditMode() {
+		return editMode;
 	}
 
-	public void setAvailableKeys(List<TranslationKey> availableKeys) {
-		this.availableKeys = availableKeys;
+	public void setEditMode(boolean editMode) {
+		this.editMode = editMode;
 	}
 
-	public Language getLangEng() {
-		return langEng;
+	public Translation getActiveTranslation() {
+		return activeTranslation;
 	}
 
-	public void setLangEng(Language langEng) {
-		this.langEng = langEng;
+	public void setActiveTranslation(Translation activeTranslation) {
+		this.activeTranslation = activeTranslation;
 	}
 
-	public Language getLangNl() {
-		return langNl;
+	public boolean isUpdateMode() {
+		return updateMode;
 	}
 
-	public void setLangNl(Language langNl) {
-		this.langNl = langNl;
-	}
-
-	public Language getLangFr() {
-		return langFr;
-	}
-
-	public void setLangFr(Language langFr) {
-		this.langFr = langFr;
-	}
-
-	public Language getLangDe() {
-		return langDe;
-	}
-
-	public void setLangDe(Language langDe) {
-		this.langDe = langDe;
-	}
-
-	public Translation[] getNewTranslations() {
-		return newTranslations;
-	}
-
-	public void setNewTranslations(Translation[] newTranslations) {
-		this.newTranslations = newTranslations;
+	public void setUpdateMode(boolean updateMode) {
+		this.updateMode = updateMode;
 	}
 }

@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.service.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -7,46 +8,35 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
-import javax.persistence.NoResultException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.primefaces.model.SortOrder;
 
-import com.moorkensam.xlra.dao.EmailTemplateDAO;
+import com.moorkensam.xlra.dao.PriceCalculationDAO;
 import com.moorkensam.xlra.dao.QuotationQueryDAO;
 import com.moorkensam.xlra.dao.QuotationResultDAO;
-import com.moorkensam.xlra.dao.RateFileDAO;
 import com.moorkensam.xlra.dto.OfferteMailDTO;
-import com.moorkensam.xlra.dto.PriceCalculationDTO;
-import com.moorkensam.xlra.dto.PriceResultDTO;
+import com.moorkensam.xlra.mapper.PriceCalculationToHtmlConverter;
 import com.moorkensam.xlra.mapper.OfferteEmailToEmailResultMapper;
-import com.moorkensam.xlra.mapper.PriceCalculationDTOToResultMapper;
-import com.moorkensam.xlra.model.FullCustomer;
-import com.moorkensam.xlra.model.Language;
-import com.moorkensam.xlra.model.QuotationQuery;
-import com.moorkensam.xlra.model.configuration.MailTemplate;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.error.TemplatingException;
-import com.moorkensam.xlra.model.rate.QuotationResult;
+import com.moorkensam.xlra.model.offerte.OfferteSearchFilter;
+import com.moorkensam.xlra.model.offerte.PriceCalculation;
+import com.moorkensam.xlra.model.offerte.QuotationQuery;
+import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
-import com.moorkensam.xlra.model.searchfilter.RateFileSearchFilter;
 import com.moorkensam.xlra.service.CalculationService;
 import com.moorkensam.xlra.service.EmailService;
+import com.moorkensam.xlra.service.MailTemplateService;
 import com.moorkensam.xlra.service.QuotationService;
+import com.moorkensam.xlra.service.RateFileService;
 
 @Stateless
 public class QuotationServiceImpl implements QuotationService {
 
 	private final static Logger logger = LogManager.getLogger();
-
-	private TemplateEngine templatEngine;
-
-	@Inject
-	private EmailTemplateDAO emailTemplateDAO;
-
-	@Inject
-	private RateFileDAO rateFileDAO;
 
 	@Inject
 	private QuotationQueryDAO quotationDAO;
@@ -55,79 +45,82 @@ public class QuotationServiceImpl implements QuotationService {
 	private QuotationResultDAO quotationResultDAO;
 
 	@Inject
+	private PriceCalculationDAO priceCalculationDAO;
+
+	@Inject
 	private EmailService emailService;
+
+	@Inject
+	private MailTemplateService mailTemplateService;
 
 	@Inject
 	private CalculationService calculationService;
 
 	@Inject
-	private TemplateEngine templateEngine;
+	private RateFileService rateFileService;
 
-	private PriceCalculationDTOToResultMapper mapper;
+	private IdentityService identityService;
+
+	private PriceCalculationToHtmlConverter offerteEmailParameterGenerator;
 
 	private OfferteEmailToEmailResultMapper mailMapper;
 
 	@PostConstruct
 	public void init() {
-		setTemplatEngine(templateEngine);
-		setMapper(new PriceCalculationDTOToResultMapper());
+		setOfferteEmailParameterGenerator(new PriceCalculationToHtmlConverter());
 		mailMapper = new OfferteEmailToEmailResultMapper();
+		identityService = IdentityService.getInstance();
 	}
 
 	@Override
 	public void createQuotationQuery(QuotationQuery quotation) {
 		logger.info("Creating quotation query: " + quotation);
-		quotationDAO.createQuotationQuery(quotation);
+		getQuotationDAO().createQuotationQuery(quotation);
 	}
 
 	@Override
 	public QuotationQuery updateQuotationQuery(QuotationQuery quotation) {
-		return quotationDAO.updateQuotationQuery(quotation);
+		return getQuotationDAO().updateQuotationQuery(quotation);
 	}
 
 	@Override
 	public List<QuotationQuery> getAllQuotationQueries() {
-		return quotationDAO.getAllQuotationQueries();
+		return getQuotationDAO().getAllQuotationQueries();
 	}
 
 	@Override
 	public void createQuotationResult(QuotationResult result) {
 		logger.info("Creating quotation result");
-		quotationResultDAO.createQuotationResult(result);
+		getQuotationResultDAO().createQuotationResult(result);
 	}
 
 	@Override
 	public QuotationResult updateQuotationResult(QuotationResult result) {
-		return quotationResultDAO.updateQuotationResult(result);
+		return getQuotationResultDAO().updateQuotationResult(result);
 	}
 
 	@Override
 	public List<QuotationResult> getAllQuotationResults() {
-		return quotationResultDAO.getAllQuotationResults();
+		return getQuotationResultDAO().getAllQuotationResults();
 	}
 
 	@Override
 	public QuotationResult generateQuotationResultForQuotationQuery(
 			QuotationQuery query) throws RateFileException {
 		OfferteMailDTO dto = new OfferteMailDTO();
-		QuotationResult quotationResult = new QuotationResult();
-		RateFileSearchFilter filter = createRateFileSearchFilterForQuery(query);
+		QuotationResult quotationResult = initializeQuotationResult(query);
 		RateLine result;
-		PriceCalculationDTO priceDTO = new PriceCalculationDTO();
-		fillInMailLanguage(query);
-
 		try {
-			RateFile rf = rateFileDAO.getFullRateFileForFilter(filter);
+			RateFile rf = rateFileService.getRateFileForQuery(query);
 			result = rf.getRateLineForQuantityAndPostalCode(
 					query.getQuantity(), query.getPostalCode());
-			priceDTO.setBasePrice(result.getValue());
-			calculationService.calculatePriceAccordingToConditions(priceDTO,
-					rf.getCountry(), rf.getConditions(), query);
-			initializeOfferteEmail(query, dto, rf, priceDTO);
-			fillInQuotationResult(query, dto, quotationResult);
-		} catch (NoResultException nre) {
-			throw new RateFileException("Could not find ratefile for "
-					+ filter.toString());
+			quotationResult.getCalculation().setBasePrice(result.getValue());
+			getCalculationService().calculatePriceAccordingToConditions(
+					quotationResult.getCalculation(), rf.getCountry(),
+					rf.getConditions(), query);
+			mailTemplateService.initializeOfferteEmail(quotationResult, dto,
+					rf, quotationResult.getCalculation());
+			fillInQuotationResult(dto, quotationResult);
 		} catch (RateFileException e1) {
 			logger.error(e1.getBusinessException() + e1.getMessage());
 			throw e1;
@@ -136,6 +129,17 @@ public class QuotationServiceImpl implements QuotationService {
 			throw new RateFileException("Failed to parse email template.");
 		}
 		// generate pdf
+		return quotationResult;
+	}
+
+	private QuotationResult initializeQuotationResult(QuotationQuery query) {
+		QuotationResult quotationResult = new QuotationResult();
+		quotationResult.setQuery(query);
+		fillInMailLanguage(query);
+		quotationResult.setOfferteUniqueIdentifier(identityService
+				.getNextIdentifier());
+		PriceCalculation priceCalculation = new PriceCalculation();
+		quotationResult.setCalculation(priceCalculation);
 		return quotationResult;
 	}
 
@@ -151,10 +155,9 @@ public class QuotationServiceImpl implements QuotationService {
 				.getLanguage() : query.getCustomer().getLanguage());
 	}
 
-	private void fillInQuotationResult(QuotationQuery query,
-			OfferteMailDTO dto, QuotationResult quotationResult) {
+	private void fillInQuotationResult(OfferteMailDTO dto,
+			QuotationResult quotationResult) {
 		quotationResult.setEmailResult(mailMapper.map(dto));
-		quotationResult.setQuery(query);
 	}
 
 	/**
@@ -168,65 +171,13 @@ public class QuotationServiceImpl implements QuotationService {
 	 * @throws TemplatingException
 	 */
 
-	protected void initializeOfferteEmail(QuotationQuery query,
-			OfferteMailDTO dto, RateFile rf, PriceCalculationDTO priceDTO)
-			throws TemplatingException, RateFileException {
-		PriceResultDTO resultDTO = new PriceResultDTO();
-		getMapper().map(priceDTO, resultDTO);
-		try {
-			MailTemplate template = getEmailTemplateDAO()
-					.getMailTemplateForLanguage(query.getResultLanguage());
-			Map<String, Object> templateParameters = templatEngine
-					.createTemplateParams(query, resultDTO);
-			String emailMessage = getTemplatEngine().parseEmailTemplate(
-					template.getTemplate(), templateParameters);
-			dto.setAddress(query.getCustomer().getEmail());
-			dto.setSubject(template.getSubject());
-			dto.setContent(emailMessage);
-		} catch (NoResultException nre) {
-			logger.error("Could not find email template for "
-					+ query.getResultLanguage());
-			throw new RateFileException(
-					"Could not find email template for language "
-							+ query.getResultLanguage());
-		}
-
+	public PriceCalculationToHtmlConverter getOfferteEmailParameterGenerator() {
+		return offerteEmailParameterGenerator;
 	}
 
-	protected RateFileSearchFilter createRateFileSearchFilterForQuery(
-			QuotationQuery query) {
-		RateFileSearchFilter filter = new RateFileSearchFilter();
-		filter.setCountry(query.getCountry());
-		if (query.getCustomer() instanceof FullCustomer) {
-			filter.setCustomer(query.getCustomer());
-		}
-		filter.setMeasurement(query.getMeasurement());
-		filter.setRateKind(query.getKindOfRate());
-		return filter;
-	}
-
-	public PriceCalculationDTOToResultMapper getMapper() {
-		return mapper;
-	}
-
-	public void setMapper(PriceCalculationDTOToResultMapper mapper) {
-		this.mapper = mapper;
-	}
-
-	public EmailTemplateDAO getEmailTemplateDAO() {
-		return emailTemplateDAO;
-	}
-
-	public void setEmailTemplateDAO(EmailTemplateDAO emailTemplateDAO) {
-		this.emailTemplateDAO = emailTemplateDAO;
-	}
-
-	public TemplateEngine getTemplatEngine() {
-		return templatEngine;
-	}
-
-	public void setTemplatEngine(TemplateEngine templatEngine) {
-		this.templatEngine = templatEngine;
+	public void setOfferteEmailParameterGenerator(
+			PriceCalculationToHtmlConverter mapper) {
+		this.offerteEmailParameterGenerator = mapper;
 	}
 
 	public OfferteEmailToEmailResultMapper getMailMapper() {
@@ -241,16 +192,24 @@ public class QuotationServiceImpl implements QuotationService {
 	public void submitQuotationResult(QuotationResult result)
 			throws RateFileException {
 		copyTransientResultLanguageToLanguageIfNeeded(result);
-		QuotationQuery managedQuery = quotationDAO.createQuotationQuery(result
-				.getQuery());
-		result.setQuery(managedQuery);
-		quotationResultDAO.createQuotationResult(result);
+		createAndSaveFullOfferte(result);
 		try {
-			emailService.sendOfferteMail(result);
+			getEmailService().sendOfferteMail(result);
 		} catch (MessagingException e) {
 			logger.error("Failed to send offerte email");
 			throw new RateFileException("Failed to send email");
 		}
+	}
+
+	private void createAndSaveFullOfferte(QuotationResult offerte) {
+		offerte.getQuery().setQuotationDate(new Date());
+		QuotationQuery managedQuery = getQuotationDAO().createQuotationQuery(
+				offerte.getQuery());
+		offerte.setQuery(managedQuery);
+		PriceCalculation managedCalculation = priceCalculationDAO
+				.createCalculation(offerte.getCalculation());
+		offerte.setCalculation(managedCalculation);
+		getQuotationResultDAO().createQuotationResult(offerte);
 	}
 
 	/**
@@ -266,5 +225,87 @@ public class QuotationServiceImpl implements QuotationService {
 			result.getQuery()
 					.setLanguage(result.getQuery().getResultLanguage());
 		}
+	}
+
+	public IdentityService getIdentityService() {
+		return identityService;
+	}
+
+	public void setIdentityService(IdentityService identityService) {
+		this.identityService = identityService;
+	}
+
+	public QuotationQueryDAO getQuotationDAO() {
+		return quotationDAO;
+	}
+
+	public void setQuotationDAO(QuotationQueryDAO quotationDAO) {
+		this.quotationDAO = quotationDAO;
+	}
+
+	public QuotationResultDAO getQuotationResultDAO() {
+		return quotationResultDAO;
+	}
+
+	public void setQuotationResultDAO(QuotationResultDAO quotationResultDAO) {
+		this.quotationResultDAO = quotationResultDAO;
+	}
+
+	public EmailService getEmailService() {
+		return emailService;
+	}
+
+	public void setEmailService(EmailService emailService) {
+		this.emailService = emailService;
+	}
+
+	public RateFileService getRateFileService() {
+		return rateFileService;
+	}
+
+	public void setRateFileService(RateFileService rateFileService) {
+		this.rateFileService = rateFileService;
+	}
+
+	public CalculationService getCalculationService() {
+		return calculationService;
+	}
+
+	public void setCalculationService(CalculationService calculationService) {
+		this.calculationService = calculationService;
+	}
+
+	public MailTemplateService getMailTemplateService() {
+		return mailTemplateService;
+	}
+
+	public void setMailTemplateService(MailTemplateService mailTemplateService) {
+		this.mailTemplateService = mailTemplateService;
+	}
+
+	@Override
+	public List<QuotationResult> getQuotationQueries(int first, int pageSize,
+			String sortField, SortOrder sortOrder, Map<String, String> filters) {
+		return quotationResultDAO.getQuotationResults(first, pageSize,
+				sortField, sortOrder, filters);
+	}
+
+	@Override
+	public int getQuotationQueryCount(Map<String, String> filters) {
+		return quotationResultDAO.getQuotationResultCount(filters);
+	}
+
+	@Override
+	public List<QuotationResult> getQuotationResultsForFilters(
+			OfferteSearchFilter filter) {
+		return quotationResultDAO.getQuotationResultsForFilter(filter);
+	}
+
+	public PriceCalculationDAO getPriceCalculationDAO() {
+		return priceCalculationDAO;
+	}
+
+	public void setPriceCalculationDAO(PriceCalculationDAO priceCalculationDAO) {
+		this.priceCalculationDAO = priceCalculationDAO;
 	}
 }

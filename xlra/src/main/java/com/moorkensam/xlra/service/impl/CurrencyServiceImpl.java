@@ -3,6 +3,7 @@ package com.moorkensam.xlra.service.impl;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -41,6 +42,13 @@ public class CurrencyServiceImpl implements CurrencyService {
 	@Inject
 	private CurrencyRateDAO currencyRateDAO;
 
+	private LogRecordFactory logRecordFactory;
+
+	@PostConstruct
+	public void init() {
+		logRecordFactory = LogRecordFactory.getInstance();
+	}
+
 	@Override
 	public void updateCurrencyRate(CurrencyRate currencyRate) {
 		getCurrencyRateDAO().updateCurrencyRate(currencyRate);
@@ -66,7 +74,7 @@ public class CurrencyServiceImpl implements CurrencyService {
 	public void updateCurrentChfValue(BigDecimal value) {
 		Configuration config = getXlraConfigurationDAO().getXlraConfiguration();
 
-		LogRecord createChfLogRecord = LogRecordFactory
+		LogRecord createChfLogRecord = logRecordFactory
 				.createChfLogRecord(config.getCurrentChfValue());
 		logger.info("saving chfprice logrecord" + createChfLogRecord);
 		getLogDAO().createLogRecord(createChfLogRecord);
@@ -124,6 +132,14 @@ public class CurrencyServiceImpl implements CurrencyService {
 	public void deleteCurrencyRate(CurrencyRate toDelete) {
 		logger.info("Deleting currency rate " + toDelete);
 		currencyRateDAO.deleteCurrencyRate(toDelete);
+	}
+
+	public LogRecordFactory getLogRecordFactory() {
+		return logRecordFactory;
+	}
+
+	public void setLogRecordFactory(LogRecordFactory logRecordFactory) {
+		this.logRecordFactory = logRecordFactory;
 	}
 
 }

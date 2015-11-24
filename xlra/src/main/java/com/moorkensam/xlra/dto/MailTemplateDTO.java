@@ -2,8 +2,8 @@ package com.moorkensam.xlra.dto;
 
 import java.util.List;
 
-import com.moorkensam.xlra.model.Language;
-import com.moorkensam.xlra.model.configuration.MailTemplate;
+import com.moorkensam.xlra.model.configuration.Language;
+import com.moorkensam.xlra.model.mail.MailTemplate;
 
 public class MailTemplateDTO {
 
@@ -29,7 +29,10 @@ public class MailTemplateDTO {
 		return getTemplateForLang(Language.FR);
 	}
 
-	private MailTemplate getTemplateForLang(Language lang) {
+	protected MailTemplate getTemplateForLang(Language lang) {
+		if (mailTemplates == null) {
+			return null;
+		}
 		for (MailTemplate template : mailTemplates) {
 			if (template.getLanguage().equals(lang)) {
 				return template;

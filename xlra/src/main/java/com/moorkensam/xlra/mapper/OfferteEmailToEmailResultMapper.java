@@ -1,7 +1,7 @@
 package com.moorkensam.xlra.mapper;
 
 import com.moorkensam.xlra.dto.OfferteMailDTO;
-import com.moorkensam.xlra.model.EmailResult;
+import com.moorkensam.xlra.model.mail.EmailResult;
 
 public class OfferteEmailToEmailResultMapper {
 

@@ -21,8 +21,11 @@ import com.moorkensam.xlra.dao.LogDAO;
 import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.CurrencyRate;
 import com.moorkensam.xlra.model.configuration.Interval;
+import com.moorkensam.xlra.model.configuration.LogRecord;
+import com.moorkensam.xlra.model.configuration.RateLogRecord;
 import com.moorkensam.xlra.model.configuration.XLRACurrency;
 import com.moorkensam.xlra.model.error.RateFileException;
+import com.moorkensam.xlra.service.util.LogRecordFactory;
 
 public class CurrencyServiceImplTest extends UnitilsJUnit4 {
 
@@ -35,20 +38,23 @@ public class CurrencyServiceImplTest extends UnitilsJUnit4 {
 	@Mock
 	private ConfigurationDao configDAO;
 
-	@InjectIntoByType
+	@Mock
+	private LogRecordFactory logRecordFactory;
+
+	@Mock
 	private LogDAO logDao;
 
 	private List<CurrencyRate> rates;
 
 	private CurrencyRate r1, r2;
 
-	private Configuration config;
-
 	@Before
 	public void init() {
 		currencyService = new CurrencyServiceImpl();
 		currencyService.setCurrencyRateDAO(dao);
 		currencyService.setXlraConfigurationDAO(configDAO);
+		currencyService.setLogRecordFactory(logRecordFactory);
+		currencyService.setLogDAO(logDao);
 		r1 = new CurrencyRate();
 		r1.setCurrencyType(XLRACurrency.CHF);
 		r1.setInterval(new Interval("1.20", "1.30"));
@@ -60,7 +66,6 @@ public class CurrencyServiceImplTest extends UnitilsJUnit4 {
 		rates = new ArrayList<CurrencyRate>();
 		rates.add(r2);
 		rates.add(r1);
-		config = new Configuration();
 	}
 
 	@Test
@@ -114,4 +119,21 @@ public class CurrencyServiceImplTest extends UnitilsJUnit4 {
 		currencyService.getChfRateForCurrentPrice(new BigDecimal(0d));
 	}
 
+	@Test
+	public void testupdateCurrentChfValue() {
+		LogRecord record = new RateLogRecord();
+		Configuration config = new Configuration();
+		config.setCurrentChfValue(new BigDecimal(110d));
+		EasyMock.expect(configDAO.getXlraConfiguration()).andReturn(config);
+
+		EasyMock.expect(
+				logRecordFactory.createChfLogRecord(new BigDecimal(110d)))
+				.andReturn(record);
+		logDao.createLogRecord(record);
+		EasyMock.expectLastCall();
+		configDAO.updateXlraConfiguration(config);
+		EasyMockUnitils.replay();
+
+		currencyService.updateCurrentChfValue(new BigDecimal(100d));
+	}
 }

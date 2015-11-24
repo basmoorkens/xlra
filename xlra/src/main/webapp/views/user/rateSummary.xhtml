@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<p:panel id="summaryPanel">
+		<h3>Basic information</h3>
+		<p:panelGrid columns="2" style="width:100%;">
+			<h:outputText value="Name:" />
+			<h:outputText value="#{createRatesController.rateFile.name}" />
+
+			<h:outputText value="Customer: " />
+			<h:outputText value="#{createRatesController.rateFile.customer.name}" />
+
+			<h:outputText value="Country: " />
+			<h:outputText
+				value="#{createRatesController.rateFile.country.shortName}" />
+
+			<h:outputText value="Measurement: " />
+			<h:outputText
+				value="#{createRatesController.rateFile.measurement.description}" />
+
+			<h:outputText value="Type of transport: " />
+			<h:outputText
+				value="#{createRatesController.rateFile.kindOfRate.description}" />
+		</p:panelGrid>
+
+		<h3>Rates</h3>
+		<p:dataTable
+			value="#{createRatesController.rateFile.relationalRateLines}"
+			var="rateLine" emptyMessage="No rate lines found."
+			id="rateLineSummaryTable" rows="50" editable="false">
+
+
+			<f:facet name="header">
+				<h:outputText value="Zone" />
+			</f:facet>
+			<c:forEach items="#{createRatesController.rateFile.columns}"
+				var="column" varStatus="colLoopStatus">
+				<p:column rendered="#{colLoopStatus.index==0}">
+					<f:facet name="header">
+						<h:outputText
+							value="#{createRatesController.rateFile.measurement.description}" />
+					</f:facet>
+					<h:outputText value="#{rateLine[colLoopStatus.index].measurement}" />
+				</p:column>
+				<p:column headerText="#{column}">
+					<h:outputText value="#{rateLine[colLoopStatus.index].value}" />
+				</p:column>
+			</c:forEach>
+		</p:dataTable>
+
+		<h3>General conditions</h3>
+		<p:dataTable editable="false"
+			value="#{createRatesController.rateFile.conditions}" var="condition"
+			emptyMessage="No conditions found." id="conditionSummaryTable">
+			<p:column headerText="Key:">
+				<h:outputText value="#{condition.conditionKey}" />
+			</p:column>
+			<p:column headerText="Value">
+				<h:outputText value="#{condition.value}" />
+			</p:column>
+		</p:dataTable>
+	</p:panel>
+</ui:composition>
