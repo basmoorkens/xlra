@@ -155,22 +155,22 @@ public class TemplateParseService {
 
 	protected void fillInOfferteEmailTranslations(
 			Map<String, Object> parameterMap, Language language) {
-		parameterMap.put("pdf.title",
+		parameterMap.put("pdftitle",
 				translationLoader.getProperty("pdf.title", language));
-		parameterMap.put("pdf.request.date",
+		parameterMap.put("pdfrequestdate",
 				translationLoader.getProperty("pdf.request.date", language));
-		parameterMap.put("pdf.request.country",
+		parameterMap.put("pdfrequestcountry",
 				translationLoader.getProperty("pdf.request.country", language));
-		parameterMap.put("pdf.request.postalcode", translationLoader
-				.getProperty("pdf.request.postalcode", language));
+		parameterMap.put("pdfrequestpostalcode", translationLoader.getProperty(
+				"pdf.request.postalcode", language));
 		parameterMap
-				.put("pdf.request.quantity", translationLoader.getProperty(
+				.put("pdfrequestquantity", translationLoader.getProperty(
 						"pdf.request.quantity", language));
-		parameterMap.put("pdf.request.transporttype", translationLoader
+		parameterMap.put("pdfrequesttransporttype", translationLoader
 				.getProperty("pdf.request.transporttype", language));
-		parameterMap.put("pdf.request.title",
+		parameterMap.put("pdfrequesttitle",
 				translationLoader.getProperty("pdf.request.title", language));
-		parameterMap.put("pdf.offerte.title",
+		parameterMap.put("pdfoffertetitle",
 				translationLoader.getProperty("pdf.offerte.title", language));
 	}
 
