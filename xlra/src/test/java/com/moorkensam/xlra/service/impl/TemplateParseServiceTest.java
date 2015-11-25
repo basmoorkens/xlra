@@ -28,7 +28,7 @@ import com.moorkensam.xlra.service.util.ConfigurationLoader;
 import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Configuration;
 
-public class TemplateEngineTEst extends UnitilsJUnit4 {
+public class TemplateParseServiceTest extends UnitilsJUnit4 {
 
 	@TestedObject
 	private TemplateParseService templateEngine;
@@ -106,5 +106,24 @@ public class TemplateEngineTEst extends UnitilsJUnit4 {
 				offerte, "fulldetailblabla");
 		Assert.assertNotNull(result);
 		Assert.assertTrue(result.contains("test"));
+	}
+
+	@Test
+	public void testParseHtmlFullDetail() throws TemplatingException {
+		PriceCalculation calculation = new PriceCalculation();
+		calculation.setBasePrice(new BigDecimal(100d));
+		calculation.setResultingPriceSurcharge(new BigDecimal(50d));
+		calculation.setDieselPrice(new BigDecimal(10d));
+		calculation.setChfPrice(new BigDecimal(10d));
+		calculation.setImportFormalities(new BigDecimal(30d));
+		calculation.setExportFormalities(new BigDecimal(20d));
+		calculation.setAppliedOperations(Arrays.asList(
+				TranslationKey.ADR_SURCHARGE, TranslationKey.DIESEL_SURCHARGE,
+				TranslationKey.EXPORT_FORM, TranslationKey.IMPORT_FORM,
+				TranslationKey.CHF_SURCHARGE));
+		String result = templateEngine.parseHtmlFullDetailCalculation(
+				calculation, Language.NL);
+		Assert.assertNotNull(result);
+		Assert.assertTrue(result.contains("Basis prijs:"));
 	}
 }

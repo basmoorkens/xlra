@@ -69,7 +69,7 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 		OfferteMailDTO dto = new OfferteMailDTO();
 		String fullDetailAsHtml = getTemplateParseService()
 				.parseHtmlFullDetailCalculation(priceDTO,
-						result.getOfferteUniqueIdentifier());
+						result.getQuery().getResultLanguage());
 		try {
 			MailTemplate template = getMailTemplateDAO()
 					.getMailTemplateForLanguage(

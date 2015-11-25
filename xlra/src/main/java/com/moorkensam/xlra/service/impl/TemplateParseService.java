@@ -131,7 +131,8 @@ public class TemplateParseService {
 	}
 
 	private Map<String, Object> createOffertePdfParameterMap(
-			QuotationResult offerte, Language language) {
+			QuotationResult offerte, Language language)
+			throws TemplatingException {
 		Map<String, Object> parameterMap = new HashMap<String, Object>();
 		parameterMap.put("offerteDate", offerte.getQuery().getQuotationDate());
 		parameterMap.put("country", offerte.getQuery().getCountry()
@@ -144,7 +145,7 @@ public class TemplateParseService {
 		parameterMap.put("transportType", offerte.getQuery().getKindOfRate()
 				.getDescription());
 		String fullDetailAsHtml = parseHtmlFullDetailCalculation(
-				offerte.getCalculation(), offerte.getOfferteUniqueIdentifier());
+				offerte.getCalculation(), language);
 		parameterMap.put("detailCalculation", fullDetailAsHtml);
 		fillInOfferteEmailTranslations(parameterMap, language);
 		return parameterMap;
@@ -264,68 +265,103 @@ public class TemplateParseService {
 
 	private Map<String, Object> createFullDetailParameterMap(Language language) {
 		Map<String, Object> parameterMap = new HashMap<String, Object>();
-		parameterMap.put("pdftitle",
-				translationLoader.getProperty("pdf.title", language));
-		parameterMap.put("pdfrequestdate",
-				translationLoader.getProperty("pdf.request.date", language));
-		parameterMap.put("pdfrequestcountry",
-				translationLoader.getProperty("pdf.request.country", language));
-		parameterMap.put("pdfrequestpostalcode", translationLoader.getProperty(
-				"pdf.request.postalcode", language));
-		parameterMap
-				.put("pdfrequestquantity", translationLoader.getProperty(
-						"pdf.request.quantity", language));
-		parameterMap.put("pdfrequesttransporttype", translationLoader
-				.getProperty("pdf.request.transporttype", language));
-		parameterMap.put("pdfrequesttitle",
-				translationLoader.getProperty("pdf.request.title", language));
-		parameterMap.put("pdfoffertetitle",
-				translationLoader.getProperty("pdf.offerte.title", language));
+		parameterMap.put("calculationfulldetailbasicprice", translationLoader
+				.getProperty("calculation.fulldetail.basic.price", language));
+		parameterMap.put("calculationfulldetaildieselsurcharge",
+				translationLoader.getProperty(
+						"calculation.fulldetail.diesel.surcharge", language));
+		parameterMap.put("calculationfulldetailswissfrancsurcharge",
+				translationLoader.getProperty(
+						"calculation.fulldetail.swiss.franc.surcharge",
+						language));
+		parameterMap.put("calculationfulldetailimportformalities",
+				translationLoader.getProperty(
+						"calculation.fulldetail.import.formalities", language));
+		parameterMap.put("calculationfulldetailexportformalities",
+				translationLoader.getProperty(
+						"calculation.fulldetail.export.formalities", language));
+		parameterMap.put("calculationfulldetailadrsurcharge", translationLoader
+				.getProperty("calculation.fulldetail.adr.surcharge", language));
+		parameterMap.put("calculationfulldetailtotalprice", translationLoader
+				.getProperty("calculation.fulldetail.total.price", language));
 		return parameterMap;
 	}
 
 	public String parseHtmlFullDetailCalculation(
-			final PriceCalculation priceDTO, String offerteReference) {
+			final PriceCalculation priceCalculation, Language language)
+			throws TemplatingException {
+		String unParsedTemplate = buildFullDetailTemplate(priceCalculation);
+		Map<String, Object> parameterMap = createFullDetailParameterMap(language);
+		StringWriter writer = new StringWriter();
+		getStringTemplateLoader().putTemplate("template", unParsedTemplate);
+		getConfiguration().setTemplateLoader(getStringTemplateLoader());
+		Template template;
+		try {
+			template = getConfiguration().getTemplate("template");
+			template.process(parameterMap, writer);
+		} catch (TemplateNotFoundException e) {
+			logger.error(e);
+			throw new TemplatingException("Template not found internaly", e);
+		} catch (MalformedTemplateNameException e) {
+			logger.error(e);
+			throw new TemplatingException("Template malformated", e);
+		} catch (ParseException e) {
+			logger.error(e);
+			throw new TemplatingException("Failed to parse template", e);
+		} catch (IOException e) {
+			logger.error(e);
+			throw new TemplatingException("Could not write template", e);
+		} catch (TemplateException e) {
+			logger.error(e);
+			throw new TemplatingException("General templating exception", e);
+		}
+		return writer.toString();
+	}
+
+	private String buildFullDetailTemplate(
+			final PriceCalculation priceCalculation) {
 		StringBuilder detailCalculationBuilder = new StringBuilder();
 		detailCalculationBuilder.append("<table>");
 		detailCalculationBuilder
-				.append("<tr><td>${calculation.fulldetail.basic.price}</td><td> "
-						+ priceDTO.getBasePrice() + "</td></tr>");
-		if (priceDTO.getAppliedOperations().contains(
+				.append("<tr><td>${calculationfulldetailbasicprice}</td><td> "
+						+ priceCalculation.getBasePrice() + "</td></tr>");
+		if (priceCalculation.getAppliedOperations().contains(
 				TranslationKey.DIESEL_SURCHARGE)) {
 			detailCalculationBuilder
-					.append("<tr><td>${calculation.fulldetail.diesel.surcharge}</td><td>"
-							+ priceDTO.getDieselPrice() + "</td></tr>");
+					.append("<tr><td>${calculationfulldetaildieselsurcharge}</td><td>"
+							+ priceCalculation.getDieselPrice() + "</td></tr>");
 		}
-		if (priceDTO.getAppliedOperations().contains(
+		if (priceCalculation.getAppliedOperations().contains(
 				TranslationKey.CHF_SURCHARGE)) {
 			detailCalculationBuilder
-					.append("<tr><td>${calculation.fulldetail.swiss.franc.surcharge}</td><td>"
-							+ priceDTO.getChfPrice() + "</td></tr>");
+					.append("<tr><td>${calculationfulldetailswissfrancsurcharge}</td><td>"
+							+ priceCalculation.getChfPrice() + "</td></tr>");
 		}
-		if (priceDTO.getAppliedOperations()
-				.contains(TranslationKey.IMPORT_FORM)) {
+		if (priceCalculation.getAppliedOperations().contains(
+				TranslationKey.IMPORT_FORM)) {
 			detailCalculationBuilder
-					.append("<tr><td>${calculation.fulldetail.import.formalities}</td><td>"
-							+ priceDTO.getImportFormalities() + "</td></tr>");
+					.append("<tr><td>${calculationfulldetailimportformalities}</td><td>"
+							+ priceCalculation.getImportFormalities()
+							+ "</td></tr>");
 		}
-		if (priceDTO.getAppliedOperations()
-				.contains(TranslationKey.EXPORT_FORM)) {
+		if (priceCalculation.getAppliedOperations().contains(
+				TranslationKey.EXPORT_FORM)) {
 			detailCalculationBuilder
-					.append("<tr><td>${calculation.fulldetail.export.formalities}</td><td>"
-							+ priceDTO.getExportFormalities() + "</td></tr>");
+					.append("<tr><td>${calculationfulldetailexportformalities}</td><td>"
+							+ priceCalculation.getExportFormalities()
+							+ "</td></tr>");
 		}
-		if (priceDTO.getAppliedOperations().contains(
+		if (priceCalculation.getAppliedOperations().contains(
 				TranslationKey.ADR_SURCHARGE)) {
 			detailCalculationBuilder
-					.append("<tr><td>${calculation.fulldetail.adr.surcharge}</td><td>"
-							+ priceDTO.getResultingPriceSurcharge()
+					.append("<tr><td>${calculationfulldetailadrsurcharge}</td><td>"
+							+ priceCalculation.getResultingPriceSurcharge()
 							+ "</td></tr>");
 		}
 		detailCalculationBuilder.append("</table>");
 		detailCalculationBuilder
-				.append("<h3>${calculation.fulldetail.total.price}"
-						+ priceDTO.getFinalPrice() + "</h3><br />");
+				.append("<h3>${calculationfulldetailtotalprice}"
+						+ priceCalculation.getFinalPrice() + "</h3><br />");
 
 		return detailCalculationBuilder.toString();
 	}

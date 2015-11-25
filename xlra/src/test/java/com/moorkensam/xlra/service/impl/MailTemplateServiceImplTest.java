@@ -71,8 +71,8 @@ public class MailTemplateServiceImplTest extends UnitilsJUnit4 {
 		offerte.setQuery(query);
 		query.setResultLanguage(Language.NL);
 		EasyMock.expect(
-				templateParseService.parseHtmlFullDetailCalculation(
-						priceDTO, "REF-001")).andReturn("blabla");
+				templateParseService.parseHtmlFullDetailCalculation(priceDTO,
+						query.getResultLanguage())).andReturn("blabla");
 		EasyMock.expectLastCall();
 		EasyMock.expect(
 				emailTemplateDAO.getMailTemplateForLanguage(Language.NL))
