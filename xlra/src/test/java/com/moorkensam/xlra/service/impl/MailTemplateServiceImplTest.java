@@ -1,7 +1,6 @@
 package com.moorkensam.xlra.service.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import junit.framework.Assert;
 
@@ -15,7 +14,6 @@ import org.unitils.inject.annotation.TestedObject;
 
 import com.moorkensam.xlra.dao.EmailTemplateDAO;
 import com.moorkensam.xlra.dto.OfferteMailDTO;
-import com.moorkensam.xlra.mapper.PriceCalculationToHtmlConverter;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.RateFileException;
@@ -35,7 +33,7 @@ public class MailTemplateServiceImplTest extends UnitilsJUnit4 {
 	private MailTemplateServiceImpl mailTemplateService;
 
 	@Mock
-	private PriceCalculationToHtmlConverter mapper;
+	private TemplateParseService templateParseService;
 
 	private PriceCalculation priceDTO;
 
@@ -44,9 +42,6 @@ public class MailTemplateServiceImplTest extends UnitilsJUnit4 {
 
 	@Mock
 	private EmailTemplateDAO emailTemplateDAO;
-
-	@Mock
-	private TemplateParseService templateEngine;
 
 	private MailTemplate template;
 
@@ -65,8 +60,7 @@ public class MailTemplateServiceImplTest extends UnitilsJUnit4 {
 		template.setSubject("SUBJECT");
 		mailTemplateService = new MailTemplateServiceImpl();
 		mailTemplateService.setMailTemplateDAO(emailTemplateDAO);
-		mailTemplateService.setTemplateEngine(templateEngine);
-		mailTemplateService.setOfferteEmailParameterGenerator(mapper);
+		mailTemplateService.setTemplateParseService(templateParseService);
 	}
 
 	@Test
@@ -77,14 +71,14 @@ public class MailTemplateServiceImplTest extends UnitilsJUnit4 {
 		offerte.setQuery(query);
 		query.setResultLanguage(Language.NL);
 		EasyMock.expect(
-				mapper.generateHtmlFullDetailCalculation(priceDTO, "REF-001"))
-				.andReturn("blabla");
+				templateParseService.generateHtmlFullDetailCalculation(
+						priceDTO, "REF-001")).andReturn("blabla");
 		EasyMock.expectLastCall();
 		EasyMock.expect(
 				emailTemplateDAO.getMailTemplateForLanguage(Language.NL))
 				.andReturn(template);
 		EasyMock.expect(
-				templateEngine.parseOfferteEmailTemplate(
+				templateParseService.parseOfferteEmailTemplate(
 						template.getTemplate(), offerte, "blabla")).andReturn(
 				"test template + filled in");
 		EasyMockUnitils.replay();

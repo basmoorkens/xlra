@@ -8,12 +8,13 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.moorkensam.xlra.mapper.PriceCalculationToHtmlConverter;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.error.TemplatingException;
+import com.moorkensam.xlra.model.offerte.PriceCalculation;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.security.User;
+import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.util.ConfigurationLoader;
 import com.moorkensam.xlra.service.util.TranslationConfigurationLoader;
 
@@ -44,13 +45,10 @@ public class TemplateParseService {
 
 	private TranslationConfigurationLoader translationLoader;
 
-	private PriceCalculationToHtmlConverter priceCalculationToHtmlConverter;
-
 	private void inializeEngine() {
 		setStringTemplateLoader(new StringTemplateLoader());
 		setConfiguration(new Configuration());
 		setConfigLoader(ConfigurationLoader.getInstance());
-		priceCalculationToHtmlConverter = new PriceCalculationToHtmlConverter();
 		translationLoader = TranslationConfigurationLoader.getInstance();
 	}
 
@@ -145,9 +143,8 @@ public class TemplateParseService {
 				+ offerte.getQuery().getMeasurement().getDescription());
 		parameterMap.put("transportType", offerte.getQuery().getKindOfRate()
 				.getDescription());
-		String fullDetailAsHtml = getPriceCalculationToHtmlConverter()
-				.generateHtmlFullDetailCalculation(offerte.getCalculation(),
-						offerte.getOfferteUniqueIdentifier());
+		String fullDetailAsHtml = generateHtmlFullDetailCalculation(
+				offerte.getCalculation(), offerte.getOfferteUniqueIdentifier());
 		parameterMap.put("detailCalculation", fullDetailAsHtml);
 		fillInOfferteEmailTranslations(parameterMap, language);
 		return parameterMap;
@@ -265,6 +262,48 @@ public class TemplateParseService {
 		return countryName;
 	}
 
+	public String generateHtmlFullDetailCalculation(
+			final PriceCalculation priceDTO, String offerteReference) {
+		StringBuilder detailCalculationBuilder = new StringBuilder();
+		detailCalculationBuilder.append("<table>");
+		detailCalculationBuilder.append("<tr><td>");
+		detailCalculationBuilder.append("Basis prijs:</td><td> "
+				+ priceDTO.getBasePrice() + "</td></tr>");
+		if (priceDTO.getAppliedOperations().contains(
+				TranslationKey.DIESEL_SURCHARGE)) {
+			detailCalculationBuilder.append("<tr><td>Diesel toeslag: </td><td>"
+					+ priceDTO.getDieselPrice() + "</td></tr>");
+		}
+		if (priceDTO.getAppliedOperations().contains(
+				TranslationKey.CHF_SURCHARGE)) {
+			detailCalculationBuilder
+					.append("<tr><td>Zwitserse frank toeslag: </td><td>"
+							+ priceDTO.getChfPrice() + "</td></tr>");
+		}
+		if (priceDTO.getAppliedOperations()
+				.contains(TranslationKey.IMPORT_FORM)) {
+			detailCalculationBuilder
+					.append("<tr><td>Import formaliteiten: </td><td>"
+							+ priceDTO.getImportFormalities() + "</td></tr>");
+		}
+		if (priceDTO.getAppliedOperations()
+				.contains(TranslationKey.EXPORT_FORM)) {
+			detailCalculationBuilder
+					.append("<tr><td>Export formaliteiten: </td><td>"
+							+ priceDTO.getExportFormalities() + "</td></tr>");
+		}
+		if (priceDTO.getAppliedOperations().contains(
+				TranslationKey.ADR_SURCHARGE)) {
+			detailCalculationBuilder.append("<tr><td>ADR toeslag: </td><td>"
+					+ priceDTO.getResultingPriceSurcharge() + "</td></tr>");
+		}
+		detailCalculationBuilder.append("</table>");
+		detailCalculationBuilder.append("<h3>Totale prijs: "
+				+ priceDTO.getFinalPrice() + "</h3><br />");
+
+		return detailCalculationBuilder.toString();
+	}
+
 	public StringTemplateLoader getStringTemplateLoader() {
 		return stringTemplateLoader;
 	}
@@ -288,15 +327,6 @@ public class TemplateParseService {
 
 	public void setConfigLoader(ConfigurationLoader configLoader) {
 		this.configLoader = configLoader;
-	}
-
-	public PriceCalculationToHtmlConverter getPriceCalculationToHtmlConverter() {
-		return priceCalculationToHtmlConverter;
-	}
-
-	public void setPriceCalculationToHtmlConverter(
-			PriceCalculationToHtmlConverter priceCalculationToHtmlConverter) {
-		this.priceCalculationToHtmlConverter = priceCalculationToHtmlConverter;
 	}
 
 	public TranslationConfigurationLoader getTranslationLoader() {

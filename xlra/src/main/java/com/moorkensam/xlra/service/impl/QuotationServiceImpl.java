@@ -17,7 +17,6 @@ import com.moorkensam.xlra.dao.PriceCalculationDAO;
 import com.moorkensam.xlra.dao.QuotationQueryDAO;
 import com.moorkensam.xlra.dao.QuotationResultDAO;
 import com.moorkensam.xlra.dto.OfferteMailDTO;
-import com.moorkensam.xlra.mapper.PriceCalculationToHtmlConverter;
 import com.moorkensam.xlra.mapper.OfferteEmailToEmailResultMapper;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.error.TemplatingException;
@@ -61,13 +60,10 @@ public class QuotationServiceImpl implements QuotationService {
 
 	private IdentityService identityService;
 
-	private PriceCalculationToHtmlConverter offerteEmailParameterGenerator;
-
 	private OfferteEmailToEmailResultMapper mailMapper;
 
 	@PostConstruct
 	public void init() {
-		setOfferteEmailParameterGenerator(new PriceCalculationToHtmlConverter());
 		mailMapper = new OfferteEmailToEmailResultMapper();
 		identityService = IdentityService.getInstance();
 	}
@@ -156,26 +152,6 @@ public class QuotationServiceImpl implements QuotationService {
 	private void fillInQuotationResult(OfferteMailDTO dto,
 			QuotationResult quotationResult) {
 		quotationResult.setEmailResult(mailMapper.map(dto));
-	}
-
-	/**
-	 * This method fetches the email templates from the database and then parses
-	 * it with the given parameters.
-	 * 
-	 * @param query
-	 * @param dto
-	 * @param rf
-	 * @param result
-	 * @throws TemplatingException
-	 */
-
-	public PriceCalculationToHtmlConverter getOfferteEmailParameterGenerator() {
-		return offerteEmailParameterGenerator;
-	}
-
-	public void setOfferteEmailParameterGenerator(
-			PriceCalculationToHtmlConverter mapper) {
-		this.offerteEmailParameterGenerator = mapper;
 	}
 
 	public OfferteEmailToEmailResultMapper getMailMapper() {

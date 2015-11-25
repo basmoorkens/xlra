@@ -12,7 +12,6 @@ import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.TestedObject;
 
-import com.moorkensam.xlra.mapper.PriceCalculationToHtmlConverter;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.TemplatingException;
@@ -40,8 +39,6 @@ public class TemplateEngineTEst extends UnitilsJUnit4 {
 		templateEngine.setStringTemplateLoader(new StringTemplateLoader());
 		templateEngine.setConfiguration(new Configuration());
 		templateEngine.setConfigLoader(ConfigurationLoader.getInstance());
-		templateEngine
-				.setPriceCalculationToHtmlConverter(new PriceCalculationToHtmlConverter());
 	}
 
 	@Test

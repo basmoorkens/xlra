@@ -21,7 +21,6 @@ import com.moorkensam.xlra.dao.QuotationQueryDAO;
 import com.moorkensam.xlra.dao.QuotationResultDAO;
 import com.moorkensam.xlra.dto.OfferteMailDTO;
 import com.moorkensam.xlra.mapper.OfferteEmailToEmailResultMapper;
-import com.moorkensam.xlra.mapper.PriceCalculationToHtmlConverter;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.RateFileException;
@@ -44,9 +43,6 @@ import com.moorkensam.xlra.service.RateFileService;
 public class QuotationServiceImplTest extends UnitilsJUnit4 {
 
 	private QuotationServiceImpl quotationService;
-
-	@Mock
-	private PriceCalculationToHtmlConverter mapper;
 
 	private PriceCalculation priceDTO;
 
@@ -105,7 +101,6 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 		template.setTemplate("test template + ${detailCalculation}");
 		template.setSubject("SUBJECT");
 		quotationService.setPriceCalculationDAO(calculationDAO);
-		quotationService.setOfferteEmailParameterGenerator(mapper);
 		quotationService.setQuotationDAO(quotationDAO);
 		quotationService.setQuotationResultDAO(quotationResultDAO);
 		quotationService.setEmailService(mailService);
@@ -133,8 +128,6 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 		quotationService.init();
 		Assert.assertNotNull(quotationService.getMailMapper());
 		Assert.assertNotNull(quotationService.getIdentityService());
-		Assert.assertNotNull(quotationService
-				.getOfferteEmailParameterGenerator());
 	}
 
 	// @Test
