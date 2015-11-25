@@ -107,19 +107,19 @@ public class QuotationServiceImpl implements QuotationService {
 	@Override
 	public QuotationResult generateQuotationResultForQuotationQuery(
 			QuotationQuery query) throws RateFileException {
-		OfferteMailDTO dto = new OfferteMailDTO();
 		QuotationResult quotationResult = initializeQuotationResult(query);
 		RateLine result;
 		try {
 			RateFile rf = rateFileService.getRateFileForQuery(query);
 			result = rf.getRateLineForQuantityAndPostalCode(
 					query.getQuantity(), query.getPostalCode());
-			quotationResult.getCalculation().setBasePrice(result.getValue());
-			getCalculationService().calculatePriceAccordingToConditions(
-					quotationResult.getCalculation(), rf.getCountry(),
-					rf.getConditions(), query);
-			mailTemplateService.initializeOfferteEmail(quotationResult, dto,
-					rf, quotationResult.getCalculation());
+			PriceCalculation calculatedPrice = calculationService
+					.calculatePriceAccordingToConditions(result.getValue(),
+							rf.getCountry(), rf.getConditions(), query);
+			quotationResult.setCalculation(calculatedPrice);
+
+			OfferteMailDTO dto = mailTemplateService.initializeOfferteEmail(
+					quotationResult, rf, quotationResult.getCalculation());
 			fillInQuotationResult(dto, quotationResult);
 		} catch (RateFileException e1) {
 			logger.error(e1.getBusinessException() + e1.getMessage());
@@ -138,8 +138,6 @@ public class QuotationServiceImpl implements QuotationService {
 		fillInMailLanguage(query);
 		quotationResult.setOfferteUniqueIdentifier(identityService
 				.getNextIdentifier());
-		PriceCalculation priceCalculation = new PriceCalculation();
-		quotationResult.setCalculation(priceCalculation);
 		return quotationResult;
 	}
 

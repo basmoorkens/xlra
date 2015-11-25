@@ -46,75 +46,83 @@ public class CalculationServiceImpl implements CalculationService {
 	/**
 	 * Calculates the prices according to some business rules.
 	 */
-	public void calculatePriceAccordingToConditions(PriceCalculation priceDTO,
-			Country country, List<Condition> conditions, QuotationQuery query)
-			throws RateFileException {
+	public PriceCalculation calculatePriceAccordingToConditions(
+			BigDecimal basePrice, Country country, List<Condition> conditions,
+			QuotationQuery query) throws RateFileException {
+		PriceCalculation priceCalculation = new PriceCalculation();
+		priceCalculation.setBasePrice(basePrice);
 		Configuration config = getConfigurationDao().getXlraConfiguration();
-		calculateDieselSurchargePrice(priceDTO, config);
+		calculateDieselSurchargePrice(priceCalculation, config);
 		if (country.getShortName().equalsIgnoreCase("chf")) {
-			calculateChfSurchargePrice(priceDTO, config);
+			calculateChfSurchargePrice(priceCalculation, config);
 		}
 		for (Condition condition : conditions) {
 			switch (condition.getConditionKey()) {
 			case ADR_SURCHARGE:
 				if (query.isAdrSurcharge()) {
-					calculateAddressSurcharge(priceDTO, condition);
+					calculateAddressSurcharge(priceCalculation, condition);
 				}
 				break;
 			case ADR_MINIMUM:
 				if (query.isAdrSurcharge()) {
-					calculateAddressSurchargeMinimum(priceDTO, condition);
+					calculateAddressSurchargeMinimum(priceCalculation,
+							condition);
 				}
 				break;
 			case IMPORT_FORM:
 				if (query.isImportFormality()) {
-					calculateImportFormality(priceDTO, condition);
+					calculateImportFormality(priceCalculation, condition);
 				}
 				break;
 			case EXPORT_FORM:
 				if (query.isExportFormality()) {
-					calculateExportFormality(priceDTO, condition);
+					calculateExportFormality(priceCalculation, condition);
 				}
 			default:
 				break;
 			}
 		}
-		applyAfterConditionLogic(priceDTO);
-		priceDTO.calculateTotalPrice();
+		applyAfterConditionLogic(priceCalculation);
+		priceCalculation.calculateTotalPrice();
+		return priceCalculation;
 	}
 
-	protected void calculateExportFormality(PriceCalculation priceDTO,
+	protected void calculateExportFormality(PriceCalculation priceCalculation,
 			Condition condition) throws RateFileException {
 		try {
 			BigDecimal exportFormalities = new BigDecimal(
 					Double.parseDouble(condition.getValue()));
-			exportFormalities = getCalcUtil().roundBigDecimal(exportFormalities);
-			priceDTO.setExportFormalities(exportFormalities);
+			exportFormalities = getCalcUtil()
+					.roundBigDecimal(exportFormalities);
+			priceCalculation.setExportFormalities(exportFormalities);
 		} catch (NumberFormatException exc) {
 			throw new RateFileException("Invalid value for "
 					+ condition.getConditionKey() + ": " + condition.getValue());
 		}
 	}
 
-	protected void calculateImportFormality(PriceCalculation priceDTO,
+	protected void calculateImportFormality(PriceCalculation priceCalculation,
 			Condition condition) throws RateFileException {
 		try {
 			BigDecimal importFormalities = new BigDecimal(
 					Double.parseDouble(condition.getValue()));
-			importFormalities = getCalcUtil().roundBigDecimal(importFormalities);
-			priceDTO.setImportFormalities(importFormalities);
+			importFormalities = getCalcUtil()
+					.roundBigDecimal(importFormalities);
+			priceCalculation.setImportFormalities(importFormalities);
 		} catch (NumberFormatException exc) {
 			throw new RateFileException("Invalid value for "
 					+ condition.getConditionKey() + ": " + condition.getValue());
 		}
 	}
 
-	protected void calculateAddressSurchargeMinimum(PriceCalculation priceDTO,
-			Condition condition) throws RateFileException {
+	protected void calculateAddressSurchargeMinimum(
+			PriceCalculation priceCalculation, Condition condition)
+			throws RateFileException {
 		try {
-			priceDTO.setAdrSurchargeMinimum(getCalcUtil()
-					.roundBigDecimal(new BigDecimal(Double
-							.parseDouble(condition.getValue()))));
+			priceCalculation.setAdrSurchargeMinimum(getCalcUtil()
+					.roundBigDecimal(
+							new BigDecimal(Double.parseDouble(condition
+									.getValue()))));
 		} catch (NumberFormatException exc) {
 			throw new RateFileException("Invalid value for "
 					+ condition.getConditionKey() + ": " + condition.getValue());
@@ -125,18 +133,18 @@ public class CalculationServiceImpl implements CalculationService {
 	 * Apply some business rules to the calculation that can only be executed
 	 * after all conditions are parsed.
 	 * 
-	 * @param priceDTO
+	 * @param priceCalculation
 	 */
-	protected void applyAfterConditionLogic(PriceCalculation priceDTO) {
-		if (priceDTO.getAdrSurchargeMinimum() == null
-				&& priceDTO.getCalculatedAdrSurcharge() == null) {
+	protected void applyAfterConditionLogic(PriceCalculation priceCalculation) {
+		if (priceCalculation.getAdrSurchargeMinimum() == null
+				&& priceCalculation.getCalculatedAdrSurcharge() == null) {
 		} else {
-			if (priceDTO.getAdrSurchargeMinimum().doubleValue() > priceDTO
+			if (priceCalculation.getAdrSurchargeMinimum().doubleValue() > priceCalculation
 					.getCalculatedAdrSurcharge().doubleValue()) {
-				priceDTO.setResultingPriceSurcharge(priceDTO
+				priceCalculation.setResultingPriceSurcharge(priceCalculation
 						.getAdrSurchargeMinimum());
 			} else {
-				priceDTO.setResultingPriceSurcharge(priceDTO
+				priceCalculation.setResultingPriceSurcharge(priceCalculation
 						.getCalculatedAdrSurcharge());
 			}
 
@@ -149,39 +157,40 @@ public class CalculationServiceImpl implements CalculationService {
 	 * 
 	 * @param condition
 	 */
-	protected void calculateAddressSurcharge(PriceCalculation priceDTO,
+	protected void calculateAddressSurcharge(PriceCalculation priceCalculation,
 			Condition condition) throws RateFileException {
 		try {
 			BigDecimal multiplier = getCalcUtil()
-					.convertPercentageToBaseMultiplier(Double
-							.parseDouble(condition.getValue()));
-			BigDecimal result = new BigDecimal(priceDTO.getBasePrice()
+					.convertPercentageToBaseMultiplier(
+							Double.parseDouble(condition.getValue()));
+			BigDecimal result = new BigDecimal(priceCalculation.getBasePrice()
 					.doubleValue() * multiplier.doubleValue());
 			result = getCalcUtil().roundBigDecimal(result);
-			priceDTO.setCalculatedAdrSurcharge(result);
+			priceCalculation.setCalculatedAdrSurcharge(result);
 		} catch (NumberFormatException exc) {
 			throw new RateFileException("Invalid value for "
 					+ condition.getConditionKey() + ": " + condition.getValue());
 		}
 	}
 
-	protected void calculateChfSurchargePrice(PriceCalculation priceDTO,
-			Configuration config) throws RateFileException {
+	protected void calculateChfSurchargePrice(
+			PriceCalculation priceCalculation, Configuration config)
+			throws RateFileException {
 		CurrencyRate chfRate = getCurrencyService().getChfRateForCurrentPrice(
 				config.getCurrentChfValue());
 		BigDecimal multiplier = getCalcUtil()
-				.convertPercentageToBaseMultiplier(chfRate
-						.getSurchargePercentage());
-		BigDecimal result = new BigDecimal(priceDTO.getBasePrice()
+				.convertPercentageToBaseMultiplier(
+						chfRate.getSurchargePercentage());
+		BigDecimal result = new BigDecimal(priceCalculation.getBasePrice()
 				.doubleValue() * multiplier.doubleValue());
 		result = getCalcUtil().roundBigDecimal(result);
-		priceDTO.setChfPrice(result);
+		priceCalculation.setChfPrice(result);
 	}
 
 	/**
 	 * Calculates the diesel supplement for the found base price.
 	 * 
-	 * @param priceDTO
+	 * @param priceCalculation
 	 *            The pricedto object to take the base price from and to save
 	 *            the diesel surcharge into.
 	 * @param config
@@ -190,17 +199,18 @@ public class CalculationServiceImpl implements CalculationService {
 	 *             Thrown when no dieselpercentage multiplier can be found for
 	 *             the current diesel price.
 	 */
-	protected void calculateDieselSurchargePrice(PriceCalculation priceDTO,
-			Configuration config) throws RateFileException {
+	protected void calculateDieselSurchargePrice(
+			PriceCalculation priceCalculation, Configuration config)
+			throws RateFileException {
 		DieselRate dieselRate = getDieselService()
 				.getDieselRateForCurrentPrice(config.getCurrentDieselPrice());
 		BigDecimal multiplier = getCalcUtil()
-				.convertPercentageToBaseMultiplier(dieselRate
-						.getSurchargePercentage());
-		BigDecimal result = new BigDecimal(priceDTO.getBasePrice()
+				.convertPercentageToBaseMultiplier(
+						dieselRate.getSurchargePercentage());
+		BigDecimal result = new BigDecimal(priceCalculation.getBasePrice()
 				.doubleValue() * multiplier.doubleValue());
 		result = getCalcUtil().roundBigDecimal(result);
-		priceDTO.setDieselPrice(result);
+		priceCalculation.setDieselPrice(result);
 	}
 
 	public DieselService getDieselService() {

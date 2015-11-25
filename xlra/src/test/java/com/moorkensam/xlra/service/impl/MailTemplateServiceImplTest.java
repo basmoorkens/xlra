@@ -89,12 +89,12 @@ public class MailTemplateServiceImplTest extends UnitilsJUnit4 {
 				"test template + filled in");
 		EasyMockUnitils.replay();
 
-		OfferteMailDTO dto = new OfferteMailDTO();
 		QuotationResult result = new QuotationResult();
 		result.setQuery(query);
 		result.setOfferteUniqueIdentifier("REF-001");
 
-		mailTemplateService.initializeOfferteEmail(result, dto, rf, priceDTO);
+		OfferteMailDTO dto = mailTemplateService.initializeOfferteEmail(result,
+				rf, priceDTO);
 		Assert.assertNotNull(dto);
 		Assert.assertEquals("SUBJECT", dto.getSubject());
 		Assert.assertEquals("test@test.com", dto.getAddress());

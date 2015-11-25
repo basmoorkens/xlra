@@ -65,9 +65,11 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 		return getMailTemplateDAO().getMailTemplateForLanguage(language);
 	}
 
-	public void initializeOfferteEmail(QuotationResult result,
-			OfferteMailDTO dto, RateFile rf, PriceCalculation priceDTO)
-			throws TemplatingException, RateFileException {
+	@Override
+	public OfferteMailDTO initializeOfferteEmail(QuotationResult result,
+			RateFile rf, PriceCalculation priceDTO) throws TemplatingException,
+			RateFileException {
+		OfferteMailDTO dto = new OfferteMailDTO();
 		String fullDetailAsHtml = getOfferteEmailParameterGenerator()
 				.generateHtmlFullDetailCalculation(priceDTO,
 						result.getOfferteUniqueIdentifier());
@@ -87,6 +89,7 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 					"Could not find email template for language "
 							+ result.getQuery().getResultLanguage());
 		}
+		return dto;
 
 	}
 

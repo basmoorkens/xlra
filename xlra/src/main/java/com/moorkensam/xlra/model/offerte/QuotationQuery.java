@@ -103,9 +103,8 @@ public class QuotationQuery extends BaseEntity {
 
 	@Override
 	public String toString() {
-		return "Country: " + country.getShortName() + " Type: " + kindOfRate
-				+ " Measurement: " + measurement + " Customer: "
-				+ customer.getName();
+
+		return " Type: " + kindOfRate + " Measurement: " + measurement;
 	}
 
 	public String getPostalCode() {

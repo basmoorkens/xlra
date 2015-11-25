@@ -188,9 +188,10 @@ public class CalculationServiceTest extends UnitilsJUnit4 {
 				.andReturn(cr);
 
 		EasyMockUnitils.replay();
-		calcService.calculatePriceAccordingToConditions(priceDTO, country,
-				Arrays.asList(adrCondition, adrMinCondition, importCondition,
-						expoCondition), query);
+		priceDTO = calcService
+				.calculatePriceAccordingToConditions(new BigDecimal(100d),
+						country, Arrays.asList(adrCondition, adrMinCondition,
+								importCondition, expoCondition), query);
 		CalcUtil calcUtil = CalcUtil.getInstance();
 		Assert.assertEquals(calcUtil.roundBigDecimal(new BigDecimal(10.00d)),
 				priceDTO.getChfPrice());
