@@ -143,7 +143,7 @@ public class TemplateParseService {
 				+ offerte.getQuery().getMeasurement().getDescription());
 		parameterMap.put("transportType", offerte.getQuery().getKindOfRate()
 				.getDescription());
-		String fullDetailAsHtml = generateHtmlFullDetailCalculation(
+		String fullDetailAsHtml = parseHtmlFullDetailCalculation(
 				offerte.getCalculation(), offerte.getOfferteUniqueIdentifier());
 		parameterMap.put("detailCalculation", fullDetailAsHtml);
 		fillInOfferteEmailTranslations(parameterMap, language);
@@ -262,44 +262,70 @@ public class TemplateParseService {
 		return countryName;
 	}
 
-	public String generateHtmlFullDetailCalculation(
+	private Map<String, Object> createFullDetailParameterMap(Language language) {
+		Map<String, Object> parameterMap = new HashMap<String, Object>();
+		parameterMap.put("pdftitle",
+				translationLoader.getProperty("pdf.title", language));
+		parameterMap.put("pdfrequestdate",
+				translationLoader.getProperty("pdf.request.date", language));
+		parameterMap.put("pdfrequestcountry",
+				translationLoader.getProperty("pdf.request.country", language));
+		parameterMap.put("pdfrequestpostalcode", translationLoader.getProperty(
+				"pdf.request.postalcode", language));
+		parameterMap
+				.put("pdfrequestquantity", translationLoader.getProperty(
+						"pdf.request.quantity", language));
+		parameterMap.put("pdfrequesttransporttype", translationLoader
+				.getProperty("pdf.request.transporttype", language));
+		parameterMap.put("pdfrequesttitle",
+				translationLoader.getProperty("pdf.request.title", language));
+		parameterMap.put("pdfoffertetitle",
+				translationLoader.getProperty("pdf.offerte.title", language));
+		return parameterMap;
+	}
+
+	public String parseHtmlFullDetailCalculation(
 			final PriceCalculation priceDTO, String offerteReference) {
 		StringBuilder detailCalculationBuilder = new StringBuilder();
 		detailCalculationBuilder.append("<table>");
-		detailCalculationBuilder.append("<tr><td>");
-		detailCalculationBuilder.append("Basis prijs:</td><td> "
-				+ priceDTO.getBasePrice() + "</td></tr>");
+		detailCalculationBuilder
+				.append("<tr><td>${calculation.fulldetail.basic.price}</td><td> "
+						+ priceDTO.getBasePrice() + "</td></tr>");
 		if (priceDTO.getAppliedOperations().contains(
 				TranslationKey.DIESEL_SURCHARGE)) {
-			detailCalculationBuilder.append("<tr><td>Diesel toeslag: </td><td>"
-					+ priceDTO.getDieselPrice() + "</td></tr>");
+			detailCalculationBuilder
+					.append("<tr><td>${calculation.fulldetail.diesel.surcharge}</td><td>"
+							+ priceDTO.getDieselPrice() + "</td></tr>");
 		}
 		if (priceDTO.getAppliedOperations().contains(
 				TranslationKey.CHF_SURCHARGE)) {
 			detailCalculationBuilder
-					.append("<tr><td>Zwitserse frank toeslag: </td><td>"
+					.append("<tr><td>${calculation.fulldetail.swiss.franc.surcharge}</td><td>"
 							+ priceDTO.getChfPrice() + "</td></tr>");
 		}
 		if (priceDTO.getAppliedOperations()
 				.contains(TranslationKey.IMPORT_FORM)) {
 			detailCalculationBuilder
-					.append("<tr><td>Import formaliteiten: </td><td>"
+					.append("<tr><td>${calculation.fulldetail.import.formalities}</td><td>"
 							+ priceDTO.getImportFormalities() + "</td></tr>");
 		}
 		if (priceDTO.getAppliedOperations()
 				.contains(TranslationKey.EXPORT_FORM)) {
 			detailCalculationBuilder
-					.append("<tr><td>Export formaliteiten: </td><td>"
+					.append("<tr><td>${calculation.fulldetail.export.formalities}</td><td>"
 							+ priceDTO.getExportFormalities() + "</td></tr>");
 		}
 		if (priceDTO.getAppliedOperations().contains(
 				TranslationKey.ADR_SURCHARGE)) {
-			detailCalculationBuilder.append("<tr><td>ADR toeslag: </td><td>"
-					+ priceDTO.getResultingPriceSurcharge() + "</td></tr>");
+			detailCalculationBuilder
+					.append("<tr><td>${calculation.fulldetail.adr.surcharge}</td><td>"
+							+ priceDTO.getResultingPriceSurcharge()
+							+ "</td></tr>");
 		}
 		detailCalculationBuilder.append("</table>");
-		detailCalculationBuilder.append("<h3>Totale prijs: "
-				+ priceDTO.getFinalPrice() + "</h3><br />");
+		detailCalculationBuilder
+				.append("<h3>${calculation.fulldetail.total.price}"
+						+ priceDTO.getFinalPrice() + "</h3><br />");
 
 		return detailCalculationBuilder.toString();
 	}

@@ -68,7 +68,7 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 			RateFileException {
 		OfferteMailDTO dto = new OfferteMailDTO();
 		String fullDetailAsHtml = getTemplateParseService()
-				.generateHtmlFullDetailCalculation(priceDTO,
+				.parseHtmlFullDetailCalculation(priceDTO,
 						result.getOfferteUniqueIdentifier());
 		try {
 			MailTemplate template = getMailTemplateDAO()

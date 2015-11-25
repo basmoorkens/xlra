@@ -167,6 +167,13 @@
 	</repositories>
 
 	<build>
+		<sourceDirectory>xlra/src/main/java</sourceDirectory>
+		<testSourceDirectory>xlra/src/test/java</testSourceDirectory>
+		<testResources>
+			<testResource>
+				<directory>xlra/src/test/resources</directory>
+			</testResource>
+		</testResources>
 		<plugins>
 			<plugin>
 				<groupId>org.wildfly.plugins</groupId>

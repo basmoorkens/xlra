@@ -71,7 +71,7 @@ public class MailTemplateServiceImplTest extends UnitilsJUnit4 {
 		offerte.setQuery(query);
 		query.setResultLanguage(Language.NL);
 		EasyMock.expect(
-				templateParseService.generateHtmlFullDetailCalculation(
+				templateParseService.parseHtmlFullDetailCalculation(
 						priceDTO, "REF-001")).andReturn("blabla");
 		EasyMock.expectLastCall();
 		EasyMock.expect(
