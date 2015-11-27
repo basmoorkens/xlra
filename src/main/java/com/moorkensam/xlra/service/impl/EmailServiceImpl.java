@@ -3,11 +3,9 @@ package com.moorkensam.xlra.service.impl;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
-import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -20,6 +18,7 @@ import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.EmailService;
 import com.moorkensam.xlra.service.util.ConfigurationLoader;
+import com.moorkensam.xlra.service.util.TransportDelegate;
 
 /**
  * This service can be used to send emails from the application.
@@ -39,10 +38,13 @@ public class EmailServiceImpl implements EmailService {
 
 	private TemplateParseService templateEngine;
 
+	private TransportDelegate transportDelegate;
+
 	@PostConstruct
 	public void init() {
 		setConfigLoader(ConfigurationLoader.getInstance());
 		templateEngine = TemplateParseService.getInstance();
+		setTransportDelegate(TransportDelegate.getInstance());
 	}
 
 	@Override
@@ -57,7 +59,7 @@ public class EmailServiceImpl implements EmailService {
 					ConfigurationLoader.MAIL_SENDER);
 			Message message = createOfferteMail(result, fromAddress);
 
-			Transport.send(message);
+			transportDelegate.send(message);
 			if (logger.isDebugEnabled()) {
 				logger.debug("Email succesfully sent");
 			}
@@ -96,7 +98,7 @@ public class EmailServiceImpl implements EmailService {
 			message.setSubject("Extra logistics Rates application - reset password");
 			message.setContent("TEST", "text/html; charset=utf-8");
 
-			Transport.send(message);
+			transportDelegate.send(message);
 			if (logger.isDebugEnabled()) {
 				logger.debug("Email succesfully sent");
 			}
@@ -123,7 +125,7 @@ public class EmailServiceImpl implements EmailService {
 			message.setSubject("Extra logistics Rates application - account created");
 			message.setContent(filledInTemplate, "text/html; charset=utf-8");
 
-			Transport.send(message);
+			transportDelegate.send(message);
 			if (logger.isDebugEnabled()) {
 				logger.debug("Email succesfully sent");
 			}
@@ -150,6 +152,14 @@ public class EmailServiceImpl implements EmailService {
 
 	public void setMailSession(Session mailSession) {
 		this.mailSession = mailSession;
+	}
+
+	public TransportDelegate getTransportDelegate() {
+		return transportDelegate;
+	}
+
+	public void setTransportDelegate(TransportDelegate transportDelegate) {
+		this.transportDelegate = transportDelegate;
 	}
 
 }
