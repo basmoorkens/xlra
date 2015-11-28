@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.service.impl;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -26,17 +27,46 @@ public class ExcelServiceImpl implements ExcelService {
 	@Inject
 	private RateFileService rateFileService;
 
-	private final static Logger logger = LogManager.getLogger();
+	private ExcelToModelMapper mapper;
+
+	private ExcelUploadParser parser;
+
+	@PostConstruct
+	public void init() {
+		this.mapper = new ExcelToModelMapper();
+		this.parser = new ExcelUploadParser();
+	}
 
 	@Override
 	public void uploadRateFileExcel(RateFile rf, XSSFWorkbook workBook) {
-		logger.info("Parsing excel file to model");
-		ExcelToModelMapper mapper = new ExcelToModelMapper();
-		ExcelUploadParser parser = new ExcelUploadParser();
-		ExcelUploadUtilData parseRateFileExcel = parser
+		ExcelUploadUtilData parseRateFileExcel = getParser()
 				.parseRateFileExcel(workBook);
-		mapper.mapExcelToModel(rf, parseRateFileExcel);
-		rateFileService.createRateFile(rf);
+		getMapper().mapExcelToModel(rf, parseRateFileExcel);
+		getRateFileService().createRateFile(rf);
+	}
+
+	public ExcelUploadParser getParser() {
+		return parser;
+	}
+
+	public void setParser(ExcelUploadParser parser) {
+		this.parser = parser;
+	}
+
+	public ExcelToModelMapper getMapper() {
+		return mapper;
+	}
+
+	public void setMapper(ExcelToModelMapper mapper) {
+		this.mapper = mapper;
+	}
+
+	public RateFileService getRateFileService() {
+		return rateFileService;
+	}
+
+	public void setRateFileService(RateFileService rateFileService) {
+		this.rateFileService = rateFileService;
 	}
 
 }

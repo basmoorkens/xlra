@@ -36,18 +36,18 @@ public class ApplicationConfigurationServiceImpl implements
 
 	@Override
 	public void updateXlraConfiguration(Configuration xlraConfiguration) {
-		xlraConfigurationDAO.updateXlraConfiguration(xlraConfiguration);
+		getXlraConfigurationDAO().updateXlraConfiguration(xlraConfiguration);
 	}
 
 	@Override
 	public Configuration getConfiguration() {
-		Configuration config = xlraConfigurationDAO.getXlraConfiguration();
+		Configuration config = getXlraConfigurationDAO().getXlraConfiguration();
 		return config;
 	}
 
 	@Override
 	public List<MailTemplate> getAllEmailTemplates() {
-		return emailTemplateDAO.getAllTemplates();
+		return getEmailTemplateDAO().getAllTemplates();
 	}
 
 	@Override
@@ -56,7 +56,23 @@ public class ApplicationConfigurationServiceImpl implements
 			logger.debug("Updating email template: "
 					+ mailTemplate.getSubject() + mailTemplate.getLanguage());
 		}
-		emailTemplateDAO.updateEmailTemplate(mailTemplate);
+		getEmailTemplateDAO().updateEmailTemplate(mailTemplate);
+	}
+
+	public ConfigurationDao getXlraConfigurationDAO() {
+		return xlraConfigurationDAO;
+	}
+
+	public void setXlraConfigurationDAO(ConfigurationDao xlraConfigurationDAO) {
+		this.xlraConfigurationDAO = xlraConfigurationDAO;
+	}
+
+	public EmailTemplateDAO getEmailTemplateDAO() {
+		return emailTemplateDAO;
+	}
+
+	public void setEmailTemplateDAO(EmailTemplateDAO emailTemplateDAO) {
+		this.emailTemplateDAO = emailTemplateDAO;
 	}
 
 }

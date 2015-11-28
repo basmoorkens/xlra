@@ -43,7 +43,7 @@ public class EmailServiceImpl implements EmailService {
 	@PostConstruct
 	public void init() {
 		setConfigLoader(ConfigurationLoader.getInstance());
-		templateEngine = TemplateParseService.getInstance();
+		setTemplateEngine(TemplateParseService.getInstance());
 		setTransportDelegate(TransportDelegate.getInstance());
 	}
 
@@ -55,8 +55,8 @@ public class EmailServiceImpl implements EmailService {
 				+ result.getEmailResult().getSubject()
 				+ " for content look up result " + result.getId());
 		try {
-			String fromAddress = getConfigLoader().getProperty(
-					ConfigurationLoader.MAIL_SENDER);
+			String fromAddress = configLoader
+					.getProperty(ConfigurationLoader.MAIL_SENDER);
 			Message message = createOfferteMail(result, fromAddress);
 
 			transportDelegate.send(message);
@@ -87,8 +87,6 @@ public class EmailServiceImpl implements EmailService {
 	public void sendResetPasswordEmail(User user) throws MessagingException {
 		logger.info("Sending user reset password to " + user.getEmail());
 		try {
-			ConfigurationLoader configLoader = ConfigurationLoader
-					.getInstance();
 			String fromAddress = configLoader
 					.getProperty(ConfigurationLoader.MAIL_SENDER);
 			Message message = new MimeMessage(getMailSession());
@@ -112,15 +110,13 @@ public class EmailServiceImpl implements EmailService {
 	public void sendUserCreatedEmail(User user) throws MessagingException {
 		logger.info("Sending user reset password to " + user.getEmail());
 		try {
-			ConfigurationLoader configLoader = ConfigurationLoader
-					.getInstance();
 			String fromAddress = configLoader
 					.getProperty(ConfigurationLoader.MAIL_SENDER);
 			Message message = new MimeMessage(getMailSession());
 			message.setFrom(new InternetAddress(fromAddress));
 			message.setRecipients(Message.RecipientType.TO,
 					InternetAddress.parse(user.getEmail()));
-			String filledInTemplate = templateEngine
+			String filledInTemplate = getTemplateEngine()
 					.parseUserCreatedTemplate(user);
 			message.setSubject("Extra logistics Rates application - account created");
 			message.setContent(filledInTemplate, "text/html; charset=utf-8");
@@ -160,6 +156,14 @@ public class EmailServiceImpl implements EmailService {
 
 	public void setTransportDelegate(TransportDelegate transportDelegate) {
 		this.transportDelegate = transportDelegate;
+	}
+
+	public TemplateParseService getTemplateEngine() {
+		return templateEngine;
+	}
+
+	public void setTemplateEngine(TemplateParseService templateEngine) {
+		this.templateEngine = templateEngine;
 	}
 
 }
