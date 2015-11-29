@@ -18,6 +18,8 @@ public class ConfigurationLoader {
 	public final static String APPLICATION_BASE_URL = "application.base.url";
 
 	public final static String PDF_GENERATION_PATH = "pdf.generate.path";
+	
+	public final static String PDF_TEMPORARY_PATH = "pdf.temp.path";
 
 	public final static String PDF_AUTHOR = "pdf.author";
 

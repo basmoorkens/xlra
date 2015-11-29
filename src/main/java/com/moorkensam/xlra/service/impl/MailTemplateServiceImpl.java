@@ -74,6 +74,8 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 			MailTemplate template = getMailTemplateDAO()
 					.getMailTemplateForLanguage(
 							result.getQuery().getResultLanguage());
+			logger.info("Parsed FULL DETAIL HTML: " + fullDetailAsHtml);
+			logger.info("Parsing template: " + template.getTemplate());
 			String emailMessage = templateParseService
 					.parseOfferteEmailTemplate(template.getTemplate(), result,
 							fullDetailAsHtml);

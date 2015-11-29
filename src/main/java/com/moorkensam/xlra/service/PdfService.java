@@ -9,7 +9,7 @@ import com.moorkensam.xlra.model.offerte.QuotationResult;
 
 public interface PdfService {
 
-	public void generateOffertePdf(QuotationResult offerte, Language language)
+	public void generateTransientOffertePdf(QuotationResult offerte, Language language)
 			throws FileNotFoundException, DocumentException,
 			TemplatingException;
 }

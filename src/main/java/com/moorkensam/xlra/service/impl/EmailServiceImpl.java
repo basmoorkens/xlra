@@ -1,14 +1,20 @@
 package com.moorkensam.xlra.service.impl;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,8 +23,11 @@ import com.moorkensam.xlra.model.error.TemplatingException;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.EmailService;
+import com.moorkensam.xlra.service.FileService;
 import com.moorkensam.xlra.service.util.ConfigurationLoader;
+import com.moorkensam.xlra.service.util.FileUtil;
 import com.moorkensam.xlra.service.util.TransportDelegate;
+import com.sun.mail.handlers.multipart_mixed;
 
 /**
  * This service can be used to send emails from the application.
@@ -33,6 +42,8 @@ public class EmailServiceImpl implements EmailService {
 
 	private ConfigurationLoader configLoader;
 
+	private FileService fileService;
+
 	@Resource(name = "java:/mail/xlra")
 	private Session mailSession;
 
@@ -45,6 +56,7 @@ public class EmailServiceImpl implements EmailService {
 		setConfigLoader(ConfigurationLoader.getInstance());
 		setTemplateEngine(TemplateParseService.getInstance());
 		setTransportDelegate(TransportDelegate.getInstance());
+		fileService = new FileServiceImpl();
 	}
 
 	@Override
@@ -78,8 +90,20 @@ public class EmailServiceImpl implements EmailService {
 		message.setRecipients(Message.RecipientType.TO,
 				InternetAddress.parse(result.getEmailResult().getToAddress()));
 		message.setSubject(result.getEmailResult().getSubject());
-		message.setContent(result.getEmailResult().getEmail(),
+
+		MimeBodyPart messageBody = new MimeBodyPart();
+		messageBody.setContent(result.getEmailResult().getEmail(),
 				"text/html; charset=utf-8");
+		MimeBodyPart pdfAttachment = new MimeBodyPart();
+		DataSource pdfSource = new FileDataSource(result.getPdfFileName());
+		pdfAttachment.setDataHandler(new DataHandler(pdfSource));
+		pdfAttachment.setFileName(FileUtil.getFileNameFromPath(result
+				.getPdfFileName()));
+		Multipart multiPart = new MimeMultipart();
+		multiPart.addBodyPart(messageBody);
+		multiPart.addBodyPart(pdfAttachment);
+
+		message.setContent(multiPart);
 		return message;
 	}
 
@@ -164,6 +188,14 @@ public class EmailServiceImpl implements EmailService {
 
 	public void setTemplateEngine(TemplateParseService templateEngine) {
 		this.templateEngine = templateEngine;
+	}
+
+	public FileService getFileService() {
+		return fileService;
+	}
+
+	public void setFileService(FileService fileService) {
+		this.fileService = fileService;
 	}
 
 }

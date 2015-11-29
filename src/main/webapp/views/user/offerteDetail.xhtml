@@ -50,7 +50,7 @@
 				</p:panelGrid>
 			</p:panel>
 
-			<p:panel header="Email">
+			<p:panel header="Email / PDF">
 				<p:panelGrid columns="2" style="width:100%;">
 					<h:outputText value="Recipient: " />
 					<h:outputText
@@ -65,6 +65,11 @@
 						value="#{offerteOverviewController.selectedOfferte.emailResult.email}" />
 
 				</p:panelGrid>
+				<p:panel style="margin-top:20px;">
+					<p:commandButton value="Open pdf"
+						actionListener="#{offerteOverviewController.downloadPdf}"
+						onclick="this.form.target='_blank'" ajax="false" />
+				</p:panel>
 			</p:panel>
 
 			<p:panel header="Calculation">

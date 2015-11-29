@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.service.impl;
 
+import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -13,11 +14,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.primefaces.model.SortOrder;
 
+import com.itextpdf.text.DocumentException;
 import com.moorkensam.xlra.dao.PriceCalculationDAO;
 import com.moorkensam.xlra.dao.QuotationQueryDAO;
 import com.moorkensam.xlra.dao.QuotationResultDAO;
 import com.moorkensam.xlra.dto.OfferteMailDTO;
 import com.moorkensam.xlra.mapper.OfferteEmailToEmailResultMapper;
+import com.moorkensam.xlra.model.error.PdfException;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.error.TemplatingException;
 import com.moorkensam.xlra.model.offerte.OfferteSearchFilter;
@@ -28,7 +31,9 @@ import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.service.CalculationService;
 import com.moorkensam.xlra.service.EmailService;
+import com.moorkensam.xlra.service.FileService;
 import com.moorkensam.xlra.service.MailTemplateService;
+import com.moorkensam.xlra.service.PdfService;
 import com.moorkensam.xlra.service.QuotationService;
 import com.moorkensam.xlra.service.RateFileService;
 
@@ -58,6 +63,11 @@ public class QuotationServiceImpl implements QuotationService {
 	@Inject
 	private RateFileService rateFileService;
 
+	@Inject
+	private PdfService pdfService;
+
+	private FileService fileService;
+
 	private IdentityService identityService;
 
 	private OfferteEmailToEmailResultMapper mailMapper;
@@ -66,6 +76,7 @@ public class QuotationServiceImpl implements QuotationService {
 	public void init() {
 		mailMapper = new OfferteEmailToEmailResultMapper();
 		identityService = IdentityService.getInstance();
+		fileService = new FileServiceImpl();
 	}
 
 	@Override
@@ -104,6 +115,7 @@ public class QuotationServiceImpl implements QuotationService {
 	public QuotationResult generateQuotationResultForQuotationQuery(
 			QuotationQuery query) throws RateFileException {
 		QuotationResult quotationResult = initializeQuotationResult(query);
+		query.setQuotationDate(new Date());
 		RateLine result;
 		try {
 			RateFile rf = rateFileService.getRateFileForQuery(query);
@@ -117,14 +129,18 @@ public class QuotationServiceImpl implements QuotationService {
 			OfferteMailDTO dto = mailTemplateService.initializeOfferteEmail(
 					quotationResult, rf, quotationResult.getCalculation());
 			fillInQuotationResult(dto, quotationResult);
+			pdfService.generateTransientOffertePdf(quotationResult,
+					query.getResultLanguage());
 		} catch (RateFileException e1) {
 			logger.error(e1.getBusinessException() + e1.getMessage());
 			throw e1;
 		} catch (TemplatingException e) {
 			logger.error("Failed to parse Template" + e.getMessage());
 			throw new RateFileException("Failed to parse email template.");
+		} catch (FileNotFoundException | DocumentException e) {
+			logger.error("Failed to create PDF." + e.getMessage());
+			throw new RateFileException("Failed to generate pdf");
 		}
-		// generate pdf
 		return quotationResult;
 	}
 
@@ -166,12 +182,17 @@ public class QuotationServiceImpl implements QuotationService {
 	public void submitQuotationResult(QuotationResult result)
 			throws RateFileException {
 		copyTransientResultLanguageToLanguageIfNeeded(result);
-		createAndSaveFullOfferte(result);
 		try {
+			createAndSaveFullOfferte(result);
+			result.setPdfFileName(fileService
+					.convertTransientOfferteToFinal(result
+							.getOfferteUniqueIdentifier()));
 			getEmailService().sendOfferteMail(result);
 		} catch (MessagingException e) {
 			logger.error("Failed to send offerte email");
 			throw new RateFileException("Failed to send email");
+		} catch (PdfException e) {
+			throw new RateFileException(e.getBusinessException());
 		}
 	}
 
@@ -281,5 +302,21 @@ public class QuotationServiceImpl implements QuotationService {
 
 	public void setPriceCalculationDAO(PriceCalculationDAO priceCalculationDAO) {
 		this.priceCalculationDAO = priceCalculationDAO;
+	}
+
+	public PdfService getPdfService() {
+		return pdfService;
+	}
+
+	public void setPdfService(PdfService pdfService) {
+		this.pdfService = pdfService;
+	}
+
+	public FileService getFileService() {
+		return fileService;
+	}
+
+	public void setFileService(FileService fileService) {
+		this.fileService = fileService;
 	}
 }

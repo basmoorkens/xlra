@@ -1,5 +1,7 @@
 package com.moorkensam.xlra.model.offerte;
 
+import java.io.File;
+
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,6 +14,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.moorkensam.xlra.model.BaseEntity;
 import com.moorkensam.xlra.model.mail.EmailResult;
@@ -29,9 +32,8 @@ public class QuotationResult extends BaseEntity {
 	@JoinColumn(name = "calculation_id")
 	private PriceCalculation calculation;
 
-	@Lob
-	@Column(name = "pdf")
-	private byte[] generatedPdf;
+	@Column(name = "pdf_file_name")
+	private String pdfFileName;
 
 	@Embedded
 	private EmailResult emailResult;
@@ -57,14 +59,6 @@ public class QuotationResult extends BaseEntity {
 
 	public void setRateFile(RateFile rateFile) {
 		this.rateFile = rateFile;
-	}
-
-	public byte[] getGeneratedPdf() {
-		return generatedPdf;
-	}
-
-	public void setGeneratedPdf(byte[] generatedPdf) {
-		this.generatedPdf = generatedPdf;
 	}
 
 	public EmailResult getEmailResult() {
@@ -97,5 +91,13 @@ public class QuotationResult extends BaseEntity {
 
 	public void setCalculation(PriceCalculation calculation) {
 		this.calculation = calculation;
+	}
+
+	public String getPdfFileName() {
+		return pdfFileName;
+	}
+
+	public void setPdfFileName(String pdfFileName) {
+		this.pdfFileName = pdfFileName;
 	}
 }

@@ -13,8 +13,6 @@
 	</ui:define>
 	<ui:define name="body">
 		<h:form id="customerForm">
-			<p:commandButton value="test" ajax="true" update="" immediate="true"
-				actionListener="#{createQuotationController.setupException}" />
 			<p:panel id="customerPanel" header="Customer" toggleable="false"
 				collapsed="#{createQuotationController.collapseCustomerPanel}">
 				<p:panelGrid columns="3" style="width:100%;">
@@ -139,6 +137,9 @@
 					<p:commandButton value="Back" style="width:150px;margin-left:20px;"
 						update=":summaryForm :filtersForm" immediate="true"
 						actionListener="#{createQuotationController.backToRateFilters}" />
+					<p:commandButton value="Open pdf"
+						actionListener="#{createQuotationController.downloadPdf}"
+						onclick="this.form.target='_blank'" ajax="false" />
 					<p:commandButton value="Send offerte"
 						update=":resultForm :summaryForm"
 						actionListener="#{createQuotationController.submitOfferte}"

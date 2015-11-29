@@ -1,5 +1,11 @@
 package com.moorkensam.xlra.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,7 +14,9 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJBException;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.configuration.Language;
@@ -22,7 +30,9 @@ import com.moorkensam.xlra.model.rate.Measurement;
 import com.moorkensam.xlra.model.rate.TransportType;
 import com.moorkensam.xlra.service.CountryService;
 import com.moorkensam.xlra.service.CustomerService;
+import com.moorkensam.xlra.service.FileService;
 import com.moorkensam.xlra.service.QuotationService;
+import com.moorkensam.xlra.service.impl.FileServiceImpl;
 
 @ManagedBean
 @ViewScoped
@@ -36,6 +46,8 @@ public class CreateQuotationController {
 
 	@Inject
 	private CountryService countryService;
+
+	private FileService fileService;
 
 	private List<Customer> customers;
 
@@ -61,6 +73,7 @@ public class CreateQuotationController {
 		collapseFiltersPanel = true;
 		collapseSummaryPanel = true;
 		setCollapseResultPanel(true);
+		fileService = new FileServiceImpl();
 	}
 
 	public void setupException() {
@@ -150,6 +163,45 @@ public class CreateQuotationController {
 								"An unexpected exception occurred, please contact the system admin.");
 			}
 		}
+	}
+
+	public void downloadPdf() throws IOException {
+		// Get the FacesContext
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+
+		// Get HTTP response
+		HttpServletResponse response = (HttpServletResponse) facesContext
+				.getExternalContext().getResponse();
+
+		// Set response headers
+		response.reset(); // Reset the response in the first place
+		response.setHeader("Content-Type", "application/pdf"); // Set only the
+																// content type
+
+		// Open response output stream
+		OutputStream responseOutputStream = response.getOutputStream();
+
+		// Read PDF contents
+		File generatedPdfFromDisk = fileService
+				.getOffertePdfFromFileSystem(quotationResult.getPdfFileName());
+		InputStream pdfInputStream = new FileInputStream(generatedPdfFromDisk);
+
+		// Read PDF contents and write them to the output
+		byte[] bytesBuffer = new byte[2048];
+		int bytesRead;
+		while ((bytesRead = pdfInputStream.read(bytesBuffer)) > 0) {
+			responseOutputStream.write(bytesBuffer, 0, bytesRead);
+		}
+
+		// Make sure that everything is out
+		responseOutputStream.flush();
+
+		// Close both streams
+		pdfInputStream.close();
+		responseOutputStream.close();
+
+		facesContext.responseComplete();
+
 	}
 
 	public void submitOfferte() {
@@ -288,6 +340,14 @@ public class CreateQuotationController {
 
 	public void setCollapseResultPanel(boolean collapseResultPanel) {
 		this.collapseResultPanel = collapseResultPanel;
+	}
+
+	public FileService getFileService() {
+		return fileService;
+	}
+
+	public void setFileService(FileService fileService) {
+		this.fileService = fileService;
 	}
 
 }

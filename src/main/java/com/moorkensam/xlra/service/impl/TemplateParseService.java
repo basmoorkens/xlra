@@ -83,6 +83,7 @@ public class TemplateParseService {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Parsing email template " + templateFromDb);
 		}
+		stringTemplateLoader = new StringTemplateLoader();
 		Map<String, Object> dataModel = createOfferteEmailTemplateParams(
 				offerte, fullDetail);
 		StringWriter writer = new StringWriter();
@@ -290,6 +291,7 @@ public class TemplateParseService {
 	public String parseHtmlFullDetailCalculation(
 			final PriceCalculation priceCalculation, Language language)
 			throws TemplatingException {
+		stringTemplateLoader = new StringTemplateLoader();
 		String unParsedTemplate = buildFullDetailTemplate(priceCalculation);
 		Map<String, Object> parameterMap = createFullDetailParameterMap(language);
 		StringWriter writer = new StringWriter();

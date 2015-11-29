@@ -79,7 +79,7 @@ public class PdfServiceTest extends UnitilsJUnit4 {
 	@Test
 	public void testGeneratePdf() throws FileNotFoundException,
 			DocumentException, TemplatingException {
-		pdfService.generateOffertePdf(offerte, Language.EN);
+		pdfService.generateTransientOffertePdf(offerte, Language.EN);
 	}
 
 }
