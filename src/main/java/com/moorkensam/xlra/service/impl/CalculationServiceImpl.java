@@ -1,8 +1,6 @@
 package com.moorkensam.xlra.service.impl;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -13,11 +11,10 @@ import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.CurrencyRate;
 import com.moorkensam.xlra.model.configuration.DieselRate;
 import com.moorkensam.xlra.model.error.RateFileException;
+import com.moorkensam.xlra.model.offerte.OfferteOptionDTO;
 import com.moorkensam.xlra.model.offerte.PriceCalculation;
-import com.moorkensam.xlra.model.offerte.QuotationQuery;
+import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.rate.Condition;
-import com.moorkensam.xlra.model.rate.Country;
-import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.CalculationService;
 import com.moorkensam.xlra.service.CurrencyService;
 import com.moorkensam.xlra.service.DieselService;
@@ -25,6 +22,8 @@ import com.moorkensam.xlra.service.util.CalcUtil;
 
 @Stateless
 public class CalculationServiceImpl implements CalculationService {
+
+	private static final String CHF = "chf";
 
 	@Inject
 	private DieselService dieselService;
@@ -47,36 +46,34 @@ public class CalculationServiceImpl implements CalculationService {
 	 * Calculates the prices according to some business rules.
 	 */
 	public PriceCalculation calculatePriceAccordingToConditions(
-			BigDecimal basePrice, Country country, List<Condition> conditions,
-			QuotationQuery query) throws RateFileException {
+			QuotationResult offerte) throws RateFileException {
 		PriceCalculation priceCalculation = new PriceCalculation();
-		priceCalculation.setBasePrice(basePrice);
+		priceCalculation.setBasePrice(offerte.getCalculation().getBasePrice());
 		Configuration config = getConfigurationDao().getXlraConfiguration();
 		calculateDieselSurchargePrice(priceCalculation, config);
-		if (country.getShortName().equalsIgnoreCase("chf")) {
+		if (offerte.getCountry().getShortName().equalsIgnoreCase(CHF)) {
 			calculateChfSurchargePrice(priceCalculation, config);
 		}
-		for (Condition condition : conditions) {
-			switch (condition.getConditionKey()) {
+		for (OfferteOptionDTO option : offerte.getSelectableOptions()) {
+			switch (option.getKey()) {
 			case ADR_SURCHARGE:
-				if (query.isAdrSurcharge()) {
-					calculateAddressSurcharge(priceCalculation, condition);
+				if (option.isSelected()) {
+					calculateAddressSurcharge(priceCalculation, option);
 				}
 				break;
 			case ADR_MINIMUM:
-				if (query.isAdrSurcharge()) {
-					calculateAddressSurchargeMinimum(priceCalculation,
-							condition);
+				if (option.isSelected()) {
+					calculateAddressSurchargeMinimum(priceCalculation, option);
 				}
 				break;
 			case IMPORT_FORM:
-				if (query.isImportFormality()) {
-					calculateImportFormality(priceCalculation, condition);
+				if (option.isSelected()) {
+					calculateImportFormality(priceCalculation, option);
 				}
 				break;
 			case EXPORT_FORM:
-				if (query.isExportFormality()) {
-					calculateExportFormality(priceCalculation, condition);
+				if (option.isSelected()) {
+					calculateExportFormality(priceCalculation, option);
 				}
 			default:
 				break;
@@ -88,44 +85,44 @@ public class CalculationServiceImpl implements CalculationService {
 	}
 
 	protected void calculateExportFormality(PriceCalculation priceCalculation,
-			Condition condition) throws RateFileException {
+			OfferteOptionDTO option) throws RateFileException {
 		try {
 			BigDecimal exportFormalities = new BigDecimal(
-					Double.parseDouble(condition.getValue()));
+					Double.parseDouble(option.getValue()));
 			exportFormalities = getCalcUtil()
 					.roundBigDecimal(exportFormalities);
 			priceCalculation.setExportFormalities(exportFormalities);
 		} catch (NumberFormatException exc) {
-			throw new RateFileException("Invalid value for "
-					+ condition.getConditionKey() + ": " + condition.getValue());
+			throw new RateFileException("Invalid value for " + option.getKey()
+					+ ": " + option.getValue());
 		}
 	}
 
 	protected void calculateImportFormality(PriceCalculation priceCalculation,
-			Condition condition) throws RateFileException {
+			OfferteOptionDTO option) throws RateFileException {
 		try {
 			BigDecimal importFormalities = new BigDecimal(
-					Double.parseDouble(condition.getValue()));
+					Double.parseDouble(option.getValue()));
 			importFormalities = getCalcUtil()
 					.roundBigDecimal(importFormalities);
 			priceCalculation.setImportFormalities(importFormalities);
 		} catch (NumberFormatException exc) {
-			throw new RateFileException("Invalid value for "
-					+ condition.getConditionKey() + ": " + condition.getValue());
+			throw new RateFileException("Invalid value for " + option.getKey()
+					+ ": " + option.getValue());
 		}
 	}
 
 	protected void calculateAddressSurchargeMinimum(
-			PriceCalculation priceCalculation, Condition condition)
+			PriceCalculation priceCalculation, OfferteOptionDTO option)
 			throws RateFileException {
 		try {
 			priceCalculation.setAdrSurchargeMinimum(getCalcUtil()
 					.roundBigDecimal(
-							new BigDecimal(Double.parseDouble(condition
-									.getValue()))));
+							new BigDecimal(
+									Double.parseDouble(option.getValue()))));
 		} catch (NumberFormatException exc) {
-			throw new RateFileException("Invalid value for "
-					+ condition.getConditionKey() + ": " + condition.getValue());
+			throw new RateFileException("Invalid value for " + option.getKey()
+					+ ": " + option.getValue());
 		}
 	}
 
@@ -158,18 +155,18 @@ public class CalculationServiceImpl implements CalculationService {
 	 * @param condition
 	 */
 	protected void calculateAddressSurcharge(PriceCalculation priceCalculation,
-			Condition condition) throws RateFileException {
+			OfferteOptionDTO option) throws RateFileException {
 		try {
 			BigDecimal multiplier = getCalcUtil()
 					.convertPercentageToBaseMultiplier(
-							Double.parseDouble(condition.getValue()));
+							Double.parseDouble(option.getValue()));
 			BigDecimal result = new BigDecimal(priceCalculation.getBasePrice()
 					.doubleValue() * multiplier.doubleValue());
 			result = getCalcUtil().roundBigDecimal(result);
 			priceCalculation.setCalculatedAdrSurcharge(result);
 		} catch (NumberFormatException exc) {
-			throw new RateFileException("Invalid value for "
-					+ condition.getConditionKey() + ": " + condition.getValue());
+			throw new RateFileException("Invalid value for " + option.getKey()
+					+ ": " + option.getValue());
 		}
 	}
 

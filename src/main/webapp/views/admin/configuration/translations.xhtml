@@ -29,9 +29,6 @@
 					<p:column headerText="Translated in">
 						<h:outputText value="#{translation.translationsString}" />
 					</p:column>
-					<p:column headerText="Key translated in">
-						<h:outputText value="#{translation.translationKeysString}" />
-					</p:column>
 					<p:column style="width:36px;text-align: center">
 						<p:commandButton
 							actionListener="#{translationController.setupPageForEdit(translation)}"

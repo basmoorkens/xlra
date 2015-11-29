@@ -28,12 +28,22 @@ public interface QuotationService {
 	 * Generate a QuotationResult for given query. This implies that for the
 	 * given query the correct rateline is searched in the database and an email
 	 * and pdf is generated for this calculation.
+	 * This is the first step in a 2 step proces.
 	 * 
 	 * @param query
 	 * @return
 	 */
 	public QuotationResult generateQuotationResultForQuotationQuery(
 			QuotationQuery query) throws RateFileException;
+
+	/**
+	 * This is the 2nd step of the generation process. 
+	 * @param offerte
+	 * @return
+	 * @throws RateFileException
+	 */
+	public QuotationResult generateEmailAndPdfForOfferte(QuotationResult offerte)
+			throws RateFileException;
 
 	/**
 	 * This method saves a quotation result and sends out the final email to the

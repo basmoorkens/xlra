@@ -28,4 +28,6 @@ public interface UserService {
 
 	public void setPasswordAndActivateUser(User user, String password);
 
+	public String getCurrentUsername();
+
 }

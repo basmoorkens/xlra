@@ -20,8 +20,7 @@ public interface MailTemplateService {
 
 	void saveMailTemplateDTO(MailTemplateDTO mailTemplateDTO);
 
-	public OfferteMailDTO initializeOfferteEmail(QuotationResult result,
-			RateFile rf, PriceCalculation priceDTO) throws TemplatingException,
-			RateFileException;
+	public OfferteMailDTO initializeOfferteEmail(QuotationResult result)
+			throws TemplatingException, RateFileException;
 
 }

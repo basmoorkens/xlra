@@ -3,7 +3,7 @@ package com.moorkensam.xlra.service.impl;
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import javax.mail.MessagingException;
 
@@ -30,13 +30,14 @@ import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.error.TemplatingException;
 import com.moorkensam.xlra.model.mail.EmailResult;
 import com.moorkensam.xlra.model.mail.MailTemplate;
+import com.moorkensam.xlra.model.offerte.OfferteOptionDTO;
 import com.moorkensam.xlra.model.offerte.PriceCalculation;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
-import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
+import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.CalculationService;
 import com.moorkensam.xlra.service.EmailService;
@@ -44,6 +45,8 @@ import com.moorkensam.xlra.service.FileService;
 import com.moorkensam.xlra.service.MailTemplateService;
 import com.moorkensam.xlra.service.PdfService;
 import com.moorkensam.xlra.service.RateFileService;
+import com.moorkensam.xlra.service.UserService;
+import com.moorkensam.xlra.service.util.QuotationUtil;
 
 public class QuotationServiceImplTest extends UnitilsJUnit4 {
 
@@ -84,6 +87,9 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 	private RateFile rfMock;
 
 	@Mock
+	private QuotationUtil quotationUtil;
+
+	@Mock
 	private FileService fileService;
 
 	@Mock
@@ -94,6 +100,9 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 
 	@Mock
 	private PriceCalculationDAO calculationDAO;
+
+	@Mock
+	private UserService userService;
 
 	private QuotationQuery query;
 
@@ -123,6 +132,8 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 		quotationService.setRateFileService(rateFileService);
 		quotationService.setFileService(fileService);
 		quotationService.setPdfService(pdfService);
+		quotationService.setUserService(userService);
+		quotationService.setQuotationUtil(quotationUtil);
 	}
 
 	@Test
@@ -177,31 +188,26 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 		RateLine rl = new RateLine();
 		QuotationResult result = new QuotationResult();
 		result.setQuery(query);
-		OfferteMailDTO offerteMailDto = new OfferteMailDTO();
 		result.setOfferteUniqueIdentifier(uqId);
-		EmailResult mailResult = new EmailResult();
-		List<Condition> conditions = new ArrayList<Condition>();
-		PriceCalculation priceCalculation = new PriceCalculation();
+		User user = new User();
+		user.setName("moorkens");
+		user.setName("bas");
 		rl.setValue(new BigDecimal(100d));
+		OfferteOptionDTO option = new OfferteOptionDTO();
+		option.setKey(TranslationKey.ADR_MINIMUM);
+		option.setSelected(true);
+		option.setValue("200d");
 		EasyMock.expect(idService.getNextIdentifier()).andReturn(uqId);
+		EasyMock.expect(userService.getCurrentUsername()).andReturn("bmoork");
+		EasyMock.expect(userService.getUserByUserName("bmoork"))
+				.andReturn(user);
 		EasyMock.expect(rateFileService.getRateFileForQuery(query)).andReturn(
 				rfMock);
 		EasyMock.expect(
 				rfMock.getRateLineForQuantityAndPostalCode(query.getQuantity(),
 						query.getPostalCode())).andReturn(rl);
-		EasyMock.expect(rfMock.getCountry()).andReturn(query.getCountry());
-		EasyMock.expect(rfMock.getConditions()).andReturn(conditions);
-		EasyMock.expect(
-				calcService.calculatePriceAccordingToConditions(rl.getValue(),
-						query.getCountry(), conditions, query)).andReturn(
-				priceCalculation);
-		EasyMock.expect(
-				mailTemplateService.initializeOfferteEmail(result, rfMock,
-						priceCalculation)).andReturn(offerteMailDto);
-		EasyMock.expect(mailMapper.map(offerteMailDto)).andReturn(mailResult);
-		pdfService.generateTransientOffertePdf(result,
-				query.getResultLanguage());
-		EasyMock.expectLastCall();
+		EasyMock.expect(quotationUtil.generateOfferteOptionsForRateFile(rfMock))
+				.andReturn(Arrays.asList(option));
 
 		EasyMockUnitils.replay();
 		QuotationResult offerte = quotationService
@@ -210,6 +216,36 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 		Assert.assertNotNull(offerte);
 		Assert.assertNotNull(offerte.getQuery());
 		Assert.assertNotNull(offerte.getCalculation());
+	}
+
+	@Test
+	public void testGenerateMailAndPdf() throws TemplatingException,
+			RateFileException, FileNotFoundException, DocumentException {
+		QuotationResult result = new QuotationResult();
+		result.setCalculation(new PriceCalculation());
+		result.setQuery(new QuotationQuery());
+		result.getQuery().setResultLanguage(Language.NL);
+		result.getCalculation().setBasePrice(new BigDecimal(100d));
+		OfferteMailDTO offerteMailDto = new OfferteMailDTO();
+		EmailResult mailResult = new EmailResult();
+		PriceCalculation newCalc = new PriceCalculation();
+		newCalc.setBasePrice(new BigDecimal(100d));
+		newCalc.setDieselPrice(new BigDecimal(10d));
+		newCalc.setFinalPrice(new BigDecimal(110d));
+
+		EasyMock.expect(calcService.calculatePriceAccordingToConditions(result))
+				.andReturn(newCalc);
+		EasyMock.expect(mailTemplateService.initializeOfferteEmail(result))
+				.andReturn(offerteMailDto);
+		EasyMock.expect(mailMapper.map(offerteMailDto)).andReturn(mailResult);
+		pdfService.generateTransientOffertePdf(result,
+				query.getResultLanguage());
+		EasyMock.expectLastCall();
+
+		EasyMockUnitils.replay();
+		QuotationResult offerte = quotationService
+				.generateEmailAndPdfForOfferte(result);
+
 		Assert.assertNotNull(offerte.getEmailResult());
 	}
 

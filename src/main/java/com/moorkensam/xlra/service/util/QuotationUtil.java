@@ -1,10 +1,16 @@
 package com.moorkensam.xlra.service.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.moorkensam.xlra.model.customer.Customer;
+import com.moorkensam.xlra.model.offerte.OfferteOptionDTO;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
+import com.moorkensam.xlra.model.rate.Condition;
+import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
 
 public class QuotationUtil {
@@ -53,6 +59,18 @@ public class QuotationUtil {
 		filter.setMeasurement(query.getMeasurement());
 		filter.setRateKind(query.getKindOfRate());
 		filter.setTransportationType(query.getTransportType());
+	}
+
+	public List<OfferteOptionDTO> generateOfferteOptionsForRateFile(RateFile rf) {
+		List<OfferteOptionDTO> options = new ArrayList<OfferteOptionDTO>();
+		for (Condition c : rf.getConditions()) {
+			OfferteOptionDTO option = new OfferteOptionDTO();
+			option.setKey(c.getConditionKey());
+			option.setSelected(false);
+			option.setValue(c.getValue());
+			options.add(option);
+		}
+		return options;
 	}
 
 }

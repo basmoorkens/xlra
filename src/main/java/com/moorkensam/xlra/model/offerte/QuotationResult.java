@@ -1,6 +1,6 @@
 package com.moorkensam.xlra.model.offerte;
 
-import java.io.File;
+import java.util.List;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
@@ -8,7 +8,6 @@ import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -18,6 +17,7 @@ import javax.persistence.Transient;
 
 import com.moorkensam.xlra.model.BaseEntity;
 import com.moorkensam.xlra.model.mail.EmailResult;
+import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.RateFile;
 
 @Entity
@@ -38,6 +38,9 @@ public class QuotationResult extends BaseEntity {
 	@Embedded
 	private EmailResult emailResult;
 
+	@Column(name = "created_user_full_name")
+	private String createdUserFullName;
+
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "quotation_query_id")
 	private QuotationQuery query;
@@ -52,6 +55,9 @@ public class QuotationResult extends BaseEntity {
 	private RateFile rateFile;
 
 	private String offerteUniqueIdentifier;
+
+	@Transient
+	private List<OfferteOptionDTO> selectableOptions;
 
 	public RateFile getRateFile() {
 		return rateFile;
@@ -99,5 +105,28 @@ public class QuotationResult extends BaseEntity {
 
 	public void setPdfFileName(String pdfFileName) {
 		this.pdfFileName = pdfFileName;
+	}
+
+	public String getCreatedUserFullName() {
+		return createdUserFullName;
+	}
+
+	public void setCreatedUserFullName(String createdUserFullName) {
+		this.createdUserFullName = createdUserFullName;
+	}
+
+	public List<OfferteOptionDTO> getSelectableOptions() {
+		return selectableOptions;
+	}
+
+	public void setSelectableOptions(List<OfferteOptionDTO> selectableOptions) {
+		this.selectableOptions = selectableOptions;
+	}
+
+	public Country getCountry() {
+		if (getQuery() == null) {
+			return null;
+		}
+		return getQuery().getCountry();
 	}
 }

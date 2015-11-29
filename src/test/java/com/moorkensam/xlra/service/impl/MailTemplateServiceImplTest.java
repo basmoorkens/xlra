@@ -66,13 +66,13 @@ public class MailTemplateServiceImplTest extends UnitilsJUnit4 {
 	@Test
 	public void testInitOfferteEmail() throws TemplatingException,
 			RateFileException {
-		RateFile rf = new RateFile();
 		QuotationResult offerte = new QuotationResult();
 		offerte.setQuery(query);
 		query.setResultLanguage(Language.NL);
 		EasyMock.expect(
-				templateParseService.parseHtmlFullDetailCalculation(priceDTO,
-						query.getResultLanguage())).andReturn("blabla");
+				templateParseService.parseHtmlFullDetailCalculation(
+						offerte.getCalculation(), query.getResultLanguage()))
+				.andReturn("blabla");
 		EasyMock.expectLastCall();
 		EasyMock.expect(
 				emailTemplateDAO.getMailTemplateForLanguage(Language.NL))
@@ -86,9 +86,9 @@ public class MailTemplateServiceImplTest extends UnitilsJUnit4 {
 		QuotationResult result = new QuotationResult();
 		result.setQuery(query);
 		result.setOfferteUniqueIdentifier("REF-001");
+		result.setCalculation(priceDTO);
 
-		OfferteMailDTO dto = mailTemplateService.initializeOfferteEmail(result,
-				rf, priceDTO);
+		OfferteMailDTO dto = mailTemplateService.initializeOfferteEmail(result);
 		Assert.assertNotNull(dto);
 		Assert.assertEquals("SUBJECT", dto.getSubject());
 		Assert.assertEquals("test@test.com", dto.getAddress());

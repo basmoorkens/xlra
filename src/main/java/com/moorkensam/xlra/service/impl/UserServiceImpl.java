@@ -6,6 +6,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
@@ -39,6 +41,9 @@ public class UserServiceImpl implements UserService {
 	@Inject
 	private EmailService emailService;
 
+	@Resource
+	private SessionContext sessionContext;
+
 	private LogRecordFactory logRecordFactory;
 
 	@PostConstruct
@@ -49,6 +54,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<User> getAllUsers() {
 		return getUserDAO().getAllUsers();
+	}
+
+	@Override
+	public String getCurrentUsername() {
+		return getSessionContext().getCallerPrincipal().getName();
 	}
 
 	@Override
@@ -185,5 +195,13 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User getUserByUserName(String username) {
 		return userDAO.getUserByUserName(username);
+	}
+
+	public SessionContext getSessionContext() {
+		return sessionContext;
+	}
+
+	public void setSessionContext(SessionContext sessionContext) {
+		this.sessionContext = sessionContext;
 	}
 }

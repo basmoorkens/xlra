@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,12 +21,14 @@ import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.RateFileException;
+import com.moorkensam.xlra.model.offerte.PriceCalculation;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Kind;
 import com.moorkensam.xlra.model.rate.Measurement;
 import com.moorkensam.xlra.model.rate.TransportType;
+import com.moorkensam.xlra.service.CalculationService;
 import com.moorkensam.xlra.service.CountryService;
 import com.moorkensam.xlra.service.CustomerService;
 import com.moorkensam.xlra.service.FileService;
@@ -43,6 +44,9 @@ public class CreateQuotationController {
 
 	@Inject
 	private CustomerService customerService;
+
+	@Inject
+	private CalculationService calculationService;
 
 	@Inject
 	private CountryService countryService;
@@ -62,7 +66,7 @@ public class CreateQuotationController {
 	private List<Country> allCountries;
 
 	private boolean collapseCustomerPanel, collapseFiltersPanel,
-			collapseSummaryPanel, collapseResultPanel;
+			collapseSummaryPanel, collapseOptionsPanel, collapseResultPanel;
 
 	@PostConstruct
 	public void init() {
@@ -72,13 +76,9 @@ public class CreateQuotationController {
 		initializeNewCustomer();
 		collapseFiltersPanel = true;
 		collapseSummaryPanel = true;
-		setCollapseResultPanel(true);
+		collapseResultPanel = true;
+		collapseOptionsPanel = true;
 		fileService = new FileServiceImpl();
-	}
-
-	public void setupException() {
-		System.out.println("....Ò");
-		throw new NullPointerException();
 	}
 
 	private void initializeNewQuotationQuery() {
@@ -124,32 +124,54 @@ public class CreateQuotationController {
 		if (getQuotationQuery().getCustomer().isHasOwnRateFile()) {
 			setupFiltersFromExistingCustomer();
 		}
-		collapseCustomerPanel = true;
-		collapseFiltersPanel = false;
-		collapseSummaryPanel = true;
-		setCollapseResultPanel(true);
+		showRateFilterPanel();
 	}
 
-	public void backToCustomer() {
+	public void showCustomerPanel() {
 		collapseCustomerPanel = false;
 		collapseFiltersPanel = true;
+		collapseOptionsPanel = true;
 		collapseSummaryPanel = true;
+		collapseResultPanel = true;
 	}
 
-	public void backToRateFilters() {
+	public void showRateFilterPanel() {
 		collapseCustomerPanel = true;
 		collapseFiltersPanel = false;
+		collapseOptionsPanel = true;
 		collapseSummaryPanel = true;
+		collapseResultPanel = true;
+	}
+
+	public void showOptionsPanel() {
+		collapseCustomerPanel = true;
+		collapseFiltersPanel = true;
+		collapseOptionsPanel = false;
+		collapseSummaryPanel = true;
+		collapseResultPanel = true;
+	}
+
+	public void showSummaryPanel() {
+		collapseCustomerPanel = true;
+		collapseFiltersPanel = true;
+		collapseOptionsPanel = true;
+		collapseSummaryPanel = false;
+		collapseResultPanel = true;
+	}
+
+	public void showResultPanel() {
+		collapseCustomerPanel = true;
+		collapseFiltersPanel = true;
+		collapseOptionsPanel = true;
+		collapseSummaryPanel = true;
+		collapseResultPanel = false;
 	}
 
 	public void processRateFilters() {
 		try {
 			quotationResult = quotationService
 					.generateQuotationResultForQuotationQuery(quotationQuery);
-			collapseCustomerPanel = true;
-			collapseFiltersPanel = true;
-			collapseSummaryPanel = false;
-			setCollapseResultPanel(true);
+			showOptionsPanel();
 		} catch (RateFileException re2) {
 			showRateFileError(re2);
 		} catch (EJBException e) {
@@ -162,6 +184,16 @@ public class CreateQuotationController {
 						.addErrorMessage("Unknown exception",
 								"An unexpected exception occurred, please contact the system admin.");
 			}
+		}
+	}
+
+	public void processOptions() {
+		try {
+			quotationResult = quotationService
+					.generateEmailAndPdfForOfferte(quotationResult);
+			showSummaryPanel();
+		} catch (RateFileException e) {
+			showRateFileError(e);
 		}
 	}
 
@@ -210,8 +242,7 @@ public class CreateQuotationController {
 			MessageUtil.addMessage("Offerte successfully send",
 					"The offerte was successfully send to "
 							+ quotationResult.getEmailResult().getToAddress());
-			collapseSummaryPanel = true;
-			setCollapseResultPanel(false);
+			showResultPanel();
 		} catch (RateFileException re2) {
 			showRateFileError(re2);
 		} catch (EJBException e) {
@@ -348,6 +379,14 @@ public class CreateQuotationController {
 
 	public void setFileService(FileService fileService) {
 		this.fileService = fileService;
+	}
+
+	public boolean isCollapseOptionsPanel() {
+		return collapseOptionsPanel;
+	}
+
+	public void setCollapseOptionsPanel(boolean collapseOptionsPanel) {
+		this.collapseOptionsPanel = collapseOptionsPanel;
 	}
 
 }

@@ -23,12 +23,14 @@ import com.moorkensam.xlra.mapper.OfferteEmailToEmailResultMapper;
 import com.moorkensam.xlra.model.error.PdfException;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.error.TemplatingException;
+import com.moorkensam.xlra.model.offerte.OfferteOptionDTO;
 import com.moorkensam.xlra.model.offerte.OfferteSearchFilter;
 import com.moorkensam.xlra.model.offerte.PriceCalculation;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
+import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.CalculationService;
 import com.moorkensam.xlra.service.EmailService;
 import com.moorkensam.xlra.service.FileService;
@@ -36,6 +38,8 @@ import com.moorkensam.xlra.service.MailTemplateService;
 import com.moorkensam.xlra.service.PdfService;
 import com.moorkensam.xlra.service.QuotationService;
 import com.moorkensam.xlra.service.RateFileService;
+import com.moorkensam.xlra.service.UserService;
+import com.moorkensam.xlra.service.util.QuotationUtil;
 
 @Stateless
 public class QuotationServiceImpl implements QuotationService {
@@ -66,17 +70,23 @@ public class QuotationServiceImpl implements QuotationService {
 	@Inject
 	private PdfService pdfService;
 
+	@Inject
+	private UserService userService;
+
 	private FileService fileService;
 
 	private IdentityService identityService;
 
 	private OfferteEmailToEmailResultMapper mailMapper;
 
+	private QuotationUtil quotationUtil;
+
 	@PostConstruct
 	public void init() {
 		mailMapper = new OfferteEmailToEmailResultMapper();
 		identityService = IdentityService.getInstance();
 		fileService = new FileServiceImpl();
+		setQuotationUtil(QuotationUtil.getInstance());
 	}
 
 	@Override
@@ -121,19 +131,31 @@ public class QuotationServiceImpl implements QuotationService {
 			RateFile rf = rateFileService.getRateFileForQuery(query);
 			result = rf.getRateLineForQuantityAndPostalCode(
 					query.getQuantity(), query.getPostalCode());
-			PriceCalculation calculatedPrice = calculationService
-					.calculatePriceAccordingToConditions(result.getValue(),
-							rf.getCountry(), rf.getConditions(), query);
+			List<OfferteOptionDTO> options = quotationUtil
+					.generateOfferteOptionsForRateFile(rf);
+			quotationResult.setSelectableOptions(options);
+			PriceCalculation calculatedPrice = new PriceCalculation();
+			calculatedPrice.setBasePrice(result.getValue());
 			quotationResult.setCalculation(calculatedPrice);
-
-			OfferteMailDTO dto = mailTemplateService.initializeOfferteEmail(
-					quotationResult, rf, quotationResult.getCalculation());
-			fillInQuotationResult(dto, quotationResult);
-			pdfService.generateTransientOffertePdf(quotationResult,
-					query.getResultLanguage());
 		} catch (RateFileException e1) {
 			logger.error(e1.getBusinessException() + e1.getMessage());
 			throw e1;
+		}
+		return quotationResult;
+	}
+
+	@Override
+	public QuotationResult generateEmailAndPdfForOfferte(QuotationResult offerte)
+			throws RateFileException {
+		try {
+			PriceCalculation calculatedPrice = calculationService
+					.calculatePriceAccordingToConditions(offerte);
+			offerte.setCalculation(calculatedPrice);
+			OfferteMailDTO dto = mailTemplateService
+					.initializeOfferteEmail(offerte);
+			fillInQuotationResult(dto, offerte);
+			pdfService.generateTransientOffertePdf(offerte, offerte.getQuery()
+					.getResultLanguage());
 		} catch (TemplatingException e) {
 			logger.error("Failed to parse Template" + e.getMessage());
 			throw new RateFileException("Failed to parse email template.");
@@ -141,7 +163,7 @@ public class QuotationServiceImpl implements QuotationService {
 			logger.error("Failed to create PDF." + e.getMessage());
 			throw new RateFileException("Failed to generate pdf");
 		}
-		return quotationResult;
+		return offerte;
 	}
 
 	private QuotationResult initializeQuotationResult(QuotationQuery query) {
@@ -150,6 +172,9 @@ public class QuotationServiceImpl implements QuotationService {
 		fillInMailLanguage(query);
 		quotationResult.setOfferteUniqueIdentifier(identityService
 				.getNextIdentifier());
+		User loggedInUser = userService.getUserByUserName(userService
+				.getCurrentUsername());
+		quotationResult.setCreatedUserFullName(loggedInUser.getFullName());
 		return quotationResult;
 	}
 
@@ -318,5 +343,21 @@ public class QuotationServiceImpl implements QuotationService {
 
 	public void setFileService(FileService fileService) {
 		this.fileService = fileService;
+	}
+
+	public UserService getUserService() {
+		return userService;
+	}
+
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
+
+	public QuotationUtil getQuotationUtil() {
+		return quotationUtil;
+	}
+
+	public void setQuotationUtil(QuotationUtil quotationUtil) {
+		this.quotationUtil = quotationUtil;
 	}
 }

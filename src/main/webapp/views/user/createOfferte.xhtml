@@ -3,7 +3,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
 <ui:composition template="/views/template.xhtml">
 	<ui:define name="title">
 		<h:outputText value="XLRA - create offerte" />
@@ -107,14 +108,48 @@
 				<p:panel style="bottom:20px;  padding:0px;border:0px;">
 					<p:commandButton value="Back" style="width:150px;margin-left:20px;"
 						update=":customerForm :filtersForm" immediate="true"
-						actionListener="#{createQuotationController.backToCustomer}" />
+						actionListener="#{createQuotationController.showCustomerPanel}" />
 					<p:commandButton value="Next"
 						actionListener="#{createQuotationController.processRateFilters}"
 						style="width:150px; margin-left:20px;" process=":filtersForm"
-						update=":filtersForm :summaryForm" ajax="true" />
+						update=":filtersForm :optionsForm" ajax="true" />
 				</p:panel>
 			</p:panel>
 		</h:form>
+
+		<h:form id="optionsForm">
+			<p:panel id="optionsPanel" header="Options"
+				collapsed="#{createQuotationController.collapseOptionsPanel}"
+				toggleable="false">
+				<p:growl showDetail="true" id="messages" sticky="true" />
+				<p:panelGrid columns="2" style="width:100%;">
+
+				<h:outputLabel value="Option" />
+				<h:outputLabel value="Selected" />
+
+				<c:forEach items="#{createQuotationController.quotationResult.selectableOptions}" var="option">
+				
+				<h:outputLabel value="#{option.key}" />
+				<p:selectBooleanCheckbox value="#{option.selected}" />
+				
+				</c:forEach>
+
+				</p:panelGrid>
+				<p:panel style="bottom:20px;  padding:0px;border:0px;">
+					<p:commandButton value="Back" style="width:150px;margin-left:20px;"
+						update=":filtersForm :optionsForm" immediate="true"
+						actionListener="#{createQuotationController.showRateFilterPanel}" />
+					<p:commandButton value="Next"
+						actionListener="#{createQuotationController.processOptions}"
+						style="width:150px; margin-left:20px;" process=":optionsForm"
+						update=":optionsForm :summaryForm" ajax="true" />
+				</p:panel>
+			</p:panel>
+		</h:form>
+
+
+
+
 
 		<h:form id="summaryForm">
 			<p:panel id="summaryPanel" header="Summary"
@@ -135,8 +170,8 @@
 					value="#{createQuotationController.quotationResult.emailResult.email}" />
 				<p:panel style="bottom:20px;  padding:0px;border:0px;">
 					<p:commandButton value="Back" style="width:150px;margin-left:20px;"
-						update=":summaryForm :filtersForm" immediate="true"
-						actionListener="#{createQuotationController.backToRateFilters}" />
+						update=":summaryForm :optionsForm" immediate="true"
+						actionListener="#{createQuotationController.showOptionsPanel}" />
 					<p:commandButton style="width:150px; margin-left:20px"
 						value="Open pdf"
 						actionListener="#{createQuotationController.downloadPdf}"

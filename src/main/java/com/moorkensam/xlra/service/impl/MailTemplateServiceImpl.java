@@ -1,6 +1,5 @@
 package com.moorkensam.xlra.service.impl;
 
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -17,9 +16,7 @@ import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.error.TemplatingException;
 import com.moorkensam.xlra.model.mail.MailTemplate;
-import com.moorkensam.xlra.model.offerte.PriceCalculation;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
-import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.service.MailTemplateService;
 
 @Stateless
@@ -63,12 +60,11 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 	}
 
 	@Override
-	public OfferteMailDTO initializeOfferteEmail(QuotationResult result,
-			RateFile rf, PriceCalculation priceDTO) throws TemplatingException,
-			RateFileException {
+	public OfferteMailDTO initializeOfferteEmail(QuotationResult result)
+			throws TemplatingException, RateFileException {
 		OfferteMailDTO dto = new OfferteMailDTO();
 		String fullDetailAsHtml = getTemplateParseService()
-				.parseHtmlFullDetailCalculation(priceDTO,
+				.parseHtmlFullDetailCalculation(result.getCalculation(),
 						result.getQuery().getResultLanguage());
 		try {
 			MailTemplate template = getMailTemplateDAO()

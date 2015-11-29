@@ -135,6 +135,7 @@ public class TemplateParseService {
 			QuotationResult offerte, Language language)
 			throws TemplatingException {
 		Map<String, Object> parameterMap = new HashMap<String, Object>();
+		fillInOfferteEmailTranslations(parameterMap, language);
 		parameterMap.put("offerteDate", offerte.getQuery().getQuotationDate());
 		parameterMap.put("country", offerte.getQuery().getCountry()
 				.getNameForLanguage(language));
@@ -145,10 +146,11 @@ public class TemplateParseService {
 				+ offerte.getQuery().getMeasurement().getDescription());
 		parameterMap.put("transportType", offerte.getQuery().getKindOfRate()
 				.getDescription());
+		parameterMap.put("createdUserFullName",
+				offerte.getCreatedUserFullName());
 		String fullDetailAsHtml = parseHtmlFullDetailCalculation(
 				offerte.getCalculation(), language);
 		parameterMap.put("detailCalculation", fullDetailAsHtml);
-		fillInOfferteEmailTranslations(parameterMap, language);
 		return parameterMap;
 	}
 
@@ -171,6 +173,8 @@ public class TemplateParseService {
 				translationLoader.getProperty("pdf.request.title", language));
 		parameterMap.put("pdfoffertetitle",
 				translationLoader.getProperty("pdf.offerte.title", language));
+		parameterMap.put("pdfofferteservedby", translationLoader.getProperty(
+				"pdf.offerte.served.by", language));
 	}
 
 	public String parseUserCreatedTemplate(User user)
@@ -247,6 +251,8 @@ public class TemplateParseService {
 		templateModel.put("destination", offerte.getQuery().getPostalCode()
 				+ " " + getCountryNameForEmail(offerte.getQuery()));
 		templateModel.put("offerteKey", offerte.getOfferteUniqueIdentifier());
+		templateModel.put("createdUserFullName",
+				offerte.getCreatedUserFullName());
 		return templateModel;
 	}
 
