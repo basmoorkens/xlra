@@ -6,9 +6,12 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
+import org.unitils.easymock.EasyMockUnitils;
+import org.unitils.easymock.annotation.Mock;
 
 import com.itextpdf.text.DocumentException;
 import com.moorkensam.xlra.model.configuration.Language;
@@ -20,6 +23,7 @@ import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Kind;
 import com.moorkensam.xlra.model.rate.Measurement;
 import com.moorkensam.xlra.model.translation.TranslationKey;
+import com.moorkensam.xlra.service.FileService;
 import com.moorkensam.xlra.service.util.ConfigurationLoader;
 import com.moorkensam.xlra.service.util.TranslationConfigurationLoader;
 
@@ -30,6 +34,9 @@ public class PdfServiceTest extends UnitilsJUnit4 {
 	private QuotationResult offerte;
 
 	private Language offerteLanguage;
+
+	@Mock
+	private FileService fileService;
 
 	private ConfigurationLoader configLoader;
 
@@ -42,6 +49,7 @@ public class PdfServiceTest extends UnitilsJUnit4 {
 		translationLoader = TranslationConfigurationLoader.getInstance();
 		configLoader = ConfigurationLoader.getInstance();
 		pdfService = new PdfServiceImpl();
+		pdfService.setFileService(fileService);
 		offerte = new QuotationResult();
 		templateParseService = TemplateParseService.getInstance();
 		templateParseService.setTranslationLoader(translationLoader);
@@ -73,12 +81,16 @@ public class PdfServiceTest extends UnitilsJUnit4 {
 		calculation.setImportFormalities(new BigDecimal(10d));
 		calculation.calculateTotalPrice();
 		offerte.setCalculation(calculation);
+		offerte.setOfferteUniqueIdentifier("uq123");
 
 	}
 
 	@Test
 	public void testGeneratePdf() throws FileNotFoundException,
 			DocumentException, TemplatingException {
+		EasyMock.expect(fileService.getTemporaryFilePathForPdf("uq123"))
+				.andReturn("uq123.pdf");
+		EasyMockUnitils.replay();
 		pdfService.generateTransientOffertePdf(offerte, Language.EN);
 	}
 

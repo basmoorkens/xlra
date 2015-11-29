@@ -95,31 +95,6 @@
 					</p:panelGrid>
 				</p:panel>
 
-
-				<p:panel header="Translation for keys">
-					<p:panelGrid columns="2" style="width:100%;">
-						<h:outputText
-							value="#{translationController.activeTranslation.englishTranslationKey.language}" />
-						<h:inputText style="width:100%;"
-							value="#{translationController.activeTranslation.englishTranslationKey.translation}" />
-
-						<h:outputText
-							value="#{translationController.activeTranslation.dutchTranslationKey.language}" />
-						<h:inputText style="width:100%;"
-							value="#{translationController.activeTranslation.dutchTranslationKey.translation}" />
-
-						<h:outputText
-							value="#{translationController.activeTranslation.frenchTranslationKey.language}" />
-						<h:inputText style="width:100%;"
-							value="#{translationController.activeTranslation.frenchTranslationKey.translation}" />
-
-						<h:outputText
-							value="#{translationController.activeTranslation.germanTranslationKey.language}" />
-						<h:inputText style="width:100%;"
-							value="#{translationController.activeTranslation.germanTranslationKey.translation}" />
-					</p:panelGrid>
-				</p:panel>
-
 				<p:panel>
 					<p:commandButton action="#{translationController.cancel}"
 						value="Cancel" immediate="true"

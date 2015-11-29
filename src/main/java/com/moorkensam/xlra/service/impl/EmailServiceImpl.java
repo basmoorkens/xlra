@@ -25,6 +25,7 @@ import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.EmailService;
 import com.moorkensam.xlra.service.FileService;
 import com.moorkensam.xlra.service.util.ConfigurationLoader;
+import com.moorkensam.xlra.service.util.EmailAttachmentHelper;
 import com.moorkensam.xlra.service.util.FileUtil;
 import com.moorkensam.xlra.service.util.TransportDelegate;
 import com.sun.mail.handlers.multipart_mixed;
@@ -51,11 +52,14 @@ public class EmailServiceImpl implements EmailService {
 
 	private TransportDelegate transportDelegate;
 
+	private EmailAttachmentHelper helper;
+
 	@PostConstruct
 	public void init() {
 		setConfigLoader(ConfigurationLoader.getInstance());
 		setTemplateEngine(TemplateParseService.getInstance());
 		setTransportDelegate(TransportDelegate.getInstance());
+		helper = new EmailAttachmentHelper();
 		fileService = new FileServiceImpl();
 	}
 
@@ -94,11 +98,7 @@ public class EmailServiceImpl implements EmailService {
 		MimeBodyPart messageBody = new MimeBodyPart();
 		messageBody.setContent(result.getEmailResult().getEmail(),
 				"text/html; charset=utf-8");
-		MimeBodyPart pdfAttachment = new MimeBodyPart();
-		DataSource pdfSource = new FileDataSource(result.getPdfFileName());
-		pdfAttachment.setDataHandler(new DataHandler(pdfSource));
-		pdfAttachment.setFileName(FileUtil.getFileNameFromPath(result
-				.getPdfFileName()));
+		MimeBodyPart pdfAttachment = getHelper().generatedPdfAttachment(result);
 		Multipart multiPart = new MimeMultipart();
 		multiPart.addBodyPart(messageBody);
 		multiPart.addBodyPart(pdfAttachment);
@@ -196,6 +196,14 @@ public class EmailServiceImpl implements EmailService {
 
 	public void setFileService(FileService fileService) {
 		this.fileService = fileService;
+	}
+
+	public EmailAttachmentHelper getHelper() {
+		return helper;
+	}
+
+	public void setHelper(EmailAttachmentHelper helper) {
+		this.helper = helper;
 	}
 
 }

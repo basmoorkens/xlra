@@ -35,10 +35,6 @@ public class Translation extends BaseEntity implements Comparable<Translation> {
 	@CollectionTable(name = "translationsForLanguages", joinColumns = @JoinColumn(name = "translation_id"))
 	private List<TranslationForLanguage> translations;
 
-	@ElementCollection
-	@CollectionTable(name = "translationKeysForLanguages", joinColumns = @JoinColumn(name = "translation_id"))
-	private List<TranslationForLanguage> translationKeysTranslations;
-
 	@Transient
 	public String getTranslationKeyAsString() {
 		if (translationKey == null) {
@@ -57,15 +53,6 @@ public class Translation extends BaseEntity implements Comparable<Translation> {
 
 	public TranslationForLanguage getTranslationForLanguage(Language language) {
 		for (TranslationForLanguage tl : translations) {
-			if (tl.getLanguage().equals(language)) {
-				return tl;
-			}
-		}
-		return null;
-	}
-
-	public TranslationForLanguage getTranslationKeyForLanguage(Language language) {
-		for (TranslationForLanguage tl : translationKeysTranslations) {
 			if (tl.getLanguage().equals(language)) {
 				return tl;
 			}
@@ -100,45 +87,6 @@ public class Translation extends BaseEntity implements Comparable<Translation> {
 
 	public TranslationForLanguage getDutchTranslation() {
 		return getTranslationForLanguage(Language.NL);
-	}
-
-	public TranslationForLanguage getEnglishTranslationKey() {
-		return getTranslationKeyForLanguage(Language.EN);
-	}
-
-	public TranslationForLanguage getFrenchTranslationKey() {
-		return getTranslationKeyForLanguage(Language.FR);
-	}
-
-	public TranslationForLanguage getGermanTranslationKey() {
-		return getTranslationKeyForLanguage(Language.DE);
-	}
-
-	public TranslationForLanguage getDutchTranslationKey() {
-		return getTranslationKeyForLanguage(Language.NL);
-	}
-
-	public List<TranslationForLanguage> getTranslationKeysTranslations() {
-		return translationKeysTranslations;
-	}
-
-	public void setTranslationKeysTranslations(
-			List<TranslationForLanguage> translationKeysTranslations) {
-		this.translationKeysTranslations = translationKeysTranslations;
-	}
-
-	public String getTranslationKeysString() {
-		String result = "";
-		if (translationKeysTranslations == null) {
-			return result;
-		}
-		for (TranslationForLanguage tl : translationKeysTranslations) {
-			result += tl.getLanguage().getDescription() + ", ";
-		}
-		if (result.isEmpty() || result.length() == 1) {
-			return result;
-		}
-		return result.substring(0, result.length() - 2);
 	}
 
 	public String getTranslationsString() {

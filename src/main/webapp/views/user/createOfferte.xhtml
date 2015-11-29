@@ -137,7 +137,8 @@
 					<p:commandButton value="Back" style="width:150px;margin-left:20px;"
 						update=":summaryForm :filtersForm" immediate="true"
 						actionListener="#{createQuotationController.backToRateFilters}" />
-					<p:commandButton value="Open pdf"
+					<p:commandButton style="width:150px; margin-left:20px"
+						value="Open pdf"
 						actionListener="#{createQuotationController.downloadPdf}"
 						onclick="this.form.target='_blank'" ajax="false" />
 					<p:commandButton value="Send offerte"

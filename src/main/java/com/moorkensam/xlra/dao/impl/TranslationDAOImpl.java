@@ -41,7 +41,6 @@ public class TranslationDAOImpl extends BaseDAO implements TranslationDAO {
 
 	private void lazyLoadTranslations(List<Translation> resultList) {
 		for (Translation t : resultList) {
-			t.getTranslationKeysTranslations().size();
 			t.getTranslations().size();
 		}
 

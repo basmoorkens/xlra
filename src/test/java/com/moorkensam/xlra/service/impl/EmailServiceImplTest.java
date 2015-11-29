@@ -1,6 +1,7 @@
 package com.moorkensam.xlra.service.impl;
 
 import javax.mail.MessagingException;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 
 import org.easymock.EasyMock;
@@ -15,6 +16,7 @@ import com.moorkensam.xlra.model.mail.EmailResult;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.util.ConfigurationLoader;
+import com.moorkensam.xlra.service.util.EmailAttachmentHelper;
 import com.moorkensam.xlra.service.util.TransportDelegate;
 
 public class EmailServiceImplTest extends UnitilsJUnit4 {
@@ -27,6 +29,9 @@ public class EmailServiceImplTest extends UnitilsJUnit4 {
 	@Mock
 	private TransportDelegate transportDelegate;
 
+	@Mock
+	private EmailAttachmentHelper helper;
+
 	private ConfigurationLoader configLoader;
 
 	@Before
@@ -36,6 +41,7 @@ public class EmailServiceImplTest extends UnitilsJUnit4 {
 		emailServiceImpl.setTransportDelegate(transportDelegate);
 		configLoader = ConfigurationLoader.getInstance();
 		emailServiceImpl.setConfigLoader(configLoader);
+		emailServiceImpl.setHelper(helper);
 	}
 
 	@Test
@@ -72,8 +78,10 @@ public class EmailServiceImplTest extends UnitilsJUnit4 {
 		emailResult.setEmail("test email");
 		emailResult.setSubject("test");
 		emailResult.setToAddress("test@test.com");
+		offerte.setOfferteUniqueIdentifier("uq123");
 		offerte.setEmailResult(emailResult);
-
+		EasyMock.expect(helper.generatedPdfAttachment(offerte)).andReturn(
+				new MimeBodyPart());
 		transportDelegate.send(EasyMock.isA(MimeMessage.class));
 		EasyMock.expectLastCall();
 		EasyMockUnitils.replay();

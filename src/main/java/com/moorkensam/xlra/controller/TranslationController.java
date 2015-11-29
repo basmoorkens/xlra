@@ -93,8 +93,6 @@ public class TranslationController {
 		tlDe.setLanguage(Language.DE);
 
 		t.setTranslations(Arrays.asList(tlEng, tlNl, tlFr, tlDe));
-		t.setTranslationKeysTranslations(Arrays.asList(tlEng.deepCopy(),
-				tlNl.deepCopy(), tlFr.deepCopy(), tlDe.deepCopy()));
 
 		setActiveTranslation(t);
 	}
