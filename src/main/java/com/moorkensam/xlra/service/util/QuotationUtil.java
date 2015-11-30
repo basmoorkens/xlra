@@ -71,7 +71,7 @@ public class QuotationUtil {
 		for (Condition c : rf.getConditions()) {
 			OfferteOptionDTO option = new OfferteOptionDTO();
 			option.setKey(c.getConditionKey());
-			option.setSelected(false);
+			option.setSelected(c.isStandardSelected());
 			option.setValue(c.getValue());
 			option.setI8nKey(mapper.map(option.getKey()));
 			option.setCalculationOption(isCalculationKey(option.getKey()));

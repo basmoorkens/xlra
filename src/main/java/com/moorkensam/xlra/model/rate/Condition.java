@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.model.rate;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -20,6 +21,9 @@ public class Condition extends BaseEntity {
 
 	@Enumerated(EnumType.STRING)
 	private TranslationKey conditionKey;
+
+	@Column(name = "offerte_standard_selected")
+	private boolean standardSelected;
 
 	@ManyToOne
 	@JoinColumn(name = "rateFileId")
@@ -46,6 +50,7 @@ public class Condition extends BaseEntity {
 		c.setValue(this.value);
 		c.setRateFile(this.rateFile);
 		c.setConditionKey(conditionKey);
+		c.setStandardSelected(standardSelected);
 		return c;
 	}
 
@@ -68,5 +73,13 @@ public class Condition extends BaseEntity {
 
 	public void setConditionKey(TranslationKey conditionKey) {
 		this.conditionKey = conditionKey;
+	}
+
+	public boolean isStandardSelected() {
+		return standardSelected;
+	}
+
+	public void setStandardSelected(boolean standardSelected) {
+		this.standardSelected = standardSelected;
 	}
 }

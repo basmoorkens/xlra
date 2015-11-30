@@ -45,6 +45,17 @@
 					</f:facet>
 				</p:cellEditor>
 			</p:column>
+			<p:column headerText="Standard option" style="width:128px;">
+				<p:cellEditor>
+					<f:facet name="output">
+						<p:selectBooleanCheckbox value="#{condition.standardSelected}"
+							disabled="true" />
+					</f:facet>
+					<f:facet name="input">
+						<p:selectBooleanCheckbox value="#{condition.standardSelected}" />
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
 			<p:column style="width:32px" rendered="#{canEdit}">
 				<p:rowEditor />
 			</p:column>
