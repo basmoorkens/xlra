@@ -350,4 +350,11 @@ public class RateFile extends BaseEntity {
 		setRelationalRateLines(relationRateLines);
 	}
 
+	public void addCondition(Condition condition) {
+		if (conditions == null) {
+			conditions = new ArrayList<Condition>();
+		}
+		conditions.add(condition);
+		condition.setRateFile(this);
+	}
 }

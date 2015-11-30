@@ -64,6 +64,7 @@ public class ExcelToModelMapperTest extends UnitilsJUnit4 {
 		zoneValuesMap.put(2, Arrays.asList("boemboem"));
 		rf.setCountry(new Country());
 		rf.getCountry().setZoneType(ZoneType.ALPHANUMERIC_LIST);
+		mapper.setConditionFactory(new ConditionFactory());
 
 	}
 

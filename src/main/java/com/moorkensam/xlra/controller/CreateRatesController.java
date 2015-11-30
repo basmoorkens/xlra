@@ -29,6 +29,7 @@ import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.CountryService;
 import com.moorkensam.xlra.service.CustomerService;
 import com.moorkensam.xlra.service.RateFileService;
+import com.moorkensam.xlra.service.util.ConditionFactory;
 import com.moorkensam.xlra.service.util.TranslationUtil;
 
 @ViewScoped
@@ -43,6 +44,8 @@ public class CreateRatesController {
 
 	@Inject
 	private CustomerService customerService;
+
+	private ConditionFactory conditionFactory;
 
 	private List<Country> countries;
 
@@ -81,6 +84,7 @@ public class CreateRatesController {
 		fullCustomers = customerService.getAllFullCustomers();
 		measurements = Arrays.asList(Measurement.values());
 		kindOfRates = Arrays.asList(Kind.values());
+		conditionFactory = new ConditionFactory();
 	}
 
 	public void goToRateLineEditor() {
@@ -142,11 +146,8 @@ public class CreateRatesController {
 	}
 
 	public void createConditionForSelectedTranslationKey(ActionEvent event) {
-		Condition c = new Condition();
-		c.setValue("");
-		c.setConditionKey(getKeyToAdd());
-		c.setRateFile(rateFile);
-		rateFile.getConditions().add(c);
+		rateFile.addCondition(conditionFactory.createCondition(getKeyToAdd(),
+				""));
 		setKeyToAdd(null);
 	}
 
@@ -300,5 +301,13 @@ public class CreateRatesController {
 
 	public void setKeyToAdd(TranslationKey keyToAdd) {
 		this.keyToAdd = keyToAdd;
+	}
+
+	public ConditionFactory getConditionFactory() {
+		return conditionFactory;
+	}
+
+	public void setConditionFactory(ConditionFactory conditionFactory) {
+		this.conditionFactory = conditionFactory;
 	}
 }

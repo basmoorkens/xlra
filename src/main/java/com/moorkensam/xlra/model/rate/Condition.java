@@ -25,6 +25,10 @@ public class Condition extends BaseEntity {
 	@Column(name = "offerte_standard_selected")
 	private boolean standardSelected;
 
+	@Enumerated(EnumType.STRING)
+	@Column(name = "type")
+	private ConditionType conditionType;
+
 	@ManyToOne
 	@JoinColumn(name = "rateFileId")
 	private RateFile rateFile;
@@ -81,5 +85,13 @@ public class Condition extends BaseEntity {
 
 	public void setStandardSelected(boolean standardSelected) {
 		this.standardSelected = standardSelected;
+	}
+
+	public ConditionType getConditionType() {
+		return conditionType;
+	}
+
+	public void setConditionType(ConditionType conditionType) {
+		this.conditionType = conditionType;
 	}
 }

@@ -13,7 +13,6 @@ import org.apache.logging.log4j.Logger;
 
 import com.moorkensam.xlra.dao.BaseDAO;
 import com.moorkensam.xlra.dao.ConditionDAO;
-import com.moorkensam.xlra.dao.LogDAO;
 import com.moorkensam.xlra.dao.RateFileDAO;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
@@ -44,9 +43,6 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 	private RateFileDAO rateFileDAO;
 
 	private QuotationUtil quotationUtil;
-
-	@Inject
-	private LogDAO logDAO;
 
 	private LogRecordFactory logRecordFactory;
 

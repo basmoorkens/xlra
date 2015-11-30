@@ -24,6 +24,12 @@ import com.moorkensam.xlra.model.translation.TranslationKey;
  */
 public class ExcelToModelMapper {
 
+	private ConditionFactory conditionFactory;
+
+	public ExcelToModelMapper() {
+		conditionFactory = new ConditionFactory();
+	}
+
 	private final static Logger logger = LogManager.getLogger();
 
 	public void mapExcelToModel(RateFile rf, ExcelUploadUtilData data) {
@@ -35,15 +41,12 @@ public class ExcelToModelMapper {
 	protected List<Condition> createConditions(ExcelUploadUtilData data,
 			RateFile rf) {
 		logger.debug("Creating conditions for excel data");
-		List<Condition> conditions = new ArrayList<Condition>();
-		for (String key : data.getTermsMap().keySet()) {
-			Condition condition = new Condition();
-			condition.setConditionKey(TranslationKey.valueOf(key));
-			condition.setValue(concatTermValues(data.getTermsMap().get(key)));
-			condition.setRateFile(rf);
-			conditions.add(condition);
+		for (String keyAsString : data.getTermsMap().keySet()) {
+			TranslationKey key = TranslationKey.valueOf(keyAsString);
+			String value = concatTermValues(data.getTermsMap().get(keyAsString));
+			rf.addCondition(conditionFactory.createCondition(key, value));
 		}
-		return conditions;
+		return rf.getConditions();
 	}
 
 	protected String concatTermValues(List<String> terms) {
@@ -114,6 +117,14 @@ public class ExcelToModelMapper {
 			return postalCodeAsString;
 		}
 		return "";
+	}
+
+	public ConditionFactory getConditionFactory() {
+		return conditionFactory;
+	}
+
+	public void setConditionFactory(ConditionFactory conditionFactory) {
+		this.conditionFactory = conditionFactory;
 	}
 
 }
