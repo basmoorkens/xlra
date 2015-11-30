@@ -105,14 +105,6 @@
 							oncomplete="handleAddUserRequest(xhr, status, args)" />
 					</p:panel>
 				</p:panel>
-				<p:ajaxStatus onstart="showStatusDialog();"
-					onsuccess="hideStatusDialog();" />
-
-				<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
-					closable="false" resizable="false" showHeader="false">
-					<img src="/xlra/images/ajax-loader.gif" />
-				</p:dialog>
-
 			</h:form>
 		</p:dialog>
 		<script type="text/javascript">

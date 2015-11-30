@@ -12,12 +12,15 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletResponse;
 
+import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.offerte.OfferteSearchFilter;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.service.CountryService;
+import com.moorkensam.xlra.service.EmailService;
 import com.moorkensam.xlra.service.FileService;
 import com.moorkensam.xlra.service.QuotationService;
 import com.moorkensam.xlra.service.impl.FileServiceImpl;
@@ -31,6 +34,9 @@ public class OfferteOverviewController {
 
 	@Inject
 	private CountryService countryService;
+
+	@Inject
+	private EmailService emailService;
 
 	private FileService fileService;
 
@@ -76,6 +82,17 @@ public class OfferteOverviewController {
 		pdfInputStream.close();
 		responseOutputStream.close();
 		facesContext.responseComplete();
+	}
+
+	public void resendEmail() {
+		try {
+			emailService.sendOfferteMail(selectedOfferte);
+			MessageUtil.addMessage("Email resend", "Successfully sent email");
+		} catch (MessagingException e) {
+			MessageUtil
+					.addErrorMessage("Could not send email",
+							"Error sending email! Contact the system admin if this error persists.");
+		}
 	}
 
 	public void search() {

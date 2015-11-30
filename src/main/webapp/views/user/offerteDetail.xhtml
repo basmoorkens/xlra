@@ -69,6 +69,9 @@
 					<p:commandButton value="Open pdf"
 						actionListener="#{offerteOverviewController.downloadPdf}"
 						onclick="this.form.target='_blank'" ajax="false" />
+					<p:commandButton value="Resend email" style="margin-left:20px;"
+						actionListener="#{offerteOverviewController.resendEmail}"
+						ajax="true" update=":offerteDetailForm:msgs" />
 				</p:panel>
 			</p:panel>
 

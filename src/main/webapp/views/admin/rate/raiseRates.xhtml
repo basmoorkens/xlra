@@ -111,14 +111,6 @@
 				<p:commandButton value="No" type="button"
 					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
 			</p:confirmDialog>
-			<p:ajaxStatus onstart="showStatusDialog();"
-				onsuccess="hideStatusDialog();" />
-
-			<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
-				closable="false" resizable="false" showHeader="false">
-				<img src="/xlra/images/ajax-loader.gif" />
-			</p:dialog>
-
 		</h:form>
 		<script type="text/javascript">
 			var statusDlgTimer = null;
