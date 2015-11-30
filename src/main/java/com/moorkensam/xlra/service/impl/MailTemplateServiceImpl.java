@@ -1,6 +1,5 @@
 package com.moorkensam.xlra.service.impl;
 
-
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -64,7 +63,12 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 			throws TemplatingException, RateFileException {
 		OfferteMailDTO dto = new OfferteMailDTO();
 		String fullDetailAsHtml = getTemplateParseService()
-				.parseHtmlFullDetailCalculation(result.getCalculation(),
+				.parseHtmlFullDetailCalculation(result.getSelectableOptions(),
+						result.getCalculation(),
+						result.getQuery().getResultLanguage());
+
+		String additionalConditions = getTemplateParseService()
+				.parseHtmlAdditionalConditions(result.getSelectableOptions(),
 						result.getQuery().getResultLanguage());
 		try {
 			MailTemplate template = getMailTemplateDAO()
@@ -74,7 +78,7 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 			logger.info("Parsing template: " + template.getTemplate());
 			String emailMessage = templateParseService
 					.parseOfferteEmailTemplate(template.getTemplate(), result,
-							fullDetailAsHtml);
+							fullDetailAsHtml, additionalConditions);
 			dto.setAddress(result.getQuery().getCustomer().getEmail());
 			dto.setSubject(template.getSubject());
 			dto.setContent(emailMessage);

@@ -44,6 +44,7 @@ ${pdfofferteservedby}${createdUserFullName}
 	</tr>
 </table>
 
-<h2>${pdfoffertetitle}</h2>
+<h3>${pdfoffertetitle}</h3>
 ${detailCalculation}
 
+${additionalConditions}

@@ -82,6 +82,7 @@ public class PdfServiceTest extends UnitilsJUnit4 {
 		calculation.calculateTotalPrice();
 		offerte.setCalculation(calculation);
 		offerte.setOfferteUniqueIdentifier("uq123");
+		offerte.setCreatedUserFullName("basie");
 
 	}
 

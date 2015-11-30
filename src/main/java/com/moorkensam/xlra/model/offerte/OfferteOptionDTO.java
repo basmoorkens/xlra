@@ -12,7 +12,13 @@ public class OfferteOptionDTO implements Serializable {
 
 	private boolean selected;
 
+	private boolean showToCustomer;
+	
+	private boolean calculationOption;
+
 	private String value;
+
+	private String i8nKey;
 
 	public boolean isSelected() {
 		return selected;
@@ -36,5 +42,29 @@ public class OfferteOptionDTO implements Serializable {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public String getI8nKey() {
+		return i8nKey;
+	}
+
+	public void setI8nKey(String i8nKey) {
+		this.i8nKey = i8nKey;
+	}
+
+	public boolean isCalculationOption() {
+		return calculationOption;
+	}
+
+	public void setCalculationOption(boolean calculationOption) {
+		this.calculationOption = calculationOption;
+	}
+
+	public boolean isShowToCustomer() {
+		return showToCustomer;
+	}
+
+	public void setShowToCustomer(boolean showToCustomer) {
+		this.showToCustomer = showToCustomer;
 	}
 }

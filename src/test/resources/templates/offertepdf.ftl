@@ -1,5 +1,5 @@
 <h1>${pdftitle}</h1>
-
+${pdfofferteservedby}${createdUserFullName}
 <h2>${pdfrequesttitle}</h2>
 <table>
 	<tr>
@@ -44,6 +44,7 @@
 	</tr>
 </table>
 
-<h2>${pdfoffertetitle}</h2>
+<h3>${pdfoffertetitle}</h3>
 ${detailCalculation}
 
+${additionalConditions}

@@ -15,10 +15,12 @@ import com.moorkensam.xlra.model.offerte.OfferteOptionDTO;
 import com.moorkensam.xlra.model.offerte.PriceCalculation;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.rate.Condition;
+import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.CalculationService;
 import com.moorkensam.xlra.service.CurrencyService;
 import com.moorkensam.xlra.service.DieselService;
 import com.moorkensam.xlra.service.util.CalcUtil;
+import com.moorkensam.xlra.service.util.QuotationUtil;
 
 @Stateless
 public class CalculationServiceImpl implements CalculationService {
@@ -36,9 +38,12 @@ public class CalculationServiceImpl implements CalculationService {
 
 	private CalcUtil calcUtil;
 
+	private QuotationUtil quotationUtil;
+
 	@PostConstruct
 	public void init() {
 		setCalcUtil(CalcUtil.getInstance());
+		setQuotationUtil(QuotationUtil.getInstance());
 	}
 
 	@Override
@@ -47,41 +52,45 @@ public class CalculationServiceImpl implements CalculationService {
 	 */
 	public PriceCalculation calculatePriceAccordingToConditions(
 			QuotationResult offerte) throws RateFileException {
-		PriceCalculation priceCalculation = new PriceCalculation();
-		priceCalculation.setBasePrice(offerte.getCalculation().getBasePrice());
+		offerte.getCalculation().setBasePrice(
+				offerte.getCalculation().getBasePrice());
 		Configuration config = getConfigurationDao().getXlraConfiguration();
-		calculateDieselSurchargePrice(priceCalculation, config);
-		if (offerte.getCountry().getShortName().equalsIgnoreCase(CHF)) {
-			calculateChfSurchargePrice(priceCalculation, config);
-		}
+
 		for (OfferteOptionDTO option : offerte.getSelectableOptions()) {
 			switch (option.getKey()) {
 			case ADR_SURCHARGE:
 				if (option.isSelected()) {
-					calculateAddressSurcharge(priceCalculation, option);
+					calculateAddressSurcharge(offerte.getCalculation(), option);
 				}
 				break;
 			case ADR_MINIMUM:
 				if (option.isSelected()) {
-					calculateAddressSurchargeMinimum(priceCalculation, option);
+					calculateAddressSurchargeMinimum(offerte.getCalculation(),
+							option);
 				}
 				break;
 			case IMPORT_FORM:
 				if (option.isSelected()) {
-					calculateImportFormality(priceCalculation, option);
+					calculateImportFormality(offerte.getCalculation(), option);
 				}
 				break;
 			case EXPORT_FORM:
 				if (option.isSelected()) {
-					calculateExportFormality(priceCalculation, option);
+					calculateExportFormality(offerte.getCalculation(), option);
 				}
 			default:
 				break;
 			}
 		}
-		applyAfterConditionLogic(priceCalculation);
-		priceCalculation.calculateTotalPrice();
-		return priceCalculation;
+
+		calculateDieselSurchargePrice(offerte, config);
+		if (offerte.getCountry().getShortName().equalsIgnoreCase(CHF)) {
+			calculateChfSurchargePrice(offerte, config);
+		}
+
+		applyAfterConditionLogic(offerte.getCalculation());
+		offerte.getCalculation().calculateTotalPrice();
+		return offerte.getCalculation();
 	}
 
 	protected void calculateExportFormality(PriceCalculation priceCalculation,
@@ -170,18 +179,25 @@ public class CalculationServiceImpl implements CalculationService {
 		}
 	}
 
-	protected void calculateChfSurchargePrice(
-			PriceCalculation priceCalculation, Configuration config)
-			throws RateFileException {
+	protected void calculateChfSurchargePrice(QuotationResult offerte,
+			Configuration config) throws RateFileException {
 		CurrencyRate chfRate = getCurrencyService().getChfRateForCurrentPrice(
 				config.getCurrentChfValue());
 		BigDecimal multiplier = getCalcUtil()
 				.convertPercentageToBaseMultiplier(
 						chfRate.getSurchargePercentage());
-		BigDecimal result = new BigDecimal(priceCalculation.getBasePrice()
-				.doubleValue() * multiplier.doubleValue());
+		BigDecimal result = new BigDecimal(offerte.getCalculation()
+				.getBasePrice().doubleValue()
+				* multiplier.doubleValue());
 		result = getCalcUtil().roundBigDecimal(result);
-		priceCalculation.setChfPrice(result);
+		offerte.getCalculation().setChfPrice(result);
+
+		if (!quotationUtil.offerteOptionsContainsKey(
+				offerte.getSelectableOptions(), TranslationKey.CHF_SURCHARGE)) {
+			offerte.getSelectableOptions().add(
+					quotationUtil.createCalculationOption(
+							TranslationKey.CHF_SURCHARGE, result));
+		}
 	}
 
 	/**
@@ -196,18 +212,26 @@ public class CalculationServiceImpl implements CalculationService {
 	 *             Thrown when no dieselpercentage multiplier can be found for
 	 *             the current diesel price.
 	 */
-	protected void calculateDieselSurchargePrice(
-			PriceCalculation priceCalculation, Configuration config)
-			throws RateFileException {
+	protected void calculateDieselSurchargePrice(QuotationResult offerte,
+			Configuration config) throws RateFileException {
 		DieselRate dieselRate = getDieselService()
 				.getDieselRateForCurrentPrice(config.getCurrentDieselPrice());
 		BigDecimal multiplier = getCalcUtil()
 				.convertPercentageToBaseMultiplier(
 						dieselRate.getSurchargePercentage());
-		BigDecimal result = new BigDecimal(priceCalculation.getBasePrice()
-				.doubleValue() * multiplier.doubleValue());
+		BigDecimal result = new BigDecimal(offerte.getCalculation()
+				.getBasePrice().doubleValue()
+				* multiplier.doubleValue());
 		result = getCalcUtil().roundBigDecimal(result);
-		priceCalculation.setDieselPrice(result);
+		offerte.getCalculation().setDieselPrice(result);
+
+		if (!quotationUtil
+				.offerteOptionsContainsKey(offerte.getSelectableOptions(),
+						TranslationKey.DIESEL_SURCHARGE)) {
+			offerte.getSelectableOptions().add(
+					quotationUtil.createCalculationOption(
+							TranslationKey.DIESEL_SURCHARGE, result));
+		}
 	}
 
 	public DieselService getDieselService() {
@@ -240,5 +264,13 @@ public class CalculationServiceImpl implements CalculationService {
 
 	public void setCalcUtil(CalcUtil calcUtil) {
 		this.calcUtil = calcUtil;
+	}
+
+	public QuotationUtil getQuotationUtil() {
+		return quotationUtil;
+	}
+
+	public void setQuotationUtil(QuotationUtil quotationUtil) {
+		this.quotationUtil = quotationUtil;
 	}
 }

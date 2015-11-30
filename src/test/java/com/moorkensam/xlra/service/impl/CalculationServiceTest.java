@@ -2,14 +2,15 @@ package com.moorkensam.xlra.service.impl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import junit.framework.Assert;
 
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
-import org.omnifaces.taghandler.ImportConstants;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.easymock.EasyMockUnitils;
 import org.unitils.easymock.annotation.Mock;
@@ -24,12 +25,12 @@ import com.moorkensam.xlra.model.offerte.OfferteOptionDTO;
 import com.moorkensam.xlra.model.offerte.PriceCalculation;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
-import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.CurrencyService;
 import com.moorkensam.xlra.service.DieselService;
 import com.moorkensam.xlra.service.util.CalcUtil;
+import com.moorkensam.xlra.service.util.QuotationUtil;
 
 public class CalculationServiceTest extends UnitilsJUnit4 {
 	@TestedObject
@@ -56,6 +57,8 @@ public class CalculationServiceTest extends UnitilsJUnit4 {
 
 	private OfferteOptionDTO adrsurchargeOption;
 
+	private QuotationUtil quotationUtil;
+
 	@Before
 	public void init() {
 		calcService = new CalculationServiceImpl();
@@ -75,6 +78,8 @@ public class CalculationServiceTest extends UnitilsJUnit4 {
 		adrsurchargeOption.setKey(TranslationKey.ADR_SURCHARGE);
 		calcUtil = CalcUtil.getInstance();
 		calcService.setCalcUtil(calcUtil);
+		quotationUtil = QuotationUtil.getInstance();
+		calcService.setQuotationUtil(quotationUtil);
 	}
 
 	@Test
@@ -129,8 +134,9 @@ public class CalculationServiceTest extends UnitilsJUnit4 {
 				currencyService.getChfRateForCurrentPrice(config
 						.getCurrentChfValue())).andReturn(chfRate);
 		EasyMockUnitils.replay();
-
-		calcService.calculateChfSurchargePrice(priceDTO, config);
+		QuotationResult offerte = new QuotationResult();
+		offerte.setCalculation(priceDTO);
+		calcService.calculateChfSurchargePrice(offerte, config);
 
 		BigDecimal expected = new BigDecimal(50.00d);
 		expected = expected.setScale(2, RoundingMode.HALF_UP);
@@ -143,7 +149,9 @@ public class CalculationServiceTest extends UnitilsJUnit4 {
 				dieselService.getDieselRateForCurrentPrice(config
 						.getCurrentDieselPrice())).andReturn(dieselRate);
 		EasyMockUnitils.replay();
-		calcService.calculateDieselSurchargePrice(priceDTO, config);
+		QuotationResult offerte = new QuotationResult();
+		offerte.setCalculation(priceDTO);
+		calcService.calculateDieselSurchargePrice(offerte, config);
 		BigDecimal expected = new BigDecimal(25.00d);
 		expected = expected.setScale(2, RoundingMode.HALF_UP);
 		Assert.assertEquals(expected, priceDTO.getDieselPrice());
@@ -187,8 +195,12 @@ public class CalculationServiceTest extends UnitilsJUnit4 {
 		offerte.setQuery(query);
 		offerte.setCalculation(priceDTO);
 		priceDTO.setBasePrice(new BigDecimal(100d));
-		offerte.setSelectableOptions(Arrays.asList(adrOption, adrMinOption,
-				importOption, expoOption));
+		List<OfferteOptionDTO> dtoList = new ArrayList<OfferteOptionDTO>();
+		dtoList.add(adrMinOption);
+		dtoList.add(adrOption);
+		dtoList.add(importOption);
+		dtoList.add(expoOption);
+		offerte.setSelectableOptions(dtoList);
 		config.setCurrentDieselPrice(new BigDecimal(100d));
 		config.setCurrentChfValue(new BigDecimal(100));
 		EasyMock.expect(configurationDAO.getXlraConfiguration()).andReturn(

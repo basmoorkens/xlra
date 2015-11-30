@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.model.offerte;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Cacheable;
@@ -58,6 +59,10 @@ public class QuotationResult extends BaseEntity {
 
 	@Transient
 	private List<OfferteOptionDTO> selectableOptions;
+
+	public QuotationResult() {
+		this.selectableOptions = new ArrayList<OfferteOptionDTO>();
+	}
 
 	public RateFile getRateFile() {
 		return rateFile;

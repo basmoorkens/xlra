@@ -15,6 +15,7 @@ import org.unitils.inject.annotation.TestedObject;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.TemplatingException;
+import com.moorkensam.xlra.model.offerte.OfferteOptionDTO;
 import com.moorkensam.xlra.model.offerte.PriceCalculation;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
@@ -53,6 +54,7 @@ public class TemplateParseServiceTest extends UnitilsJUnit4 {
 	@Test
 	public void testParsePdfOfferteTemplate() throws TemplatingException {
 		QuotationResult result = new QuotationResult();
+		result.setCreatedUserFullName("basie");
 		QuotationQuery query = new QuotationQuery();
 		result.setQuery(query);
 		query.setQuotationDate(new Date());
@@ -103,7 +105,7 @@ public class TemplateParseServiceTest extends UnitilsJUnit4 {
 		offerte.getQuery().setPostalCode("2222");
 		offerte.setOfferteUniqueIdentifier("UQ11");
 		String result = templateEngine.parseOfferteEmailTemplate(template,
-				offerte, "fulldetailblabla");
+				offerte, "fulldetailblabla", "additioanlConditiosn");
 		Assert.assertNotNull(result);
 		Assert.assertTrue(result.contains("test"));
 	}
@@ -121,9 +123,53 @@ public class TemplateParseServiceTest extends UnitilsJUnit4 {
 				TranslationKey.ADR_SURCHARGE, TranslationKey.DIESEL_SURCHARGE,
 				TranslationKey.EXPORT_FORM, TranslationKey.IMPORT_FORM,
 				TranslationKey.CHF_SURCHARGE));
+		OfferteOptionDTO o1 = new OfferteOptionDTO();
+		o1.setCalculationOption(true);
+		o1.setShowToCustomer(true);
+		o1.setKey(TranslationKey.IMPORT_FORM);
+		o1.setSelected(true);
+		o1.setI8nKey("calculation.fulldetail.import.formalities");
+		OfferteOptionDTO o2 = new OfferteOptionDTO();
+		o2.setCalculationOption(true);
+		o2.setShowToCustomer(true);
+		o2.setKey(TranslationKey.CHF_SURCHARGE);
+		o2.setI8nKey("calculation.fulldetail.swiss.franc.surcharge");
+		o2.setSelected(true);
 		String result = templateEngine.parseHtmlFullDetailCalculation(
-				calculation, Language.NL);
+				Arrays.asList(o1, o2), calculation, Language.NL);
 		Assert.assertNotNull(result);
 		Assert.assertTrue(result.contains("Basis prijs:"));
+		Assert.assertTrue(result.contains("Import formaliteiten:"));
 	}
+
+	@Test
+	public void testParseAdditionalConditions() throws TemplatingException {
+		OfferteOptionDTO o1 = new OfferteOptionDTO();
+		o1.setI8nKey("calculation.fulldetail.tarif.franco.house");
+		o1.setSelected(true);
+		o1.setKey(TranslationKey.TARIF_FRANCO_HOUSE);
+		o1.setValue("");
+		o1.setShowToCustomer(true);
+		OfferteOptionDTO o2 = new OfferteOptionDTO();
+		o2.setI8nKey("calculation.fulldetail.wait.tarif");
+		o2.setKey(TranslationKey.WACHT_TARIF);
+		o2.setSelected(true);
+		o2.setShowToCustomer(true);
+		o2.setValue("55 EUR/h");
+		OfferteOptionDTO o3 = new OfferteOptionDTO();
+		o3.setSelected(true);
+		o3.setI8nKey("calculation.fulldetail.transport.insurance");
+		o3.setKey(TranslationKey.TRANSPORT_INSURANCE);
+		o3.setShowToCustomer(true);
+		o3.setValue("CMR insurance (all risk on request)");
+
+		String result = templateEngine.parseHtmlAdditionalConditions(
+				Arrays.asList(o1, o2, o3), Language.EN);
+		Assert.assertNotNull(result);
+		Assert.assertTrue(result.contains("CMR insurance"));
+		Assert.assertTrue(result.contains("Transport insurance"));
+		Assert.assertTrue(result.contains("55 EUR/h"));
+		Assert.assertTrue(result.contains("Wait hour tarif:"));
+	}
+
 }

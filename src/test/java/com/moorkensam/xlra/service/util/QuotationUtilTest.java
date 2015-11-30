@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.service.util;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -84,6 +85,37 @@ public class QuotationUtilTest extends UnitilsJUnit4 {
 		Assert.assertEquals(3, options.size());
 		Assert.assertTrue(options.get(0).getKey() == TranslationKey.ADR_MINIMUM);
 		Assert.assertFalse(options.get(0).isSelected());
+	}
+
+	@Test
+	public void testOFferteOPtionsContainsKey() {
+		OfferteOptionDTO option = new OfferteOptionDTO();
+		option.setKey(TranslationKey.ADR_MINIMUM);
+		OfferteOptionDTO option2 = new OfferteOptionDTO();
+		option.setKey(TranslationKey.DIESEL_SURCHARGE);
+		Assert.assertTrue(quotationUtil.offerteOptionsContainsKey(
+				Arrays.asList(option, option2), TranslationKey.DIESEL_SURCHARGE));
+		Assert.assertFalse(quotationUtil.offerteOptionsContainsKey(
+				Arrays.asList(option, option2), TranslationKey.CHF_SURCHARGE));
+	}
+
+	@Test
+	public void testIsShowToCustomer() {
+		OfferteOptionDTO option = new OfferteOptionDTO();
+		option.setKey(TranslationKey.ADR_MINIMUM);
+		Assert.assertFalse(quotationUtil.isShowToCustomer(option.getKey()));
+		OfferteOptionDTO option2 = new OfferteOptionDTO();
+		option.setKey(TranslationKey.DIESEL_SURCHARGE);
+		Assert.assertTrue(quotationUtil.isShowToCustomer(option2.getKey()));
+	}
+
+	@Test
+	public void testCreateOption() {
+		OfferteOptionDTO option = quotationUtil.createCalculationOption(
+				TranslationKey.DIESEL_SURCHARGE, new BigDecimal(100d));
+		Assert.assertNotNull(option);
+		Assert.assertEquals(true, option.isCalculationOption());
+		Assert.assertTrue(option.isShowToCustomer());
 	}
 
 }
