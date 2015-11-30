@@ -9,21 +9,6 @@ package com.moorkensam.xlra.model.translation;
  */
 public enum TranslationKey {
 
-	IMPORT_FORM(false), EXPORT_FORM(false), EUR1_DOCUMENT(false), ADR_SURCHARGE(
-			false), ADR_MINIMUM(false), SUPPL_TARIF(false), WACHT_TARIF(false), PAYMENT_TERMS(
-			false), TRANSPORT_INS(false), GELD_DATE(false), RETOUR_REFUSED_DELIVERY(
-			false), TARIF_FRANCO_HOUSE(false), TARIF_VALID_TO(false), TRANSPORT_INSURANCE(
-			false), DIESEL_SURCHARGE(false), CHF_SURCHARGE(false), LDM(true), KILO(
-			true), PALET(true);
-
-	private boolean key;
-
-	TranslationKey(boolean key) {
-		this.key = key;
-	}
-
-	public boolean isKey() {
-		return key;
-	}
+	IMPORT_FORM, EXPORT_FORM, EUR1_DOCUMENT, ADR_SURCHARGE, ADR_MINIMUM, SUPPL_TARIF, WACHT_TARIF, PAYMENT_TERMS, TRANSPORT_INS, GELD_DATE, RETOUR_REFUSED_DELIVERY, TARIF_FRANCO_HOUSE, TARIF_VALID_TO, TRANSPORT_INSURANCE, DIESEL_SURCHARGE, CHF_SURCHARGE, LDM, KILO, PALET;
 
 }

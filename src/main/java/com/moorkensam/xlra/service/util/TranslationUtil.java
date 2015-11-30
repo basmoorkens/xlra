@@ -10,20 +10,9 @@ import com.moorkensam.xlra.model.translation.TranslationKey;
 
 public class TranslationUtil {
 
-	public static List<TranslationKey> getTranslationsNotKey() {
-		List<TranslationKey> keys = Arrays.asList(TranslationKey.values());
-		List<TranslationKey> result = new ArrayList<TranslationKey>();
-		for (TranslationKey key : keys) {
-			if (!key.isKey()) {
-				result.add(key);
-			}
-		}
-		return result;
-	}
-
 	public static List<TranslationKey> getAvailableTranslationKeysForSelectedRateFile(
 			RateFile rf) {
-		List<TranslationKey> allKeys = TranslationUtil.getTranslationsNotKey();
+		List<TranslationKey> allKeys = TranslationUtil.getTranslationKeyKeys();
 		if (rf != null && rf.getConditions() != null
 				&& !rf.getConditions().isEmpty()) {
 			List<TranslationKey> usedKeys = new ArrayList<TranslationKey>();

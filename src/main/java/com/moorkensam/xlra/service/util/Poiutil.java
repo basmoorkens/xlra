@@ -1,10 +1,14 @@
 package com.moorkensam.xlra.service.util;
 
+import java.text.SimpleDateFormat;
+
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 
 public class Poiutil {
 
+	private static SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 
 	/**
 	 * Utility method to get the contents of a cell as a double regarding of the
@@ -38,12 +42,17 @@ public class Poiutil {
 	 */
 	public static String getSafeCellString(Cell cell, boolean parseAsInt) {
 		if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-			if (parseAsInt) {
-				return ((int) cell.getNumericCellValue()) + "";
+			if (DateUtil.isCellDateFormatted(cell)) {
+				return format.format(cell.getDateCellValue());
 			} else {
-				return cell.getNumericCellValue() + "";
+				if (parseAsInt) {
+					return ((int) cell.getNumericCellValue()) + "";
+				} else {
+					return cell.getNumericCellValue() + "";
+				}
 			}
 		}
+
 		if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
 			return cell.getStringCellValue();
 		}
