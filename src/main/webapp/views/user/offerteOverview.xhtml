@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/views/template.xhtml">
+	<ui:define name="title">
+		<h:outputText value="XLRA - offerte overview" />
+	</ui:define>
+	<ui:define name="pageTitle">
+		<h:outputText value="Offerte overview" />
+	</ui:define>
+	<ui:define name="body">
+		<h:form id="searchForm">
+			<p:growl id="msgs" />
+
+			<p:panel id="filtersPanel" header="Search filters:">
+				<p:panelGrid columns="6" style="width:100%;">
+					<h:outputLabel value="Offerte key:" />
+					<p:inputText
+						value="#{offerteOverviewController.searchFilter.offerteKey}"
+						size="35" />
+
+					<h:outputLabel value="Country" />
+					<p:selectOneMenu style="width:10em;"
+						value="#{offerteOverviewController.searchFilter.country}">
+						<f:selectItem itemLabel="" itemValue="" />
+						<f:selectItems value="#{offerteOverviewController.allCountrys}" />
+					</p:selectOneMenu>
+
+					<h:outputLabel value="Postal code" />
+					<p:inputText
+						value="#{offerteOverviewController.searchFilter.postalCode}" />
+
+					<h:outputLabel value="Customer" />
+					<p:inputText
+						value="#{offerteOverviewController.searchFilter.customerName}"
+						size="35" />
+
+					<h:outputLabel value="Date: " />
+					<p:calendar
+						value="#{offerteOverviewController.searchFilter.startDate}" />
+				</p:panelGrid>
+
+				<p:commandButton value="Search" update=":offertesForm"
+					actionListener="#{offerteOverviewController.search}" />
+			</p:panel>
+		</h:form>
+		<h:form id="offertesForm">
+			<p:dataTable var="quotationResult"
+				value="#{offerteOverviewController.quotationResults}"
+				paginator="true" rows="25"
+				paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+				rowsPerPageTemplate="10,25,50" id="offerteTable"
+				emptyMessage="No offertes to view...">
+
+				<p:column headerText="Offerte key: "
+					sortBy="offerteUniqueIdentifier">
+					<h:outputText value="#{quotationResult.offerteUniqueIdentifier}" />
+				</p:column>
+
+				<p:column headerText="Customer: " sortBy="query.customer.name">
+					<h:outputText value="#{quotationResult.query.customer.name}" />
+				</p:column>
+
+				<p:column headerText="Date: " sortBy="query.quotationDate">
+					<h:outputText value="#{quotationResult.query.quotationDate}" />
+				</p:column>
+
+				<p:column headerText="Country: " sortBy="query.country.shortName">
+					<h:outputText value="#{quotationResult.query.country.shortName}" />
+				</p:column>
+
+				<p:column headerText="PostalCode: " sortBy="query.postalCode">
+					<h:outputText value="#{quotationResult.query.postalCode}" />
+				</p:column>
+				<p:column style="width:36px;text-align: center">
+					<p:commandButton
+						actionListener="#{offerteOverviewController.setupOfferteDetail(quotationResult)}"
+						icon="ui-icon-search" title="View" update=":offerteDetailForm">
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+
+		<ui:include src="/views/user/offerteDetail.xhtml" />
+	</ui:define>
+</ui:composition>
+</html>

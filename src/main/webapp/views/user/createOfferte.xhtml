@@ -1,0 +1,276 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<ui:composition template="/views/template.xhtml">
+	<ui:define name="title">
+		<h:outputText value="XLRA - create offerte" />
+	</ui:define>
+	<ui:define name="pageTitle">
+		<h:outputText value="Create offerte" />
+	</ui:define>
+	<ui:define name="body">
+		<h:form id="customerForm">
+			<p:panel id="customerPanel" header="Customer" toggleable="false"
+				collapsed="#{createQuotationController.collapseCustomerPanel}">
+				<p:panelGrid columns="3" style="width:100%;">
+					<h:outputText value="Select an existing customer: " />
+					<p:autoComplete size="60" id="customerSelector" dropdown="true"
+						value="#{createQuotationController.quotationQuery.customer}"
+						completeMethod="#{createQuotationController.completeCustomerName}"
+						var="customer" itemLabel="#{customer.name}" required="true"
+						requiredMessage="Please select a customer/create a new one"
+						itemValue="#{customer}" converter="#{customerConverter}">
+					</p:autoComplete>
+
+					<p:commandButton value="Create new customer"
+						update=":addQuickCustomerForm" immediate="true"
+						onclick="PF('addCustomerDialog').show();" />
+
+				</p:panelGrid>
+				<p:growl showDetail="true" id="messages" sticky="false" />
+				<p:panel
+					style="margin-top:20px; bottom:20px;  padding:0px;border:0px;">
+					<p:commandButton value="Next"
+						actionListener="#{createQuotationController.procesCustomer}"
+						update=":customerForm :filtersForm" ajax="true"
+						style="width:150px; margin-left:20px;" />
+				</p:panel>
+			</p:panel>
+		</h:form>
+
+		<h:form id="filtersForm">
+			<p:panel id="filterPanel" header="Rates filter"
+				collapsed="#{createQuotationController.collapseFiltersPanel}"
+				toggleable="false">
+				<p:growl showDetail="true" id="messages" sticky="true" />
+				<p:panelGrid columns="2" style="width:100%;">
+					<h:outputText value="Country: " />
+					<p:selectOneRadio converter="#{countryConverter}" required="true"
+						value="#{createQuotationController.quotationQuery.country}">
+						<f:selectItems value="#{createQuotationController.allCountries}" />
+					</p:selectOneRadio>
+
+					<h:outputText value="Measurement: " />
+					<p:selectOneRadio required="true"
+						value="#{createQuotationController.quotationQuery.measurement}">
+						<f:selectItems
+							value="#{createQuotationController.allMeasurements}" />
+					</p:selectOneRadio>
+
+					<h:outputText value="Type: " />
+					<p:selectOneRadio required="true"
+						value="#{createQuotationController.quotationQuery.kindOfRate}">
+						<f:selectItems value="#{createQuotationController.allKinds}" />
+					</p:selectOneRadio>
+
+					<h:outputText value="Language: " />
+					<p:selectOneRadio required="false"
+						value="#{createQuotationController.quotationQuery.language}">
+						<f:selectItems value="#{createQuotationController.allLanguages}" />
+					</p:selectOneRadio>
+
+
+					<h:outputText value="Quantity:" />
+					<p:inputText required="true"
+						requiredMessage="Quantity is required!" style="width:100%;"
+						value="#{createQuotationController.quotationQuery.quantity}" />
+
+					<h:outputText value="Postal code: " />
+					<p:inputText required="true" style="width:100%;"
+						requiredMessage="Postal code is required!"
+						value="#{createQuotationController.quotationQuery.postalCode}" />
+
+					<h:outputText value="Address surcharge:" />
+					<p:selectBooleanCheckbox
+						value="#{createQuotationController.quotationQuery.adrSurcharge}" />
+
+					<h:outputText value="Import formalities:" />
+					<p:selectBooleanCheckbox
+						value="#{createQuotationController.quotationQuery.importFormality}" />
+
+					<h:outputText value="Export formalities:" />
+					<p:selectBooleanCheckbox
+						value="#{createQuotationController.quotationQuery.exportFormality}" />
+
+					<h:outputText value="Transport type:" />
+					<p:selectOneRadio
+						value="#{createQuotationController.quotationQuery.transportType}">
+						<f:selectItems
+							value="#{createQuotationController.allTransportTypes}"
+							itemDescription="description" />
+					</p:selectOneRadio>
+
+				</p:panelGrid>
+				<p:panel style="bottom:20px;  padding:0px;border:0px;">
+					<p:commandButton value="Back" style="width:150px;margin-left:20px;"
+						update=":customerForm :filtersForm" immediate="true"
+						actionListener="#{createQuotationController.showCustomerPanel}" />
+					<p:commandButton value="Next"
+						actionListener="#{createQuotationController.processRateFilters}"
+						style="width:150px; margin-left:20px;" process=":filtersForm"
+						update=":filtersForm :optionsForm" ajax="true" />
+				</p:panel>
+			</p:panel>
+		</h:form>
+
+		<h:form id="optionsForm">
+			<p:panel id="optionsPanel" header="Options"
+				collapsed="#{createQuotationController.collapseOptionsPanel}"
+				toggleable="false">
+				<p:growl showDetail="true" id="messages" sticky="true" />
+				<p:panelGrid columns="2" style="width:100%;">
+
+				<h:outputLabel value="Option" />
+				<h:outputLabel value="Selected" />
+
+				<c:forEach items="#{createQuotationController.quotationResult.selectableOptions}" var="option">
+				
+				<h:outputLabel value="#{option.key}" />
+				<p:selectBooleanCheckbox value="#{option.selected}" />
+				
+				</c:forEach>
+
+				</p:panelGrid>
+				<p:panel style="bottom:20px;  padding:0px;border:0px;">
+					<p:commandButton value="Back" style="width:150px;margin-left:20px;"
+						update=":filtersForm :optionsForm" immediate="true"
+						actionListener="#{createQuotationController.showRateFilterPanel}" />
+					<p:commandButton value="Next"
+						actionListener="#{createQuotationController.processOptions}"
+						style="width:150px; margin-left:20px;" process=":optionsForm"
+						update=":optionsForm :summaryForm" ajax="true" />
+				</p:panel>
+			</p:panel>
+		</h:form>
+
+
+
+
+
+		<h:form id="summaryForm">
+			<p:panel id="summaryPanel" header="Summary"
+				collapsed="#{createQuotationController.collapseSummaryPanel}"
+				toggleable="false">
+				<p:panelGrid columns="2" style="margin-bottom:20px;">
+					<h:outputText value="Receipient: " />
+					<p:inputText size="100" style="width:100%;"
+						value="#{createQuotationController.quotationResult.emailResult.toAddress}" />
+
+					<h:outputText value="Subject: " />
+					<p:inputText size="100" style="width:100%;"
+						value="#{createQuotationController.quotationResult.emailResult.subject}" />
+				</p:panelGrid>
+
+				<h:outputText value="Generated email:" />
+				<p:editor height="350"
+					value="#{createQuotationController.quotationResult.emailResult.email}" />
+				<p:panel style="bottom:20px;  padding:0px;border:0px;">
+					<p:commandButton value="Back" style="width:150px;margin-left:20px;"
+						update=":summaryForm :optionsForm" immediate="true"
+						actionListener="#{createQuotationController.showOptionsPanel}" />
+					<p:commandButton style="width:150px; margin-left:20px"
+						value="Open pdf"
+						actionListener="#{createQuotationController.downloadPdf}"
+						onclick="this.form.target='_blank'" ajax="false" />
+					<p:commandButton value="Send offerte"
+						update=":resultForm :summaryForm"
+						actionListener="#{createQuotationController.submitOfferte}"
+						style="width:150px; margin-left:20px;" ajax="true" />
+				</p:panel>
+			</p:panel>
+			<p:ajaxStatus onstart="showStatusDialog();"
+				onsuccess="hideStatusDialog();" />
+
+			<p:dialog id="statusDialog" widgetVar="statusDialog" modal="true"
+				draggable="false" closable="false" resizable="false"
+				showHeader="false">
+				<img src="/xlra/images/ajax-loader.gif" />
+			</p:dialog>
+
+		</h:form>
+
+		<h:form id="resultForm">
+			<p:panel id="resultPanel" header="Result"
+				collapsed="#{createQuotationController.collapseResultPanel}"
+				toggleable="false">
+				<p>
+					The offerte was successfully created and sent to
+					<h:outputText
+						value="#{createQuotationController.quotationResult.emailResult.toAddress}" />
+					. If you wish to review the offerte please look it up in the
+					"manage offerte" page.
+				</p>
+			</p:panel>
+		</h:form>
+
+		<p:dialog header="Add customer" widgetVar="addCustomerDialog"
+			modal="true" height="480px" width="900px" dynamic="true">
+			<p:growl showDetail="true" id="messages" sticky="false" />
+			<h:form id="addQuickCustomerForm">
+				<p:panel header="Add customer" style="margin-top:50px;">
+					<p:panelGrid columns="2" style="width:100%;">
+						<h:outputLabel for="nameField">Name</h:outputLabel>
+						<p:inputText size="50" style="width:100%;"
+							value="#{createQuotationController.customerToAdd.name}"
+							id="nameField"></p:inputText>
+
+						<h:outputLabel for="emailField">Email</h:outputLabel>
+						<p:inputText size="50" style="width:100%;"
+							value="#{createQuotationController.customerToAdd.email}"
+							id="emailField"></p:inputText>
+
+						<h:outputLabel for="phoneField">Phone</h:outputLabel>
+						<p:inputText size="50" style="width:100%;"
+							value="#{createQuotationController.customerToAdd.phone}"
+							id="phoneField"></p:inputText>
+
+						<h:outputLabel for="languageField">Language</h:outputLabel>
+						<p:selectOneRadio
+							value="#{createQuotationController.customerToAdd.language}"
+							id="languageField">
+							<f:selectItems value="#{createQuotationController.allLanguages}"></f:selectItems>
+						</p:selectOneRadio>
+					</p:panelGrid>
+					<p:commandButton value="Save customer"
+						update=":customerForm :addQuickCustomerForm"
+						actionListener="#{createQuotationController.createCustomer}"
+						ajax="true"
+						oncomplete="handleAddCustomerRequest(xhr, status, args)" />
+				</p:panel>
+			</h:form>
+		</p:dialog>
+		<script type="text/javascript">
+			var statusDlgTimer = null;
+
+			function showStatusDialog() {
+				if (statusDlgTimer === null) {
+					statusDlgTimer = setTimeout("PF('statusDialog').show()",
+							500);
+				}
+			}
+
+			function hideStatusDialog() {
+				if (statusDlgTimer !== null) {
+					clearTimeout(statusDlgTimer);
+					PF('statusDialog').hide();
+					statusDlgTimer = null;
+				}
+			}
+
+			function handleAddCustomerRequest(xhr, status, args) {
+				if (args.validationFailed) {
+					PF('addCustomerDialog').jq.effect("shake", {
+						times : 5
+					}, 100);
+				} else {
+					PF('addCustomerDialog').hide();
+				}
+			}
+		</script>
+	</ui:define>
+</ui:composition>
+</html>
