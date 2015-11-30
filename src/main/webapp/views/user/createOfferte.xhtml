@@ -124,15 +124,17 @@
 				<p:growl showDetail="true" id="messages" sticky="true" />
 				<p:panelGrid columns="2" style="width:100%;">
 
-				<h:outputLabel value="Option" />
-				<h:outputLabel value="Selected" />
+					<h:outputLabel value="Option" />
+					<h:outputLabel value="Selected" />
 
-				<c:forEach items="#{createQuotationController.quotationResult.selectableOptions}" var="option">
-				
-				<h:outputLabel value="#{option.key}" />
-				<p:selectBooleanCheckbox value="#{option.selected}" />
-				
-				</c:forEach>
+					<c:forEach
+						items="#{createQuotationController.quotationResult.selectableOptions}"
+						var="option">
+
+						<h:outputLabel value="#{option.key}" />
+						<p:selectBooleanCheckbox value="#{option.selected}" />
+
+					</c:forEach>
 
 				</p:panelGrid>
 				<p:panel style="bottom:20px;  padding:0px;border:0px;">
@@ -182,6 +184,15 @@
 						style="width:150px; margin-left:20px;" ajax="true" />
 				</p:panel>
 			</p:panel>
+			<p:ajaxStatus onstart="showStatusDialog();"
+				onsuccess="hideStatusDialog();" />
+
+			<p:dialog id="statusDialog" widgetVar="statusDialog" modal="true"
+				draggable="false" closable="false" resizable="false"
+				showHeader="false">
+				<img src="/xlra/images/ajax-loader.gif" />
+			</p:dialog>
+
 		</h:form>
 
 		<h:form id="resultForm">
