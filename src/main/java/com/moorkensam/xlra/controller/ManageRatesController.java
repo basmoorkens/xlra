@@ -22,6 +22,7 @@ import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.RateFileService;
+import com.moorkensam.xlra.service.util.ConditionFactory;
 import com.moorkensam.xlra.service.util.TranslationUtil;
 
 @ManagedBean(name = "manageRatesController")
@@ -33,6 +34,10 @@ public class ManageRatesController {
 
 	@Inject
 	private UserSessionController sessionController;
+
+	private TranslationUtil translationUtil;
+
+	private ConditionFactory conditionFactory;
 
 	private List<RateFile> rateFiles;
 
@@ -57,6 +62,8 @@ public class ManageRatesController {
 		editable = sessionController.isAdmin();
 		refreshRates();
 		resetSelectedRateFile();
+		translationUtil = new TranslationUtil();
+		conditionFactory = new ConditionFactory();
 	}
 
 	private void resetSelectedRateFile() {
@@ -84,16 +91,16 @@ public class ManageRatesController {
 	 */
 	public void onRateLineCellEdit(CellEditEvent event) {
 		RateUtil.onRateLineCellEdit(event);
-		selectedRateFile = rateFileService.updateRateFile(selectedRateFile);
+		updateRateFile();
 	}
 
 	public void onConditionRowEdit(RowEditEvent event) {
 		Condition condition = (Condition) event.getObject();
 		MessageUtil.addMessage(
 				"Condition updated",
-				"Updated " + condition.getConditionKey() + " to "
+				"Updated " + condition.getTranslatedValue() + " to "
 						+ condition.getValue());
-		selectedRateFile = rateFileService.updateRateFile(selectedRateFile);
+		updateRateFile();
 	}
 
 	public boolean isNumericRateFileZone() {
@@ -114,7 +121,7 @@ public class ManageRatesController {
 		Zone zone = (Zone) event.getObject();
 		MessageUtil.addMessage("Zone update", zone.getName()
 				+ " successfully updated.");
-		selectedRateFile = rateFileService.updateRateFile(selectedRateFile);
+		updateRateFile();
 	}
 
 	public void deleteZone(Zone zone) {
@@ -122,11 +129,11 @@ public class ManageRatesController {
 	}
 
 	public void deleteCondition(Condition condition) {
-		MessageUtil.addMessage("condition removed", condition.getConditionKey()
+		MessageUtil.addMessage("condition removed", condition.getTranslatedValue()
 				+ " was successfully removed.");
 		selectedRateFile.getConditions().remove(condition);
 		condition.setRateFile(null);
-		selectedRateFile = rateFileService.updateRateFile(selectedRateFile);
+		updateRateFile();
 	}
 
 	public void fetchDetailsOfRatefile(SelectEvent event) {
@@ -137,6 +144,7 @@ public class ManageRatesController {
 		collapseZonesDetailGrid = false;
 		hasRateFileSelected = true;
 		refreshRateLineColumns();
+		translationUtil.fillInTranslations(selectedRateFile.getConditions());
 	}
 
 	private void refreshRates() {
@@ -249,17 +257,20 @@ public class ManageRatesController {
 	}
 
 	public void createConditionForSelectedTranslationKey(ActionEvent event) {
-		Condition c = new Condition();
-		c.setValue("");
-		c.setConditionKey(keyToAdd);
-		c.setRateFile(selectedRateFile);
-		selectedRateFile.getConditions().add(c);
+		Condition createCondition = conditionFactory.createCondition(keyToAdd,
+				"");
+		selectedRateFile.addCondition(createCondition);
 		keyToAdd = null;
+		updateRateFile();
+	}
+
+	private void updateRateFile() {
 		selectedRateFile = rateFileService.updateRateFile(selectedRateFile);
+		translationUtil.fillInTranslations(selectedRateFile.getConditions());
 	}
 
 	public List<TranslationKey> getAvailableTranslationKeysForSelectedRateFile() {
-		return TranslationUtil
+		return translationUtil
 				.getAvailableTranslationKeysForSelectedRateFile(selectedRateFile);
 	}
 
@@ -271,8 +282,4 @@ public class ManageRatesController {
 		this.collapseZonesDetailGrid = collapseZonesDetailGrid;
 	}
 
-	// TODO fill this in based on user permissions
-	public boolean isCanEdit() {
-		return editable;
-	}
 }

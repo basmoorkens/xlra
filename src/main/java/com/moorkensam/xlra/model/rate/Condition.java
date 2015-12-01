@@ -7,13 +7,15 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.moorkensam.xlra.model.BaseEntity;
+import com.moorkensam.xlra.model.translation.Translatable;
 import com.moorkensam.xlra.model.translation.TranslationKey;
 
 @Entity
 @Table(name = "conditions")
-public class Condition extends BaseEntity {
+public class Condition extends BaseEntity implements Translatable {
 
 	private static final long serialVersionUID = 7814328305384417198L;
 
@@ -32,6 +34,12 @@ public class Condition extends BaseEntity {
 	@ManyToOne
 	@JoinColumn(name = "rateFileId")
 	private RateFile rateFile;
+
+	@Transient
+	private String i8nKey;
+
+	@Transient
+	private String translatedValue;
 
 	public String getValue() {
 		return value;
@@ -55,6 +63,7 @@ public class Condition extends BaseEntity {
 		c.setRateFile(this.rateFile);
 		c.setConditionKey(conditionKey);
 		c.setStandardSelected(standardSelected);
+		c.setI8nKey(i8nKey);
 		return c;
 	}
 
@@ -93,5 +102,21 @@ public class Condition extends BaseEntity {
 
 	public void setConditionType(ConditionType conditionType) {
 		this.conditionType = conditionType;
+	}
+
+	public String getI8nKey() {
+		return i8nKey;
+	}
+
+	public void setI8nKey(String i8nKey) {
+		this.i8nKey = i8nKey;
+	}
+
+	public String getTranslatedValue() {
+		return translatedValue;
+	}
+
+	public void setTranslatedValue(String translatedValue) {
+		this.translatedValue = translatedValue;
 	}
 }

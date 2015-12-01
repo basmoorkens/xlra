@@ -28,10 +28,10 @@
 			<p:column headerText="Key">
 				<p:cellEditor>
 					<f:facet name="output">
-						<h:outputText value="#{condition.conditionKey}" />
+						<h:outputText value="#{condition.translatedValue}" />
 					</f:facet>
 					<f:facet name="input">
-						<h:outputText value="#{condition.conditionKey}" />
+						<h:outputText value="#{condition.translatedValue}" />
 					</f:facet>
 				</p:cellEditor>
 			</p:column>
@@ -78,9 +78,16 @@
 					value="#{controller.availableTranslationKeysForSelectedRateFile}" />
 			</p:selectOneMenu>
 			<f:facet name="footer">
-				<p:commandButton value="Add condition"
-					actionListener="#{manageRatesController.createConditionForSelectedTranslationKey}"
-					ajax="true" update=":conditionsDetailForm" />
+				<c:if test="${controllerName == 'manageRatesController'}">
+					<p:commandButton value="Add condition"
+						actionListener="#{manageRatesController.createConditionForSelectedTranslationKey}"
+						ajax="true" update=":conditionsDetailForm" />
+				</c:if>
+				<c:if test="${controllerName == 'createRatesController'}">
+					<p:commandButton value="Add condition"
+						actionListener="#{createRatesController.createConditionForSelectedTranslationKey}"
+						ajax="true" update=":conditionsDetailForm" />
+				</c:if>
 			</f:facet>
 		</p:dialog>
 		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">

@@ -2,9 +2,10 @@ package com.moorkensam.xlra.model.offerte;
 
 import java.io.Serializable;
 
+import com.moorkensam.xlra.model.translation.Translatable;
 import com.moorkensam.xlra.model.translation.TranslationKey;
 
-public class OfferteOptionDTO implements Serializable {
+public class OfferteOptionDTO implements Serializable, Translatable {
 
 	private static final long serialVersionUID = -4073642999193664486L;
 
@@ -13,12 +14,14 @@ public class OfferteOptionDTO implements Serializable {
 	private boolean selected;
 
 	private boolean showToCustomer;
-	
+
 	private boolean calculationOption;
 
 	private String value;
 
 	private String i8nKey;
+
+	private String translatedValue;
 
 	public boolean isSelected() {
 		return selected;
@@ -66,5 +69,13 @@ public class OfferteOptionDTO implements Serializable {
 
 	public void setShowToCustomer(boolean showToCustomer) {
 		this.showToCustomer = showToCustomer;
+	}
+
+	public String getTranslatedValue() {
+		return translatedValue;
+	}
+
+	public void setTranslatedValue(String translatedValue) {
+		this.translatedValue = translatedValue;
 	}
 }

@@ -24,6 +24,7 @@ import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.service.RateFileService;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
 import com.moorkensam.xlra.service.util.QuotationUtil;
+import com.moorkensam.xlra.service.util.TranslationKeyToi8nMapper;
 
 /**
  * This service contains the business logic for ratefiles.
@@ -42,6 +43,8 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 	@Inject
 	private RateFileDAO rateFileDAO;
 
+	private TranslationKeyToi8nMapper translationMapper;
+
 	private QuotationUtil quotationUtil;
 
 	private LogRecordFactory logRecordFactory;
@@ -50,6 +53,7 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 	public void init() {
 		setLogRecordFactory(LogRecordFactory.getInstance());
 		quotationUtil = QuotationUtil.getInstance();
+		translationMapper = new TranslationKeyToi8nMapper();
 	}
 
 	@Override
@@ -74,7 +78,9 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 	@Override
 	public RateFile updateRateFile(final RateFile rateFile) {
 		convertStringCodesToObjects(rateFile);
-		return getRateFileDAO().updateRateFile(rateFile);
+		RateFile updateRateFile = getRateFileDAO().updateRateFile(rateFile);
+		fillInConditionKeyTranslations(updateRateFile);
+		return updateRateFile;
 	}
 
 	@Override
@@ -98,7 +104,17 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 			logger.debug("Fetching details for ratefile with id " + id);
 		}
 		RateFile rateFile = getRateFileDAO().getFullRateFile(id);
+		fillInConditionKeyTranslations(rateFile);
 		return rateFile;
+	}
+
+	protected void fillInConditionKeyTranslations(final RateFile rf) {
+		if (rf.getConditions() != null && !rf.getConditions().isEmpty()) {
+			for (Condition condition : rf.getConditions()) {
+				condition.setI8nKey(translationMapper.map(condition
+						.getConditionKey()));
+			}
+		}
 	}
 
 	@Override
@@ -121,6 +137,7 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 		}
 		RateFile original = rateFiles.get(0);
 		RateFile fullOriginal = getFullRateFile(original.getId());
+		fillInConditionKeyTranslations(fullOriginal);
 		RateFile copy = fullOriginal.deepCopy();
 
 		return copy;
@@ -150,6 +167,7 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 	@Override
 	public RateFile getFullRateFileForFilter(RateFileSearchFilter filter) {
 		RateFile rf = getRateFileDAO().getFullRateFileForFilter(filter);
+		fillInConditionKeyTranslations(rf);
 		return rf;
 	}
 
@@ -168,7 +186,9 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 
 	@Override
 	public RateFile getRateFileById(long id) {
-		return getRateFileDAO().getFullRateFile(id);
+		RateFile fullRateFile = getRateFileDAO().getFullRateFile(id);
+		fillInConditionKeyTranslations(fullRateFile);
+		return fullRateFile;
 	}
 
 	@Override
@@ -179,6 +199,7 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 		RateFile rf = null;
 		try {
 			rf = getRateFileDAO().getFullRateFileForFilter(firstFilter);
+			fillInConditionKeyTranslations(rf);
 		} catch (NoResultException nre) {
 			try {
 				logger.warn("Could not find specific ratefile for fullcustomer, falling back on standard filter properties.");
@@ -208,5 +229,13 @@ public class RateFileServiceImpl extends BaseDAO implements RateFileService {
 
 	public void setRateFileDAO(RateFileDAO rateFileDAO) {
 		this.rateFileDAO = rateFileDAO;
+	}
+
+	public TranslationKeyToi8nMapper getTranslationMapper() {
+		return translationMapper;
+	}
+
+	public void setTranslationMapper(TranslationKeyToi8nMapper translationMapper) {
+		this.translationMapper = translationMapper;
 	}
 }

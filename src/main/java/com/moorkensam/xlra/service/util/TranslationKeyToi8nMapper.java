@@ -6,6 +6,8 @@ public class TranslationKeyToi8nMapper {
 
 	public String map(TranslationKey key) {
 		switch (key) {
+		case ADR_MINIMUM:
+			return "calculation.fulldetail.adr.minimum";
 		case ADR_SURCHARGE:
 			return "calculation.fulldetail.adr.surcharge";
 		case CHF_SURCHARGE:
@@ -36,6 +38,8 @@ public class TranslationKeyToi8nMapper {
 			return "calculation.fulldetail.transport.insurance";
 		case WACHT_TARIF:
 			return "calculation.fulldetail.wait.tarif";
+		case SUPPL_TARIF:
+			return "calculation.fulldetail.suppl.tarif";
 		default:
 			return "";
 		}

@@ -9,9 +9,12 @@ import java.util.Map;
 
 import junit.framework.Assert;
 
+import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
+import org.unitils.easymock.EasyMockUnitils;
+import org.unitils.easymock.annotation.Mock;
 import org.unitils.inject.annotation.TestedObject;
 
 import com.moorkensam.xlra.model.ExcelUploadUtilData;
@@ -29,7 +32,12 @@ public class ExcelToModelMapperTest extends UnitilsJUnit4 {
 	@TestedObject
 	private ExcelToModelMapper mapper;
 
+	private ConditionFactory conditionFactory;
+
 	private ExcelUploadUtilData data;
+
+	@Mock
+	private TranslationUtil translationUtil;
 
 	private RateFile rf;
 
@@ -37,6 +45,9 @@ public class ExcelToModelMapperTest extends UnitilsJUnit4 {
 	public void init() {
 		mapper = new ExcelToModelMapper();
 		data = new ExcelUploadUtilData();
+		conditionFactory = new ConditionFactory();
+		conditionFactory.setTranslationUtil(translationUtil);
+		mapper.setConditionFactory(conditionFactory);
 		rf = new RateFile();
 		Map<Double, List<RateLineExcelImportDTO>> ratesMap = new HashMap<Double, List<RateLineExcelImportDTO>>();
 		List<RateLineExcelImportDTO> dtoList = new ArrayList<RateLineExcelImportDTO>();
@@ -64,7 +75,6 @@ public class ExcelToModelMapperTest extends UnitilsJUnit4 {
 		zoneValuesMap.put(2, Arrays.asList("boemboem"));
 		rf.setCountry(new Country());
 		rf.getCountry().setZoneType(ZoneType.ALPHANUMERIC_LIST);
-		mapper.setConditionFactory(new ConditionFactory());
 
 	}
 
@@ -86,6 +96,12 @@ public class ExcelToModelMapperTest extends UnitilsJUnit4 {
 
 	@Test
 	public void testCreateConditions() {
+		translationUtil.fillInTranslation(EasyMock.isA(Condition.class));
+		EasyMock.expectLastCall();
+		translationUtil.fillInTranslation(EasyMock.isA(Condition.class));
+		EasyMock.expectLastCall();
+		EasyMockUnitils.replay();
+
 		List<Condition> conditions = mapper.createConditions(data, rf);
 		Assert.assertNotNull(conditions);
 		Assert.assertTrue(conditions.size() > 0);

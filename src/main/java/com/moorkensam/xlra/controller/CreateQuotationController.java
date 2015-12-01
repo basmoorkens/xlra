@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJBException;
@@ -21,19 +22,19 @@ import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.RateFileException;
-import com.moorkensam.xlra.model.offerte.PriceCalculation;
+import com.moorkensam.xlra.model.offerte.OfferteOptionDTO;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Kind;
 import com.moorkensam.xlra.model.rate.Measurement;
 import com.moorkensam.xlra.model.rate.TransportType;
-import com.moorkensam.xlra.service.CalculationService;
 import com.moorkensam.xlra.service.CountryService;
 import com.moorkensam.xlra.service.CustomerService;
 import com.moorkensam.xlra.service.FileService;
 import com.moorkensam.xlra.service.QuotationService;
 import com.moorkensam.xlra.service.impl.FileServiceImpl;
+import com.moorkensam.xlra.service.util.TranslationUtil;
 
 @ManagedBean
 @ViewScoped
@@ -46,10 +47,9 @@ public class CreateQuotationController {
 	private CustomerService customerService;
 
 	@Inject
-	private CalculationService calculationService;
-
-	@Inject
 	private CountryService countryService;
+
+	private TranslationUtil translationUtil;
 
 	private FileService fileService;
 
@@ -79,6 +79,7 @@ public class CreateQuotationController {
 		collapseResultPanel = true;
 		collapseOptionsPanel = true;
 		fileService = new FileServiceImpl();
+		translationUtil = new TranslationUtil();
 	}
 
 	private void initializeNewQuotationQuery() {
@@ -171,6 +172,7 @@ public class CreateQuotationController {
 		try {
 			quotationResult = quotationService
 					.generateQuotationResultForQuotationQuery(quotationQuery);
+			fillInOptionTranslations();
 			showOptionsPanel();
 		} catch (RateFileException re2) {
 			showRateFileError(re2);
@@ -185,6 +187,11 @@ public class CreateQuotationController {
 								"An unexpected exception occurred, please contact the system admin.");
 			}
 		}
+	}
+
+	private void fillInOptionTranslations() {
+		translationUtil.fillInTranslations(quotationResult
+				.getSelectableOptions());
 	}
 
 	public void processOptions() {

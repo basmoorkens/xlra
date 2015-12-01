@@ -9,8 +9,14 @@ public class ConditionFactory {
 
 	private QuotationUtil quotationUtil;
 
+	private TranslationKeyToi8nMapper mapper;
+
+	private TranslationUtil translationUtil;
+
 	public ConditionFactory() {
 		setQuotationUtil(QuotationUtil.getInstance());
+		setMapper(new TranslationKeyToi8nMapper());
+		setTranslationUtil(new TranslationUtil());
 	}
 
 	public Condition createCondition(TranslationKey key, String value) {
@@ -18,6 +24,8 @@ public class ConditionFactory {
 		condition.setConditionKey(key);
 		condition.setValue(value);
 		condition.setConditionType(getConditionTypeForTranslationKey(key));
+		condition.setI8nKey(getMapper().map(key));
+		getTranslationUtil().fillInTranslation(condition);
 		return condition;
 	}
 
@@ -34,5 +42,21 @@ public class ConditionFactory {
 
 	public void setQuotationUtil(QuotationUtil quotationUtil) {
 		this.quotationUtil = quotationUtil;
+	}
+
+	public TranslationKeyToi8nMapper getMapper() {
+		return mapper;
+	}
+
+	public void setMapper(TranslationKeyToi8nMapper mapper) {
+		this.mapper = mapper;
+	}
+
+	public TranslationUtil getTranslationUtil() {
+		return translationUtil;
+	}
+
+	public void setTranslationUtil(TranslationUtil translationUtil) {
+		this.translationUtil = translationUtil;
 	}
 }

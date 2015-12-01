@@ -3,14 +3,30 @@ package com.moorkensam.xlra.service.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
+
+import javax.faces.context.FacesContext;
 
 import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.RateFile;
+import com.moorkensam.xlra.model.translation.Translatable;
 import com.moorkensam.xlra.model.translation.TranslationKey;
 
 public class TranslationUtil {
 
-	public static List<TranslationKey> getAvailableTranslationKeysForSelectedRateFile(
+	public void fillInTranslations(List<? extends Translatable> translatables) {
+		for (Translatable trans : translatables) {
+			fillInTranslation(trans);
+		}
+	}
+
+	public void fillInTranslation(Translatable trans) {
+		ResourceBundle bundle = ResourceBundle.getBundle("translations",
+				FacesContext.getCurrentInstance().getViewRoot().getLocale());
+		trans.setTranslatedValue(bundle.getString(trans.getI8nKey()));
+	}
+
+	public List<TranslationKey> getAvailableTranslationKeysForSelectedRateFile(
 			RateFile rf) {
 		List<TranslationKey> allKeys = TranslationUtil.getTranslationKeyKeys();
 		if (rf != null && rf.getConditions() != null

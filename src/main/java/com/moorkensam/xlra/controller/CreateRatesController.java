@@ -45,6 +45,8 @@ public class CreateRatesController {
 	@Inject
 	private CustomerService customerService;
 
+	private TranslationUtil translationUtil;
+
 	private ConditionFactory conditionFactory;
 
 	private List<Country> countries;
@@ -85,29 +87,34 @@ public class CreateRatesController {
 		measurements = Arrays.asList(Measurement.values());
 		kindOfRates = Arrays.asList(Kind.values());
 		conditionFactory = new ConditionFactory();
+		translationUtil = new TranslationUtil();
 	}
 
-	public void goToRateLineEditor() {
+	public void calculateCopyOfRateFileForFilter() {
 		RateFile copiedFile = rateFileService
 				.getCopyOfRateFileForFilter(filter);
 		copiedFile.setCustomer(rateFile.getCustomer());
 		copiedFile.setName(rateFile.getName());
 		rateFile = copiedFile;
+		translationUtil.fillInTranslations(rateFile.getConditions());
+		showRateLineEditor();
+	}
+
+	public void showRateLineEditor() {
 		collapseBasicInfoGrid = true;
 		collapseRateLineEditor = false;
 		collapseConditionsEditor = true;
 		collapseSummary = true;
 	}
 
-	public void goToSummary() {
-
+	public void showSummary() {
 		collapseBasicInfoGrid = true;
 		collapseRateLineEditor = true;
 		collapseConditionsEditor = true;
 		collapseSummary = false;
 	}
 
-	public void goToBasicInfo() {
+	public void showBasicInfoGrid() {
 		collapseBasicInfoGrid = false;
 		collapseRateLineEditor = true;
 		collapseConditionsEditor = true;
@@ -127,27 +134,27 @@ public class CreateRatesController {
 
 	public void onConditionRowEdit(RowEditEvent event) {
 		Condition condition = (Condition) event.getObject();
-		MessageUtil.addMessage(
-				"Condition updated",
-				"Updated " + condition.getConditionKey() + " to "
+		MessageUtil.addMessage("Condition updated",
+				"Updated " + condition.getTranslatedValue() + " to "
 						+ condition.getValue());
 	}
 
 	public void deleteCondition(Condition condition) {
-		MessageUtil.addMessage("condition removed", condition.getConditionKey()
-				+ " was successfully removed.");
+		MessageUtil.addMessage("condition removed",
+				condition.getTranslatedValue() + " was successfully removed.");
 		rateFile.getConditions().remove(condition);
 		condition.setRateFile(null);
 	}
 
 	public List<TranslationKey> getAvailableTranslationKeysForSelectedRateFile() {
-		return TranslationUtil
+		return translationUtil
 				.getAvailableTranslationKeysForSelectedRateFile(rateFile);
 	}
 
 	public void createConditionForSelectedTranslationKey(ActionEvent event) {
-		rateFile.addCondition(conditionFactory.createCondition(getKeyToAdd(),
-				""));
+		Condition createCondition = conditionFactory.createCondition(
+				getKeyToAdd(), "");
+		rateFile.addCondition(createCondition);
 		setKeyToAdd(null);
 	}
 

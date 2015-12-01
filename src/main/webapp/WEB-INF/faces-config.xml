@@ -9,6 +9,10 @@
 			<default-locale>en</default-locale>
 		</locale-config>
 		<message-bundle>errorMessages</message-bundle>
+		<resource-bundle>
+			<base-name>translations</base-name>
+			<var>translation</var>
+		</resource-bundle>
 	</application>
 
 	<factory>

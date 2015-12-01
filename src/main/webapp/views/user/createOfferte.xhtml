@@ -84,18 +84,6 @@
 						requiredMessage="Postal code is required!"
 						value="#{createQuotationController.quotationQuery.postalCode}" />
 
-					<h:outputText value="Address surcharge:" />
-					<p:selectBooleanCheckbox
-						value="#{createQuotationController.quotationQuery.adrSurcharge}" />
-
-					<h:outputText value="Import formalities:" />
-					<p:selectBooleanCheckbox
-						value="#{createQuotationController.quotationQuery.importFormality}" />
-
-					<h:outputText value="Export formalities:" />
-					<p:selectBooleanCheckbox
-						value="#{createQuotationController.quotationQuery.exportFormality}" />
-
 					<h:outputText value="Transport type:" />
 					<p:selectOneRadio
 						value="#{createQuotationController.quotationQuery.transportType}">
@@ -131,7 +119,7 @@
 						items="#{createQuotationController.quotationResult.selectableOptions}"
 						var="option">
 
-						<h:outputLabel value="#{option.key}" />
+						<h:outputLabel value="#{option.translatedValue}" />
 						<p:selectBooleanCheckbox value="#{option.selected}" />
 
 					</c:forEach>
