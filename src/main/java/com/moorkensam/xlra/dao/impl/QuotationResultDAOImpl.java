@@ -34,6 +34,7 @@ public class QuotationResultDAOImpl extends BaseDAO implements
 	private void fullLoad(QuotationResult result) {
 		result.getQuery();
 		result.getEmailResult();
+		result.getEmailHistory().size();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -122,5 +123,13 @@ public class QuotationResultDAOImpl extends BaseDAO implements
 		fillQueryFromParameterMap(query, parameterMap);
 		return (List<QuotationResult>) query.getResultList();
 
+	}
+
+	@Override
+	public QuotationResult getQuotationResultById(Long id) {
+		QuotationResult result = getEntityManager().find(QuotationResult.class,
+				id);
+		fullLoad(result);
+		return result;
 	}
 }

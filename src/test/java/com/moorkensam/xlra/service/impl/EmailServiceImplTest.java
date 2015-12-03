@@ -11,10 +11,13 @@ import org.unitils.UnitilsJUnit4;
 import org.unitils.easymock.EasyMockUnitils;
 import org.unitils.easymock.annotation.Mock;
 
+import com.moorkensam.xlra.dao.EmailHistoryDAO;
 import com.moorkensam.xlra.model.error.TemplatingException;
 import com.moorkensam.xlra.model.mail.EmailResult;
+import com.moorkensam.xlra.model.offerte.EmailHistoryRecord;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.security.User;
+import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.util.ConfigurationLoader;
 import com.moorkensam.xlra.service.util.EmailAttachmentHelper;
 import com.moorkensam.xlra.service.util.TransportDelegate;
@@ -30,7 +33,13 @@ public class EmailServiceImplTest extends UnitilsJUnit4 {
 	private TransportDelegate transportDelegate;
 
 	@Mock
+	private UserService userService;
+
+	@Mock
 	private EmailAttachmentHelper helper;
+
+	@Mock
+	private EmailHistoryDAO emailHistoryDAO;
 
 	private ConfigurationLoader configLoader;
 
@@ -42,6 +51,8 @@ public class EmailServiceImplTest extends UnitilsJUnit4 {
 		configLoader = ConfigurationLoader.getInstance();
 		emailServiceImpl.setConfigLoader(configLoader);
 		emailServiceImpl.setHelper(helper);
+		emailServiceImpl.setUserService(userService);
+		emailServiceImpl.setEmailHistoryDAO(emailHistoryDAO);
 	}
 
 	@Test
@@ -83,6 +94,10 @@ public class EmailServiceImplTest extends UnitilsJUnit4 {
 		EasyMock.expect(helper.generatedPdfAttachment(offerte)).andReturn(
 				new MimeBodyPart());
 		transportDelegate.send(EasyMock.isA(MimeMessage.class));
+		EasyMock.expectLastCall();
+		EasyMock.expect(userService.getCurrentUsername()).andReturn("bmoork");
+		emailHistoryDAO.createEmailHistoryRecord(EasyMock
+				.isA(EmailHistoryRecord.class));
 		EasyMock.expectLastCall();
 		EasyMockUnitils.replay();
 

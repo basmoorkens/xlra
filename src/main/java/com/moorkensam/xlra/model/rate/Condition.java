@@ -1,6 +1,10 @@
 package com.moorkensam.xlra.model.rate;
 
+import java.util.List;
+
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -10,6 +14,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.moorkensam.xlra.model.BaseEntity;
+import com.moorkensam.xlra.model.configuration.Language;
+import com.moorkensam.xlra.model.configuration.TranslationForLanguage;
 import com.moorkensam.xlra.model.translation.Translatable;
 import com.moorkensam.xlra.model.translation.TranslationKey;
 
@@ -35,6 +41,10 @@ public class Condition extends BaseEntity implements Translatable {
 	@JoinColumn(name = "rateFileId")
 	private RateFile rateFile;
 
+	@ElementCollection
+	@CollectionTable(name = "translationsForLanguages", joinColumns = @JoinColumn(name = "condition_id"))
+	private List<TranslationForLanguage> translations;
+	
 	@Transient
 	private String i8nKey;
 
@@ -118,5 +128,38 @@ public class Condition extends BaseEntity implements Translatable {
 
 	public void setTranslatedValue(String translatedValue) {
 		this.translatedValue = translatedValue;
+	}
+
+	public List<TranslationForLanguage> getTranslations() {
+		return translations;
+	}
+
+	public void setTranslations(List<TranslationForLanguage> translations) {
+		this.translations = translations;
+	}
+	
+	public TranslationForLanguage getTranslationForLanguage(Language language) {
+		for (TranslationForLanguage tl : translations) {
+			if (tl.getLanguage().equals(language)) {
+				return tl;
+			}
+		}
+		return null;
+	}
+	
+	public TranslationForLanguage getEnglishTranslation() {
+		return getTranslationForLanguage(Language.EN);
+	}
+
+	public TranslationForLanguage getFrenchTranslation() {
+		return getTranslationForLanguage(Language.FR);
+	}
+
+	public TranslationForLanguage getGermanTranslation() {
+		return getTranslationForLanguage(Language.DE);
+	}
+
+	public TranslationForLanguage getDutchTranslation() {
+		return getTranslationForLanguage(Language.NL);
 	}
 }

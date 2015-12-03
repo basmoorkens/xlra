@@ -59,7 +59,8 @@ public class OfferteOverviewController {
 	}
 
 	public void setupOfferteDetail(QuotationResult quotationResult) {
-		selectedOfferte = quotationResult;
+		selectedOfferte = quotationService.getFullOfferteById(quotationResult
+				.getId());
 		detail = true;
 	}
 
@@ -87,6 +88,8 @@ public class OfferteOverviewController {
 	public void resendEmail() {
 		try {
 			emailService.sendOfferteMail(selectedOfferte);
+			selectedOfferte = quotationService
+					.getFullOfferteById(selectedOfferte.getId());
 			MessageUtil.addMessage("Email resend", "Successfully sent email");
 		} catch (MessagingException e) {
 			MessageUtil

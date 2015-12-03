@@ -1,11 +1,11 @@
 package com.moorkensam.xlra.service.impl;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.activation.FileDataSource;
+import java.util.Date;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -19,16 +19,18 @@ import javax.mail.internet.MimeMultipart;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.moorkensam.xlra.dao.EmailHistoryDAO;
 import com.moorkensam.xlra.model.error.TemplatingException;
+import com.moorkensam.xlra.model.offerte.EmailHistoryRecord;
+import com.moorkensam.xlra.model.offerte.EmailSentStatus;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.EmailService;
 import com.moorkensam.xlra.service.FileService;
+import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.util.ConfigurationLoader;
 import com.moorkensam.xlra.service.util.EmailAttachmentHelper;
-import com.moorkensam.xlra.service.util.FileUtil;
 import com.moorkensam.xlra.service.util.TransportDelegate;
-import com.sun.mail.handlers.multipart_mixed;
 
 /**
  * This service can be used to send emails from the application.
@@ -41,12 +43,18 @@ public class EmailServiceImpl implements EmailService {
 
 	private final static Logger logger = LogManager.getLogger();
 
+	@Resource(name = "java:/mail/xlra")
+	private Session mailSession;
+
+	@Inject
+	private EmailHistoryDAO emailHistoryDAO;
+
+	@Inject
+	private UserService userService;
+
 	private ConfigurationLoader configLoader;
 
 	private FileService fileService;
-
-	@Resource(name = "java:/mail/xlra")
-	private Session mailSession;
 
 	private TemplateParseService templateEngine;
 
@@ -70,6 +78,7 @@ public class EmailServiceImpl implements EmailService {
 				+ result.getEmailResult().getToAddress() + " with subject "
 				+ result.getEmailResult().getSubject()
 				+ " for content look up result " + result.getId());
+		EmailSentStatus status = EmailSentStatus.SENT;
 		try {
 			String fromAddress = configLoader
 					.getProperty(ConfigurationLoader.MAIL_SENDER);
@@ -83,8 +92,17 @@ public class EmailServiceImpl implements EmailService {
 		} catch (MessagingException e) {
 			result.getEmailResult().setSend(false);
 			logger.error("Error sending email: " + e);
+			status = EmailSentStatus.NOT_SENT;
 			throw new MessagingException("Error sending offerte email");
+		} finally {
+			EmailHistoryRecord historyRecord = new EmailHistoryRecord();
+			historyRecord.setDateTime(new Date());
+			historyRecord.setOfferte(result);
+			historyRecord.setStatus(status);
+			historyRecord.setUsername(userService.getCurrentUsername());
+			emailHistoryDAO.createEmailHistoryRecord(historyRecord);
 		}
+
 	}
 
 	protected Message createOfferteMail(QuotationResult result,
@@ -206,4 +224,19 @@ public class EmailServiceImpl implements EmailService {
 		this.helper = helper;
 	}
 
+	public EmailHistoryDAO getEmailHistoryDAO() {
+		return emailHistoryDAO;
+	}
+
+	public void setEmailHistoryDAO(EmailHistoryDAO emailHistoryDAO) {
+		this.emailHistoryDAO = emailHistoryDAO;
+	}
+
+	public UserService getUserService() {
+		return userService;
+	}
+
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
 }

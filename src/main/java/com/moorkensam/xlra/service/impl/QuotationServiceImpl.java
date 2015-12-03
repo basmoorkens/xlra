@@ -360,4 +360,9 @@ public class QuotationServiceImpl implements QuotationService {
 	public void setQuotationUtil(QuotationUtil quotationUtil) {
 		this.quotationUtil = quotationUtil;
 	}
+
+	@Override
+	public QuotationResult getFullOfferteById(Long id) {
+		return quotationResultDAO.getQuotationResultById(id);
+	}
 }

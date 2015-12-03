@@ -65,13 +65,31 @@
 						value="#{offerteOverviewController.selectedOfferte.emailResult.email}" />
 
 				</p:panelGrid>
+
+				<p:panel style="margin-top:20px;" header="Email history">
+					<p:dataTable
+						value="#{offerteOverviewController.selectedOfferte.emailHistory}"
+						var="historyRecord">
+						<p:column headerText="Date / time">
+							<h:outputLabel value="#{historyRecord.dateTime}" />
+						</p:column>
+						<p:column headerText="User">
+							<h:outputLabel value="#{historyRecord.username}" />
+						</p:column>
+						<p:column headerText="Status">
+							<h:outputLabel value="#{historyRecord.status}" />
+						</p:column>
+
+					</p:dataTable>
+				</p:panel>
+
 				<p:panel style="margin-top:20px;">
 					<p:commandButton value="Open pdf"
 						actionListener="#{offerteOverviewController.downloadPdf}"
 						onclick="this.form.target='_blank'" ajax="false" />
 					<p:commandButton value="Resend email" style="margin-left:20px;"
 						actionListener="#{offerteOverviewController.resendEmail}"
-						ajax="true" update=":offerteDetailForm:msgs" />
+						ajax="true" update=":offerteDetailForm" />
 				</p:panel>
 			</p:panel>
 

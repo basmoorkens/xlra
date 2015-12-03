@@ -96,8 +96,7 @@ public class ManageRatesController {
 
 	public void onConditionRowEdit(RowEditEvent event) {
 		Condition condition = (Condition) event.getObject();
-		MessageUtil.addMessage(
-				"Condition updated",
+		MessageUtil.addMessage("Condition updated",
 				"Updated " + condition.getTranslatedValue() + " to "
 						+ condition.getValue());
 		updateRateFile();
@@ -129,8 +128,8 @@ public class ManageRatesController {
 	}
 
 	public void deleteCondition(Condition condition) {
-		MessageUtil.addMessage("condition removed", condition.getTranslatedValue()
-				+ " was successfully removed.");
+		MessageUtil.addMessage("condition removed",
+				condition.getTranslatedValue() + " was successfully removed.");
 		selectedRateFile.getConditions().remove(condition);
 		condition.setRateFile(null);
 		updateRateFile();
@@ -280,6 +279,10 @@ public class ManageRatesController {
 
 	public void setCollapseZonesDetailGrid(boolean collapseZonesDetailGrid) {
 		this.collapseZonesDetailGrid = collapseZonesDetailGrid;
+	}
+
+	public boolean isCanEdit() {
+		return editable;
 	}
 
 }

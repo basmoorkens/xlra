@@ -6,7 +6,6 @@ import java.util.Map;
 import org.primefaces.model.SortOrder;
 
 import com.moorkensam.xlra.model.offerte.OfferteSearchFilter;
-import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 
 public interface QuotationResultDAO {
@@ -24,5 +23,7 @@ public interface QuotationResultDAO {
 
 	public List<QuotationResult> getQuotationResultsForFilter(
 			OfferteSearchFilter filter);
+
+	public QuotationResult getQuotationResultById(Long id);
 
 }

@@ -17,21 +17,21 @@
 			<p:panel id="translationsPanel" header="Translations">
 				<p:growl id="msgs" showDetail="true" />
 				<p:dataTable value="#{translationController.translations}"
-					var="translation" paginator="true" rowsPerPageTemplate="10,25,50"
-					rows="10"
+					var="xlratranslation" paginator="true"
+					rowsPerPageTemplate="10,25,50" rows="10"
 					paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
 					emptyMessage="No translations found." id="translationTable">
 
 					<p:column headerText="Translation key">
-						<h:outputText value="#{translation.translationKey}" />
+						<h:outputText value="#{xlratranslation.translationKey}" />
 					</p:column>
 
 					<p:column headerText="Translated in">
-						<h:outputText value="#{translation.translationsString}" />
+						<h:outputText value="#{xlratranslation.translationsString}" />
 					</p:column>
 					<p:column style="width:36px;text-align: center">
 						<p:commandButton
-							actionListener="#{translationController.setupPageForEdit(translation)}"
+							actionListener="#{translationController.setupPageForEdit(xlratranslation)}"
 							icon="ui-icon-search" title="View" ajax="false"
 							update=":translationDetailForm" immediate="true">
 						</p:commandButton>

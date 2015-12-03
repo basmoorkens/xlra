@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -45,6 +46,9 @@ public class QuotationResult extends BaseEntity {
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "quotation_query_id")
 	private QuotationQuery query;
+
+	@OneToMany(mappedBy = "offerte")
+	private List<EmailHistoryRecord> emailHistory;
 
 	/**
 	 * There is no guarantee that the ratefile that was used to generate this
@@ -133,5 +137,20 @@ public class QuotationResult extends BaseEntity {
 			return null;
 		}
 		return getQuery().getCountry();
+	}
+
+	public List<EmailHistoryRecord> getEmailHistory() {
+		return emailHistory;
+	}
+
+	public void setEmailHistory(List<EmailHistoryRecord> emailHistory) {
+		this.emailHistory = emailHistory;
+	}
+
+	public void addEmailHistoryRecord(EmailHistoryRecord record) {
+		if (emailHistory == null) {
+			emailHistory = new ArrayList<EmailHistoryRecord>();
+		}
+		emailHistory.add(record);
 	}
 }
