@@ -62,6 +62,13 @@ public class OfferteOverviewController {
 		selectedOfferte = quotationService.getFullOfferteById(quotationResult
 				.getId());
 		detail = true;
+		MessageUtil.addMessage("Offerte opened",
+				"Offerte " + quotationResult.getOfferteUniqueIdentifier()
+						+ " opened.");
+	}
+
+	public void openSearchMode() {
+		detail = false;
 	}
 
 	public void downloadPdf() throws IOException {

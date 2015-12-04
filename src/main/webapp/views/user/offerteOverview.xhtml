@@ -9,7 +9,7 @@
 		<h:outputText value="XLRA - offerte overview" />
 	</ui:define>
 	<ui:define name="pageTitle">
-		<h:outputText value="Offerte overview" />
+		<h:outputText value="Offerte list" />
 	</ui:define>
 	<ui:define name="body">
 		<h:form id="searchForm">
@@ -48,40 +48,43 @@
 			</p:panel>
 		</h:form>
 		<h:form id="offertesForm">
-			<p:dataTable var="quotationResult"
-				value="#{offerteOverviewController.quotationResults}"
-				paginator="true" rows="25"
-				paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
-				rowsPerPageTemplate="10,25,50" id="offerteTable"
-				emptyMessage="No offertes to view...">
+			<p:panel id="overviewPanel" header="Offerte overview"
+				toggleable="true" collapsed="#{offerteOverviewController.detail}">
+				<p:dataTable var="quotationResult"
+					value="#{offerteOverviewController.quotationResults}"
+					paginator="true" rows="25"
+					paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+					rowsPerPageTemplate="10,25,50" id="offerteTable"
+					emptyMessage="No offertes to view...">
 
-				<p:column headerText="Offerte key: "
-					sortBy="offerteUniqueIdentifier">
-					<h:outputText value="#{quotationResult.offerteUniqueIdentifier}" />
-				</p:column>
+					<p:column headerText="Offerte key: "
+						sortBy="offerteUniqueIdentifier">
+						<h:outputText value="#{quotationResult.offerteUniqueIdentifier}" />
+					</p:column>
 
-				<p:column headerText="Customer: " sortBy="query.customer.name">
-					<h:outputText value="#{quotationResult.query.customer.name}" />
-				</p:column>
+					<p:column headerText="Customer: " sortBy="query.customer.name">
+						<h:outputText value="#{quotationResult.query.customer.name}" />
+					</p:column>
 
-				<p:column headerText="Date: " sortBy="query.quotationDate">
-					<h:outputText value="#{quotationResult.query.quotationDate}" />
-				</p:column>
+					<p:column headerText="Date: " sortBy="query.quotationDate">
+						<h:outputText value="#{quotationResult.query.quotationDate}" />
+					</p:column>
 
-				<p:column headerText="Country: " sortBy="query.country.shortName">
-					<h:outputText value="#{quotationResult.query.country.shortName}" />
-				</p:column>
+					<p:column headerText="Country: " sortBy="query.country.shortName">
+						<h:outputText value="#{quotationResult.query.country.shortName}" />
+					</p:column>
 
-				<p:column headerText="PostalCode: " sortBy="query.postalCode">
-					<h:outputText value="#{quotationResult.query.postalCode}" />
-				</p:column>
-				<p:column style="width:36px;text-align: center">
-					<p:commandButton
-						actionListener="#{offerteOverviewController.setupOfferteDetail(quotationResult)}"
-						icon="ui-icon-search" title="View" update=":offerteDetailForm">
-					</p:commandButton>
-				</p:column>
-			</p:dataTable>
+					<p:column headerText="PostalCode: " sortBy="query.postalCode">
+						<h:outputText value="#{quotationResult.query.postalCode}" />
+					</p:column>
+					<p:column style="width:36px;text-align: center">
+						<p:commandButton
+							actionListener="#{offerteOverviewController.setupOfferteDetail(quotationResult)}"
+							icon="ui-icon-search" title="View" update=":offertesForm :offerteDetailForm">
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</p:panel>
 		</h:form>
 
 		<ui:include src="/views/user/offerteDetail.xhtml" />

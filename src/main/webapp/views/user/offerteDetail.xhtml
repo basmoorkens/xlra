@@ -7,8 +7,9 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 	<h:form id="offerteDetailForm">
 		<p:growl id="msgs" />
-		<p:panel header="Offerte detail"
-			rendered="#{offerteOverviewController.detail}">
+		<p:panel
+			header="Offerte #{offerteOverviewController.selectedOfferte.offerteUniqueIdentifier} details"
+			id="detailPanel" rendered="#{offerteOverviewController.detail}">
 
 			<p:panel header="Input parameters">
 				<p:panelGrid columns="2" style="width:100%;">
@@ -82,15 +83,6 @@
 
 					</p:dataTable>
 				</p:panel>
-
-				<p:panel style="margin-top:20px;">
-					<p:commandButton value="Open pdf"
-						actionListener="#{offerteOverviewController.downloadPdf}"
-						onclick="this.form.target='_blank'" ajax="false" />
-					<p:commandButton value="Resend email" style="margin-left:20px;"
-						actionListener="#{offerteOverviewController.resendEmail}"
-						ajax="true" update=":offerteDetailForm" />
-				</p:panel>
 			</p:panel>
 
 			<p:panel header="Calculation">
@@ -124,6 +116,46 @@
 						value="#{offerteOverviewController.selectedOfferte.calculation.finalPrice}" />
 				</p:panelGrid>
 			</p:panel>
+
+			<p:panel style="margin-top:20px;">
+				<p:commandButton value="Back to search"
+					actionListener="#{offerteOverviewController.openSearchMode}"
+					ajax="true" update=":offerteDetailForm :offertesForm" />
+				<p:commandButton value="Open pdf" style="margin-left:20px;"
+					actionListener="#{offerteOverviewController.downloadPdf}"
+					onclick="this.form.target='_blank'" ajax="false" />
+				<p:commandButton value="Resend email" style="margin-left:20px;"
+					actionListener="#{offerteOverviewController.resendEmail}"
+					ajax="true" update=":offerteDetailForm" />
+			</p:panel>
 		</p:panel>
+
+		<p:ajaxStatus onstart="showStatusDialog();"
+			onsuccess="hideStatusDialog();" />
+
+		<p:dialog id="statusDialog" widgetVar="statusDialog" modal="true"
+			draggable="false" closable="false" resizable="false"
+			showHeader="false">
+			<img src="/xlra/images/ajax-loader.gif" />
+		</p:dialog>
+
 	</h:form>
+
+	<script type="text/javascript">
+		var statusDlgTimer = null;
+
+		function showStatusDialog() {
+			if (statusDlgTimer === null) {
+				statusDlgTimer = setTimeout("PF('statusDialog').show()", 500);
+			}
+		}
+
+		function hideStatusDialog() {
+			if (statusDlgTimer !== null) {
+				clearTimeout(statusDlgTimer);
+				PF('statusDialog').hide();
+				statusDlgTimer = null;
+			}
+		}
+	</script>
 </ui:composition>
