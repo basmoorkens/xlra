@@ -30,8 +30,8 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 
 	@PostConstruct
 	public void init() {
-		setTemplateParseService(TemplateParseService.getInstance());
-		templateParseService = TemplateParseService.getInstance();
+		setTemplateParseService(TemplateParseServiceImpl.getInstance());
+		templateParseService = TemplateParseServiceImpl.getInstance();
 	}
 
 	@Override

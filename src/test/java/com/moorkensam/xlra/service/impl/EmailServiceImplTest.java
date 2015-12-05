@@ -46,7 +46,7 @@ public class EmailServiceImplTest extends UnitilsJUnit4 {
 	@Before
 	public void init() {
 		emailServiceImpl = new EmailServiceImpl();
-		emailServiceImpl.setTemplateEngine(templateParseService);
+		emailServiceImpl.setTemplateParseService(templateParseService);
 		emailServiceImpl.setTransportDelegate(transportDelegate);
 		configLoader = ConfigurationLoader.getInstance();
 		emailServiceImpl.setConfigLoader(configLoader);

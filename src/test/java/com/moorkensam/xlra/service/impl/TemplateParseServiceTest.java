@@ -32,11 +32,11 @@ import freemarker.template.Configuration;
 public class TemplateParseServiceTest extends UnitilsJUnit4 {
 
 	@TestedObject
-	private TemplateParseService templateEngine;
+	private TemplateParseServiceImpl templateEngine;
 
 	@Before
 	public void setup() {
-		templateEngine = TemplateParseService.getInstance();
+		templateEngine = TemplateParseServiceImpl.getInstance();
 		templateEngine.setStringTemplateLoader(new StringTemplateLoader());
 		templateEngine.setConfiguration(new Configuration());
 		templateEngine.setConfigLoader(ConfigurationLoader.getInstance());

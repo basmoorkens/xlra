@@ -56,7 +56,7 @@ public class EmailServiceImpl implements EmailService {
 
 	private FileService fileService;
 
-	private TemplateParseService templateEngine;
+	private TemplateParseService templateParseService;
 
 	private TransportDelegate transportDelegate;
 
@@ -65,7 +65,7 @@ public class EmailServiceImpl implements EmailService {
 	@PostConstruct
 	public void init() {
 		setConfigLoader(ConfigurationLoader.getInstance());
-		setTemplateEngine(TemplateParseService.getInstance());
+		setTemplateParseService(TemplateParseServiceImpl.getInstance());
 		setTransportDelegate(TransportDelegate.getInstance());
 		helper = new EmailAttachmentHelper();
 		fileService = new FileServiceImpl();
@@ -136,7 +136,9 @@ public class EmailServiceImpl implements EmailService {
 			message.setRecipients(Message.RecipientType.TO,
 					InternetAddress.parse(user.getEmail()));
 			message.setSubject("Extra logistics Rates application - reset password");
-			message.setContent("TEST", "text/html; charset=utf-8");
+			String content = templateParseService
+					.parseUserResetPasswordEmail(user);
+			message.setContent(content, "text/html; charset=utf-8");
 
 			transportDelegate.send(message);
 			if (logger.isDebugEnabled()) {
@@ -145,6 +147,10 @@ public class EmailServiceImpl implements EmailService {
 		} catch (MessagingException e) {
 			logger.error("Error sending email: " + e);
 			throw new MessagingException("Error sending password reset email");
+		} catch (TemplatingException exc) {
+			logger.error("Error parsing mail template: " + exc);
+			throw new MessagingException(
+					"Error parsing the reset password email");
 		}
 	}
 
@@ -158,7 +164,7 @@ public class EmailServiceImpl implements EmailService {
 			message.setFrom(new InternetAddress(fromAddress));
 			message.setRecipients(Message.RecipientType.TO,
 					InternetAddress.parse(user.getEmail()));
-			String filledInTemplate = getTemplateEngine()
+			String filledInTemplate = getTemplateParseService()
 					.parseUserCreatedTemplate(user);
 			message.setSubject("Extra logistics Rates application - account created");
 			message.setContent(filledInTemplate, "text/html; charset=utf-8");
@@ -200,12 +206,12 @@ public class EmailServiceImpl implements EmailService {
 		this.transportDelegate = transportDelegate;
 	}
 
-	public TemplateParseService getTemplateEngine() {
-		return templateEngine;
+	public TemplateParseService getTemplateParseService() {
+		return templateParseService;
 	}
 
-	public void setTemplateEngine(TemplateParseService templateEngine) {
-		this.templateEngine = templateEngine;
+	public void setTemplateParseService(TemplateParseService templateEngine) {
+		this.templateParseService = templateEngine;
 	}
 
 	public FileService getFileService() {

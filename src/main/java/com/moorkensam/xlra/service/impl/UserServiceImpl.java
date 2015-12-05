@@ -220,4 +220,9 @@ public class UserServiceImpl implements UserService {
 		user.setUserStatus(UserStatus.IN_OPERATION);
 		updateUser(user, false);
 	}
+
+	@Override
+	public User isValidPasswordResetRequest(String email, String token) {
+		return userDAO.isValidPasswordResetRequest(email, token);
+	}
 }

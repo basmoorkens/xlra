@@ -2,8 +2,8 @@ package com.moorkensam.xlra.controller.outside;
 
 import java.util.Map;
 
-import javax.annotation.ManagedBean;
 import javax.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -46,12 +46,12 @@ public class ResetPasswordController {
 				.getRequestParameterMap();
 		String userEmail = requestParameters.get("email");
 		String token = requestParameters.get("token");
-		user = userService.isValidPasswordRequest(userEmail, token);
+		user = userService.isValidPasswordResetRequest(userEmail, token);
 		if (user == null) {
 			setValidRequest(false);
 		} else {
 			setValidRequest(true);
-			welcomeMessage = "Hello " + user.getFullName();
+			welcomeMessage = "Hello " + user.getFullName() + ", ";
 		}
 	}
 
@@ -59,9 +59,8 @@ public class ResetPasswordController {
 		if (validatePasswords()) {
 			userService.setPasswordAndActivateUser(user, password);
 			MessageUtil
-					.addMessage(
-							"Password set",
-							"Your account is now active. You can login with your email and the provided password.");
+					.addMessage("Password set",
+							"Your password was reset. You can now login to the application.");
 			completed = true;
 		}
 	}

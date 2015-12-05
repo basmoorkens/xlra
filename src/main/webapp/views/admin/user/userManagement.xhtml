@@ -34,13 +34,13 @@
 							update=":usersForm :addUserForm" id="editButton"
 							actionListener="#{manageUsersController.selectUserForEdit(user)}" />
 						<p:tooltip id="editTip" for="editButton" value="Edit user" />
-						<p:commandButton icon="icon-lock" update=":usersForm :addUserForm"
-							id="disableButton"
+						<p:commandButton icon="ui-icon-locked"
+							update=":usersForm :addUserForm" id="disableButton"
 							actionListener="#{manageUsersController.disableUser(user)}" />
 						<p:tooltip id="disabletip" for="disableButton"
 							value="Disable user" />
-						<p:commandButton icon="icon-lock-open" update=":usersForm :addUserForm"
-							id="enableButton"
+						<p:commandButton icon="ui-icon-unlocked"
+							update=":usersForm :addUserForm" id="enableButton"
 							actionListener="#{manageUsersController.enableUser(user)}" />
 						<p:tooltip id="enabletip" for="enableButton" value="Enable user" />
 						<p:commandButton icon="ui-icon-trash" title="Delete"
@@ -57,8 +57,9 @@
 
 				<p:panel>
 					<p:commandButton
-						actionListener="#{manageUsersController.setupNewUsers}"
-						update=":usersForm :addUserForm" value="Create new user" />
+						actionListener="#{manageUsersController.setupNewUser}"
+						update=":usersForm :addUserForm" immediate="true" ajax="false"
+						value="Create new user" />
 				</p:panel>
 			</p:panel>
 			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
@@ -112,7 +113,7 @@
 							actionListener="#{manageUsersController.resetUserPassword}"
 							update=":usersForm :addUserForm" />
 						<p:commandButton value="Save" update=":usersForm :addUserForm"
-							ajax="true"
+							ajax="true" style="margin-left:20px;"
 							actionListener="#{manageUsersController.createOrUpdateUser}"
 							oncomplete="handleAddUserRequest(xhr, status, args)" />
 					</p:panel>
@@ -120,8 +121,9 @@
 				<p:ajaxStatus onstart="showStatusDialog();"
 					onsuccess="hideStatusDialog();" />
 
-				<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
-					closable="false" resizable="false" showHeader="false">
+				<p:dialog id="statusDialog" widgetVar="statusDialog" modal="true"
+					draggable="false" closable="false" resizable="false"
+					showHeader="false">
 					<img src="/xlra/images/ajax-loader.gif" />
 				</p:dialog>
 
@@ -132,14 +134,15 @@
 
 			function showStatusDialog() {
 				if (statusDlgTimer === null) {
-					statusDlgTimer = setTimeout("statusDialog.show()", 500);
+					statusDlgTimer = setTimeout("PF('statusDialog').show()",
+							500);
 				}
 			}
 
 			function hideStatusDialog() {
 				if (statusDlgTimer !== null) {
 					clearTimeout(statusDlgTimer);
-					statusDialog.hide();
+					PF('statusDialog').hide();
 					statusDlgTimer = null;
 				}
 			}

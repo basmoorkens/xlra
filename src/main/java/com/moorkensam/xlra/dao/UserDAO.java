@@ -23,4 +23,6 @@ public interface UserDAO {
 	public void deleteUser(User user);
 
 	public User isValidPasswordRequest(String email, String token);
+
+	public User isValidPasswordResetRequest(String email, String token);
 }

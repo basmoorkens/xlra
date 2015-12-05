@@ -47,13 +47,6 @@ public class ManageUsersController {
 		setUsers(userService.getAllUsers());
 	}
 
-	public void setupNewUsers() {
-		selectedUser = new User();
-		selectUserForEdit(selectedUser);
-		RequestContext context = RequestContext.getCurrentInstance();
-		context.execute("PF('addUserDialog').show();");
-	}
-
 	public void deleteUser(User user) {
 		userService.deleteUser(user);
 		MessageUtil.addMessage("User deleted", "The user " + user.getName()
@@ -66,6 +59,10 @@ public class ManageUsersController {
 		if (getCanResetPassword()) {
 			try {
 				userService.resetUserPassword(selectedUser);
+				MessageUtil.addMessage(
+						"Password reset",
+						"Password reset email was sent to "
+								+ selectedUser.getEmail());
 			} catch (MessagingException e) {
 				MessageUtil
 						.addErrorMessage(
@@ -89,6 +86,13 @@ public class ManageUsersController {
 		MessageUtil.addMessage("User disabled",
 				"Disabled user " + user.getUserName());
 		refreshUsers();
+	}
+
+	public void setupNewUser() {
+		selectedUser = new User();
+		selectUserForEdit(selectedUser);
+		RequestContext context = RequestContext.getCurrentInstance();
+		context.execute("PF('addUserDialog').show();");
 	}
 
 	public void selectUserForEdit(User user) {
@@ -118,12 +122,11 @@ public class ManageUsersController {
 		if (selectedUser.getId() == 0) {
 			userService.createUser(selectedUser);
 			MessageUtil.addMessage("User created",
-					"The user " + selectedUser.getName()
+					"The user " + selectedUser.getUserName()
 							+ " was successfully created.");
-			setupNewUsers();
 		} else {
 			MessageUtil.addMessage("User updated",
-					"The user " + selectedUser.getName()
+					"The user " + selectedUser.getUserName()
 							+ " was successfully updated.");
 			userService.updateUser(selectedUser, false);
 		}

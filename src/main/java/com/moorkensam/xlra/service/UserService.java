@@ -28,6 +28,8 @@ public interface UserService {
 
 	public User isValidPasswordRequest(String email, String token);
 
+	public User isValidPasswordResetRequest(String email, String token);
+
 	public void setPasswordAndActivateUser(User user, String password);
 
 	public String getCurrentUsername();

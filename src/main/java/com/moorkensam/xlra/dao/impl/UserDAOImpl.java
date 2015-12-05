@@ -72,13 +72,14 @@ public class UserDAOImpl extends BaseDAO implements UserDAO {
 
 	@Override
 	public User getUserByUserName(String userName) {
-		Query query = getEntityManager().createNamedQuery("User.findByUserName");
+		Query query = getEntityManager()
+				.createNamedQuery("User.findByUserName");
 		query.setParameter("userName", userName);
 		User user = (User) query.getSingleResult();
 		lazyLoadUser(user);
 		return user;
 	}
-	
+
 	@Override
 	public void deleteUser(User user) {
 		getEntityManager().remove(user);
@@ -86,11 +87,8 @@ public class UserDAOImpl extends BaseDAO implements UserDAO {
 
 	@Override
 	public User isValidPasswordRequest(String email, String token) {
-		Query query = getEntityManager().createNamedQuery(
-				"User.findByEmailAndToken");
-		query.setParameter("email", email);
-		query.setParameter("token", token);
-		query.setParameter("userStatus", UserStatus.FIRST_TIME_LOGIN);
+		Query query = buildPasswordVerificationQuery(email, token,
+				UserStatus.FIRST_TIME_LOGIN);
 		User user = null;
 		try {
 			user = (User) query.getSingleResult();
@@ -100,4 +98,29 @@ public class UserDAOImpl extends BaseDAO implements UserDAO {
 		}
 		return user;
 	}
+
+	@Override
+	public User isValidPasswordResetRequest(String email, String token) {
+		Query query = buildPasswordVerificationQuery(email, token,
+				UserStatus.PASSWORD_RESET);
+		User user = null;
+		try {
+			user = (User) query.getSingleResult();
+		} catch (NoResultException nre) {
+			logger.info("Could not find user for " + email
+					+ " with specified token. Possible intrustion attempt!");
+		}
+		return user;
+	}
+
+	private Query buildPasswordVerificationQuery(String email, String token,
+			UserStatus status) {
+		Query query = getEntityManager().createNamedQuery(
+				"User.findByEmailAndToken");
+		query.setParameter("email", email);
+		query.setParameter("token", token);
+		query.setParameter("userStatus", status);
+		return query;
+	}
+
 }

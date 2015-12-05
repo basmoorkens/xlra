@@ -40,7 +40,7 @@ public class PdfServiceTest extends UnitilsJUnit4 {
 
 	private ConfigurationLoader configLoader;
 
-	private TemplateParseService templateParseService;
+	private TemplateParseServiceImpl templateParseService;
 
 	private TranslationConfigurationLoader translationLoader;
 
@@ -51,7 +51,7 @@ public class PdfServiceTest extends UnitilsJUnit4 {
 		pdfService = new PdfServiceImpl();
 		pdfService.setFileService(fileService);
 		offerte = new QuotationResult();
-		templateParseService = TemplateParseService.getInstance();
+		templateParseService = TemplateParseServiceImpl.getInstance();
 		templateParseService.setTranslationLoader(translationLoader);
 		pdfService.setTemplateParseService(templateParseService);
 		pdfService.setConfigLoader(configLoader);
