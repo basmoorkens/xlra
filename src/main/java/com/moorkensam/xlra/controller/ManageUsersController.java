@@ -7,6 +7,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
+import javax.mail.MessagingException;
 
 import org.primefaces.context.RequestContext;
 import org.primefaces.model.DualListModel;
@@ -63,8 +64,31 @@ public class ManageUsersController {
 
 	public void resetUserPassword() {
 		if (getCanResetPassword()) {
-			userService.resetUserPassword(selectedUser);
+			try {
+				userService.resetUserPassword(selectedUser);
+			} catch (MessagingException e) {
+				MessageUtil
+						.addErrorMessage(
+								"Failed to send email to user",
+								"There was a problem sending out the password reset email to "
+										+ selectedUser.getUserName()
+										+ ". Please try again or of this errors persists contact the system administrator.");
+			}
 		}
+	}
+
+	public void enableUser(User user) {
+		userService.enableUser(user);
+		MessageUtil.addMessage("User enabled",
+				"Enabled user " + user.getUserName());
+		refreshUsers();
+	}
+
+	public void disableUser(User user) {
+		userService.disableUser(user);
+		MessageUtil.addMessage("User disabled",
+				"Disabled user " + user.getUserName());
+		refreshUsers();
 	}
 
 	public void selectUserForEdit(User user) {

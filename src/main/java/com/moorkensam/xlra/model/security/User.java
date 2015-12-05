@@ -29,8 +29,7 @@ import com.moorkensam.xlra.model.BaseEntity;
 		@NamedQuery(name = "User.findByEmailAndToken", query = "SELECT u FROM User u WHERE u.email = :email and u.tokenInfo.verificationToken = :token"
 				+ " and u.userStatus = :userStatus"),
 		@NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u where u.email = :email"),
-		@NamedQuery(name = "User.findByUserName", query = "SELECT u FROM User u WHERE u.userName = :userName"),
-		@NamedQuery(name = "User.findAllNonDeleted", query = "SELECT u FROM User u where u.enabled = true") })
+		@NamedQuery(name = "User.findByUserName", query = "SELECT u FROM User u WHERE u.userName = :userName") })
 public class User extends BaseEntity {
 
 	private static final long serialVersionUID = -8058602514887367935L;
@@ -49,8 +48,6 @@ public class User extends BaseEntity {
 
 	private String firstName;
 
-	private boolean enabled;
-
 	@Enumerated(EnumType.STRING)
 	private UserStatus userStatus;
 
@@ -64,7 +61,7 @@ public class User extends BaseEntity {
 
 	public User() {
 		tokenInfo = new TokenInfo();
-		enabled = true;
+		userStatus = UserStatus.FIRST_TIME_LOGIN;
 		roles = new ArrayList<Role>();
 	}
 
@@ -105,14 +102,6 @@ public class User extends BaseEntity {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
 	}
 
 	public String getFirstName() {

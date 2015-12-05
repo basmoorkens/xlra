@@ -98,7 +98,6 @@ public class UserServiceImplTest extends UnitilsJUnit4 {
 		service.setPasswordAndActivateUser(user, "xlra");
 
 		Assert.assertEquals(xlraHash, user.getPassword());
-		Assert.assertTrue(user.isEnabled());
 		Assert.assertEquals(UserStatus.IN_OPERATION, user.getUserStatus());
 	}
 }

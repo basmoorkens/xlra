@@ -2,6 +2,8 @@ package com.moorkensam.xlra.service;
 
 import java.util.List;
 
+import javax.mail.MessagingException;
+
 import com.moorkensam.xlra.model.security.User;
 
 public interface UserService {
@@ -14,7 +16,7 @@ public interface UserService {
 
 	public void deleteUser(User user);
 
-	public void resetUserPassword(User user);
+	public void resetUserPassword(User user) throws MessagingException;
 
 	public User getUserById(long id);
 
@@ -29,5 +31,9 @@ public interface UserService {
 	public void setPasswordAndActivateUser(User user, String password);
 
 	public String getCurrentUsername();
+
+	public void disableUser(User user);
+
+	public void enableUser(User user);
 
 }

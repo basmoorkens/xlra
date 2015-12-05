@@ -129,9 +129,14 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void resetUserPassword(User user) {
-		// update pw
-		// send email
+	public void resetUserPassword(User user) throws MessagingException {
+		try {
+			emailService.sendResetPasswordEmail(user);
+			user.setUserStatus(UserStatus.PASSWORD_RESET);
+			userDAO.updateUser(user);
+		} catch (MessagingException e) {
+
+		}
 	}
 
 	@Override
@@ -156,7 +161,6 @@ public class UserServiceImpl implements UserService {
 		getLogDAO().createLogRecord(record);
 		user.setPassword(makePasswordHash(password));
 		user.setUserStatus(UserStatus.IN_OPERATION);
-		user.setEnabled(true);
 		getUserDAO().updateUser(user);
 	}
 
@@ -203,5 +207,17 @@ public class UserServiceImpl implements UserService {
 
 	public void setSessionContext(SessionContext sessionContext) {
 		this.sessionContext = sessionContext;
+	}
+
+	@Override
+	public void disableUser(User user) {
+		user.setUserStatus(UserStatus.DISABLED);
+		updateUser(user, false);
+	}
+
+	@Override
+	public void enableUser(User user) {
+		user.setUserStatus(UserStatus.IN_OPERATION);
+		updateUser(user, false);
 	}
 }

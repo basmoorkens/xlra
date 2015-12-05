@@ -23,23 +23,35 @@
 					<p:column headerText="Email: ">
 						<h:outputText value="#{user.email}" />
 					</p:column>
-					<p:column headerText="Enabled">
-						<h:selectBooleanCheckbox value="#{user.enabled}" disabled="true" />
+					<p:column headerText="Status">
+						<h:outputLabel value="#{user.userStatus}" />
 					</p:column>
 					<p:column headerText="roles list">
 						#{user.rolesAsString}
 					</p:column>
 					<p:column>
 						<p:commandButton icon="ui-icon-pencil"
-							update=":usersForm :addUserForm"
+							update=":usersForm :addUserForm" id="editButton"
 							actionListener="#{manageUsersController.selectUserForEdit(user)}" />
+						<p:tooltip id="editTip" for="editButton" value="Edit user" />
+						<p:commandButton icon="icon-lock" update=":usersForm :addUserForm"
+							id="disableButton"
+							actionListener="#{manageUsersController.disableUser(user)}" />
+						<p:tooltip id="disabletip" for="disableButton"
+							value="Disable user" />
+						<p:commandButton icon="icon-lock-open" update=":usersForm :addUserForm"
+							id="enableButton"
+							actionListener="#{manageUsersController.enableUser(user)}" />
+						<p:tooltip id="enabletip" for="enableButton" value="Enable user" />
 						<p:commandButton icon="ui-icon-trash" title="Delete"
 							actionListener="#{manageUsersController.deleteUser(user)}"
-							ajax="true" immediate="true" update=":usersForm">
+							ajax="true" immediate="true" update=":usersForm"
+							id="deleteButton">
 							<p:confirm header="Confirm delete"
 								message="Are you sure you want to delete the user?"
 								icon="ui-icon-alert" />
 						</p:commandButton>
+						<p:tooltip id="deleteTip" for="deleteButton" value="Delete user" />
 					</p:column>
 				</p:dataTable>
 
