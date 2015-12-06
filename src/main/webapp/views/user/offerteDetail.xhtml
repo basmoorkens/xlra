@@ -93,23 +93,28 @@
 
 					<h:outputText value="Diesel supplement: " />
 					<h:outputText
-						value="#{offerteOverviewController.selectedOfferte.calculation.dieselPrice}" />
+						value="#{offerteOverviewController.selectedOfferte.calculation.dieselPrice != null ?
+						offerteOverviewController.selectedOfferte.calculation.dieselPrice : 'N/A'}" />
 
 					<h:outputText value="Swiss franc supplement: " />
 					<h:outputText
-						value="#{offerteOverviewController.selectedOfferte.calculation.chfPrice}" />
+						value="#{offerteOverviewController.selectedOfferte.calculation.chfPrice  != null
+						? offerteOverviewController.selectedOfferte.calculation.chfPrice : 'N/A'}" />
 
 					<h:outputText value="Adr surcharge: " />
 					<h:outputText
-						value="#{offerteOverviewController.selectedOfferte.calculation.resultingPriceSurcharge}" />
+						value="#{offerteOverviewController.selectedOfferte.calculation.resultingPriceSurcharge != null ?
+						offerteOverviewController.selectedOfferte.calculation.resultingPriceSurcharge : 'N/A'}" />
 
 					<h:outputText value="Import formalities: " />
 					<h:outputText
-						value="#{offerteOverviewController.selectedOfferte.calculation.importFormalities}" />
+						value="#{offerteOverviewController.selectedOfferte.calculation.importFormalities != null ? 
+						offerteOverviewController.selectedOfferte.calculation.importFormalities : 'N/A'}" />
 
 					<h:outputText value="Export formalities: " />
 					<h:outputText
-						value="#{offerteOverviewController.selectedOfferte.calculation.exportFormalities}" />
+						value="#{offerteOverviewController.selectedOfferte.calculation.exportFormalities != null ? 
+						offerteOverviewController.selectedOfferte.calculation.exportFormalities : 'N/A'}" />
 
 					<h:outputText value="Final price: " />
 					<h:outputText

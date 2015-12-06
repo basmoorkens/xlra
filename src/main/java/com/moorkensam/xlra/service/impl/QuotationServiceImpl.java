@@ -365,4 +365,9 @@ public class QuotationServiceImpl implements QuotationService {
 	public QuotationResult getFullOfferteById(Long id) {
 		return quotationResultDAO.getQuotationResultById(id);
 	}
+
+	@Override
+	public QuotationResult getOfferteByOfferteKey(String offerteKey) {
+		return quotationResultDAO.getOfferteByKey(offerteKey);
+	}
 }

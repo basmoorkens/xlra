@@ -25,7 +25,9 @@ import com.moorkensam.xlra.model.rate.RateFile;
 @Entity
 @Cacheable
 @Table(name = "quotationresult")
-@NamedQueries(@NamedQuery(name = "QuotationResult.findAll", query = "SELECT q FROM QuotationResult q where q.deleted = false"))
+@NamedQueries({
+		@NamedQuery(name = "QuotationResult.findAll", query = "SELECT q FROM QuotationResult q where q.deleted = false"),
+		@NamedQuery(name = "QuotationResult.findByKey", query = "SELECT q FROM QuotationResult q where q.offerteUniqueIdentifier = :key") })
 public class QuotationResult extends BaseEntity {
 
 	private static final long serialVersionUID = -8105357874994501600L;

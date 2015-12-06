@@ -25,5 +25,7 @@ public interface QuotationResultDAO {
 			OfferteSearchFilter filter);
 
 	public QuotationResult getQuotationResultById(Long id);
+	
+	public QuotationResult getOfferteByKey(String offerteKey);
 
 }

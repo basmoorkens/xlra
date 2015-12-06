@@ -132,4 +132,14 @@ public class QuotationResultDAOImpl extends BaseDAO implements
 		fullLoad(result);
 		return result;
 	}
+
+	@Override
+	public QuotationResult getOfferteByKey(String offerteKey) {
+		Query q = getEntityManager().createNamedQuery(
+				"QuotationResult.findByKey");
+		q.setParameter("key", offerteKey);
+		QuotationResult result = (QuotationResult) q.getSingleResult();
+		fullLoad(result);
+		return result;
+	}
 }

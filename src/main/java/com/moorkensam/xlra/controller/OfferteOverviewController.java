@@ -15,6 +15,8 @@ import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.offerte.OfferteSearchFilter;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
@@ -56,6 +58,18 @@ public class OfferteOverviewController {
 		quotationResults = quotationService.getAllQuotationResults();
 		allCountrys = countryService.getAllCountriesFullLoad();
 		searchFilter = new OfferteSearchFilter();
+		checkAndLoadOfferteIfPresent();
+	}
+
+	private void checkAndLoadOfferteIfPresent() {
+		String offerteKey = FacesContext.getCurrentInstance()
+				.getExternalContext().getRequestParameterMap()
+				.get("offerteKey");
+		if (StringUtils.isNotBlank(offerteKey)) {
+			selectedOfferte = quotationService
+					.getOfferteByOfferteKey(offerteKey);
+			detail = true;
+		}
 	}
 
 	public void setupOfferteDetail(QuotationResult quotationResult) {

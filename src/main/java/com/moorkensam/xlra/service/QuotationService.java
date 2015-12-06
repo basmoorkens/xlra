@@ -64,5 +64,7 @@ public interface QuotationService {
 			OfferteSearchFilter filter);
 
 	public QuotationResult getFullOfferteById(Long id);
+	
+	public QuotationResult getOfferteByOfferteKey(String offertekey);
 
 }

@@ -74,12 +74,15 @@ public class CreateQuotationController {
 		initializeNewQuotationQuery();
 		refreshCustomers();
 		initializeNewCustomer();
-		collapseFiltersPanel = true;
-		collapseSummaryPanel = true;
-		collapseResultPanel = true;
-		collapseOptionsPanel = true;
 		fileService = new FileServiceImpl();
 		translationUtil = new TranslationUtil();
+		showCustomerPanel();
+	}
+
+	
+	public void resetPage() {
+		initializeNewQuotationQuery();
+		showCustomerPanel();
 	}
 
 	private void initializeNewQuotationQuery() {
