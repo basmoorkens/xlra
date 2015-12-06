@@ -79,10 +79,20 @@ public class CreateQuotationController {
 		showCustomerPanel();
 	}
 
-	
 	public void resetPage() {
 		initializeNewQuotationQuery();
 		showCustomerPanel();
+	}
+
+	public void goToOfferteDetail() throws IOException {
+		FacesContext
+				.getCurrentInstance()
+				.getExternalContext()
+				.redirect(
+						FacesContext.getCurrentInstance().getExternalContext()
+								.getApplicationContextPath()
+								+ "/views/user/offerteOverview.xhtml?offerteKey="
+								+ quotationResult.getOfferteUniqueIdentifier());
 	}
 
 	private void initializeNewQuotationQuery() {

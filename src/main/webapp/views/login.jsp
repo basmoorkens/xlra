@@ -21,7 +21,7 @@ body {
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 5%;
-	width: 70%;
+	width: 75%;
 	margin-top: 5%;
 	min-height: 35em;
 	-moz-border-radius: 28px;
@@ -32,9 +32,9 @@ body {
 
 #loginTable {
 	margin-top: 50px;
-	margin-left:10%;
-	margin-right:10%;
-	width:70%;
+	margin-left: 10%;
+	margin-right: 10%;
+	width: 70%;
 	border-style: solid;
 	border-width: 3px;
 	border-color: white;
@@ -83,7 +83,9 @@ h1 {
 	padding-left: 5em;
 	margin-top: 0;
 	padding-top: 50px;
-	font-size: 42px;
+	text-transform: uppercase;
+	font-size: 1.5em;
+	letter-spacing: -1px;
 }
 
 a {
@@ -104,13 +106,13 @@ a:hover {
 	text-decoration: none;
 }
 
-#content{ 
-	padding-top:30px;
+#content {
+	padding-top: 30px;
 }
 
-.stronk{
-font-size: 20px;
-font-weight:bold;
+.stronk {
+	font-size: 20px;
+	font-weight: bold;
 }
 </style>
 </head>
@@ -127,7 +129,6 @@ font-weight:bold;
 				have valid credentials please contact <a href="#">the
 					administrator</a> to request access.
 			</div>
-
 
 			<form action="j_security_check" method="post" id="loginForm">
 				<table id="loginTable">
