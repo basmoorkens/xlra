@@ -9,36 +9,44 @@
 body {
 	background-image:
 		url("<%=request.getContextPath()%>/images/extra_bg.png");
-	color: white;
+	background-size: cover;
+	color: black;
 	font-family: Verdana, Geneva, sans-serif;
 	font-size: 18px;
 }
 
 #container {
-	background-color: grey;
+	background-color: #DBDBDB;
 	opacity: 0.8;
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 5%;
-	width: 80%;
+	width: 70%;
 	margin-top: 5%;
 	min-height: 35em;
+	-moz-border-radius: 28px;
+	-webkit-border-radius: 28px;
+	border-radius: 12px;
+	border: 1px solid #17010c;
 }
 
 #loginTable {
 	margin-top: 50px;
+	margin-left:10%;
+	margin-right:10%;
+	width:70%;
 	border-style: solid;
 	border-width: 3px;
 	border-color: white;
-	width: 100%;
 }
 
 #loginTable tr {
-	margin-top: 5px;
+	margin-top: 10px;
 }
 
 #loginTable td {
 	padding: 5px;
+	padding-top: 15px;
 }
 
 #work {
@@ -47,44 +55,23 @@ body {
 }
 
 .myButton {
-	margin-left: 30%;
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ff36ff
-		), color-stop(1, #d07fe0));
-	background: -moz-linear-gradient(top, #ff36ff 5%, #d07fe0 100%);
-	background: -webkit-linear-gradient(top, #ff36ff 5%, #d07fe0 100%);
-	background: -o-linear-gradient(top, #ff36ff 5%, #d07fe0 100%);
-	background: -ms-linear-gradient(top, #ff36ff 5%, #d07fe0 100%);
-	background: linear-gradient(to bottom, #ff36ff 5%, #d07fe0 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff36ff',
-		endColorstr='#d07fe0', GradientType=0);
-	background-color: #ff36ff;
-	-moz-border-radius: 28px;
-	-webkit-border-radius: 28px;
-	border-radius: 28px;
-	border: 1px solid #e63df5;
+	background-color: #d11174;
+	-moz-border-radius: 12px;
+	-webkit-border-radius: 12px;
+	border-radius: 12px;
+	border: 1px solid #17010c;
 	display: inline-block;
 	cursor: pointer;
 	color: #ffffff;
 	font-family: Arial;
 	font-size: 17px;
-	padding: 8px 62px;
+	padding: 8px 52px;
 	text-decoration: none;
-	text-shadow: 0px 1px 0px #2f6627;
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ff36ff
-		), color-stop(1, #d07fe0));
+	text-shadow: 0px -1px 0px #2f6627;
 }
 
 .myButton:hover {
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #d07fe0
-		), color-stop(1, #ff36ff));
-	background: -moz-linear-gradient(top, #d07fe0 5%, #ff36ff 100%);
-	background: -webkit-linear-gradient(top, #d07fe0 5%, #ff36ff 100%);
-	background: -o-linear-gradient(top, #d07fe0 5%, #ff36ff 100%);
-	background: -ms-linear-gradient(top, #d07fe0 5%, #ff36ff 100%);
-	background: linear-gradient(to bottom, #d07fe0 5%, #ff36ff 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#d07fe0',
-		endColorstr='#ff36ff', GradientType=0);
-	background-color: #d07fe0;
+	background-color: #f20e84;
 }
 
 .myButton:active {
@@ -94,9 +81,36 @@ body {
 
 h1 {
 	padding-left: 5em;
-	color: black;
 	margin-top: 0;
-	padding-top: 0;
+	padding-top: 50px;
+	font-size: 42px;
+}
+
+a {
+	color: black;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+a:visited {
+	color: black;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #d11174;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+#content{ 
+	padding-top:30px;
+}
+
+.stronk{
+font-size: 20px;
+font-weight:bold;
 }
 </style>
 </head>
@@ -105,26 +119,30 @@ h1 {
 		<div id="work">
 			<img src="<%=request.getContextPath()%>/images/Extra-Logo-neu.png"
 				style="float: left;" />
-			<h1>rates applications</h1>
-			Welcome to the Extra logistics rates application.<br /> You can use
-			this page to login to the application. <br /> If you do not have a
-			valid login to the application please contact kevin govaerts to
-			request access.
+			<h1>RATES APPLICATION</h1>
+
+			<div id="content">
+				Welcome to the Extra logistics rates application. If you have valid
+				credentials you can log into the application here. If you do not
+				have valid credentials please contact <a href="#">the
+					administrator</a> to request access.
+			</div>
 
 
 			<form action="j_security_check" method="post" id="loginForm">
 				<table id="loginTable">
 					<tr>
-						<td style="width: 50%;" align="right">Username:</td>
+						<td style="width: 50%;" align="right"><span class="stronk">USERNAME:</span></td>
 						<td><input type="text" name="j_username" size="25"></td>
 					</tr>
 					<tr>
-						<td align="right">Password:</td>
+						<td align="right"><span class="stronk">PASSWORD:</span></td>
 						<td><input type="password" size="25" name="j_password"></td>
 					</tr>
 					<tr>
-						<td colspan="2"><a href="#" onclick="loginForm.submit();"
+						<td align="right"><a href="#" onclick="loginForm.submit();"
 							class="myButton">Login</a></td>
+						<td><a href="#" class="myButton">Forgot login?</a></td>
 					</tr>
 				</table>
 			</form>

@@ -105,9 +105,12 @@ public class EmailServiceImplTest extends UnitilsJUnit4 {
 	}
 
 	@Test
-	public void testsendResetPasswordEmail() throws MessagingException {
+	public void testsendResetPasswordEmail() throws MessagingException, TemplatingException {
 		User user = new User();
 		user.setEmail("test@test.com");
+		String template = "reset template";
+		EasyMock.expect(templateParseService.parseUserResetPasswordEmail(user))
+				.andReturn(template);
 		transportDelegate.send(EasyMock.isA(MimeMessage.class));
 		EasyMock.expectLastCall();
 		EasyMockUnitils.replay();
