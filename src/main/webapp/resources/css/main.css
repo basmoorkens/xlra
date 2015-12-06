@@ -1,3 +1,13 @@
+body {
+	background-size: cover;
+	color: black;
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 18px;
+	margin: 0;
+	padding: 0p
+}
+
+
 .customerCreateGrid td {
 	border: none;
 }
@@ -26,6 +36,37 @@
 	width: auto;
 }
 
-.tester {
-	
+#xlraMenu {
+	margin-top: 100px;
+}
+
+#version {
+	display: inline;
+	margin-top: 20px;
+	font-size: 32px;
+	text-transform: uppercase;
+	font-weight: bold;
+	margin-top: 20px;
+}
+
+.ui-widget-content a {
+	color: #d11174;
+}
+
+
+.ui-state-default, .ui-widget-content .ui-state-default,
+	.ui-widget-header .ui-state-default {
+	color: black;
+}
+
+#logoutLink{ 
+	color: #d11174;
+}
+
+.wb{
+	color: black;
+}
+
+h1{
+	color: #d11174;
 }
