@@ -10,6 +10,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.RowEditEvent;
 
@@ -78,6 +79,8 @@ public class CreateRatesController {
 
 	private boolean collapseSummary = true;
 
+	private Condition selectedCondition;
+
 	@PostConstruct
 	public void init() {
 		filter = new RateFileSearchFilter();
@@ -130,13 +133,6 @@ public class CreateRatesController {
 
 	public void onRateLineCellEdit(CellEditEvent event) {
 		RateUtil.onRateLineCellEdit(event);
-	}
-
-	public void onConditionRowEdit(RowEditEvent event) {
-		Condition condition = (Condition) event.getObject();
-		MessageUtil.addMessage("Condition updated",
-				"Updated " + condition.getTranslatedKey() + " to "
-						+ condition.getValue());
 	}
 
 	public void deleteCondition(Condition condition) {
@@ -214,6 +210,18 @@ public class CreateRatesController {
 		MessageUtil.addMessage("Rates created",
 				"Succesfully created rates for " + rateFile.getName());
 		return "views/rate/admin/manageRates.xhtml";
+	}
+
+	public void setupEditCondition(Condition condition) {
+		this.setSelectedCondition(condition);
+		RequestContext context = RequestContext.getCurrentInstance();
+		context.execute("PF('editConditionDialog').show();");
+	}
+
+	public void saveEditCondition() {
+		MessageUtil.addMessage("Condition updated", "Updated "
+				+ selectedCondition.getTranslatedKey() + ".");
+		MessageUtil.addMessage("Condition updated", "Your changes were saved.");
 	}
 
 	public List<Language> getLanguages() {
@@ -316,5 +324,17 @@ public class CreateRatesController {
 
 	public void setConditionFactory(ConditionFactory conditionFactory) {
 		this.conditionFactory = conditionFactory;
+	}
+
+	public Condition getSelectedCondition() {
+		return selectedCondition;
+	}
+
+	public void setSelectedCondition(Condition selectedCondition) {
+		this.selectedCondition = selectedCondition;
+	}
+
+	public List<Language> getLanguages() {
+		return Arrays.asList(Language.values());
 	}
 }

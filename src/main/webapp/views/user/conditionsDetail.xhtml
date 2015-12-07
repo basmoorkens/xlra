@@ -13,18 +13,6 @@
 		<p:dataTable editable="#{canEdit}" value="#{conditions}"
 			var="condition" editMode="row" emptyMessage="No conditions found."
 			id="conditionTable">
-			<c:if test="${controllerName == 'manageRatesController'}">
-				<p:ajax event="rowEdit"
-					listener="#{manageRatesController.onConditionRowEdit}"
-					update=":conditionsDetailForm:message" />
-			</c:if>
-			<c:if test="${controllerName == 'createRatesController'}">
-				<p:ajax event="rowEdit"
-					listener="#{createRatesController.onConditionRowEdit}"
-					update=":conditionsDetailForm:message" />
-			</c:if>
-
-
 			<p:column headerText="Key" width="15%">
 				<h:outputText value="#{condition.translatedKey}" />
 			</p:column>
@@ -74,15 +62,16 @@
 			widgetVar="editConditionDialog" modal="true" width="50%" height="50%"
 			dynamic="true">
 			<p:panel style="width:80%; margin:auto;">
-				<h:outputLabel value="#{controller.selectedCondition.translatedKey}" />
+				<h:outputLabel style="font-weight:bold;"
+					value="#{controller.selectedCondition.translatedKey}" />
 				<p:panelGrid columns="2" style="width:100%;margin-top:10px;">
-					<h:outputLabel value="New value:" />
-					<p:inputText value="#{controller.selectedCondition.value}">
-						<f:validateDoubleRange minimum="0.0" />
-					</p:inputText>
-				</p:panelGrid>
-				<p:panelGrid columns="2" style="width:100%;margin-top:10px;"
-					rendered="#{!condition.calculationCondition}">
+
+					<h:outputLabel value="New value:"
+						rendered="#{controller.selectedCondition.calculationCondition}" />
+					<p:inputText size="50"
+						value="#{controller.selectedCondition.value}"
+						rendered="#{controller.selectedCondition.calculationCondition}" />
+
 					<c:forEach items="#{controller.selectedCondition.translations}"
 						var="translation">
 						<h:outputText value="#{translation.language}" />

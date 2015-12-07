@@ -105,12 +105,12 @@ public class ManageRatesController {
 		context.execute("PF('editConditionDialog').show();");
 	}
 
-	public void saveEditCondition() { 
-		rateFileService.updateCondition(selectedCondition);
+	public void saveEditCondition() {
+		updateRateFile();
 		MessageUtil.addMessage("Condition updated", "Your changes were saved.");
 		selectedCondition = null;
 	}
-	
+
 	public boolean isNumericRateFileZone() {
 		if (selectedRateFile != null) {
 			return selectedRateFile.isNumericalZoneRateFile();
