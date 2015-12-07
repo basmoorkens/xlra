@@ -1,6 +1,7 @@
 package com.moorkensam.xlra.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -9,12 +10,14 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.controller.util.RateUtil;
+import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.IncoTermType;
 import com.moorkensam.xlra.model.rate.RateFile;
@@ -57,6 +60,8 @@ public class ManageRatesController {
 
 	private boolean editable;
 
+	private Condition selectedCondition;
+
 	@PostConstruct
 	public void initializeController() {
 		editable = sessionController.isAdmin();
@@ -94,14 +99,18 @@ public class ManageRatesController {
 		updateRateFile();
 	}
 
-	public void onConditionRowEdit(RowEditEvent event) {
-		Condition condition = (Condition) event.getObject();
-		MessageUtil.addMessage("Condition updated",
-				"Updated " + condition.getTranslatedValue() + " to "
-						+ condition.getValue());
-		updateRateFile();
+	public void setupEditCondition(Condition condition) {
+		this.selectedCondition = condition;
+		RequestContext context = RequestContext.getCurrentInstance();
+		context.execute("PF('editConditionDialog').show();");
 	}
 
+	public void saveEditCondition() { 
+		rateFileService.updateCondition(selectedCondition);
+		MessageUtil.addMessage("Condition updated", "Your changes were saved.");
+		selectedCondition = null;
+	}
+	
 	public boolean isNumericRateFileZone() {
 		if (selectedRateFile != null) {
 			return selectedRateFile.isNumericalZoneRateFile();
@@ -129,7 +138,7 @@ public class ManageRatesController {
 
 	public void deleteCondition(Condition condition) {
 		MessageUtil.addMessage("condition removed",
-				condition.getTranslatedValue() + " was successfully removed.");
+				condition.getTranslatedKey() + " was successfully removed.");
 		selectedRateFile.getConditions().remove(condition);
 		condition.setRateFile(null);
 		updateRateFile();
@@ -283,6 +292,18 @@ public class ManageRatesController {
 
 	public boolean isCanEdit() {
 		return editable;
+	}
+
+	public Condition getSelectedCondition() {
+		return selectedCondition;
+	}
+
+	public void setSelectedCondition(Condition selectedCondition) {
+		this.selectedCondition = selectedCondition;
+	}
+
+	public List<Language> getLanguages() {
+		return Arrays.asList(Language.values());
 	}
 
 }

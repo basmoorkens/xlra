@@ -135,13 +135,13 @@ public class CreateRatesController {
 	public void onConditionRowEdit(RowEditEvent event) {
 		Condition condition = (Condition) event.getObject();
 		MessageUtil.addMessage("Condition updated",
-				"Updated " + condition.getTranslatedValue() + " to "
+				"Updated " + condition.getTranslatedKey() + " to "
 						+ condition.getValue());
 	}
 
 	public void deleteCondition(Condition condition) {
 		MessageUtil.addMessage("condition removed",
-				condition.getTranslatedValue() + " was successfully removed.");
+				condition.getTranslatedKey() + " was successfully removed.");
 		rateFile.getConditions().remove(condition);
 		condition.setRateFile(null);
 	}

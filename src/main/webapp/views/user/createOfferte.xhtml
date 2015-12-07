@@ -119,7 +119,7 @@
 						items="#{createQuotationController.quotationResult.selectableOptions}"
 						var="option">
 
-						<h:outputLabel value="#{option.translatedValue}" />
+						<h:outputLabel value="#{option.translatedKey}" />
 						<p:selectBooleanCheckbox value="#{option.selected}" />
 
 					</c:forEach>

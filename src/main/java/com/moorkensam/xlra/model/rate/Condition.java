@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.model.rate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CollectionTable;
@@ -12,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import org.hibernate.annotations.Cascade;
 
 import com.moorkensam.xlra.model.BaseEntity;
 import com.moorkensam.xlra.model.configuration.Language;
@@ -44,12 +47,12 @@ public class Condition extends BaseEntity implements Translatable {
 	@ElementCollection
 	@CollectionTable(name = "translationsForLanguages", joinColumns = @JoinColumn(name = "condition_id"))
 	private List<TranslationForLanguage> translations;
-	
+
 	@Transient
 	private String i8nKey;
 
 	@Transient
-	private String translatedValue;
+	private String translatedKey;
 
 	public String getValue() {
 		return value;
@@ -122,12 +125,12 @@ public class Condition extends BaseEntity implements Translatable {
 		this.i8nKey = i8nKey;
 	}
 
-	public String getTranslatedValue() {
-		return translatedValue;
+	public String getTranslatedKey() {
+		return translatedKey;
 	}
 
-	public void setTranslatedValue(String translatedValue) {
-		this.translatedValue = translatedValue;
+	public void setTranslatedKey(String translatedValue) {
+		this.translatedKey = translatedValue;
 	}
 
 	public List<TranslationForLanguage> getTranslations() {
@@ -137,7 +140,7 @@ public class Condition extends BaseEntity implements Translatable {
 	public void setTranslations(List<TranslationForLanguage> translations) {
 		this.translations = translations;
 	}
-	
+
 	public TranslationForLanguage getTranslationForLanguage(Language language) {
 		for (TranslationForLanguage tl : translations) {
 			if (tl.getLanguage().equals(language)) {
@@ -146,7 +149,7 @@ public class Condition extends BaseEntity implements Translatable {
 		}
 		return null;
 	}
-	
+
 	public TranslationForLanguage getEnglishTranslation() {
 		return getTranslationForLanguage(Language.EN);
 	}
@@ -161,5 +164,16 @@ public class Condition extends BaseEntity implements Translatable {
 
 	public TranslationForLanguage getDutchTranslation() {
 		return getTranslationForLanguage(Language.NL);
+	}
+
+	public boolean isCalculationCondition() {
+		return conditionType == ConditionType.CALCULATION;
+	}
+
+	public void addTranslation(Language language, String translation) {
+		if (translations == null) {
+			translations = new ArrayList<TranslationForLanguage>();
+		}
+		translations.add(new TranslationForLanguage(language, translation));
 	}
 }

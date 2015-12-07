@@ -6,8 +6,8 @@ public interface Translatable {
 
 	public void setI8nKey(String key);
 
-	public String getTranslatedValue();
+	public String getTranslatedKey();
 
-	public void setTranslatedValue(String translatedValue);
+	public void setTranslatedKey(String translatedValue);
 
 }

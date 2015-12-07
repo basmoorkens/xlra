@@ -21,7 +21,15 @@ public class OfferteOptionDTO implements Serializable, Translatable {
 
 	private String i8nKey;
 
-	private String translatedValue;
+	private String translatedKey;
+
+	public String getTranslatedKey() {
+		return translatedKey;
+	}
+
+	public void setTranslatedKey(String translatedKey) {
+		this.translatedKey = translatedKey;
+	}
 
 	public boolean isSelected() {
 		return selected;
@@ -69,13 +77,5 @@ public class OfferteOptionDTO implements Serializable, Translatable {
 
 	public void setShowToCustomer(boolean showToCustomer) {
 		this.showToCustomer = showToCustomer;
-	}
-
-	public String getTranslatedValue() {
-		return translatedValue;
-	}
-
-	public void setTranslatedValue(String translatedValue) {
-		this.translatedValue = translatedValue;
 	}
 }

@@ -11,8 +11,10 @@
 	<h:outputStylesheet library="css" name="main.css" />
 </h:head>
 <h:body>
-	<div id="version">Version: #{maven.version['com.moorkensam:xlra']}</div>
-	<h:graphicImage url="/images/Extra-Logo-neu.png" style="float:right;margin:0px;top:10px;" />
+	<div id="version">Version:
+		#{maven.version['com.moorkensam:xlra']}</div>
+	<h:graphicImage url="/images/Extra-Logo-neu.png"
+		style="float:right;margin:0px;top:10px;" />
 	<h:form prependId="false">
 		<p:menubar id="xlraMenu">
 			<p:submenu
@@ -58,7 +60,7 @@
 			</p:submenu>
 
 			<p:submenu
-				rendered="#{userSessionController.hasNonePermissions(['DIESEL_EDIT', 'TRANSLATION_EDIT', 'EMAIL_TEMPLATE_EDIT', 'COUNTRY_EDIT'])}"
+				rendered="#{userSessionController.hasNonePermissions(['DIESEL_EDIT', 'EMAIL_TEMPLATE_EDIT', 'COUNTRY_EDIT'])}"
 				label="Configuration" icon="ui-icon-document">
 				<p:menuitem
 					rendered="#{userSessionController.hasPermission('CHF_EDIT')}"
@@ -67,10 +69,6 @@
 					rendered="#{userSessionController.hasPermission('DIESEL_EDIT')}"
 					value="Diesel prices"
 					url="/views/admin/configuration/dieselRates.xhtml" />
-				<p:menuitem
-					rendered="#{userSessionController.hasPermission('TRANSLATION_EDIT')}"
-					value="Application translations"
-					url="/views/admin/configuration/translations.xhtml" />
 				<p:menuitem
 					rendered="#{userSessionController.hasPermission('EMAIL_TEMPLATE_EDIT')}"
 					value="Email templates"
