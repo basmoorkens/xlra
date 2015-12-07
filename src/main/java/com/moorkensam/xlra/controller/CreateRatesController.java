@@ -334,7 +334,4 @@ public class CreateRatesController {
 		this.selectedCondition = selectedCondition;
 	}
 
-	public List<Language> getLanguages() {
-		return Arrays.asList(Language.values());
-	}
 }
