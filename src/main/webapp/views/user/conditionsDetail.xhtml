@@ -21,7 +21,8 @@
 			</p:column>
 			<p:column headerText="Value">
 				<p:outputPanel rendered="#{condition.calculationCondition}">
-					<h:outputText value="#{condition.value}" />
+					<h:outputText
+						value="#{condition.value} #{condition.calculationValueType.suffix}" />
 				</p:outputPanel>
 				<p:outputPanel rendered="#{!condition.calculationCondition}">
 					<h:outputText
@@ -77,6 +78,10 @@
 						<h:outputText value="#{translation.language}" />
 						<p:inputText size="50" value="#{translation.translation}" />
 					</c:forEach>
+
+					<h:outputLabel value="Standard selected:" />
+					<p:selectBooleanCheckbox
+						value="#{controller.selectedCondition.standardSelected}" />
 				</p:panelGrid>
 				<f:facet name="footer">
 					<p:commandButton value="Cancel"

@@ -93,11 +93,13 @@ Dear, <br />
 			${detailCalculation}
 		</td>
 	</tr>
+<#if additionalConditions??>
 	<tr>
 		<td>
 			${additionalConditions}
 		</td>
 	</tr>
+	<#else></#if>		
 </table>
 <p style="margin-top:20px;">
 	Your request was handled by ${createdUserFullName}

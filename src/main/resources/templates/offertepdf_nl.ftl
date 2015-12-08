@@ -96,13 +96,13 @@ Geachte, <br />
 			${detailCalculation}
 		</td>
 	</tr>
-	<#if !(additionalConditions)??>
+	<#if additionalConditions??>
 	<tr>
 		<td>
 			${additionalConditions}
 		</td>
 	</tr>
-	</#if>
+	<#else></#if>
 </table>
 <p style="margin-top:20px;">
 	Uw aanvraag werd behandelt door ${createdUserFullName}

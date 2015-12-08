@@ -188,6 +188,7 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 		RateLine rl = new RateLine();
 		QuotationResult result = new QuotationResult();
 		result.setQuery(query);
+		query.setLanguage(Language.NL);
 		result.setOfferteUniqueIdentifier(uqId);
 		User user = new User();
 		user.setName("moorkens");
@@ -206,8 +207,9 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 		EasyMock.expect(
 				rfMock.getRateLineForQuantityAndPostalCode(query.getQuantity(),
 						query.getPostalCode())).andReturn(rl);
-		EasyMock.expect(quotationUtil.generateOfferteOptionsForRateFile(rfMock))
-				.andReturn(Arrays.asList(option));
+		EasyMock.expect(
+				quotationUtil.generateOfferteOptionsForRateFileAndLanguage(
+						rfMock, Language.NL)).andReturn(Arrays.asList(option));
 
 		EasyMockUnitils.replay();
 		QuotationResult offerte = quotationService

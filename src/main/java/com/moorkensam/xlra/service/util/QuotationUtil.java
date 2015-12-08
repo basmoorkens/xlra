@@ -7,9 +7,11 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.offerte.OfferteOptionDTO;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
+import com.moorkensam.xlra.model.rate.CalculationValueType;
 import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
@@ -66,15 +68,21 @@ public class QuotationUtil {
 		filter.setTransportationType(query.getTransportType());
 	}
 
-	public List<OfferteOptionDTO> generateOfferteOptionsForRateFile(RateFile rf) {
+	public List<OfferteOptionDTO> generateOfferteOptionsForRateFileAndLanguage(
+			RateFile rf, Language language) {
 		List<OfferteOptionDTO> options = new ArrayList<OfferteOptionDTO>();
 		for (Condition c : rf.getConditions()) {
 			OfferteOptionDTO option = new OfferteOptionDTO();
 			option.setKey(c.getConditionKey());
 			option.setSelected(c.isStandardSelected());
-			option.setValue(c.getValue());
 			option.setI8nKey(mapper.map(option.getKey()));
 			option.setCalculationOption(isCalculationKey(option.getKey()));
+			if (option.isCalculationOption()) {
+				option.setValue(c.getValue());
+			} else {
+				option.setValue(c.getTranslationForLanguage(language)
+						.getTranslation());
+			}
 			option.setShowToCustomer(isShowToCustomer(option.getKey()));
 			options.add(option);
 		}
@@ -116,6 +124,26 @@ public class QuotationUtil {
 			return true;
 		default:
 			return false;
+		}
+	}
+
+	public CalculationValueType getCalculationValueTypeForCalculationKey(
+			TranslationKey key) {
+		switch (key) {
+		case ADR_SURCHARGE:
+			return CalculationValueType.PERCENTAGE;
+		case ADR_MINIMUM:
+			return CalculationValueType.CONSTANT;
+		case DIESEL_SURCHARGE:
+			return CalculationValueType.CONSTANT;
+		case CHF_SURCHARGE:
+			return CalculationValueType.CONSTANT;
+		case IMPORT_FORM:
+			return CalculationValueType.CONSTANT;
+		case EXPORT_FORM:
+			return CalculationValueType.CONSTANT;
+		default:
+			return null;
 		}
 	}
 

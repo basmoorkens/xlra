@@ -18,6 +18,7 @@ import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.util.ConfigurationLoader;
+import com.moorkensam.xlra.service.util.QuotationUtil;
 import com.moorkensam.xlra.service.util.TranslationConfigurationLoader;
 
 import freemarker.cache.StringTemplateLoader;
@@ -49,6 +50,8 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 
 	private ConfigurationLoader configLoader;
 
+	private QuotationUtil quotationUtil;
+
 	private TranslationConfigurationLoader translationLoader;
 
 	private void inializeEngine() {
@@ -56,6 +59,7 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 		setConfiguration(new Configuration());
 		setConfigLoader(ConfigurationLoader.getInstance());
 		translationLoader = TranslationConfigurationLoader.getInstance();
+		quotationUtil = QuotationUtil.getInstance();
 	}
 
 	private static TemplateParseServiceImpl instance;
@@ -450,28 +454,7 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 		Map<String, Object> parameterMap = new HashMap<String, Object>();
 		parameterMap.put("customerName", offerte.getQuery().getCustomer()
 				.getName());
-		if (offerte.getQuery().getCustomer().getAddress() != null) {
-			if (StringUtils.isNotBlank(offerte.getQuery().getCustomer()
-					.getAddress().getStreet())
-					|| StringUtils.isNotBlank(offerte.getQuery().getCustomer()
-							.getAddress().getNumber())) {
-				parameterMap.put("customerStreetAndNumber", offerte.getQuery()
-						.getCustomer().getAddress().getStreet()
-						+ " "
-						+ offerte.getQuery().getCustomer().getAddress()
-								.getNumber());
-			}
-			if (StringUtils.isNotBlank(offerte.getQuery().getCustomer()
-					.getAddress().getZip())
-					|| StringUtils.isNotBlank(offerte.getQuery().getCustomer()
-							.getAddress().getCity())) {
-				parameterMap.put("customerAdres", offerte.getQuery()
-						.getCustomer().getAddress().getZip()
-						+ " "
-						+ offerte.getQuery().getCustomer().getAddress()
-								.getCity());
-			}
-		}
+		fillInCustomerParams(offerte, parameterMap);
 		parameterMap.put("offerteKeyValue",
 				offerte.getOfferteUniqueIdentifier());
 		parameterMap.put("offerteDate", offerte.getQuery().getQuotationDate());
@@ -498,6 +481,32 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 				offerte.getCreatedUserFullName());
 
 		return parameterMap;
+	}
+
+	private void fillInCustomerParams(QuotationResult offerte,
+			Map<String, Object> parameterMap) {
+		if (offerte.getQuery().getCustomer().getAddress() != null) {
+			if (StringUtils.isNotBlank(offerte.getQuery().getCustomer()
+					.getAddress().getStreet())
+					|| StringUtils.isNotBlank(offerte.getQuery().getCustomer()
+							.getAddress().getNumber())) {
+				parameterMap.put("customerStreetAndNumber", offerte.getQuery()
+						.getCustomer().getAddress().getStreet()
+						+ " "
+						+ offerte.getQuery().getCustomer().getAddress()
+								.getNumber());
+			}
+			if (StringUtils.isNotBlank(offerte.getQuery().getCustomer()
+					.getAddress().getZip())
+					|| StringUtils.isNotBlank(offerte.getQuery().getCustomer()
+							.getAddress().getCity())) {
+				parameterMap.put("customerAdres", offerte.getQuery()
+						.getCustomer().getAddress().getZip()
+						+ " "
+						+ offerte.getQuery().getCustomer().getAddress()
+								.getCity());
+			}
+		}
 	}
 
 	private String buildAdditionalConditionsTemplate(
@@ -547,35 +556,32 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 					detailCalculationBuilder.append("<tr><td>${"
 							+ option.getI8nKey().replace(".", "") + "}</td>");
 
+					detailCalculationBuilder.append("<td>");
 					switch (option.getKey()) {
 					case DIESEL_SURCHARGE:
-						detailCalculationBuilder.append("<td>"
-								+ priceCalculation.getDieselPrice()
-								+ "</td></tr>");
+						detailCalculationBuilder.append(priceCalculation
+								.getDieselPrice());
 						break;
 					case CHF_SURCHARGE:
-						detailCalculationBuilder
-								.append("<td>" + priceCalculation.getChfPrice()
-										+ "</td></tr>");
+						detailCalculationBuilder.append(priceCalculation
+								.getChfPrice());
 						break;
 					case IMPORT_FORM:
-						detailCalculationBuilder.append("<td>"
-								+ priceCalculation.getImportFormalities()
-								+ "</td></tr>");
+						detailCalculationBuilder.append(priceCalculation
+								.getImportFormalities());
 						break;
 					case EXPORT_FORM:
-						detailCalculationBuilder.append("<td>"
-								+ priceCalculation.getExportFormalities()
-								+ "</td></tr>");
+						detailCalculationBuilder.append(priceCalculation
+								.getExportFormalities());
 						break;
 					case ADR_SURCHARGE:
-						detailCalculationBuilder.append("<td>"
-								+ priceCalculation.getResultingPriceSurcharge()
-								+ "</td></tr>");
+						detailCalculationBuilder.append(priceCalculation
+								.getResultingPriceSurcharge());
 						break;
 					default:
 						break;
 					}
+					detailCalculationBuilder.append(" EUR</td></tr>");
 				}
 			}
 		}
@@ -585,5 +591,13 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 						+ priceCalculation.getFinalPrice() + "</h3><br />");
 
 		return detailCalculationBuilder.toString();
+	}
+
+	public QuotationUtil getQuotationUtil() {
+		return quotationUtil;
+	}
+
+	public void setQuotationUtil(QuotationUtil quotationUtil) {
+		this.quotationUtil = quotationUtil;
 	}
 }

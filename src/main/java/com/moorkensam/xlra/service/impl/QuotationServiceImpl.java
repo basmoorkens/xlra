@@ -124,7 +124,7 @@ public class QuotationServiceImpl implements QuotationService {
 	@Override
 	public QuotationResult generateQuotationResultForQuotationQuery(
 			QuotationQuery query) throws RateFileException {
-		QuotationResult quotationResult = initializeQuotationResult(query);
+		QuotationResult offerte = initializeQuotationResult(query);
 		query.setQuotationDate(new Date());
 		RateLine result;
 		try {
@@ -132,16 +132,17 @@ public class QuotationServiceImpl implements QuotationService {
 			result = rf.getRateLineForQuantityAndPostalCode(
 					query.getQuantity(), query.getPostalCode());
 			List<OfferteOptionDTO> options = quotationUtil
-					.generateOfferteOptionsForRateFile(rf);
-			quotationResult.setSelectableOptions(options);
+					.generateOfferteOptionsForRateFileAndLanguage(rf,
+							offerte.getQuery().getResultLanguage());
+			offerte.setSelectableOptions(options);
 			PriceCalculation calculatedPrice = new PriceCalculation();
 			calculatedPrice.setBasePrice(result.getValue());
-			quotationResult.setCalculation(calculatedPrice);
+			offerte.setCalculation(calculatedPrice);
 		} catch (RateFileException e1) {
 			logger.error(e1.getBusinessException() + e1.getMessage());
 			throw e1;
 		}
-		return quotationResult;
+		return offerte;
 	}
 
 	@Override

@@ -25,6 +25,8 @@ public class ConditionFactory {
 		condition.setConditionType(getConditionTypeForTranslationKey(key));
 		condition.setI8nKey(getMapper().map(key));
 		if (condition.getConditionType() == ConditionType.CALCULATION) {
+			condition.setCalculationValueType(quotationUtil
+					.getCalculationValueTypeForCalculationKey(key));
 			condition.setValue(value);
 		} else {
 			initializeTranslations(value, condition);

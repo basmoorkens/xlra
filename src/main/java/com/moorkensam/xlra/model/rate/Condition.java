@@ -40,6 +40,10 @@ public class Condition extends BaseEntity implements Translatable {
 	@Column(name = "type")
 	private ConditionType conditionType;
 
+	@Enumerated(EnumType.STRING)
+	@Column(name = "calculation_value_type")
+	private CalculationValueType calculationValueType;
+
 	@ManyToOne
 	@JoinColumn(name = "rateFileId")
 	private RateFile rateFile;
@@ -175,5 +179,14 @@ public class Condition extends BaseEntity implements Translatable {
 			translations = new ArrayList<TranslationForLanguage>();
 		}
 		translations.add(new TranslationForLanguage(language, translation));
+	}
+
+	public CalculationValueType getCalculationValueType() {
+		return calculationValueType;
+	}
+
+	public void setCalculationValueType(
+			CalculationValueType calculationValueType) {
+		this.calculationValueType = calculationValueType;
 	}
 }

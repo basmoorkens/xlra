@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.TestedObject;
 
+import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.offerte.OfferteOptionDTO;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
@@ -75,13 +76,15 @@ public class QuotationUtilTest extends UnitilsJUnit4 {
 		c1.setConditionKey(TranslationKey.ADR_MINIMUM);
 		Condition c2 = new Condition();
 		c2.setConditionKey(TranslationKey.EUR1_DOCUMENT);
+		c2.addTranslation(Language.NL, "test");
 		Condition c3 = new Condition();
 		c3.setConditionKey(TranslationKey.IMPORT_FORM);
 		rf.setConditions(Arrays.asList(c1, c2, c3));
 
 		List<OfferteOptionDTO> options = quotationUtil
-				.generateOfferteOptionsForRateFile(rf);
+				.generateOfferteOptionsForRateFileAndLanguage(rf, Language.NL);
 		Assert.assertNotNull(options);
+		Assert.assertEquals("test", options.get(1).getValue());
 		Assert.assertEquals(3, options.size());
 		Assert.assertTrue(options.get(0).getKey() == TranslationKey.ADR_MINIMUM);
 		Assert.assertFalse(options.get(0).isSelected());

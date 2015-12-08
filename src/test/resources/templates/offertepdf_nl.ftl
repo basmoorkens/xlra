@@ -2,6 +2,7 @@
 <head>
 	<style>
 		#customerInfo{
+			margin-top:0;
 			padding-top:0;
 			float:left;
 		}
@@ -32,10 +33,12 @@
 
 <div id="customerInfo">
 	${customerName}<br />
+<div id="customerInfo">
+	${customerName}<br />
 	<#if customerStreetAndNumber??>${customerStreetAndNumber}<br /><#else></#if>
 	<#if customerAdres??>${customerAdres}<br /><#else></#if>
 </div>
-
+</div>
 <img src="internal_logo.png" style="float:left;margin-top:0;" />
 <div id="extraInfo">
 	<p>
@@ -93,11 +96,13 @@ Geachte, <br />
 			${detailCalculation}
 		</td>
 	</tr>
+	<#if additionalConditions??>
 	<tr>
 		<td>
 			${additionalConditions}
 		</td>
 	</tr>
+	<#else></#if>
 </table>
 <p style="margin-top:20px;">
 	Uw aanvraag werd behandelt door ${createdUserFullName}
