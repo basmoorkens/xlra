@@ -82,4 +82,9 @@
 	        <form-error-page>/views/loginError.jsp</form-error-page>
 	    </form-login-config>
 	</login-config>
+	
+	<context-param>  
+    	<param-name>primefaces.THEME</param-name>  
+    	<param-value>xlra</param-value>  
+	</context-param>
 </web-app>

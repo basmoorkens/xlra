@@ -13,6 +13,7 @@ import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.TestedObject;
 
 import com.moorkensam.xlra.model.configuration.Language;
+import com.moorkensam.xlra.model.customer.Address;
 import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.TemplatingException;
 import com.moorkensam.xlra.model.offerte.OfferteOptionDTO;
@@ -56,6 +57,7 @@ public class TemplateParseServiceTest extends UnitilsJUnit4 {
 		QuotationResult result = new QuotationResult();
 		result.setCreatedUserFullName("basie");
 		QuotationQuery query = new QuotationQuery();
+		result.setOfferteUniqueIdentifier("2015-123456");
 		result.setQuery(query);
 		query.setQuotationDate(new Date());
 		query.setCountry(new Country());
@@ -65,6 +67,14 @@ public class TemplateParseServiceTest extends UnitilsJUnit4 {
 		query.setQuantity(10d);
 		query.setMeasurement(Measurement.PALET);
 		query.setKindOfRate(Kind.EXPRES);
+		Customer customer = new Customer();
+		query.setCustomer(customer);
+		customer.setAddress(new Address());
+		customer.getAddress().setCity("heist");
+		customer.getAddress().setZip("2220");
+		customer.getAddress().setNumber("10");
+		customer.getAddress().setStreet("merelstraat");
+		customer.setName("Bas test");
 		PriceCalculation calculation = new PriceCalculation();
 		calculation.setAppliedOperations(Arrays.asList(
 				TranslationKey.DIESEL_SURCHARGE, TranslationKey.EXPORT_FORM,

@@ -15,6 +15,7 @@ import org.unitils.easymock.annotation.Mock;
 
 import com.itextpdf.text.DocumentException;
 import com.moorkensam.xlra.model.configuration.Language;
+import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.TemplatingException;
 import com.moorkensam.xlra.model.offerte.PriceCalculation;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
@@ -83,6 +84,9 @@ public class PdfServiceTest extends UnitilsJUnit4 {
 		offerte.setCalculation(calculation);
 		offerte.setOfferteUniqueIdentifier("uq123");
 		offerte.setCreatedUserFullName("basie");
+		offerte.getQuery().setCustomer(new Customer());
+		offerte.getQuery().getCustomer().setName("testje");
+		
 
 	}
 
@@ -92,7 +96,7 @@ public class PdfServiceTest extends UnitilsJUnit4 {
 		EasyMock.expect(fileService.getTemporaryFilePathForPdf("uq123"))
 				.andReturn("uq123.pdf");
 		EasyMockUnitils.replay();
-		pdfService.generateTransientOffertePdf(offerte, Language.EN);
+		pdfService.generateTransientOffertePdf(offerte, Language.NL);
 	}
 
 }

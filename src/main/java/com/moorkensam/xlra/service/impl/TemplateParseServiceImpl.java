@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -126,7 +127,8 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 	@Override
 	public String parseOffertePdf(QuotationResult offerte, Language language)
 			throws TemplatingException {
-		String templateName = "templates/offertepdf.ftl";
+		String templateName = "templates/offertepdf_"
+				+ language.toString().toLowerCase() + ".ftl";
 		StringWriter writer = new StringWriter();
 		Map<String, Object> parameters = createOffertePdfParameterMap(offerte,
 				language);
@@ -231,8 +233,8 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 
 	private Map<String, Object> createFullDetailParameterMap(Language language) {
 		Map<String, Object> parameterMap = new HashMap<String, Object>();
-		parameterMap.put("pdfoffertetitle",
-				translationLoader.getProperty("pdf.offerte.title", language));
+		parameterMap.put("calculationfulldetailtitle", translationLoader
+				.getProperty("calculation.fulldetail.title", language));
 		parameterMap.put("calculationfulldetailbasicprice", translationLoader
 				.getProperty("calculation.fulldetail.basic.price", language));
 		parameterMap.put("calculationfulldetaildieselsurcharge",
@@ -446,7 +448,32 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 			QuotationResult offerte, Language language)
 			throws TemplatingException {
 		Map<String, Object> parameterMap = new HashMap<String, Object>();
-		fillInOfferteEmailTranslations(parameterMap, language);
+		parameterMap.put("customerName", offerte.getQuery().getCustomer()
+				.getName());
+		if (offerte.getQuery().getCustomer().getAddress() != null) {
+			if (StringUtils.isNotBlank(offerte.getQuery().getCustomer()
+					.getAddress().getStreet())
+					|| StringUtils.isNotBlank(offerte.getQuery().getCustomer()
+							.getAddress().getNumber())) {
+				parameterMap.put("customerStreetAndNumber", offerte.getQuery()
+						.getCustomer().getAddress().getStreet()
+						+ " "
+						+ offerte.getQuery().getCustomer().getAddress()
+								.getNumber());
+			}
+			if (StringUtils.isNotBlank(offerte.getQuery().getCustomer()
+					.getAddress().getZip())
+					|| StringUtils.isNotBlank(offerte.getQuery().getCustomer()
+							.getAddress().getCity())) {
+				parameterMap.put("customerAdres", offerte.getQuery()
+						.getCustomer().getAddress().getZip()
+						+ " "
+						+ offerte.getQuery().getCustomer().getAddress()
+								.getCity());
+			}
+		}
+		parameterMap.put("offerteKeyValue",
+				offerte.getOfferteUniqueIdentifier());
 		parameterMap.put("offerteDate", offerte.getQuery().getQuotationDate());
 		parameterMap.put("country", offerte.getQuery().getCountry()
 				.getNameForLanguage(language));
@@ -457,43 +484,20 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 				+ offerte.getQuery().getMeasurement().getDescription());
 		parameterMap.put("transportType", offerte.getQuery().getKindOfRate()
 				.getDescription());
-		parameterMap.put("createdUserFullName",
-				offerte.getCreatedUserFullName());
 		String fullDetailAsHtml = parseHtmlFullDetailCalculation(
 				offerte.getSelectableOptions(), offerte.getCalculation(),
 				language);
 		String additionalConditions = parseHtmlAdditionalConditions(
 				offerte.getSelectableOptions(), language);
 		parameterMap.put("detailCalculation", fullDetailAsHtml);
+		if (StringUtils.isBlank(additionalConditions)) {
+			additionalConditions = " ";
+		}
 		parameterMap.put("additionalConditions", additionalConditions);
-		return parameterMap;
-	}
+		parameterMap.put("createdUserFullName",
+				offerte.getCreatedUserFullName());
 
-	protected void fillInOfferteEmailTranslations(
-			Map<String, Object> parameterMap, Language language) {
-		parameterMap.put("pdftitle",
-				translationLoader.getProperty("pdf.title", language));
-		parameterMap.put("pdfrequestdate",
-				translationLoader.getProperty("pdf.request.date", language));
-		parameterMap.put("pdfrequestcountry",
-				translationLoader.getProperty("pdf.request.country", language));
-		parameterMap.put("pdfrequestpostalcode", translationLoader.getProperty(
-				"pdf.request.postalcode", language));
-		parameterMap
-				.put("pdfrequestquantity", translationLoader.getProperty(
-						"pdf.request.quantity", language));
-		parameterMap.put("pdfrequesttransporttype", translationLoader
-				.getProperty("pdf.request.transporttype", language));
-		parameterMap.put("pdfrequesttitle",
-				translationLoader.getProperty("pdf.request.title", language));
-		parameterMap.put("pdfoffertetitle",
-				translationLoader.getProperty("pdf.offerte.title", language));
-		parameterMap.put("calculationfulldetailadditionalconditions",
-				translationLoader.getProperty(
-						"calculation.fulldetail.additional.conditions",
-						language));
-		parameterMap.put("pdfofferteservedby", translationLoader.getProperty(
-				"pdf.offerte.served.by", language));
+		return parameterMap;
 	}
 
 	private String buildAdditionalConditionsTemplate(
@@ -532,7 +536,6 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 			final List<OfferteOptionDTO> options,
 			final PriceCalculation priceCalculation) {
 		StringBuilder detailCalculationBuilder = new StringBuilder();
-		detailCalculationBuilder.append("<h3>${pdfoffertetitle}</h3>");
 		detailCalculationBuilder.append("<table>");
 		detailCalculationBuilder
 				.append("<tr><td>${calculationfulldetailbasicprice}</td><td> "
