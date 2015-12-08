@@ -25,7 +25,7 @@ import com.moorkensam.xlra.service.util.QuotationUtil;
 @Stateless
 public class CalculationServiceImpl implements CalculationService {
 
-	private static final String CHF = "chf";
+	private static final String CHF = "ch";
 
 	@Inject
 	private DieselService dieselService;

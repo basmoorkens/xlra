@@ -11,7 +11,7 @@ insert into currencyrate (start, end, surchargepercentage, deleted, currencyType
 
 INSERT INTO COUNTRY (deleted,  shortname, version, zonetype) VALUES (0, 'BE', 0, 'NUMERIC_CODES');
 INSERT INTO COUNTRY (deleted,  shortname, version, zonetype) VALUES (0, 'NL', 0, 'NUMERIC_CODES');
-INSERT INTO COUNTRY (deleted,  shortname, version, zonetype) VALUES (0, 'CH', 0, 'ALPHANUMERIC_LIST');
+INSERT INTO COUNTRY (deleted,  shortname, version, zonetype) VALUES (0, 'CH', 0, 'NUMERIC_CODES');
 INSERT INTO COUNTRY (deleted,  shortname, version, zonetype) VALUES (0, 'UK', 0, 'ALPHANUMERIC_LIST');
 
 INSERT INTO countrynames (country_id, name, language)
