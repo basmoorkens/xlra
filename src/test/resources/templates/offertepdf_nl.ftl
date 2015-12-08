@@ -32,12 +32,8 @@
 
 <div id="customerInfo">
 	${customerName}<br />
-	<#if !(customerStreetAndNumber)?has_content>
-		${customerStreetAndNumber}<br />
-	</#if>
-	<#if !(customerAdres)?has_content>
-		${customerAdres}
-	</#if>
+	<#if customerStreetAndNumber??>${customerStreetAndNumber}<br /><#else></#if>
+	<#if customerAdres??>${customerAdres}<br /><#else></#if>
 </div>
 
 <img src="internal_logo.png" style="float:left;margin-top:0;" />

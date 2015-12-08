@@ -33,12 +33,11 @@
 
 <div id="customerInfo">
 	${customerName}<br />
-	<#if !(customerStreetAndNumber)??>
-		${customerStreetAndNumber}<br />
-	</#if>
-	<#if !(customerAdres)??>
-		${customerAdres}
-	</#if>
+<div id="customerInfo">
+	${customerName}<br />
+	<#if customerStreetAndNumber??>${customerStreetAndNumber}<br /><#else></#if>
+	<#if customerAdres??>${customerAdres}<br /><#else></#if>
+</div>
 </div>
 <img src="internal_logo.png" style="float:left;margin-top:0;" />
 <div id="extraInfo">
