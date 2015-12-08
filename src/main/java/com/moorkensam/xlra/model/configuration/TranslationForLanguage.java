@@ -5,6 +5,15 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class TranslationForLanguage {
 
+	public TranslationForLanguage(Language lang, String value) {
+		this.language = lang;
+		this.translation = value;
+	}
+
+	public TranslationForLanguage() {
+
+	}
+
 	private String translation;
 
 	private Language language;

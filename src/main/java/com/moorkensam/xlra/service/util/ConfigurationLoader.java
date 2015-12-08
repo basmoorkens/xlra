@@ -26,6 +26,8 @@ public class ConfigurationLoader {
 	public final static String PDF_AUTHOR = "pdf.author";
 
 	public final static String PDF_TITLE_PREFIX = "pdf.title.prefix";
+	
+	public final static String IMAGE_PATH = "image.path";
 
 	public static ConfigurationLoader instance;
 

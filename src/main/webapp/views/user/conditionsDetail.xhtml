@@ -13,54 +13,41 @@
 		<p:dataTable editable="#{canEdit}" value="#{conditions}"
 			var="condition" editMode="row" emptyMessage="No conditions found."
 			id="conditionTable">
-			<c:if test="${controllerName == 'manageRatesController'}">
-				<p:ajax event="rowEdit"
-					listener="#{manageRatesController.onConditionRowEdit}"
-					update=":conditionsDetailForm:message" />
-			</c:if>
-			<c:if test="${controllerName == 'createRatesController'}">
-				<p:ajax event="rowEdit"
-					listener="#{createRatesController.onConditionRowEdit}"
-					update=":conditionsDetailForm:message" />
-			</c:if>
-
-
-			<p:column headerText="Key">
-				<p:cellEditor>
-					<f:facet name="output">
-						<h:outputText value="#{condition.translatedValue}" />
-					</f:facet>
-					<f:facet name="input">
-						<h:outputText value="#{condition.translatedValue}" />
-					</f:facet>
-				</p:cellEditor>
+			<p:column headerText="Key" width="15%">
+				<h:outputText value="#{condition.translatedKey}" />
+			</p:column>
+			<p:column headerText="Condition type" width="15%">
+				<h:outputText value="#{condition.conditionType}" />
 			</p:column>
 			<p:column headerText="Value">
-				<p:cellEditor>
-					<f:facet name="output">
-						<h:outputText value="#{condition.value}" />
-					</f:facet>
-					<f:facet name="input">
-						<p:inputText style="width:100%;" value="#{condition.value}" />
-					</f:facet>
-				</p:cellEditor>
+				<p:outputPanel rendered="#{condition.calculationCondition}">
+					<h:outputText value="#{condition.value}" />
+				</p:outputPanel>
+				<p:outputPanel rendered="#{!condition.calculationCondition}">
+					<h:outputText
+						value="EN: #{condition.englishTranslation.translation}" />
+					<br />
+					<h:outputText value="NL: #{condition.dutchTranslation.translation}" />
+					<br />
+					<h:outputText
+						value="FR: #{condition.frenchTranslation.translation}" />
+					<br />
+					<h:outputText
+						value="DE: #{condition.germanTranslation.translation}" />
+					<br />
+				</p:outputPanel>
 			</p:column>
 			<p:column headerText="Standard option" style="width:128px;">
-				<p:cellEditor>
-					<f:facet name="output">
-						<p:selectBooleanCheckbox value="#{condition.standardSelected}"
-							disabled="true" />
-					</f:facet>
-					<f:facet name="input">
-						<p:selectBooleanCheckbox value="#{condition.standardSelected}" />
-					</f:facet>
-				</p:cellEditor>
+				<p:selectBooleanCheckbox value="#{condition.standardSelected}"
+					disabled="true" />
 			</p:column>
-			<p:column style="width:32px" rendered="#{canEdit}">
-				<p:rowEditor />
-			</p:column>
-			<p:column style="width:32px;" rendered="#{canEdit}">
-				<p:commandButton icon="ui-icon-trash" title="Delete"
+			<p:column style="width:105px;" rendered="#{canEdit}">
+				<p:commandButton icon="ui-icon-pencil" title="Edit"
+					actionListener="#{controller.setupEditCondition(condition)}"
+					ajax="true" immediate="true" update=":conditionsDetailForm">
+				</p:commandButton>
+				<p:commandButton style="margin-left:5px;" icon="ui-icon-trash"
+					title="Delete"
 					actionListener="#{controller.deleteCondition(condition)}"
 					ajax="true" immediate="true" update=":conditionsDetailForm">
 					<p:confirm header="Confirm delete"
@@ -71,13 +58,47 @@
 		<p:commandButton value="Add condition" rendered="#{canEdit}"
 			onclick="PF('addConditionDialog').show();" />
 
-		<p:dialog header="Add condition" widgetVar="addConditionDialog"
-			modal="true" height="150px" width="300px" dynamic="true">
+		<p:dialog id="editDialog" header="Edit condition"
+			widgetVar="editConditionDialog" modal="true" width="50%" height="50%"
+			dynamic="true">
+			<p:panel style="width:80%; margin:auto;">
+				<h:outputLabel style="font-weight:bold;"
+					value="#{controller.selectedCondition.translatedKey}" />
+				<p:panelGrid columns="2" style="width:100%;margin-top:10px;">
+
+					<h:outputLabel value="New value:"
+						rendered="#{controller.selectedCondition.calculationCondition}" />
+					<p:inputText size="50"
+						value="#{controller.selectedCondition.value}"
+						rendered="#{controller.selectedCondition.calculationCondition}" />
+
+					<c:forEach items="#{controller.selectedCondition.translations}"
+						var="translation">
+						<h:outputText value="#{translation.language}" />
+						<p:inputText size="50" value="#{translation.translation}" />
+					</c:forEach>
+				</p:panelGrid>
+				<f:facet name="footer">
+					<p:commandButton value="Cancel"
+						onclick="PF('editConditionDialog').hide();" />
+					<p:commandButton style="margin-left:20px;" value="Save"
+						oncomplete="handleAddCustomerRequest(xhr, status, args)"
+						actionListener="#{controller.saveEditCondition}"
+						update=":conditionsDetailForm" />
+				</f:facet>
+			</p:panel>
+		</p:dialog>
+
+		<p:dialog id="addDialog" header="Add condition"
+			widgetVar="addConditionDialog" modal="true" height="150px"
+			width="300px" dynamic="true">
 			<p:selectOneMenu value="#{controller.keyToAdd}" style="width:200px;">
 				<f:selectItems
 					value="#{controller.availableTranslationKeysForSelectedRateFile}" />
 			</p:selectOneMenu>
 			<f:facet name="footer">
+				<p:commandButton value="Cancel"
+					onclick="PF('editConditionDialog').hide();" />
 				<c:if test="${controllerName == 'manageRatesController'}">
 					<p:commandButton value="Add condition"
 						actionListener="#{manageRatesController.createConditionForSelectedTranslationKey}"
@@ -97,4 +118,15 @@
 				styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
 		</p:confirmDialog>
 	</p:panel>
+	<script type="text/javascript">
+		function handleAddCustomerRequest(xhr, status, args) {
+			if (args.validationFailed) {
+				PF('editConditionDialog').jq.effect("shake", {
+					times : 5
+				}, 100);
+			} else {
+				PF('editConditionDialog').hide();
+			}
+		}
+	</script>
 </ui:composition>

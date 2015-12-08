@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.service.impl;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -14,7 +15,17 @@ import org.apache.logging.log4j.Logger;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.tool.xml.Pipeline;
+import com.itextpdf.tool.xml.XMLWorker;
 import com.itextpdf.tool.xml.XMLWorkerHelper;
+import com.itextpdf.tool.xml.html.Tags;
+import com.itextpdf.tool.xml.parser.XMLParser;
+import com.itextpdf.tool.xml.pipeline.css.CSSResolver;
+import com.itextpdf.tool.xml.pipeline.css.CssResolverPipeline;
+import com.itextpdf.tool.xml.pipeline.end.PdfWriterPipeline;
+import com.itextpdf.tool.xml.pipeline.html.AbstractImageProvider;
+import com.itextpdf.tool.xml.pipeline.html.HtmlPipeline;
+import com.itextpdf.tool.xml.pipeline.html.HtmlPipelineContext;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.error.TemplatingException;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
@@ -52,13 +63,29 @@ public class PdfServiceImpl implements PdfService {
 		offerte.setPdfFileName(fullPdfFileName);
 		document.open();
 		fillInHeaderProperties(document);
-		XMLWorkerHelper worker = XMLWorkerHelper.getInstance();
+
+		HtmlPipelineContext htmlContext = new HtmlPipelineContext(null);
+		htmlContext.setImageProvider(new AbstractImageProvider() {
+
+			@Override
+			public String getImageRootPath() {
+				return configLoader.getProperty(ConfigurationLoader.IMAGE_PATH);
+			}
+		});
+
+		htmlContext.setTagFactory(Tags.getHtmlTagProcessorFactory());
+		CSSResolver cssResolver = XMLWorkerHelper.getInstance()
+				.getDefaultCssResolver(true);
+		Pipeline<?> pipeline = new CssResolverPipeline(cssResolver,
+				new HtmlPipeline(htmlContext, new PdfWriterPipeline(document,
+						pdfWriter)));
+		XMLWorker worker = new XMLWorker(pipeline, true);
+		XMLParser p = new XMLParser(worker);
 		String pdfBody = templateParseService
 				.parseOffertePdf(offerte, language);
 		try {
-			worker.parseXHtml(pdfWriter, document, new StringReader(pdfBody));
+			p.parse(new StringReader(pdfBody));
 			document.close();
-
 		} catch (IOException e) {
 			logger.error("Error creating inputstream from pdfbod text", e);
 		}

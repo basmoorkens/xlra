@@ -23,7 +23,7 @@ public class TranslationUtil {
 	public void fillInTranslation(Translatable trans) {
 		ResourceBundle bundle = ResourceBundle.getBundle("translations",
 				FacesContext.getCurrentInstance().getViewRoot().getLocale());
-		trans.setTranslatedValue(bundle.getString(trans.getI8nKey()));
+		trans.setTranslatedKey(bundle.getString(trans.getI8nKey()));
 	}
 
 	public List<TranslationKey> getAvailableTranslationKeysForSelectedRateFile(

@@ -1,5 +1,7 @@
 package com.moorkensam.xlra.service.util;
 
+import java.io.IOException;
+
 import junit.framework.Assert;
 
 import org.apache.poi.ss.format.CellTextFormatter;
@@ -7,6 +9,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
@@ -15,13 +18,23 @@ public class PoiUtilTest extends UnitilsJUnit4 {
 
 	private Poiutil poiUtil;
 
+	private XSSFWorkbook wb;
+
 	private XSSFRow row;
 
 	@Before
 	public void init() {
-		XSSFWorkbook wb = new XSSFWorkbook();
+		wb = new XSSFWorkbook();
 		XSSFSheet sheet = wb.createSheet("mySheet");
 		row = sheet.createRow(0);
+	}
+
+	@After
+	public void destroy() throws IOException {
+		if (wb != null) {
+			wb.close();
+			wb = null;
+		}
 	}
 
 	@Test
