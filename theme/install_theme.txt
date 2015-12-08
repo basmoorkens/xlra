@@ -1,0 +1,1 @@
+mvn install:install-file -Dfile=xlra.jar -DgroupId=com.moorkensam -DartifactId=xlra-theme -Dversion=1.0-SNAPSHOT -Dpackaging=jar
