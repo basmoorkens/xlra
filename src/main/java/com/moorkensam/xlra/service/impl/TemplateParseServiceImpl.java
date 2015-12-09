@@ -94,6 +94,7 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 		stringTemplateLoader = new StringTemplateLoader();
 		Map<String, Object> dataModel = createOfferteEmailTemplateParams(
 				offerte, fullDetail, additionalConditions);
+
 		StringWriter writer = new StringWriter();
 		getStringTemplateLoader().putTemplate("template", templateFromDb);
 		getConfiguration().setTemplateLoader(getStringTemplateLoader());
@@ -237,27 +238,7 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 
 	private Map<String, Object> createFullDetailParameterMap(Language language) {
 		Map<String, Object> parameterMap = new HashMap<String, Object>();
-		parameterMap.put("calculationfulldetailtitle", translationLoader
-				.getProperty("calculation.fulldetail.title", language));
-		parameterMap.put("calculationfulldetailbasicprice", translationLoader
-				.getProperty("calculation.fulldetail.basic.price", language));
-		parameterMap.put("calculationfulldetaildieselsurcharge",
-				translationLoader.getProperty(
-						"calculation.fulldetail.diesel.surcharge", language));
-		parameterMap.put("calculationfulldetailswissfrancsurcharge",
-				translationLoader.getProperty(
-						"calculation.fulldetail.swiss.franc.surcharge",
-						language));
-		parameterMap.put("calculationfulldetailimportformalities",
-				translationLoader.getProperty(
-						"calculation.fulldetail.import.formalities", language));
-		parameterMap.put("calculationfulldetailexportformalities",
-				translationLoader.getProperty(
-						"calculation.fulldetail.export.formalities", language));
-		parameterMap.put("calculationfulldetailadrsurcharge", translationLoader
-				.getProperty("calculation.fulldetail.adr.surcharge", language));
-		parameterMap.put("calculationfulldetailtotalprice", translationLoader
-				.getProperty("calculation.fulldetail.total.price", language));
+		fillInCalculationTranslationKeys(language, parameterMap);
 		return parameterMap;
 	}
 
@@ -452,6 +433,69 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 			QuotationResult offerte, Language language)
 			throws TemplatingException {
 		Map<String, Object> parameterMap = new HashMap<String, Object>();
+		fillInCalculationTranslationKeys(language, parameterMap);
+
+		fillInTemplateValues(offerte, language, parameterMap);
+
+		fillInCalculationValues(offerte, parameterMap);
+
+		fillInAdditionalParameters(offerte, parameterMap, language);
+		return parameterMap;
+	}
+
+	private void fillInAdditionalParameters(QuotationResult offerte,
+			Map<String, Object> parameterMap, Language language) {
+		Map<String, Object> conditionsMap = new HashMap<String, Object>();
+
+		if (hasOptionSelected(offerte.getSelectableOptions())) {
+			for (OfferteOptionDTO option : offerte.getSelectableOptions()) {
+				if (option.isSelected() && !option.isCalculationOption()) {
+					conditionsMap.put(translationLoader.getProperty(option
+							.getI8nKey().replace(".", ""), language), option
+							.getValue());
+				}
+			}
+		}
+		if (conditionsMap.keySet().size() > 0) {
+			parameterMap.put("conditions", conditionsMap);
+		}
+	}
+
+	private void fillInCalculationValues(QuotationResult offerte,
+			Map<String, Object> parameterMap) {
+		if (offerte.getCalculation().getBasePrice() != null) {
+			parameterMap.put("baseprice", offerte.getCalculation()
+					.getBasePrice());
+		}
+		if (offerte.getCalculation().getDieselPrice() != null) {
+			parameterMap.put("dieselprice", offerte.getCalculation()
+					.getDieselPrice());
+		}
+		if (offerte.getCalculation().getChfPrice() != null) {
+			parameterMap
+					.put("chfprice", offerte.getCalculation().getChfPrice());
+		}
+		if (offerte.getCalculation().getImportFormalities() != null) {
+			parameterMap.put("importforms", offerte.getCalculation()
+					.getImportFormalities());
+		}
+		if (offerte.getCalculation().getExportFormalities() != null) {
+			parameterMap.put("exportforms", offerte.getCalculation()
+					.getExportFormalities());
+		}
+		if (offerte.getCalculation().getResultingPriceSurcharge() != null) {
+			parameterMap.put("adr", offerte.getCalculation()
+					.getResultingPriceSurcharge());
+		}
+		if (offerte.getCalculation().getFinalPrice() != null) {
+			parameterMap.put("finalprice", offerte.getCalculation()
+					.getFinalPrice());
+		}
+	}
+
+	private void fillInTemplateValues(QuotationResult offerte,
+			Language language, Map<String, Object> parameterMap)
+			throws TemplatingException {
 		parameterMap.put("customerName", offerte.getQuery().getCustomer()
 				.getName());
 		fillInCustomerParams(offerte, parameterMap);
@@ -467,20 +511,39 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 				+ offerte.getQuery().getMeasurement().getDescription());
 		parameterMap.put("transportType", offerte.getQuery().getKindOfRate()
 				.getDescription());
-		String fullDetailAsHtml = parseHtmlFullDetailCalculation(
-				offerte.getSelectableOptions(), offerte.getCalculation(),
-				language);
 		String additionalConditions = parseHtmlAdditionalConditions(
 				offerte.getSelectableOptions(), language);
-		parameterMap.put("detailCalculation", fullDetailAsHtml);
 		if (StringUtils.isBlank(additionalConditions)) {
 			additionalConditions = " ";
 		}
 		parameterMap.put("additionalConditions", additionalConditions);
 		parameterMap.put("createdUserFullName",
 				offerte.getCreatedUserFullName());
+	}
 
-		return parameterMap;
+	private void fillInCalculationTranslationKeys(Language language,
+			Map<String, Object> parameterMap) {
+		parameterMap.put("calculationfulldetailtitle", translationLoader
+				.getProperty("calculation.fulldetail.title", language));
+		parameterMap.put("calculationfulldetailbasicprice", translationLoader
+				.getProperty("calculation.fulldetail.basic.price", language));
+		parameterMap.put("calculationfulldetaildieselsurcharge",
+				translationLoader.getProperty(
+						"calculation.fulldetail.diesel.surcharge", language));
+		parameterMap.put("calculationfulldetailswissfrancsurcharge",
+				translationLoader.getProperty(
+						"calculation.fulldetail.swiss.franc.surcharge",
+						language));
+		parameterMap.put("calculationfulldetailimportformalities",
+				translationLoader.getProperty(
+						"calculation.fulldetail.import.formalities", language));
+		parameterMap.put("calculationfulldetailexportformalities",
+				translationLoader.getProperty(
+						"calculation.fulldetail.export.formalities", language));
+		parameterMap.put("calculationfulldetailadrsurcharge", translationLoader
+				.getProperty("calculation.fulldetail.adr.surcharge", language));
+		parameterMap.put("calculationfulldetailtotalprice", translationLoader
+				.getProperty("calculation.fulldetail.total.price", language));
 	}
 
 	private void fillInCustomerParams(QuotationResult offerte,
@@ -517,11 +580,11 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 		if (hasOptionSelected(options)) {
 			StringBuilder builder = new StringBuilder();
 			builder.append("<h3>${calculationfulldetailadditionalconditions}</h3>");
-			builder.append("<table>");
+			builder.append("<table style=\"width:100%;\">");
 			for (OfferteOptionDTO option : options) {
 				if (option.isSelected() && !option.isCalculationOption()
 						&& option.isShowToCustomer()) {
-					builder.append("<tr><td>${"
+					builder.append("<tr><td style=\"width:30%;\">${"
 							+ option.getI8nKey().replace(".", "") + "}</td>");
 					builder.append("<td>" + option.getValue() + "</td></tr>");
 				}
@@ -545,10 +608,10 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 			final List<OfferteOptionDTO> options,
 			final PriceCalculation priceCalculation) {
 		StringBuilder detailCalculationBuilder = new StringBuilder();
-		detailCalculationBuilder.append("<table>");
+		detailCalculationBuilder.append("<table style=\"width:100%;\">");
 		detailCalculationBuilder
-				.append("<tr><td>${calculationfulldetailbasicprice}</td><td> "
-						+ priceCalculation.getBasePrice() + "</td></tr>");
+				.append("<tr><td style=\"width:20%;\">${calculationfulldetailbasicprice}</td><td> "
+						+ priceCalculation.getBasePrice() + " EUR</td></tr>");
 		if (options != null && !options.isEmpty()) {
 			for (OfferteOptionDTO option : options) {
 				if (option.isSelected() && option.isCalculationOption()
@@ -587,7 +650,7 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 		}
 		detailCalculationBuilder.append("</table>");
 		detailCalculationBuilder
-				.append("<h3>${calculationfulldetailtotalprice}"
+				.append("<h3>${calculationfulldetailtotalprice} EUR."
 						+ priceCalculation.getFinalPrice() + "</h3><br />");
 
 		return detailCalculationBuilder.toString();

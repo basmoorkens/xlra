@@ -86,7 +86,6 @@ public class PdfServiceTest extends UnitilsJUnit4 {
 		offerte.setCreatedUserFullName("basie");
 		offerte.getQuery().setCustomer(new Customer());
 		offerte.getQuery().getCustomer().setName("testje");
-		
 
 	}
 
