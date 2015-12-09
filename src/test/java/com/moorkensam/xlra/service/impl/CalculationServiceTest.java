@@ -162,7 +162,7 @@ public class CalculationServiceTest extends UnitilsJUnit4 {
 			throws RateFileException {
 		Configuration config = new Configuration();
 		Country country = new Country();
-		country.setShortName("chf");
+		country.setShortName("ch");
 
 		PriceCalculation priceDTO = new PriceCalculation();
 		priceDTO.setBasePrice(new BigDecimal(100d));
