@@ -110,8 +110,13 @@
 				collapsed="#{createQuotationController.collapseOptionsPanel}"
 				toggleable="false">
 				<p:growl showDetail="true" id="messages" sticky="true" />
+				<p:commandButton value="Select all"
+					actionListener="#{createQuotationController.selectAllOptions}"
+					style="width:150px;" update=":optionsForm" ajax="true" />
+				<p:commandButton value="Deselect all"
+					actionListener="#{createQuotationController.deSelectAllOptions}"
+					style="width:150px;" update=":optionsForm" ajax="true" />
 				<p:panelGrid columns="2" style="width:100%;">
-
 					<h:outputLabel value="Option" />
 					<h:outputLabel value="Selected" />
 
@@ -123,8 +128,8 @@
 						<p:selectBooleanCheckbox value="#{option.selected}" />
 
 					</c:forEach>
-
 				</p:panelGrid>
+
 				<p:panel style="bottom:20px;  padding:0px;border:0px;">
 					<p:commandButton value="Back" style="width:150px;margin-left:20px;"
 						update=":filtersForm :optionsForm" immediate="true"
@@ -189,10 +194,12 @@
 				toggleable="false">
 					The offerte was successfully created and sent to
 					<h:outputText
-						value="#{createQuotationController.quotationResult.emailResult.toAddress}" />
+					value="#{createQuotationController.quotationResult.emailResult.toAddress}" />
 					.<br />
-					<p:commandButton value="View offerte details" actionListener="#{createQuotationController.goToOfferteDetail}" />
-					<p:commandButton value="Create another offerte" actionListener="#{createQuotationController.resetPage}" />
+				<p:commandButton value="View offerte details"
+					actionListener="#{createQuotationController.goToOfferteDetail}" />
+				<p:commandButton value="Create another offerte"
+					actionListener="#{createQuotationController.resetPage}" />
 			</p:panel>
 		</h:form>
 

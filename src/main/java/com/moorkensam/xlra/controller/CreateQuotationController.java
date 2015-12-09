@@ -207,6 +207,20 @@ public class CreateQuotationController {
 				.getSelectableOptions());
 	}
 
+	public void selectAllOptions() {
+		applySelection(true);
+	}
+
+	public void deSelectAllOptions() {
+		applySelection(false);
+	}
+
+	private void applySelection(boolean selected) {
+		for (OfferteOptionDTO option : quotationResult.getSelectableOptions()) {
+			option.setSelected(selected);
+		}
+	}
+
 	public void processOptions() {
 		try {
 			quotationResult = quotationService
