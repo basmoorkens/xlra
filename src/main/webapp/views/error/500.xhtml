@@ -9,10 +9,13 @@
 	xmlns:of="http://omnifaces.org/functions">
 <h:head>
 	<title><ui:insert name="title">Extra logistics Rates application</ui:insert></title>
-	<link type="text/css" rel="stylesheet" href="/xlra/css/main.css" />
+	<h:outputStylesheet library="css" name="main.css"></h:outputStylesheet>
 </h:head>
 <h:body>
-	<h3>Version: #{maven.version['com.moorkensam:xlra']}</h3>
+	<div id="version">Version:
+		#{maven.version['com.moorkensam:xlra']}</div>
+	<h:graphicImage url="/resources/images/Extra-Logo-neu.png"
+		style="float:right;margin:0px;top:10px;" />
 	<h1>Woops, I made a booboo...</h1>
 	<p>
 		If this error keeps popping up please contact the system administrator

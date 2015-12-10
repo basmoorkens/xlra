@@ -1,0 +1,28 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions">
+<h:head>
+	<title><ui:insert name="title">Extra logistics Rates application</ui:insert></title>
+	<h:outputStylesheet library="css" name="main.css" ></h:outputStylesheet>
+</h:head>
+<h:body>
+	<div id="version">Version:
+		#{maven.version['com.moorkensam:xlra']}</div>
+	<h:graphicImage url="/resources/images/Extra-Logo-neu.png"
+		style="float:right;margin:0px;top:10px;" />
+	<p:panel style="margin-top:150px;">
+		<h1>Looks like we lost the page that you are trying to access...</h1>
+		<p>
+			<h:outputLink value="#{errorController.applicationBaseUrl}">
+			Click here to return to the application.
+		</h:outputLink>
+		</p>
+	</p:panel>
+</h:body>
+</html>

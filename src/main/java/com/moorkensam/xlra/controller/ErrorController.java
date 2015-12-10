@@ -1,13 +1,13 @@
 package com.moorkensam.xlra.controller;
 
-import javax.annotation.ManagedBean;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.RequestScoped;
+import javax.inject.Named;
 
 import com.moorkensam.xlra.service.util.ConfigurationLoader;
 
 @RequestScoped
-@ManagedBean
+@Named
 public class ErrorController {
 
 	private ConfigurationLoader configLoader;
