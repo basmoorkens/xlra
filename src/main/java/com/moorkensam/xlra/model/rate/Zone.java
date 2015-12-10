@@ -118,7 +118,8 @@ public class Zone extends BaseEntity {
 			for (Interval interval : numericalPostalCodes) {
 				numericalCodes += interval.toIntString() + ",";
 			}
-			numericalCodes.substring(0, numericalCodes.length() - 1);
+			numericalCodes = numericalCodes.substring(0,
+					numericalCodes.length() - 1);
 			setNumericalPostalCodesAsString(numericalCodes);
 		}
 	}

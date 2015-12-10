@@ -81,8 +81,8 @@ public class DieselServiceImplTest extends UnitilsJUnit4 {
 		EasyMock.expect(dieselRateDAO.getAllDieselRates()).andReturn(rates);
 
 		EasyMockUnitils.replay();
-		DieselRate result = service
-				.getDieselRateForCurrentPrice(new BigDecimal(1.55d));
+		DieselRate result = service.getDieselRateForCurrentPrice(BigDecimal
+				.valueOf(1.55d));
 
 	}
 
@@ -91,8 +91,8 @@ public class DieselServiceImplTest extends UnitilsJUnit4 {
 		EasyMock.expect(dieselRateDAO.getAllDieselRates()).andReturn(rates);
 
 		EasyMockUnitils.replay();
-		DieselRate result = service
-				.getDieselRateForCurrentPrice(new BigDecimal(1.35d));
+		DieselRate result = service.getDieselRateForCurrentPrice(BigDecimal
+				.valueOf(1.35d));
 		Assert.assertEquals(r2, result);
 	}
 
@@ -102,8 +102,8 @@ public class DieselServiceImplTest extends UnitilsJUnit4 {
 		EasyMock.expect(dieselRateDAO.getAllDieselRates()).andReturn(rates);
 
 		EasyMockUnitils.replay();
-		DieselRate result = service
-				.getDieselRateForCurrentPrice(new BigDecimal(1.30d));
+		DieselRate result = service.getDieselRateForCurrentPrice(BigDecimal
+				.valueOf(1.30d));
 		Assert.assertEquals(r2, result);
 	}
 

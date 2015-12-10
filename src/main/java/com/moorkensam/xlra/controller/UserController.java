@@ -68,16 +68,16 @@ public class UserController {
 		if (newPassword == null || newPassword.isEmpty()
 				|| retypedPassword == null || retypedPassword.isEmpty()) {
 			skippws = true;
-		}
-
-		if (newPassword.equals(retypedPassword) && !skippws) {
-			user.setPassword(newPassword);
 		} else {
-			if (!skippws) {
-				MessageUtil
-						.addErrorMessage("Passwords do not match",
-								"The new password and the retyped new password should be the same!");
-				return;
+			if (newPassword.equals(retypedPassword) && !skippws) {
+				user.setPassword(newPassword);
+			} else {
+				if (!skippws) {
+					MessageUtil
+							.addErrorMessage("Passwords do not match",
+									"The new password and the retyped new password should be the same!");
+					return;
+				}
 			}
 		}
 		user = userService.updateUser(user, !skippws);

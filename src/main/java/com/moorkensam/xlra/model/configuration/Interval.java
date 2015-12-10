@@ -55,6 +55,11 @@ public class Interval implements Serializable {
 	}
 
 	@Override
+	public int hashCode() {
+		return (int) start + (int) end;
+	};
+
+	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) {
 			return false;

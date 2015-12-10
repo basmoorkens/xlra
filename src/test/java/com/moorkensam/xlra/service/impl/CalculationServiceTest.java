@@ -68,7 +68,7 @@ public class CalculationServiceTest extends UnitilsJUnit4 {
 		priceDTO = new PriceCalculation();
 		priceDTO.setBasePrice(new BigDecimal(500d));
 		config = new Configuration();
-		config.setCurrentDieselPrice(new BigDecimal(1.20d));
+		config.setCurrentDieselPrice(BigDecimal.valueOf(1.20d));
 		dieselRate = new DieselRate();
 		dieselRate.setSurchargePercentage(5.00d);
 		chfRate = new CurrencyRate();
@@ -87,7 +87,7 @@ public class CalculationServiceTest extends UnitilsJUnit4 {
 		OfferteOptionDTO option = new OfferteOptionDTO();
 		option.setValue("40.15d");
 		calcService.calculateExportFormality(priceDTO, option);
-		BigDecimal result = new BigDecimal(40.15d);
+		BigDecimal result = BigDecimal.valueOf(40.15d);
 		result = result.setScale(2, RoundingMode.HALF_UP);
 		Assert.assertEquals(result, priceDTO.getExportFormalities());
 	}
@@ -97,7 +97,7 @@ public class CalculationServiceTest extends UnitilsJUnit4 {
 		OfferteOptionDTO option = new OfferteOptionDTO();
 		option.setValue("20.33d");
 		calcService.calculateImportFormality(priceDTO, option);
-		BigDecimal result = new BigDecimal(20.33d);
+		BigDecimal result = BigDecimal.valueOf(20.33d);
 		result = result.setScale(2, RoundingMode.HALF_UP);
 		Assert.assertEquals(result, priceDTO.getImportFormalities());
 	}

@@ -32,6 +32,11 @@ public class CurrencyRate extends AbstractRate {
 	}
 
 	@Override
+	public int hashCode() {
+		return currencyType.hashCode() + getInterval().hashCode();
+	};
+
+	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof CurrencyRate) {
 			CurrencyRate cr = (CurrencyRate) obj;

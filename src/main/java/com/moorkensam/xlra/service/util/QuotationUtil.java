@@ -31,8 +31,10 @@ public class QuotationUtil {
 
 	public static QuotationUtil getInstance() {
 		if (instance == null) {
-			instance = new QuotationUtil();
-			instance.setMapper(new TranslationKeyToi8nMapper());
+			QuotationUtil qu = new QuotationUtil();
+			qu.setMapper(new TranslationKeyToi8nMapper());
+			instance = qu;
+
 		}
 		return instance;
 	}

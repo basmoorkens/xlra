@@ -85,7 +85,7 @@ public class CurrencyServiceImplTest extends UnitilsJUnit4 {
 
 		EasyMockUnitils.replay();
 		CurrencyRate result = currencyService
-				.getChfRateForCurrentPrice(new BigDecimal(1.55d));
+				.getChfRateForCurrentPrice(BigDecimal.valueOf(1.55d));
 
 	}
 
@@ -95,7 +95,7 @@ public class CurrencyServiceImplTest extends UnitilsJUnit4 {
 
 		EasyMockUnitils.replay();
 		CurrencyRate result = currencyService
-				.getChfRateForCurrentPrice(new BigDecimal(1.35d));
+				.getChfRateForCurrentPrice(BigDecimal.valueOf(1.35d));
 		Assert.assertEquals(r2, result);
 	}
 
@@ -106,7 +106,7 @@ public class CurrencyServiceImplTest extends UnitilsJUnit4 {
 
 		EasyMockUnitils.replay();
 		CurrencyRate result = currencyService
-				.getChfRateForCurrentPrice(new BigDecimal(1.30d));
+				.getChfRateForCurrentPrice(BigDecimal.valueOf(1.30d));
 		Assert.assertEquals(r2, result);
 	}
 

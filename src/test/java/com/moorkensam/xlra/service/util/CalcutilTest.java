@@ -21,9 +21,8 @@ public class CalcutilTest extends UnitilsJUnit4 {
 	@Test
 	public void testConvertPercentagEtoBaseMultiplier() {
 		BigDecimal result = calcUtil.convertPercentageToBaseMultiplier(20d);
-		BigDecimal exp = new BigDecimal(0.20d);
+		BigDecimal exp = BigDecimal.valueOf(0.2d);
 		exp = exp.setScale(2, RoundingMode.HALF_UP);
 		Assert.assertEquals(exp, result);
 	}
-
 }
