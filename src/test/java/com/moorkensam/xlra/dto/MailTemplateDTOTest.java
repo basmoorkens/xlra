@@ -15,7 +15,7 @@ import com.moorkensam.xlra.model.mail.MailTemplate;
 public class MailTemplateDTOTest extends UnitilsJUnit4 {
 
 	@TestedObject
-	private MailTemplateDTO dto;
+	private MailTemplatesForForLanguages dto;
 
 	private MailTemplate template, template2;
 
@@ -31,19 +31,19 @@ public class MailTemplateDTOTest extends UnitilsJUnit4 {
 
 	@Test
 	public void testGetTemplateForLangTemplatesNull() {
-		dto = new MailTemplateDTO(null);
+		dto = new MailTemplatesForForLanguages(null);
 		Assert.assertNull(dto.getTemplateForLang(Language.NL));
 	}
 
 	@Test
 	public void testGetTemplateForLangNull() {
-		dto = new MailTemplateDTO(Arrays.asList(template, template2));
+		dto = new MailTemplatesForForLanguages(Arrays.asList(template, template2));
 		Assert.assertNull(dto.getTemplateForLang(null));
 	}
 
 	@Test
 	public void testGetValidTemplate() {
-		dto = new MailTemplateDTO(Arrays.asList(template, template2));
+		dto = new MailTemplatesForForLanguages(Arrays.asList(template, template2));
 		Assert.assertEquals("templateNL", dto.getNlTemplate().getTemplate());
 		Assert.assertEquals("templateEN", dto.getEnTemplate().getTemplate());
 	}

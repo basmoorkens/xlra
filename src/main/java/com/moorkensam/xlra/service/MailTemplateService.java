@@ -1,6 +1,6 @@
 package com.moorkensam.xlra.service;
 
-import com.moorkensam.xlra.dto.MailTemplateDTO;
+import com.moorkensam.xlra.dto.MailTemplatesForForLanguages;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.error.TemplatingException;
@@ -12,11 +12,11 @@ public interface MailTemplateService {
 
 	void updateEmailTemplate(MailTemplate mailTemplate);
 
-	MailTemplateDTO getAllTemplates();
+	MailTemplatesForForLanguages getAllTemplates();
 
 	MailTemplate getMailTemplateForLanguage(Language language);
 
-	void saveMailTemplateDTO(MailTemplateDTO mailTemplateDTO);
+	void saveMailTemplateDTO(MailTemplatesForForLanguages mailTemplateDTO);
 
 	public EmailResult initializeOfferteEmail(QuotationResult result)
 			throws TemplatingException, RateFileException;

@@ -13,7 +13,6 @@ import org.unitils.easymock.annotation.Mock;
 import org.unitils.inject.annotation.TestedObject;
 
 import com.moorkensam.xlra.dao.EmailTemplateDAO;
-import com.moorkensam.xlra.dto.OfferteMailDTO;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.RateFileException;

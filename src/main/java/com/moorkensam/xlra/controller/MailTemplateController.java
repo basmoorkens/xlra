@@ -6,7 +6,7 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
-import com.moorkensam.xlra.dto.MailTemplateDTO;
+import com.moorkensam.xlra.dto.MailTemplatesForForLanguages;
 import com.moorkensam.xlra.service.MailTemplateService;
 
 @ManagedBean
@@ -16,7 +16,7 @@ public class MailTemplateController {
 	@Inject
 	private MailTemplateService mailTemplateService;
 
-	private MailTemplateDTO mailTemplateDTO;
+	private MailTemplatesForForLanguages mailTemplateDTO;
 
 	@PostConstruct
 	public void init() {
@@ -41,11 +41,11 @@ public class MailTemplateController {
 		this.mailTemplateService = mailTemplateService;
 	}
 
-	public MailTemplateDTO getMailTemplateDTO() {
+	public MailTemplatesForForLanguages getMailTemplateDTO() {
 		return mailTemplateDTO;
 	}
 
-	public void setMailTemplateDTO(MailTemplateDTO mailTemplateDTO) {
+	public void setMailTemplateDTO(MailTemplatesForForLanguages mailTemplateDTO) {
 		this.mailTemplateDTO = mailTemplateDTO;
 	}
 }

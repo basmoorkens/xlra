@@ -5,11 +5,11 @@ import java.util.List;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.mail.MailTemplate;
 
-public class MailTemplateDTO {
+public class MailTemplatesForForLanguages {
 
 	private List<MailTemplate> mailTemplates;
 
-	public MailTemplateDTO(List<MailTemplate> templates) {
+	public MailTemplatesForForLanguages(List<MailTemplate> templates) {
 		this.mailTemplates = templates;
 	}
 

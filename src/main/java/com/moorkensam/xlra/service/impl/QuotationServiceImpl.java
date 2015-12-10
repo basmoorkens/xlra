@@ -18,7 +18,6 @@ import com.itextpdf.text.DocumentException;
 import com.moorkensam.xlra.dao.PriceCalculationDAO;
 import com.moorkensam.xlra.dao.QuotationQueryDAO;
 import com.moorkensam.xlra.dao.QuotationResultDAO;
-import com.moorkensam.xlra.dto.OfferteMailDTO;
 import com.moorkensam.xlra.model.error.PdfException;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.error.TemplatingException;

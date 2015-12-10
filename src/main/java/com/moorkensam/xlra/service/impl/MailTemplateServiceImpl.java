@@ -9,8 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.moorkensam.xlra.dao.EmailTemplateDAO;
-import com.moorkensam.xlra.dto.MailTemplateDTO;
-import com.moorkensam.xlra.dto.OfferteMailDTO;
+import com.moorkensam.xlra.dto.MailTemplatesForForLanguages;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.error.TemplatingException;
@@ -41,14 +40,14 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 	}
 
 	@Override
-	public MailTemplateDTO getAllTemplates() {
-		MailTemplateDTO dto = new MailTemplateDTO(getMailTemplateDAO()
+	public MailTemplatesForForLanguages getAllTemplates() {
+		MailTemplatesForForLanguages dto = new MailTemplatesForForLanguages(getMailTemplateDAO()
 				.getAllTemplates());
 		return dto;
 	}
 
 	@Override
-	public void saveMailTemplateDTO(MailTemplateDTO mailTemplateDTO) {
+	public void saveMailTemplateDTO(MailTemplatesForForLanguages mailTemplateDTO) {
 		for (MailTemplate mt : mailTemplateDTO.getMailTemplates()) {
 			getMailTemplateDAO().updateEmailTemplate(mt);
 		}
