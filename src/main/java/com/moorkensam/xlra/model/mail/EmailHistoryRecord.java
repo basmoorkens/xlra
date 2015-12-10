@@ -1,4 +1,4 @@
-package com.moorkensam.xlra.model.offerte;
+package com.moorkensam.xlra.model.mail;
 
 import java.util.Date;
 
@@ -10,6 +10,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.moorkensam.xlra.model.BaseEntity;
+import com.moorkensam.xlra.model.offerte.QuotationResult;
 
 @Entity
 @Table(name = "emailHistoryrecord")

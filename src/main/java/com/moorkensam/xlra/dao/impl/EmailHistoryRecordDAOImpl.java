@@ -2,7 +2,7 @@ package com.moorkensam.xlra.dao.impl;
 
 import com.moorkensam.xlra.dao.BaseDAO;
 import com.moorkensam.xlra.dao.EmailHistoryDAO;
-import com.moorkensam.xlra.model.offerte.EmailHistoryRecord;
+import com.moorkensam.xlra.model.mail.EmailHistoryRecord;
 
 public class EmailHistoryRecordDAOImpl extends BaseDAO implements
 		EmailHistoryDAO {

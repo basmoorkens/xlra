@@ -13,8 +13,8 @@ import org.unitils.easymock.annotation.Mock;
 
 import com.moorkensam.xlra.dao.EmailHistoryDAO;
 import com.moorkensam.xlra.model.error.TemplatingException;
+import com.moorkensam.xlra.model.mail.EmailHistoryRecord;
 import com.moorkensam.xlra.model.mail.EmailResult;
-import com.moorkensam.xlra.model.offerte.EmailHistoryRecord;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.UserService;

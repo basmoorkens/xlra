@@ -21,8 +21,8 @@ import org.apache.logging.log4j.Logger;
 
 import com.moorkensam.xlra.dao.EmailHistoryDAO;
 import com.moorkensam.xlra.model.error.TemplatingException;
-import com.moorkensam.xlra.model.offerte.EmailHistoryRecord;
-import com.moorkensam.xlra.model.offerte.EmailSentStatus;
+import com.moorkensam.xlra.model.mail.EmailHistoryRecord;
+import com.moorkensam.xlra.model.mail.EmailSentStatus;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.EmailService;
