@@ -123,10 +123,10 @@
 					<c:forEach
 						items="#{createQuotationController.quotationResult.selectableOptions}"
 						var="option">
-
-						<h:outputLabel value="#{option.translatedKey}" />
-						<p:selectBooleanCheckbox value="#{option.selected}" />
-
+						<c:if test="${option.showToCustomer}">
+							<h:outputLabel value="#{option.translatedKey}" />
+							<p:selectBooleanCheckbox value="#{option.selected}" />
+						</c:if>
 					</c:forEach>
 				</p:panelGrid>
 

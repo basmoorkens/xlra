@@ -52,8 +52,10 @@ public class CalculationServiceImpl implements CalculationService {
 	 */
 	public PriceCalculation calculatePriceAccordingToConditions(
 			QuotationResult offerte) throws RateFileException {
-		offerte.getCalculation().setBasePrice(
-				offerte.getCalculation().getBasePrice());
+		PriceCalculation calculation = new PriceCalculation();
+		calculation.setBasePrice(offerte.getCalculation().getBasePrice());
+		offerte.setCalculation(calculation);
+
 		Configuration config = getConfigurationDao().getXlraConfiguration();
 
 		for (OfferteOptionDTO option : offerte.getSelectableOptions()) {
@@ -142,8 +144,7 @@ public class CalculationServiceImpl implements CalculationService {
 	 * @param priceCalculation
 	 */
 	protected void applyAfterConditionLogic(PriceCalculation priceCalculation) {
-		if (priceCalculation.getAdrSurchargeMinimum() == null
-				&& priceCalculation.getCalculatedAdrSurcharge() == null) {
+		if (priceCalculation.getCalculatedAdrSurcharge() == null) {
 		} else {
 			if (priceCalculation.getAdrSurchargeMinimum().doubleValue() > priceCalculation
 					.getCalculatedAdrSurcharge().doubleValue()) {

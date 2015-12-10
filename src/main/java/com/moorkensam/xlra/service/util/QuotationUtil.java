@@ -74,10 +74,8 @@ public class QuotationUtil {
 			RateFile rf, Language language) {
 		List<OfferteOptionDTO> options = new ArrayList<OfferteOptionDTO>();
 		for (Condition c : rf.getConditions()) {
-			OfferteOptionDTO option = new OfferteOptionDTO();
-			option.setKey(c.getConditionKey());
-			option.setSelected(c.isStandardSelected());
-			option.setI8nKey(mapper.map(option.getKey()));
+			OfferteOptionDTO option = createOption(c.getConditionKey(),
+					c.isStandardSelected());
 			option.setCalculationOption(isCalculationKey(option.getKey()));
 			if (option.isCalculationOption()) {
 				option.setValue(c.getValue());
@@ -85,21 +83,25 @@ public class QuotationUtil {
 				option.setValue(c.getTranslationForLanguage(language)
 						.getTranslation());
 			}
-			option.setShowToCustomer(isShowToCustomer(option.getKey()));
 			options.add(option);
 		}
 		return options;
 	}
 
-	public OfferteOptionDTO createCalculationOption(TranslationKey key,
-			BigDecimal value) {
+	private OfferteOptionDTO createOption(TranslationKey key, boolean selected) {
 		OfferteOptionDTO option = new OfferteOptionDTO();
-		option.setSelected(true);
+		option.setSelected(selected);
 		option.setKey(key);
 		option.setI8nKey(mapper.map(option.getKey()));
+		option.setShowToCustomer(isShowToCustomer(option.getKey()));
+		return option;
+	}
+
+	public OfferteOptionDTO createCalculationOption(TranslationKey key,
+			BigDecimal value) {
+		OfferteOptionDTO option = createOption(key, true);
 		option.setCalculationOption(true);
 		option.setValue(value + "");
-		option.setShowToCustomer(isShowToCustomer(option.getKey()));
 		return option;
 	}
 
