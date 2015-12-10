@@ -8,7 +8,7 @@
 <style>
 body {
 	background-image:
-		url("<%=request.getContextPath()%>/images/extra_bg.png");
+		url("<%=request.getContextPath()%>/resources/images/extra_bg.png");
 	background-size: cover;
 	color: black;
 	font-family: Verdana, Geneva, sans-serif;
@@ -119,7 +119,7 @@ a:hover {
 <body>
 	<div id="container">
 		<div id="work">
-			<img src="<%=request.getContextPath()%>/images/Extra-Logo-neu.png"
+			<img src="<%=request.getContextPath()%>/resources/images/Extra-Logo-neu.png"
 				style="float: left;" />
 			<h1>RATES APPLICATION</h1>
 
