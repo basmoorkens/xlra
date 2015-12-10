@@ -1,11 +1,7 @@
 package com.moorkensam.xlra.service.impl;
 
-import java.util.List;
-
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.error.TemplatingException;
-import com.moorkensam.xlra.model.offerte.OfferteOptionDTO;
-import com.moorkensam.xlra.model.offerte.PriceCalculation;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.security.User;
 
@@ -23,20 +19,12 @@ public interface TemplateParseService {
 	 *             When the template could not be parsed
 	 */
 	String parseOfferteEmailTemplate(String templateFromDb,
-			QuotationResult offerte, String fullDetail,
-			String additionalConditions) throws TemplatingException;
+			QuotationResult offerte) throws TemplatingException;
 
 	String parseOffertePdf(QuotationResult offerte, Language language)
 			throws TemplatingException;
 
 	String parseUserCreatedTemplate(User user) throws TemplatingException;
-
-	String parseHtmlAdditionalConditions(List<OfferteOptionDTO> options,
-			Language language) throws TemplatingException;
-
-	String parseHtmlFullDetailCalculation(List<OfferteOptionDTO> options,
-			PriceCalculation priceCalculation, Language language)
-			throws TemplatingException;
 
 	String parseUserResetPasswordEmail(User user) throws TemplatingException;
 

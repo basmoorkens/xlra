@@ -88,7 +88,7 @@ Geachte ${customerName},<br />
 			</td>
 		</tr>				
 		<tr>
-				<td style="width:30%">Land:</td><td class="right">${country}</td>
+				<td style="width:40%">Land:</td><td class="right">${country}</td>
 		</tr>;
 		<tr>
 				<td>Postcode:</td><td class="right">${postalCode}</td>
@@ -155,7 +155,7 @@ Geachte ${customerName},<br />
 		
 		<#list conditions?keys as key> 
     		<tr>
-    			<td>${key}</td><td> ${capitalList[key]}</td>
+    			<td>${key}</td><td class="right"> ${conditions[key]}</td>
     		</tr> 
 		</#list>
 		<#else></#if>

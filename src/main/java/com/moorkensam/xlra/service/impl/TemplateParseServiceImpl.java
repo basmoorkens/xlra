@@ -86,14 +86,12 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 	 */
 	@Override
 	public String parseOfferteEmailTemplate(String templateFromDb,
-			QuotationResult offerte, String fullDetail,
-			String additionalConditions) throws TemplatingException {
+			QuotationResult offerte) throws TemplatingException {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Parsing email template " + templateFromDb);
 		}
 		stringTemplateLoader = new StringTemplateLoader();
-		Map<String, Object> dataModel = createOfferteEmailTemplateParams(
-				offerte, fullDetail, additionalConditions);
+		Map<String, Object> dataModel = createOfferteEmailTemplateParams(offerte);
 
 		StringWriter writer = new StringWriter();
 		getStringTemplateLoader().putTemplate("template", templateFromDb);
@@ -186,8 +184,7 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 	 * @return
 	 */
 	private Map<String, Object> createOfferteEmailTemplateParams(
-			QuotationResult offerte, String fullDetail,
-			String additionalConditions) {
+			QuotationResult offerte) {
 		Map<String, Object> templateModel = new HashMap<String, Object>();
 		templateModel.put("customer", offerte.getQuery().getCustomer()
 				.getName());
@@ -200,8 +197,6 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 		templateModel.put("createdUserFullName",
 				offerte.getCreatedUserFullName());
 
-		templateModel.put("detailCalculation", fullDetail);
-		templateModel.put("additionalConditions", additionalConditions);
 		return templateModel;
 	}
 
@@ -240,89 +235,6 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 		Map<String, Object> parameterMap = new HashMap<String, Object>();
 		fillInCalculationTranslationKeys(language, parameterMap);
 		return parameterMap;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.moorkensam.xlra.service.impl.TemplateParseService#
-	 * parseHtmlAdditionalConditions(java.util.List,
-	 * com.moorkensam.xlra.model.configuration.Language)
-	 */
-	@Override
-	public String parseHtmlAdditionalConditions(List<OfferteOptionDTO> options,
-			Language language) throws TemplatingException {
-		stringTemplateLoader = new StringTemplateLoader();
-		String unparsedTemplate = buildAdditionalConditionsTemplate(options);
-		Map<String, Object> parameterMap = createAdditionConditionsParameterMap(
-				options, language);
-		StringWriter writer = new StringWriter();
-		getStringTemplateLoader().putTemplate("template", unparsedTemplate);
-		getConfiguration().setTemplateLoader(getStringTemplateLoader());
-		Template template;
-		try {
-			template = getConfiguration().getTemplate("template");
-			template.process(parameterMap, writer);
-		} catch (TemplateNotFoundException e) {
-			logger.error(e);
-			throw new TemplatingException("Template not found internaly", e);
-		} catch (MalformedTemplateNameException e) {
-			logger.error(e);
-			throw new TemplatingException("Template malformated", e);
-		} catch (ParseException e) {
-			logger.error(e);
-			throw new TemplatingException("Failed to parse template", e);
-		} catch (IOException e) {
-			logger.error(e);
-			throw new TemplatingException("Could not write template", e);
-		} catch (TemplateException e) {
-			logger.error(e);
-			throw new TemplatingException("General templating exception", e);
-		}
-		return writer.toString();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.moorkensam.xlra.service.impl.TemplateParseService#
-	 * parseHtmlFullDetailCalculation(java.util.List,
-	 * com.moorkensam.xlra.model.offerte.PriceCalculation,
-	 * com.moorkensam.xlra.model.configuration.Language)
-	 */
-	@Override
-	public String parseHtmlFullDetailCalculation(
-			final List<OfferteOptionDTO> options,
-			final PriceCalculation priceCalculation, Language language)
-			throws TemplatingException {
-		stringTemplateLoader = new StringTemplateLoader();
-		String unParsedTemplate = buildFullDetailTemplate(options,
-				priceCalculation);
-		Map<String, Object> parameterMap = createFullDetailParameterMap(language);
-		StringWriter writer = new StringWriter();
-		getStringTemplateLoader().putTemplate("template", unParsedTemplate);
-		getConfiguration().setTemplateLoader(getStringTemplateLoader());
-		Template template;
-		try {
-			template = getConfiguration().getTemplate("template");
-			template.process(parameterMap, writer);
-		} catch (TemplateNotFoundException e) {
-			logger.error(e);
-			throw new TemplatingException("Template not found internaly", e);
-		} catch (MalformedTemplateNameException e) {
-			logger.error(e);
-			throw new TemplatingException("Template malformated", e);
-		} catch (ParseException e) {
-			logger.error(e);
-			throw new TemplatingException("Failed to parse template", e);
-		} catch (IOException e) {
-			logger.error(e);
-			throw new TemplatingException("Could not write template", e);
-		} catch (TemplateException e) {
-			logger.error(e);
-			throw new TemplatingException("General templating exception", e);
-		}
-		return writer.toString();
 	}
 
 	@Override
@@ -450,9 +362,8 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 		if (hasOptionSelected(offerte.getSelectableOptions())) {
 			for (OfferteOptionDTO option : offerte.getSelectableOptions()) {
 				if (option.isSelected() && !option.isCalculationOption()) {
-					conditionsMap.put(translationLoader.getProperty(option
-							.getI8nKey().replace(".", ""), language), option
-							.getValue());
+					conditionsMap.put(translationLoader.getProperty(
+							option.getI8nKey(), language), option.getValue());
 				}
 			}
 		}
@@ -511,12 +422,6 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 				+ offerte.getQuery().getMeasurement().getDescription());
 		parameterMap.put("transportType", offerte.getQuery().getKindOfRate()
 				.getDescription());
-		String additionalConditions = parseHtmlAdditionalConditions(
-				offerte.getSelectableOptions(), language);
-		if (StringUtils.isBlank(additionalConditions)) {
-			additionalConditions = " ";
-		}
-		parameterMap.put("additionalConditions", additionalConditions);
 		parameterMap.put("createdUserFullName",
 				offerte.getCreatedUserFullName());
 	}

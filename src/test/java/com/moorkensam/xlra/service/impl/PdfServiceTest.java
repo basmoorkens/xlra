@@ -17,6 +17,7 @@ import com.itextpdf.text.DocumentException;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.TemplatingException;
+import com.moorkensam.xlra.model.offerte.OfferteOptionDTO;
 import com.moorkensam.xlra.model.offerte.PriceCalculation;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
@@ -86,7 +87,13 @@ public class PdfServiceTest extends UnitilsJUnit4 {
 		offerte.setCreatedUserFullName("basie");
 		offerte.getQuery().setCustomer(new Customer());
 		offerte.getQuery().getCustomer().setName("testje");
-
+		OfferteOptionDTO option = new OfferteOptionDTO();
+		option.setI8nKey("calculation.fulldetail.diesel.surcharge");
+		option.setKey(TranslationKey.DIESEL_SURCHARGE);
+		option.setSelected(true);
+		option.setCalculationOption(false);
+		option.setValue("DIESELLOL");
+		offerte.setSelectableOptions(Arrays.asList(option));
 	}
 
 	@Test

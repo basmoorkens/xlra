@@ -62,23 +62,13 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 	public OfferteMailDTO initializeOfferteEmail(QuotationResult result)
 			throws TemplatingException, RateFileException {
 		OfferteMailDTO dto = new OfferteMailDTO();
-		String fullDetailAsHtml = getTemplateParseService()
-				.parseHtmlFullDetailCalculation(result.getSelectableOptions(),
-						result.getCalculation(),
-						result.getQuery().getResultLanguage());
-
-		String additionalConditions = getTemplateParseService()
-				.parseHtmlAdditionalConditions(result.getSelectableOptions(),
-						result.getQuery().getResultLanguage());
 		try {
 			MailTemplate template = getMailTemplateDAO()
 					.getMailTemplateForLanguage(
 							result.getQuery().getResultLanguage());
-			logger.info("Parsed FULL DETAIL HTML: " + fullDetailAsHtml);
 			logger.info("Parsing template: " + template.getTemplate());
 			String emailMessage = templateParseService
-					.parseOfferteEmailTemplate(template.getTemplate(), result,
-							fullDetailAsHtml, additionalConditions);
+					.parseOfferteEmailTemplate(template.getTemplate(), result);
 			dto.setAddress(result.getQuery().getCustomer().getEmail());
 			dto.setSubject(template.getSubject());
 			dto.setContent(emailMessage);
