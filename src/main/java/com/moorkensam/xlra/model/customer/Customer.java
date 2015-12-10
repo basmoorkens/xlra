@@ -1,7 +1,6 @@
 package com.moorkensam.xlra.model.customer;
 
 import javax.persistence.Cacheable;
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;

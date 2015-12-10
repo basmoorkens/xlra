@@ -18,6 +18,7 @@ import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.error.TemplatingException;
+import com.moorkensam.xlra.model.mail.EmailResult;
 import com.moorkensam.xlra.model.mail.MailTemplate;
 import com.moorkensam.xlra.model.offerte.OfferteOptionDTO;
 import com.moorkensam.xlra.model.offerte.PriceCalculation;
@@ -85,9 +86,9 @@ public class MailTemplateServiceImplTest extends UnitilsJUnit4 {
 		result.setOfferteUniqueIdentifier("REF-001");
 		result.setCalculation(priceDTO);
 
-		OfferteMailDTO dto = mailTemplateService.initializeOfferteEmail(result);
+		EmailResult dto = mailTemplateService.initializeOfferteEmail(result);
 		Assert.assertNotNull(dto);
 		Assert.assertEquals("SUBJECT", dto.getSubject());
-		Assert.assertEquals("test@test.com", dto.getAddress());
+		Assert.assertEquals("test@test.com", dto.getToAddress());
 	}
 }

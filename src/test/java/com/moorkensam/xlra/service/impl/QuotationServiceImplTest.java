@@ -22,7 +22,6 @@ import com.moorkensam.xlra.dao.PriceCalculationDAO;
 import com.moorkensam.xlra.dao.QuotationQueryDAO;
 import com.moorkensam.xlra.dao.QuotationResultDAO;
 import com.moorkensam.xlra.dto.OfferteMailDTO;
-import com.moorkensam.xlra.mapper.OfferteEmailToEmailResultMapper;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.PdfException;
@@ -93,9 +92,6 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 	private FileService fileService;
 
 	@Mock
-	private OfferteEmailToEmailResultMapper mailMapper;
-
-	@Mock
 	private CalculationService calcService;
 
 	@Mock
@@ -127,7 +123,6 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 		quotationService.setRateFileService(rfService);
 		quotationService.setCalculationService(calcService);
 		quotationService.setMailTemplateService(mailTemplateService);
-		quotationService.setMailMapper(mailMapper);
 		quotationService.setIdentityService(idService);
 		quotationService.setRateFileService(rateFileService);
 		quotationService.setFileService(fileService);
@@ -150,7 +145,6 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 	@Test
 	public void testInitService() {
 		quotationService.init();
-		Assert.assertNotNull(quotationService.getMailMapper());
 		Assert.assertNotNull(quotationService.getIdentityService());
 	}
 
@@ -228,7 +222,6 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 		result.setQuery(new QuotationQuery());
 		result.getQuery().setResultLanguage(Language.NL);
 		result.getCalculation().setBasePrice(new BigDecimal(100d));
-		OfferteMailDTO offerteMailDto = new OfferteMailDTO();
 		EmailResult mailResult = new EmailResult();
 		PriceCalculation newCalc = new PriceCalculation();
 		newCalc.setBasePrice(new BigDecimal(100d));
@@ -238,8 +231,7 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 		EasyMock.expect(calcService.calculatePriceAccordingToConditions(result))
 				.andReturn(newCalc);
 		EasyMock.expect(mailTemplateService.initializeOfferteEmail(result))
-				.andReturn(offerteMailDto);
-		EasyMock.expect(mailMapper.map(offerteMailDto)).andReturn(mailResult);
+				.andReturn(mailResult);
 		pdfService.generateTransientOffertePdf(result,
 				query.getResultLanguage());
 		EasyMock.expectLastCall();

@@ -214,29 +214,6 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 		return countryName;
 	}
 
-	private Map<String, Object> createAdditionConditionsParameterMap(
-			List<OfferteOptionDTO> options, Language language) {
-		Map<String, Object> parameterMap = new HashMap<String, Object>();
-		parameterMap.put("calculationfulldetailadditionalconditions",
-				translationLoader.getProperty(
-						"calculation.fulldetail.additional.conditions",
-						language));
-		for (OfferteOptionDTO option : options) {
-			if (option.isSelected()) {
-				parameterMap.put(option.getI8nKey().replace(".", ""),
-						translationLoader.getProperty(option.getI8nKey(),
-								language));
-			}
-		}
-		return parameterMap;
-	}
-
-	private Map<String, Object> createFullDetailParameterMap(Language language) {
-		Map<String, Object> parameterMap = new HashMap<String, Object>();
-		fillInCalculationTranslationKeys(language, parameterMap);
-		return parameterMap;
-	}
-
 	@Override
 	public String parseUserResetPasswordEmail(User user)
 			throws TemplatingException {
@@ -477,30 +454,6 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 		}
 	}
 
-	private String buildAdditionalConditionsTemplate(
-			final List<OfferteOptionDTO> options) {
-		if (options == null || options.isEmpty()) {
-			return "";
-		}
-		if (hasOptionSelected(options)) {
-			StringBuilder builder = new StringBuilder();
-			builder.append("<h3>${calculationfulldetailadditionalconditions}</h3>");
-			builder.append("<table style=\"width:100%;\">");
-			for (OfferteOptionDTO option : options) {
-				if (option.isSelected() && !option.isCalculationOption()
-						&& option.isShowToCustomer()) {
-					builder.append("<tr><td style=\"width:30%;\">${"
-							+ option.getI8nKey().replace(".", "") + "}</td>");
-					builder.append("<td>" + option.getValue() + "</td></tr>");
-				}
-			}
-			builder.append("</table>");
-			return builder.toString();
-		} else {
-			return "";
-		}
-	}
-
 	private boolean hasOptionSelected(List<OfferteOptionDTO> options) {
 		for (OfferteOptionDTO o : options) {
 			if (o.isSelected())
@@ -509,57 +462,6 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 		return false;
 	}
 
-	private String buildFullDetailTemplate(
-			final List<OfferteOptionDTO> options,
-			final PriceCalculation priceCalculation) {
-		StringBuilder detailCalculationBuilder = new StringBuilder();
-		detailCalculationBuilder.append("<table style=\"width:100%;\">");
-		detailCalculationBuilder
-				.append("<tr><td style=\"width:20%;\">${calculationfulldetailbasicprice}</td><td> "
-						+ priceCalculation.getBasePrice() + " EUR</td></tr>");
-		if (options != null && !options.isEmpty()) {
-			for (OfferteOptionDTO option : options) {
-				if (option.isSelected() && option.isCalculationOption()
-						&& option.isShowToCustomer()) {
-					detailCalculationBuilder.append("<tr><td>${"
-							+ option.getI8nKey().replace(".", "") + "}</td>");
-
-					detailCalculationBuilder.append("<td>");
-					switch (option.getKey()) {
-					case DIESEL_SURCHARGE:
-						detailCalculationBuilder.append(priceCalculation
-								.getDieselPrice());
-						break;
-					case CHF_SURCHARGE:
-						detailCalculationBuilder.append(priceCalculation
-								.getChfPrice());
-						break;
-					case IMPORT_FORM:
-						detailCalculationBuilder.append(priceCalculation
-								.getImportFormalities());
-						break;
-					case EXPORT_FORM:
-						detailCalculationBuilder.append(priceCalculation
-								.getExportFormalities());
-						break;
-					case ADR_SURCHARGE:
-						detailCalculationBuilder.append(priceCalculation
-								.getResultingPriceSurcharge());
-						break;
-					default:
-						break;
-					}
-					detailCalculationBuilder.append(" EUR</td></tr>");
-				}
-			}
-		}
-		detailCalculationBuilder.append("</table>");
-		detailCalculationBuilder
-				.append("<h3>${calculationfulldetailtotalprice} EUR."
-						+ priceCalculation.getFinalPrice() + "</h3><br />");
-
-		return detailCalculationBuilder.toString();
-	}
 
 	public QuotationUtil getQuotationUtil() {
 		return quotationUtil;

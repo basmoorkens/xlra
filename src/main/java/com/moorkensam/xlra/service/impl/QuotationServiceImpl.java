@@ -19,10 +19,10 @@ import com.moorkensam.xlra.dao.PriceCalculationDAO;
 import com.moorkensam.xlra.dao.QuotationQueryDAO;
 import com.moorkensam.xlra.dao.QuotationResultDAO;
 import com.moorkensam.xlra.dto.OfferteMailDTO;
-import com.moorkensam.xlra.mapper.OfferteEmailToEmailResultMapper;
 import com.moorkensam.xlra.model.error.PdfException;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.error.TemplatingException;
+import com.moorkensam.xlra.model.mail.EmailResult;
 import com.moorkensam.xlra.model.offerte.OfferteOptionDTO;
 import com.moorkensam.xlra.model.offerte.OfferteSearchFilter;
 import com.moorkensam.xlra.model.offerte.PriceCalculation;
@@ -77,13 +77,10 @@ public class QuotationServiceImpl implements QuotationService {
 
 	private IdentityService identityService;
 
-	private OfferteEmailToEmailResultMapper mailMapper;
-
 	private QuotationUtil quotationUtil;
 
 	@PostConstruct
 	public void init() {
-		mailMapper = new OfferteEmailToEmailResultMapper();
 		identityService = IdentityService.getInstance();
 		fileService = new FileServiceImpl();
 		setQuotationUtil(QuotationUtil.getInstance());
@@ -132,8 +129,8 @@ public class QuotationServiceImpl implements QuotationService {
 			result = rf.getRateLineForQuantityAndPostalCode(
 					query.getQuantity(), query.getPostalCode());
 			List<OfferteOptionDTO> options = quotationUtil
-					.generateOfferteOptionsForRateFileAndLanguage(rf,
-							offerte.getQuery().getResultLanguage());
+					.generateOfferteOptionsForRateFileAndLanguage(rf, offerte
+							.getQuery().getResultLanguage());
 			offerte.setSelectableOptions(options);
 			PriceCalculation calculatedPrice = new PriceCalculation();
 			calculatedPrice.setBasePrice(result.getValue());
@@ -152,9 +149,9 @@ public class QuotationServiceImpl implements QuotationService {
 			PriceCalculation calculatedPrice = calculationService
 					.calculatePriceAccordingToConditions(offerte);
 			offerte.setCalculation(calculatedPrice);
-			OfferteMailDTO dto = mailTemplateService
+			EmailResult dto = mailTemplateService
 					.initializeOfferteEmail(offerte);
-			fillInQuotationResult(dto, offerte);
+			offerte.setEmailResult(dto);
 			pdfService.generateTransientOffertePdf(offerte, offerte.getQuery()
 					.getResultLanguage());
 		} catch (TemplatingException e) {
@@ -189,19 +186,6 @@ public class QuotationServiceImpl implements QuotationService {
 	protected void fillInMailLanguage(QuotationQuery query) {
 		query.setResultLanguage(query.getLanguage() != null ? query
 				.getLanguage() : query.getCustomer().getLanguage());
-	}
-
-	private void fillInQuotationResult(OfferteMailDTO dto,
-			QuotationResult quotationResult) {
-		quotationResult.setEmailResult(mailMapper.map(dto));
-	}
-
-	public OfferteEmailToEmailResultMapper getMailMapper() {
-		return mailMapper;
-	}
-
-	public void setMailMapper(OfferteEmailToEmailResultMapper mailMapper) {
-		this.mailMapper = mailMapper;
 	}
 
 	@Override

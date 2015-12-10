@@ -14,6 +14,7 @@ import com.moorkensam.xlra.dto.OfferteMailDTO;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.error.TemplatingException;
+import com.moorkensam.xlra.model.mail.EmailResult;
 import com.moorkensam.xlra.model.mail.MailTemplate;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.service.MailTemplateService;
@@ -59,9 +60,9 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 	}
 
 	@Override
-	public OfferteMailDTO initializeOfferteEmail(QuotationResult result)
+	public EmailResult initializeOfferteEmail(QuotationResult result)
 			throws TemplatingException, RateFileException {
-		OfferteMailDTO dto = new OfferteMailDTO();
+		EmailResult dto = new EmailResult();
 		try {
 			MailTemplate template = getMailTemplateDAO()
 					.getMailTemplateForLanguage(
@@ -69,9 +70,9 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 			logger.info("Parsing template: " + template.getTemplate());
 			String emailMessage = templateParseService
 					.parseOfferteEmailTemplate(template.getTemplate(), result);
-			dto.setAddress(result.getQuery().getCustomer().getEmail());
+			dto.setToAddress(result.getQuery().getCustomer().getEmail());
 			dto.setSubject(template.getSubject());
-			dto.setContent(emailMessage);
+			dto.setEmail(emailMessage);
 		} catch (NoResultException nre) {
 			logger.error("Could not find email template for "
 					+ result.getQuery().getResultLanguage());
