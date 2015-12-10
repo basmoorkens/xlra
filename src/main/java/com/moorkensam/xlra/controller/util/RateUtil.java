@@ -6,7 +6,6 @@ import java.util.List;
 import org.primefaces.event.CellEditEvent;
 
 import com.moorkensam.xlra.model.configuration.Language;
-import com.moorkensam.xlra.model.rate.IncoTermType;
 
 public class RateUtil {
 
@@ -28,10 +27,6 @@ public class RateUtil {
 			MessageUtil.addMessage("Condition updated", "Condition updated to"
 					+ newValue);
 		}
-	}
-
-	public static List<IncoTermType> getIncoTermTypes() {
-		return Arrays.asList(IncoTermType.values());
 	}
 
 	public static List<Language> getLanguages() {

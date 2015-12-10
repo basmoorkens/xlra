@@ -19,7 +19,6 @@ import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.controller.util.RateUtil;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.rate.Condition;
-import com.moorkensam.xlra.model.rate.IncoTermType;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.Zone;
@@ -191,10 +190,6 @@ public class ManageRatesController {
 
 	public void setSelectedRateFile(RateFile selectedRateFile) {
 		this.selectedRateFile = selectedRateFile;
-	}
-
-	public List<IncoTermType> getIncoTermTypes() {
-		return RateUtil.getIncoTermTypes();
 	}
 
 	public RateFile getRateFileById(long id) {

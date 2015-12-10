@@ -20,7 +20,6 @@ import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.Country;
-import com.moorkensam.xlra.model.rate.IncoTermType;
 import com.moorkensam.xlra.model.rate.Kind;
 import com.moorkensam.xlra.model.rate.Measurement;
 import com.moorkensam.xlra.model.rate.RateFile;
@@ -272,10 +271,6 @@ public class CreateRatesController {
 
 	public List<TransportType> getAllTransportTypes() {
 		return Arrays.asList(TransportType.values());
-	}
-
-	public List<IncoTermType> getIncoTermTypes() {
-		return RateUtil.getIncoTermTypes();
 	}
 
 	public boolean isCollapseRateLineEditor() {
