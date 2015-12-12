@@ -64,43 +64,42 @@ public class RateFileDAOImplTest extends UnitilsJUnit4 {
 		for (Zone z : rateFile.getZones()) {
 			z.setRateFile(rateFile);
 		}
-		List<RateLine> rateLines = new ArrayList<RateLine>();
 		rl = new RateLine();
 		rl.setMeasurement(100);
 		rl.setZone(new Zone("Zone 1"));
 		rl.setValue(new BigDecimal(100));
-		rateLines.add(rl);
 		rl1 = new RateLine();
 		rl1.setMeasurement(100);
 		rl1.setZone(new Zone("Zone 2"));
 		rl1.setValue(new BigDecimal(150));
-		rateLines.add(rl1);
 		rl2 = new RateLine();
 		rl2.setMeasurement(100);
 		rl2.setZone(new Zone("Zone 3"));
 		rl2.setValue(new BigDecimal(200));
-		rateLines.add(rl2);
 		rl3 = new RateLine();
 		rl3.setMeasurement(200);
 		rl3.setZone(new Zone("Zone 1"));
 		rl3.setValue(new BigDecimal(130));
-		rateLines.add(rl3);
 		rl4 = new RateLine();
 		rl4.setMeasurement(200);
 		rl4.setZone(new Zone("Zone 2"));
 		rl4.setValue(new BigDecimal(190));
-		rateLines.add(rl4);
 		rl5 = new RateLine();
 		rl5.setMeasurement(200);
 		rl5.setZone(new Zone("Zone 3"));
 		rl5.setValue(new BigDecimal(260));
+		List<RateLine> rateLines = new ArrayList<RateLine>();
+		rateLines.add(rl);
+		rateLines.add(rl1);
+		rateLines.add(rl2);
+		rateLines.add(rl3);
+		rateLines.add(rl4);
 		rateLines.add(rl5);
 		rateFile.setRateLines(rateLines);
 	}
 
 	@Test
 	public void testPrepareRateFileForFrontEnd() {
-		RateFile rfDb = new RateFile();
 		Zone zone1 = new Zone();
 		zone1.setAlphaNumericalPostalCodes(Arrays.asList("PZ1", "PZ2"));
 		zone1.setZoneType(ZoneType.ALPHANUMERIC_LIST);
@@ -108,6 +107,7 @@ public class RateFileDAOImplTest extends UnitilsJUnit4 {
 		zone2.setZoneType(ZoneType.NUMERIC_CODES);
 		zone2.setNumericalPostalCodes(Arrays
 				.asList(new Interval("1000", "2000")));
+		RateFile rfDb = new RateFile();
 		rfDb.setZones(Arrays.asList(zone1, zone2));
 		dao.prepareRateFileForFrontend(rfDb);
 

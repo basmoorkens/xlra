@@ -18,8 +18,8 @@ import org.apache.logging.log4j.Logger;
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.dao.LogDAO;
 import com.moorkensam.xlra.dao.UserDAO;
-import com.moorkensam.xlra.model.configuration.LogRecord;
-import com.moorkensam.xlra.model.configuration.LogType;
+import com.moorkensam.xlra.model.log.LogRecord;
+import com.moorkensam.xlra.model.log.LogType;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.model.security.UserStatus;
 import com.moorkensam.xlra.service.EmailService;
@@ -135,7 +135,8 @@ public class UserServiceImpl implements UserService {
 			user.setUserStatus(UserStatus.PASSWORD_RESET);
 			userDAO.updateUser(user);
 		} catch (MessagingException e) {
-
+			logger.error(e);
+			throw new MessagingException();
 		}
 	}
 

@@ -71,7 +71,6 @@ public class QuotationUtilTest extends UnitilsJUnit4 {
 
 	@Test
 	public void testgenerateOfferteOptionsForRateFile() {
-		RateFile rf = new RateFile();
 		Condition c1 = new Condition();
 		c1.setConditionKey(TranslationKey.ADR_MINIMUM);
 		Condition c2 = new Condition();
@@ -79,6 +78,7 @@ public class QuotationUtilTest extends UnitilsJUnit4 {
 		c2.addTranslation(Language.NL, "test");
 		Condition c3 = new Condition();
 		c3.setConditionKey(TranslationKey.IMPORT_FORM);
+		RateFile rf = new RateFile();
 		rf.setConditions(Arrays.asList(c1, c2, c3));
 
 		List<OfferteOptionDTO> options = quotationUtil

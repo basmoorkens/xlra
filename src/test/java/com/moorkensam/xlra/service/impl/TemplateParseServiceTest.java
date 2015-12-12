@@ -100,7 +100,6 @@ public class TemplateParseServiceTest extends UnitilsJUnit4 {
 
 	@Test
 	public void testParseTemplate() throws TemplatingException {
-		String template = "Dear ${customer}, your offerte is here. please see attached pdf.";
 		QuotationResult offerte = new QuotationResult();
 		offerte.setQuery(new QuotationQuery());
 		offerte.getQuery().setCustomer(new Customer());
@@ -114,6 +113,7 @@ public class TemplateParseServiceTest extends UnitilsJUnit4 {
 		offerte.getQuery().setResultLanguage(Language.NL);
 		offerte.getQuery().setPostalCode("2222");
 		offerte.setOfferteUniqueIdentifier("UQ11");
+		String template = "Dear ${customer}, your offerte is here. please see attached pdf.";
 		String result = templateEngine.parseOfferteEmailTemplate(template,
 				offerte);
 		Assert.assertNotNull(result);

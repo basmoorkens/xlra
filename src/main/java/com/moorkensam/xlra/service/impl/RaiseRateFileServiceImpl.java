@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.moorkensam.xlra.dao.LogDAO;
 import com.moorkensam.xlra.dao.RateFileDAO;
-import com.moorkensam.xlra.model.configuration.RaiseRatesRecord;
+import com.moorkensam.xlra.model.log.RaiseRatesRecord;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.RateOperation;

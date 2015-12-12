@@ -160,7 +160,6 @@ public class CalculationServiceTest extends UnitilsJUnit4 {
 	@Test
 	public void testCalculatePRiceACcordingToConditions()
 			throws RateFileException {
-		Configuration config = new Configuration();
 		Country country = new Country();
 		country.setShortName("ch");
 

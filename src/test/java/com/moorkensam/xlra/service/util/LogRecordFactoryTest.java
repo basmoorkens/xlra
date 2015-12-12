@@ -10,10 +10,10 @@ import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.TestedObject;
 
-import com.moorkensam.xlra.model.configuration.LogRecord;
-import com.moorkensam.xlra.model.configuration.LogType;
-import com.moorkensam.xlra.model.configuration.RaiseRatesRecord;
-import com.moorkensam.xlra.model.configuration.RateLogRecord;
+import com.moorkensam.xlra.model.log.LogRecord;
+import com.moorkensam.xlra.model.log.LogType;
+import com.moorkensam.xlra.model.log.RaiseRatesRecord;
+import com.moorkensam.xlra.model.log.RateLogRecord;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateOperation;
 import com.moorkensam.xlra.model.security.User;
@@ -47,8 +47,8 @@ public class LogRecordFactoryTest extends UnitilsJUnit4 {
 		RateLogRecord expected = new RateLogRecord();
 		expected.setType(LogType.DIESELRATE);
 		expected.setRate(BigDecimal.valueOf(11.44d));
-		LogRecord result = factory
-				.createDieselLogRecord(BigDecimal.valueOf(11.44d));
+		LogRecord result = factory.createDieselLogRecord(
+				BigDecimal.valueOf(11.44d), BigDecimal.valueOf(10d));
 		Assert.assertNotNull(result);
 		Assert.assertTrue(result instanceof RateLogRecord);
 		RateLogRecord rl = (RateLogRecord) result;
@@ -74,7 +74,8 @@ public class LogRecordFactoryTest extends UnitilsJUnit4 {
 		RateLogRecord expected = new RateLogRecord();
 		expected.setType(LogType.CURRENCYRATE);
 		expected.setRate(BigDecimal.valueOf(10.05d));
-		LogRecord result = factory.createChfLogRecord(BigDecimal.valueOf(10.05d));
+		LogRecord result = factory.createChfLogRecord(
+				BigDecimal.valueOf(10.05d), BigDecimal.valueOf(10d));
 		Assert.assertNotNull(result);
 		Assert.assertTrue(result instanceof RateLogRecord);
 		RateLogRecord rl = (RateLogRecord) result;

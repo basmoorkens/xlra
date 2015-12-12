@@ -1,4 +1,4 @@
-INSERT INTO `permissions` (`id`, `createdDateTime`, `deleted`, `deletedDateTime`, `lastUpdatedDateTime`, `version`, `permission_description`, `permission_key`)
+INSERT INTO permissions (id, createdDateTime, deleted, deletedDateTime, lastUpdatedDateTime, version, permission_description, permission_key)
 VALUES
 	(1,'2015-10-25 00:45:46',00000000,NULL,'2015-10-25 01:13:01',5,'The permission to edit chf intervals / percentages and the permission to update the current chf value.','CHF_EDIT'),
 	(2,'2015-10-25 00:47:08',00000000,NULL,NULL,0,'The permission to edit diesel intervals / percentage and the permission to update the current diesel price','DIESEL_EDIT'),
@@ -18,4 +18,5 @@ VALUES
 	(16,'2015-10-25 00:51:38',00000000,NULL,NULL,0,'The permission to edit ratefiles','EDIT_RATEFILE'),
 	(17,'2015-10-25 00:51:52',00000000,NULL,NULL,0,'The permission to create ratefiles.','CREATE_RATEFILE'),
 	(22,'2015-10-28 19:42:02',00000000,NULL,NULL,0,'The permission to edit a user his own profile / reset password','USER_EDIT_PROFILE'),
-	(23,'2015-10-28 19:43:45',00000000,NULL,NULL,0,'The permission to edit a full user','FULL_CUSTOMER_EDIT');
+	(23,'2015-10-28 19:43:45',00000000,NULL,NULL,0,'The permission to edit a full user','FULL_CUSTOMER_EDIT'),
+	(24,'2015-10-28 19:43:45',00000000,NULL,NULL,0,'The permission to view log files','VIEW_LOGS');

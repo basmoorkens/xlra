@@ -17,8 +17,8 @@ import com.moorkensam.xlra.dao.DieselRateDAO;
 import com.moorkensam.xlra.dao.LogDAO;
 import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.DieselRate;
-import com.moorkensam.xlra.model.configuration.LogRecord;
 import com.moorkensam.xlra.model.error.RateFileException;
+import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.service.DieselService;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
 
@@ -64,7 +64,7 @@ public class DieselServiceImpl implements DieselService {
 		Configuration config = getXlraConfigurationDAO().getXlraConfiguration();
 
 		LogRecord createDieselLogRecord = logRecordFactory
-				.createDieselLogRecord(config.getCurrentDieselPrice());
+				.createDieselLogRecord(config.getCurrentDieselPrice(), value);
 		logger.info("Saving dieselprice logrecord " + createDieselLogRecord);
 		getLogDAO().createLogRecord(createDieselLogRecord);
 

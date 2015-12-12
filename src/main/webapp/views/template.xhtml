@@ -76,6 +76,9 @@
 				<p:menuitem
 					rendered="#{userSessionController.hasPermission('COUNTRY_EDIT')}"
 					value="Countries" url="/views/admin/configuration/country.xhtml" />
+				<p:menuitem
+					rendered="#{userSessionController.hasPermission('VIEW_LOGS')}"
+					value="View logs" url="/views/admin/configuration/logs.xhtml" />
 			</p:submenu>
 
 			<p:submenu

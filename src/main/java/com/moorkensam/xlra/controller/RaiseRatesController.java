@@ -12,7 +12,7 @@ import org.primefaces.event.FlowEvent;
 import org.primefaces.model.DualListModel;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
-import com.moorkensam.xlra.model.configuration.RaiseRatesRecord;
+import com.moorkensam.xlra.model.log.RaiseRatesRecord;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.service.RaiseRateFileService;
 import com.moorkensam.xlra.service.RateFileService;

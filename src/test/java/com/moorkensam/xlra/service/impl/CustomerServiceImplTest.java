@@ -30,12 +30,12 @@ public class CustomerServiceImplTest extends UnitilsJUnit4 {
 	@Test
 	public void testGetCustomerById() {
 		Customer cust = new Customer();
-		cust.setId(1l);
+		cust.setId(1L);
 
 		EasyMock.expect(dao.getCustomerById(cust.getId())).andReturn(cust);
 		EasyMockUnitils.replay();
 
-		service.getCustomerById(1l);
+		service.getCustomerById(1L);
 	}
 
 	@Test

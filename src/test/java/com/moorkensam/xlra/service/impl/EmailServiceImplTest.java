@@ -84,11 +84,11 @@ public class EmailServiceImplTest extends UnitilsJUnit4 {
 
 	@Test
 	public void testsendOfferteMail() throws MessagingException {
-		QuotationResult offerte = new QuotationResult();
 		EmailResult emailResult = new EmailResult();
 		emailResult.setEmail("test email");
 		emailResult.setSubject("test");
 		emailResult.setToAddress("test@test.com");
+		QuotationResult offerte = new QuotationResult();
 		offerte.setOfferteUniqueIdentifier("uq123");
 		offerte.setEmailResult(emailResult);
 		EasyMock.expect(helper.generatedPdfAttachment(offerte)).andReturn(

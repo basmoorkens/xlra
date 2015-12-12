@@ -58,8 +58,6 @@ public class PdfServiceImpl implements PdfService {
 		String fullPdfFileName = fileService.getTemporaryFilePathForPdf(offerte
 				.getOfferteUniqueIdentifier());
 
-		PdfWriter pdfWriter = PdfWriter.getInstance(document,
-				new FileOutputStream(fullPdfFileName));
 		offerte.setPdfFileName(fullPdfFileName);
 		document.open();
 		fillInHeaderProperties(document);
@@ -74,6 +72,9 @@ public class PdfServiceImpl implements PdfService {
 		});
 
 		htmlContext.setTagFactory(Tags.getHtmlTagProcessorFactory());
+		PdfWriter pdfWriter = PdfWriter.getInstance(document,
+				new FileOutputStream(fullPdfFileName));
+
 		CSSResolver cssResolver = XMLWorkerHelper.getInstance()
 				.getDefaultCssResolver(true);
 		Pipeline<?> pipeline = new CssResolverPipeline(cssResolver,

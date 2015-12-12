@@ -27,6 +27,8 @@
 		<error-code>404</error-code>
 		<location>/views/error/404.xhtml</location>
 	</error-page>	
+
+
 	 <filter>
 		 <filter-name>PrimeFaces FileUpload Filter</filter-name>
 		 <filter-class>
@@ -37,6 +39,7 @@
 	 	<filter-name>PrimeFaces FileUpload Filter</filter-name>
 	 	<servlet-name>Faces Servlet</servlet-name>
 	 </filter-mapping>
+	 
 	 
 	 <security-constraint>
 	    <display-name>admin-pages</display-name>

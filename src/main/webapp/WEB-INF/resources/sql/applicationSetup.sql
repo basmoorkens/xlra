@@ -46,7 +46,7 @@ VALUES
 	(3,NULL,00000000,NULL,'2015-10-20 21:10:46',1,'FR','','ok',1),
 	(4,NULL,00000000,NULL,'2015-10-20 21:10:46',1,'DE','','ok',1);
 
-	INSERT INTO permissions (id, createdDateTime, deleted, deletedDateTime, lastUpdatedDateTime, version, permission_description, permission_key)
+INSERT INTO permissions (id, createdDateTime, deleted, deletedDateTime, lastUpdatedDateTime, version, permission_description, permission_key)
 VALUES
 	(1,'2015-10-25 00:45:46',00000000,NULL,'2015-10-25 01:13:01',5,'The permission to edit chf intervals / percentages and the permission to update the current chf value.','CHF_EDIT'),
 	(2,'2015-10-25 00:47:08',00000000,NULL,NULL,0,'The permission to edit diesel intervals / percentage and the permission to update the current diesel price','DIESEL_EDIT'),
@@ -66,9 +66,11 @@ VALUES
 	(16,'2015-10-25 00:51:38',00000000,NULL,NULL,0,'The permission to edit ratefiles','EDIT_RATEFILE'),
 	(17,'2015-10-25 00:51:52',00000000,NULL,NULL,0,'The permission to create ratefiles.','CREATE_RATEFILE'),
 	(22,'2015-10-28 19:42:02',00000000,NULL,NULL,0,'The permission to edit a user his own profile / reset password','USER_EDIT_PROFILE'),
-	(23,'2015-10-28 19:43:45',00000000,NULL,NULL,0,'The permission to edit a full user','FULL_CUSTOMER_EDIT');
-
-	INSERT INTO role (id, createdDateTime, deleted, deletedDateTime, lastUpdatedDateTime, version, role_description, role_name)
+	(23,'2015-10-28 19:43:45',00000000,NULL,NULL,0,'The permission to edit a full user','FULL_CUSTOMER_EDIT'),
+	(24,'2015-10-28 19:43:45',00000000,NULL,NULL,0,'The permission to view log files','VIEW_LOGS');
+	
+	
+INSERT INTO role (id, createdDateTime, deleted, deletedDateTime, lastUpdatedDateTime, version, role_description, role_name)
 VALUES
 	(1,'2015-10-27 22:47:38',00000000,NULL,'2015-10-28 19:43:55',3,'Admin role, has all permissions','Admin'),
 	(2,'2015-10-27 23:47:30',00000000,NULL,'2015-10-28 19:42:17',2,'The role for user','User');
@@ -97,7 +99,8 @@ VALUES
 	(2,13),
 	(2,14),
 	(2,15),
-	(2,22);
+	(2,22),
+	(1,24);
 	
 	INSERT INTO user (id, createdDateTime, deleted, deletedDateTime, lastUpdatedDateTime, version, email, firstName, name, password, validTo, verificationToken, userName, userStatus)
 VALUES

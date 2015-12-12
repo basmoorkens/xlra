@@ -79,10 +79,10 @@ public class RateFileServiceTest extends UnitilsJUnit4 {
 	public void deleteZone() {
 		Zone zone = new Zone();
 		Zone zone2 = new Zone();
-		zone.setId(1l);
-		zone2.setId(2l);
+		zone.setId(1L);
+		zone2.setId(2L);
 		RateFile rf = new RateFile();
-		rf.setId(10l);
+		rf.setId(10L);
 		zone.setRateFile(rf);
 		zone2.setRateFile(rf);
 		rf.addZone(zone);
@@ -100,11 +100,11 @@ public class RateFileServiceTest extends UnitilsJUnit4 {
 	@Test
 	public void testgetCopyOfRateFileForFilter() {
 		RateFile rf1 = new RateFile();
-		rf1.setId(1l);
+		rf1.setId(1L);
 		rf1.setName("test");
 		EasyMock.expect(rfDao.getRateFilesForFilter(new RateFileSearchFilter()))
 				.andReturn(Arrays.asList(rf1));
-		EasyMock.expect(rfDao.getFullRateFile(1l)).andReturn(rf1);
+		EasyMock.expect(rfDao.getFullRateFile(1L)).andReturn(rf1);
 		EasyMockUnitils.replay();
 
 		RateFile rs = rateFileService
@@ -116,15 +116,15 @@ public class RateFileServiceTest extends UnitilsJUnit4 {
 	@Test
 	public void testGetRateFileWithoutLazyLoda() {
 		RateFile rf1 = new RateFile();
-		rf1.setId(1l);
+		rf1.setId(1L);
 		rf1.setName("bla");
 		RateFile rf2 = new RateFile();
-		rf2.setId(2l);
+		rf2.setId(2L);
 
 		EasyMock.expect(rfDao.getAllRateFiles()).andReturn(
 				Arrays.asList(rf1, rf2));
 		EasyMockUnitils.replay();
-		RateFile result = rateFileService.getRateFileWithoutLazyLoad(1l);
+		RateFile result = rateFileService.getRateFileWithoutLazyLoad(1L);
 		Assert.assertNotNull(result);
 		Assert.assertEquals("bla", result.getName());
 	}
@@ -132,14 +132,14 @@ public class RateFileServiceTest extends UnitilsJUnit4 {
 	@Test
 	public void testGetRateFileWithoutLazyLodaNotFound() {
 		RateFile rf1 = new RateFile();
-		rf1.setId(1l);
+		rf1.setId(1L);
 		RateFile rf2 = new RateFile();
-		rf2.setId(2l);
+		rf2.setId(2L);
 
 		EasyMock.expect(rfDao.getAllRateFiles()).andReturn(
 				Arrays.asList(rf1, rf2));
 		EasyMockUnitils.replay();
-		RateFile result = rateFileService.getRateFileWithoutLazyLoad(3l);
+		RateFile result = rateFileService.getRateFileWithoutLazyLoad(3L);
 		Assert.assertNull(result);
 	}
 }

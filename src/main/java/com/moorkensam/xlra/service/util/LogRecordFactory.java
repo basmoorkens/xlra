@@ -7,10 +7,10 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.moorkensam.xlra.model.configuration.LogRecord;
-import com.moorkensam.xlra.model.configuration.LogType;
-import com.moorkensam.xlra.model.configuration.RaiseRatesRecord;
-import com.moorkensam.xlra.model.configuration.RateLogRecord;
+import com.moorkensam.xlra.model.log.LogRecord;
+import com.moorkensam.xlra.model.log.LogType;
+import com.moorkensam.xlra.model.log.RaiseRatesRecord;
+import com.moorkensam.xlra.model.log.RateLogRecord;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateOperation;
 import com.moorkensam.xlra.model.security.User;
@@ -33,7 +33,7 @@ public class LogRecordFactory {
 		return instance;
 	}
 
-	public LogRecord createChfLogRecord(BigDecimal value) {
+	public LogRecord createChfLogRecord(BigDecimal value, BigDecimal newValue) {
 		RateLogRecord record = new RateLogRecord();
 		fillInBasicProperties(record);
 		record.setRate(value);
@@ -45,11 +45,12 @@ public class LogRecordFactory {
 		record.setLogDate(new Date());
 	}
 
-	public LogRecord createDieselLogRecord(BigDecimal value) {
+	public LogRecord createDieselLogRecord(BigDecimal value, BigDecimal newValue) {
 		RateLogRecord record = new RateLogRecord();
 		fillInBasicProperties(record);
 		record.setType(LogType.DIESELRATE);
 		record.setRate(value);
+		record.setNewRate(newValue);
 		return record;
 	}
 

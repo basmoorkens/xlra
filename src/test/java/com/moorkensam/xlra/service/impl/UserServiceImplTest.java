@@ -14,8 +14,8 @@ import org.unitils.inject.annotation.TestedObject;
 
 import com.moorkensam.xlra.dao.LogDAO;
 import com.moorkensam.xlra.dao.UserDAO;
-import com.moorkensam.xlra.model.configuration.LogRecord;
-import com.moorkensam.xlra.model.configuration.LogType;
+import com.moorkensam.xlra.model.log.LogRecord;
+import com.moorkensam.xlra.model.log.LogType;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.model.security.UserLogRecord;
 import com.moorkensam.xlra.model.security.UserStatus;

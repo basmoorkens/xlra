@@ -9,19 +9,19 @@ public class StringUtilTest extends UnitilsJUnit4 {
 
 	@Test
 	public void testStringIsemptyNot() {
-		String s = "s";
-		Assert.assertFalse(StringUtil.isEmpty(s));
+		String str = "s";
+		Assert.assertFalse(StringUtil.isEmpty(str));
 	}
 
 	@Test
 	public void testStringIsempty() {
-		String s = "";
-		Assert.assertTrue(StringUtil.isEmpty(s));
+		String str = "";
+		Assert.assertTrue(StringUtil.isEmpty(str));
 	}
 
 	@Test
 	public void testStringIsemptyNull() {
-		String s = null;
-		Assert.assertTrue(StringUtil.isEmpty(s));
+		String str = null;
+		Assert.assertTrue(StringUtil.isEmpty(str));
 	}
 }

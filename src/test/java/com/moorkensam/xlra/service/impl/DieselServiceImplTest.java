@@ -21,9 +21,9 @@ import com.moorkensam.xlra.dao.LogDAO;
 import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.DieselRate;
 import com.moorkensam.xlra.model.configuration.Interval;
-import com.moorkensam.xlra.model.configuration.LogRecord;
-import com.moorkensam.xlra.model.configuration.RateLogRecord;
 import com.moorkensam.xlra.model.error.RateFileException;
+import com.moorkensam.xlra.model.log.LogRecord;
+import com.moorkensam.xlra.model.log.RateLogRecord;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
 
 public class DieselServiceImplTest extends UnitilsJUnit4 {
@@ -114,7 +114,8 @@ public class DieselServiceImplTest extends UnitilsJUnit4 {
 		EasyMock.expect(configDAO.getXlraConfiguration()).andReturn(config);
 		LogRecord log = new RateLogRecord();
 		EasyMock.expect(
-				logFactory.createDieselLogRecord(config.getCurrentDieselPrice()))
+				logFactory.createDieselLogRecord(
+						config.getCurrentDieselPrice(), BigDecimal.valueOf(2d)))
 				.andReturn(log);
 		logDao.createLogRecord(log);
 		EasyMock.expectLastCall();

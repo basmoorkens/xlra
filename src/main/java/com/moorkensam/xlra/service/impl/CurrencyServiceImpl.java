@@ -17,8 +17,8 @@ import com.moorkensam.xlra.dao.CurrencyRateDAO;
 import com.moorkensam.xlra.dao.LogDAO;
 import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.CurrencyRate;
-import com.moorkensam.xlra.model.configuration.LogRecord;
 import com.moorkensam.xlra.model.error.RateFileException;
+import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.service.CurrencyService;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
 
@@ -74,8 +74,8 @@ public class CurrencyServiceImpl implements CurrencyService {
 	public void updateCurrentChfValue(BigDecimal value) {
 		Configuration config = getXlraConfigurationDAO().getXlraConfiguration();
 
-		LogRecord createChfLogRecord = logRecordFactory
-				.createChfLogRecord(config.getCurrentChfValue());
+		LogRecord createChfLogRecord = logRecordFactory.createChfLogRecord(
+				config.getCurrentChfValue(), value);
 		logger.info("saving chfprice logrecord" + createChfLogRecord);
 		getLogDAO().createLogRecord(createChfLogRecord);
 

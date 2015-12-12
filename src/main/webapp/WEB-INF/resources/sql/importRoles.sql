@@ -1,9 +1,8 @@
-INSERT INTO `role` (`id`, `createdDateTime`, `deleted`, `deletedDateTime`, `lastUpdatedDateTime`, `version`, `role_description`, `role_name`)
+INSERT INTO role (id, createdDateTime, deleted, deletedDateTime, lastUpdatedDateTime, version, role_description, role_name)
 VALUES
 	(1,'2015-10-27 22:47:38',00000000,NULL,'2015-10-28 19:43:55',3,'Admin role, has all permissions','Admin'),
 	(2,'2015-10-27 23:47:30',00000000,NULL,'2015-10-28 19:42:17',2,'The role for user','User');
-
-	INSERT INTO `role_permissions` (`role_id`, `permission_id`)
+INSERT INTO role_permissions (role_id, permission_id)
 VALUES
 	(1,1),
 	(1,2),
@@ -27,6 +26,5 @@ VALUES
 	(2,13),
 	(2,14),
 	(2,15),
-	(2,22);
-	
-	
+	(2,22),
+	(1, 24);

@@ -90,6 +90,7 @@ public class ManageRatesController {
 	}
 
 	/**
+	 * Method that executes when a ratelinecell gets edited.
 	 * 
 	 * @param event
 	 */

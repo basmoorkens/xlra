@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/views/template.xhtml">
+	<ui:define name="title">
+		<h:outputText value="XLRA - Configuration - Overview logs" />
+	</ui:define>
+	<ui:define name="pageTitle">
+		<h:outputText value="Overview log files" />
+	</ui:define>
+	<ui:define name="body">
+		<h:form id="ratesLogsForm">
+			<p:panel header="Diesel / Chf  logs">
+				<p:dataTable value="#{logOverviewController.rateLogRecords}"
+					var="log" emptyMessage="No chf / diesel logs found.." id="rateLogs"
+					rows="10">
+					<p:column>
+						<f:facet name="header">Date time</f:facet>
+						#{log.logDate}
+					</p:column>
+					<p:column>
+						<f:facet name="header">Type</f:facet>
+						#{log.type}
+					</p:column>
+					<p:column>
+						<f:facet name="header">Old value</f:facet>
+						#{log.rate}
+					</p:column>
+					<p:column>
+						<f:facet name="header">New value</f:facet>
+						#{log.newRate}
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

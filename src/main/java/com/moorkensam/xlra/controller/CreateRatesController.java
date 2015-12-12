@@ -69,7 +69,7 @@ public class CreateRatesController {
 
 	private boolean collapseConditionsDetailGrid = false;
 
-	/** Collapsed for panels of the create rates page */
+	/** Collapsed for panels of the create rates page. */
 	private boolean collapseBasicInfoGrid = false;
 
 	private boolean collapseRateLineEditor = true;

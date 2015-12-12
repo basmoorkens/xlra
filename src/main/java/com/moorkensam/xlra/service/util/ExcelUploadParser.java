@@ -195,11 +195,11 @@ public class ExcelUploadParser {
 			if (data.getRatesMap().containsKey(data.getSelectedMeasurement())) {
 				List<RateLineExcelImportDTO> list = data.getRatesMap().get(
 						data.getSelectedMeasurement());
-				RateLineExcelImportDTO dto = AddRateLine(cell);
+				RateLineExcelImportDTO dto = addRateLine(cell);
 				list.add(dto);
 			} else {
 				List<RateLineExcelImportDTO> list = new ArrayList<RateLineExcelImportDTO>();
-				RateLineExcelImportDTO dto = AddRateLine(cell);
+				RateLineExcelImportDTO dto = addRateLine(cell);
 				list.add(dto);
 				data.getRatesMap().put(data.getSelectedMeasurement(), list);
 			}
@@ -209,7 +209,7 @@ public class ExcelUploadParser {
 
 	}
 
-	private RateLineExcelImportDTO AddRateLine(Cell cell) {
+	private RateLineExcelImportDTO addRateLine(Cell cell) {
 		RateLineExcelImportDTO dto = new RateLineExcelImportDTO();
 		dto.setValue(Poiutil.getSafeCellDouble(cell, formulaEvaluator));
 		dto.setZone(data.getZoneMap().get(cell.getColumnIndex()));

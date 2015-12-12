@@ -1,4 +1,4 @@
-package com.moorkensam.xlra.model.configuration;
+package com.moorkensam.xlra.model.log;
 
 import java.util.Date;
 

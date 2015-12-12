@@ -80,6 +80,7 @@ public class CalculationServiceImpl implements CalculationService {
 				if (option.isSelected()) {
 					calculateExportFormality(offerte.getCalculation(), option);
 				}
+				break;
 			default:
 				break;
 			}

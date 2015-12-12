@@ -178,7 +178,6 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 	public void testGenerateQuotationResult() throws RateFileException,
 			TemplatingException, FileNotFoundException, DocumentException {
 		String uqId = "12345";
-		RateLine rl = new RateLine();
 		QuotationResult result = new QuotationResult();
 		result.setQuery(query);
 		query.setLanguage(Language.NL);
@@ -186,6 +185,7 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 		User user = new User();
 		user.setName("moorkens");
 		user.setName("bas");
+		RateLine rl = new RateLine();
 		rl.setValue(new BigDecimal(100d));
 		OfferteOptionDTO option = new OfferteOptionDTO();
 		option.setKey(TranslationKey.ADR_MINIMUM);
@@ -221,12 +221,12 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 		result.setQuery(new QuotationQuery());
 		result.getQuery().setResultLanguage(Language.NL);
 		result.getCalculation().setBasePrice(new BigDecimal(100d));
-		EmailResult mailResult = new EmailResult();
 		PriceCalculation newCalc = new PriceCalculation();
 		newCalc.setBasePrice(new BigDecimal(100d));
 		newCalc.setDieselPrice(new BigDecimal(10d));
 		newCalc.setFinalPrice(new BigDecimal(110d));
 
+		EmailResult mailResult = new EmailResult();
 		EasyMock.expect(calcService.calculatePriceAccordingToConditions(result))
 				.andReturn(newCalc);
 		EasyMock.expect(mailTemplateService.initializeOfferteEmail(result))

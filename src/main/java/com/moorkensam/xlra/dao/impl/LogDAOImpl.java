@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.dao.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -7,8 +8,10 @@ import javax.persistence.Query;
 
 import com.moorkensam.xlra.dao.BaseDAO;
 import com.moorkensam.xlra.dao.LogDAO;
-import com.moorkensam.xlra.model.configuration.LogRecord;
-import com.moorkensam.xlra.model.configuration.RaiseRatesRecord;
+import com.moorkensam.xlra.model.log.LogRecord;
+import com.moorkensam.xlra.model.log.QuotationLogRecord;
+import com.moorkensam.xlra.model.log.RaiseRatesRecord;
+import com.moorkensam.xlra.model.log.RateLogRecord;
 
 public class LogDAOImpl extends BaseDAO implements LogDAO {
 
@@ -45,4 +48,41 @@ public class LogDAOImpl extends BaseDAO implements LogDAO {
 	public void updateRaiseRatesRecord(RaiseRatesRecord rr) {
 		getEntityManager().merge(rr);
 	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<RateLogRecord> getRateLogRecordsByDate(Date startDate,
+			Date endDate) {
+		Query query = getEntityManager().createNamedQuery(
+				"RateLogRecord.findByDates");
+		query.setParameter("startDate", startDate);
+		query.setParameter("endDate", endDate);
+
+		return (List<RateLogRecord>) query.getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<RaiseRatesRecord> getRaiseRatesLogRecordByDate(Date startDate,
+			Date endDate) {
+		Query query = getEntityManager().createNamedQuery(
+				"RaiseRatesRecord.findByDates");
+		query.setParameter("startDate", startDate);
+		query.setParameter("endDate", endDate);
+
+		return (List<RaiseRatesRecord>) query.getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<QuotationLogRecord> getQuotationLogRecordsByDate(
+			Date startDate, Date endDate) {
+		Query query = getEntityManager().createNamedQuery(
+				"QuotationLogRecord.getQuotationLogRecordsByDate");
+		query.setParameter("startDate", startDate);
+		query.setParameter("endDate", endDate);
+
+		return (List<QuotationLogRecord>) query.getResultList();
+	}
+
 }

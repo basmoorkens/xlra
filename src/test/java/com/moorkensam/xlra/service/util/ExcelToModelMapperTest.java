@@ -49,7 +49,6 @@ public class ExcelToModelMapperTest extends UnitilsJUnit4 {
 		conditionFactory.setTranslationUtil(translationUtil);
 		mapper.setConditionFactory(conditionFactory);
 		rf = new RateFile();
-		Map<Double, List<RateLineExcelImportDTO>> ratesMap = new HashMap<Double, List<RateLineExcelImportDTO>>();
 		List<RateLineExcelImportDTO> dtoList = new ArrayList<RateLineExcelImportDTO>();
 		RateLineExcelImportDTO dto = new RateLineExcelImportDTO();
 		dto.setValue(100d);
@@ -59,6 +58,7 @@ public class ExcelToModelMapperTest extends UnitilsJUnit4 {
 		dto2.setValue(150d);
 		dto2.setZone("Zone 2");
 		dtoList.add(dto2);
+		Map<Double, List<RateLineExcelImportDTO>> ratesMap = new HashMap<Double, List<RateLineExcelImportDTO>>();
 		ratesMap.put(1d, dtoList);
 		data.setRatesMap(ratesMap);
 		Map<String, List<String>> termsMap = new HashMap<String, List<String>>();
