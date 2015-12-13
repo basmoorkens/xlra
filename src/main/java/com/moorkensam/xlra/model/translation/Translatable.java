@@ -2,12 +2,12 @@ package com.moorkensam.xlra.model.translation;
 
 public interface Translatable {
 
-	public String getI8nKey();
+  public String getI8nKey();
 
-	public void setI8nKey(String key);
+  public void setI8nKey(String key);
 
-	public String getTranslatedKey();
+  public String getTranslatedKey();
 
-	public void setTranslatedKey(String translatedValue);
+  public void setTranslatedKey(String translatedValue);
 
 }

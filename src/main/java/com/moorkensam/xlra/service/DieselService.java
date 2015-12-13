@@ -8,16 +8,15 @@ import com.moorkensam.xlra.model.error.RateFileException;
 
 public interface DieselService {
 
-	void updateDieselRate(DieselRate dieselRate);
+  void updateDieselRate(DieselRate dieselRate);
 
-	void createDieselRate(DieselRate dieselRate);
+  void createDieselRate(DieselRate dieselRate);
 
-	List<DieselRate> getAllDieselRates();
+  List<DieselRate> getAllDieselRates();
 
-	void updateCurrentDieselValue(BigDecimal value);
+  void updateCurrentDieselValue(BigDecimal value);
 
-	DieselRate getDieselRateForCurrentPrice(BigDecimal price)
-			throws RateFileException;
+  DieselRate getDieselRateForCurrentPrice(BigDecimal price) throws RateFileException;
 
-	void deleteDieselRate(DieselRate rate);
+  void deleteDieselRate(DieselRate rate);
 }

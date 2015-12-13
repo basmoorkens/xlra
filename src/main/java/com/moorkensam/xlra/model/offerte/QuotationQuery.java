@@ -25,157 +25,157 @@ import com.moorkensam.xlra.model.rate.TransportType;
 @Entity
 @Cacheable
 @Table(name = "quotationquery")
-@NamedQueries({ @NamedQuery(name = "QuotationQuery.findAll", query = "SELECT q FROM QuotationQuery q where q.deleted = false") })
+@NamedQueries({@NamedQuery(name = "QuotationQuery.findAll",
+    query = "SELECT q FROM QuotationQuery q where q.deleted = false")})
 public class QuotationQuery extends BaseEntity {
 
-	private static final long serialVersionUID = -555523071215522763L;
+  private static final long serialVersionUID = -555523071215522763L;
 
-	@ManyToOne
-	@JoinColumn(name = "customer_id")
-	private Customer customer;
+  @ManyToOne
+  @JoinColumn(name = "customer_id")
+  private Customer customer;
 
-	@Enumerated(EnumType.STRING)
-	private Kind kindOfRate;
+  @Enumerated(EnumType.STRING)
+  private Kind kindOfRate;
 
-	@Enumerated(EnumType.STRING)
-	private Measurement measurement;
+  @Enumerated(EnumType.STRING)
+  private Measurement measurement;
 
-	@ManyToOne
-	@JoinColumn(name = "countryId")
-	private Country country;
+  @ManyToOne
+  @JoinColumn(name = "countryId")
+  private Country country;
 
-	private double quantity;
+  private double quantity;
 
-	private boolean adrSurcharge;
+  private boolean adrSurcharge;
 
-	private boolean importFormality;
+  private boolean importFormality;
 
-	private boolean exportFormality;
+  private boolean exportFormality;
 
-	@Enumerated(EnumType.STRING)
-	private Language language;
+  @Enumerated(EnumType.STRING)
+  private Language language;
 
-	@Enumerated(EnumType.STRING)
-	private TransportType transportType;
+  @Enumerated(EnumType.STRING)
+  private TransportType transportType;
 
-	private String postalCode;
+  private String postalCode;
 
-	@Column(name = "quotation_date")
-	private Date quotationDate;
+  @Column(name = "quotation_date")
+  private Date quotationDate;
 
-	@Transient
-	private Language resultLanguage;
+  @Transient
+  private Language resultLanguage;
 
-	public QuotationQuery() {
-	}
+  public QuotationQuery() {}
 
-	public Customer getCustomer() {
-		return customer;
-	}
+  public Customer getCustomer() {
+    return customer;
+  }
 
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
-	}
+  public void setCustomer(Customer customer) {
+    this.customer = customer;
+  }
 
-	public Country getCountry() {
-		return country;
-	}
+  public Country getCountry() {
+    return country;
+  }
 
-	public void setCountry(Country country) {
-		this.country = country;
-	}
+  public void setCountry(Country country) {
+    this.country = country;
+  }
 
-	public Measurement getMeasurement() {
-		return measurement;
-	}
+  public Measurement getMeasurement() {
+    return measurement;
+  }
 
-	public void setMeasurement(Measurement measurement) {
-		this.measurement = measurement;
-	}
+  public void setMeasurement(Measurement measurement) {
+    this.measurement = measurement;
+  }
 
-	public Kind getKindOfRate() {
-		return kindOfRate;
-	}
+  public Kind getKindOfRate() {
+    return kindOfRate;
+  }
 
-	public void setKindOfRate(Kind kindOfRate) {
-		this.kindOfRate = kindOfRate;
-	}
+  public void setKindOfRate(Kind kindOfRate) {
+    this.kindOfRate = kindOfRate;
+  }
 
-	@Override
-	public String toString() {
+  @Override
+  public String toString() {
 
-		return " Type: " + kindOfRate + " Measurement: " + measurement;
-	}
+    return " Type: " + kindOfRate + " Measurement: " + measurement;
+  }
 
-	public String getPostalCode() {
-		return postalCode;
-	}
+  public String getPostalCode() {
+    return postalCode;
+  }
 
-	public void setPostalCode(String postalCode) {
-		this.postalCode = postalCode;
-	}
+  public void setPostalCode(String postalCode) {
+    this.postalCode = postalCode;
+  }
 
-	public double getQuantity() {
-		return quantity;
-	}
+  public double getQuantity() {
+    return quantity;
+  }
 
-	public void setQuantity(double quantity) {
-		this.quantity = quantity;
-	}
+  public void setQuantity(double quantity) {
+    this.quantity = quantity;
+  }
 
-	public boolean isImportFormality() {
-		return importFormality;
-	}
+  public boolean isImportFormality() {
+    return importFormality;
+  }
 
-	public void setImportFormality(boolean importFormality) {
-		this.importFormality = importFormality;
-	}
+  public void setImportFormality(boolean importFormality) {
+    this.importFormality = importFormality;
+  }
 
-	public boolean isAdrSurcharge() {
-		return adrSurcharge;
-	}
+  public boolean isAdrSurcharge() {
+    return adrSurcharge;
+  }
 
-	public void setAdrSurcharge(boolean adrSurcharge) {
-		this.adrSurcharge = adrSurcharge;
-	}
+  public void setAdrSurcharge(boolean adrSurcharge) {
+    this.adrSurcharge = adrSurcharge;
+  }
 
-	public boolean isExportFormality() {
-		return exportFormality;
-	}
+  public boolean isExportFormality() {
+    return exportFormality;
+  }
 
-	public void setExportFormality(boolean exportFormality) {
-		this.exportFormality = exportFormality;
-	}
+  public void setExportFormality(boolean exportFormality) {
+    this.exportFormality = exportFormality;
+  }
 
-	public TransportType getTransportType() {
-		return transportType;
-	}
+  public TransportType getTransportType() {
+    return transportType;
+  }
 
-	public void setTransportType(TransportType transportType) {
-		this.transportType = transportType;
-	}
+  public void setTransportType(TransportType transportType) {
+    this.transportType = transportType;
+  }
 
-	public Language getLanguage() {
-		return language;
-	}
+  public Language getLanguage() {
+    return language;
+  }
 
-	public void setLanguage(Language language) {
-		this.language = language;
-	}
+  public void setLanguage(Language language) {
+    this.language = language;
+  }
 
-	public Language getResultLanguage() {
-		return resultLanguage;
-	}
+  public Language getResultLanguage() {
+    return resultLanguage;
+  }
 
-	public void setResultLanguage(Language resultLanguage) {
-		this.resultLanguage = resultLanguage;
-	}
+  public void setResultLanguage(Language resultLanguage) {
+    this.resultLanguage = resultLanguage;
+  }
 
-	public Date getQuotationDate() {
-		return quotationDate;
-	}
+  public Date getQuotationDate() {
+    return quotationDate;
+  }
 
-	public void setQuotationDate(Date quotationDate) {
-		this.quotationDate = quotationDate;
-	}
+  public void setQuotationDate(Date quotationDate) {
+    this.quotationDate = quotationDate;
+  }
 }

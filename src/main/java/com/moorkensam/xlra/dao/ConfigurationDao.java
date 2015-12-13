@@ -4,7 +4,7 @@ import com.moorkensam.xlra.model.configuration.Configuration;
 
 public interface ConfigurationDao {
 
-	void updateXlraConfiguration(Configuration config);
+  void updateXlraConfiguration(Configuration config);
 
-	Configuration getXlraConfiguration();
+  Configuration getXlraConfiguration();
 }

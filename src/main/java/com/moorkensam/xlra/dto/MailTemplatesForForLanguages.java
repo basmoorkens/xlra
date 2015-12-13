@@ -7,46 +7,46 @@ import com.moorkensam.xlra.model.mail.MailTemplate;
 
 public class MailTemplatesForForLanguages {
 
-	private List<MailTemplate> mailTemplates;
+  private List<MailTemplate> mailTemplates;
 
-	public MailTemplatesForForLanguages(List<MailTemplate> templates) {
-		this.mailTemplates = templates;
-	}
+  public MailTemplatesForForLanguages(List<MailTemplate> templates) {
+    this.mailTemplates = templates;
+  }
 
-	public MailTemplate getNlTemplate() {
-		return getTemplateForLang(Language.NL);
-	}
+  public MailTemplate getNlTemplate() {
+    return getTemplateForLang(Language.NL);
+  }
 
-	public MailTemplate getEnTemplate() {
-		return getTemplateForLang(Language.EN);
-	}
+  public MailTemplate getEnTemplate() {
+    return getTemplateForLang(Language.EN);
+  }
 
-	public MailTemplate getDeTemplate() {
-		return getTemplateForLang(Language.DE);
-	}
+  public MailTemplate getDeTemplate() {
+    return getTemplateForLang(Language.DE);
+  }
 
-	public MailTemplate getFrTemplate() {
-		return getTemplateForLang(Language.FR);
-	}
+  public MailTemplate getFrTemplate() {
+    return getTemplateForLang(Language.FR);
+  }
 
-	protected MailTemplate getTemplateForLang(Language lang) {
-		if (mailTemplates == null) {
-			return null;
-		}
-		for (MailTemplate template : mailTemplates) {
-			if (template.getLanguage().equals(lang)) {
-				return template;
-			}
-		}
-		return null;
-	}
+  protected MailTemplate getTemplateForLang(Language lang) {
+    if (mailTemplates == null) {
+      return null;
+    }
+    for (MailTemplate template : mailTemplates) {
+      if (template.getLanguage().equals(lang)) {
+        return template;
+      }
+    }
+    return null;
+  }
 
-	public List<MailTemplate> getMailTemplates() {
-		return mailTemplates;
-	}
+  public List<MailTemplate> getMailTemplates() {
+    return mailTemplates;
+  }
 
-	public void setMailTemplates(List<MailTemplate> mailTemplates) {
-		this.mailTemplates = mailTemplates;
-	}
+  public void setMailTemplates(List<MailTemplate> mailTemplates) {
+    this.mailTemplates = mailTemplates;
+  }
 
 }

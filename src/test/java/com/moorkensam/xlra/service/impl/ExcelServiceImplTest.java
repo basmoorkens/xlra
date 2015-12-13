@@ -16,45 +16,47 @@ import com.moorkensam.xlra.service.util.ExcelUploadParser;
 
 public class ExcelServiceImplTest extends UnitilsJUnit4 {
 
-	private ExcelServiceImpl excelServiceImpl;
+  private ExcelServiceImpl excelServiceImpl;
 
-	private RateFile rf;
+  private RateFile rf;
 
-	private XSSFWorkbook workBook;
+  private XSSFWorkbook workBook;
 
-	@Mock
-	private ExcelToModelMapper mapper;
+  @Mock
+  private ExcelToModelMapper mapper;
 
-	@Mock
-	private RateFileService rateFileService;
+  @Mock
+  private RateFileService rateFileService;
 
-	@Mock
-	private ExcelUploadParser parser;
+  @Mock
+  private ExcelUploadParser parser;
 
-	private ExcelUploadUtilData excelUploadUtilData;
+  private ExcelUploadUtilData excelUploadUtilData;
 
-	@Before
-	public void init() {
-		rf = new RateFile();
-		workBook = new XSSFWorkbook();
-		excelServiceImpl = new ExcelServiceImpl();
-		excelServiceImpl.setMapper(mapper);
-		excelServiceImpl.setParser(parser);
-		excelServiceImpl.setRateFileService(rateFileService);
-	}
+  /**
+   * exec befor test.
+   */
+  @Before
+  public void init() {
+    rf = new RateFile();
+    workBook = new XSSFWorkbook();
+    excelServiceImpl = new ExcelServiceImpl();
+    excelServiceImpl.setMapper(mapper);
+    excelServiceImpl.setParser(parser);
+    excelServiceImpl.setRateFileService(rateFileService);
+  }
 
-	@Test
-	public void testuploadRateFileExcel() {
-		excelUploadUtilData = new ExcelUploadUtilData();
-		EasyMock.expect(parser.parseRateFileExcel(workBook)).andReturn(
-				excelUploadUtilData);
-		mapper.mapExcelToModel(rf, excelUploadUtilData);
-		EasyMock.expectLastCall();
-		rateFileService.createRateFile(rf);
-		EasyMock.expectLastCall();
+  @Test
+  public void testuploadRateFileExcel() {
+    excelUploadUtilData = new ExcelUploadUtilData();
+    EasyMock.expect(parser.parseRateFileExcel(workBook)).andReturn(excelUploadUtilData);
+    mapper.mapExcelToModel(rf, excelUploadUtilData);
+    EasyMock.expectLastCall();
+    rateFileService.createRateFile(rf);
+    EasyMock.expectLastCall();
 
-		EasyMockUnitils.replay();
+    EasyMockUnitils.replay();
 
-		excelServiceImpl.uploadRateFileExcel(rf, workBook);
-	}
+    excelServiceImpl.uploadRateFileExcel(rf, workBook);
+  }
 }

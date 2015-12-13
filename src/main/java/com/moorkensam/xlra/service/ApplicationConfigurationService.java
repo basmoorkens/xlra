@@ -7,12 +7,12 @@ import com.moorkensam.xlra.model.mail.MailTemplate;
 
 public interface ApplicationConfigurationService {
 
-	void updateXlraConfiguration(Configuration xlraConfiguration);
+  void updateXlraConfiguration(Configuration xlraConfiguration);
 
-	Configuration getConfiguration();
+  Configuration getConfiguration();
 
-	List<MailTemplate> getAllEmailTemplates();
+  List<MailTemplate> getAllEmailTemplates();
 
-	void updateEmailTemplate(MailTemplate mailTemplate);
+  void updateEmailTemplate(MailTemplate mailTemplate);
 
 }

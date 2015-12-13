@@ -18,31 +18,30 @@ import com.moorkensam.xlra.service.util.ConfigurationLoader;
 @RequestScoped
 public class LogoutController {
 
-	private final static Logger logger = LogManager.getLogger();
+  private final static Logger logger = LogManager.getLogger();
 
-	private ConfigurationLoader configLoader;
+  private ConfigurationLoader configLoader;
 
-	@Inject
-	private UserSessionController sessionController;
+  @Inject
+  private UserSessionController sessionController;
 
-	@PostConstruct
-	public void init() {
-		configLoader = ConfigurationLoader.getInstance();
-	}
+  @PostConstruct
+  public void init() {
+    configLoader = ConfigurationLoader.getInstance();
+  }
 
-	public void logout() throws IOException {
-		logger.info("Logging out "
-				+ sessionController.getLoggedInUser().getEmail());
-		FacesContext fc = FacesContext.getCurrentInstance();
-		HttpSession session = (HttpSession) fc.getExternalContext().getSession(
-				false);
-		session.invalidate();
-		FacesContext
-				.getCurrentInstance()
-				.getExternalContext()
-				.redirect(
-						configLoader
-								.getProperty(ConfigurationLoader.APPLICATION_BASE_URL));
-	}
+  /**
+   * Logs out a user by destroying the session.
+   * 
+   * @throws IOException When the baseurl for the applicaiton couldnt be loaded.
+   */
+  public void logout() throws IOException {
+    logger.info("Logging out " + sessionController.getLoggedInUser().getEmail());
+    FacesContext fc = FacesContext.getCurrentInstance();
+    HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
+    session.invalidate();
+    FacesContext.getCurrentInstance().getExternalContext()
+        .redirect(configLoader.getProperty(ConfigurationLoader.APPLICATION_BASE_URL));
+  }
 
 }

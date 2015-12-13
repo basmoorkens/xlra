@@ -7,5 +7,5 @@ package com.moorkensam.xlra.model.log;
  *
  */
 public enum LogType {
-	CURRENCYRATE, DIESELRATE, USER_CREATED, USER_ACTIVATED;
+  CURRENCYRATE, DIESELRATE, USER_CREATED, USER_ACTIVATED;
 }

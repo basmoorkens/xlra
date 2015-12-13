@@ -2,16 +2,16 @@ package com.moorkensam.xlra.model.rate;
 
 public enum TransportType {
 
-	IMPORT("Import"), EXPORT("Export");
+  IMPORT("Import"), EXPORT("Export");
 
-	private String description;
+  private String description;
 
-	TransportType(String descr) {
-		this.description = descr;
-	}
+  TransportType(String descr) {
+    this.description = descr;
+  }
 
-	public String getDescription() {
-		return description;
-	}
+  public String getDescription() {
+    return description;
+  }
 
 }

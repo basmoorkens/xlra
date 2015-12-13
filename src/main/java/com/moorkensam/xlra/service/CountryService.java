@@ -7,16 +7,16 @@ import com.moorkensam.xlra.model.rate.Zone;
 
 public interface CountryService {
 
-	List<Country> getAllCountries();
+  List<Country> getAllCountries();
 
-	List<Country> getAllCountriesFullLoad();
+  List<Country> getAllCountriesFullLoad();
 
-	Country getCountryById(long id);
+  Country getCountryById(long id);
 
-	public void createZone(Zone zone);
+  public void createZone(Zone zone);
 
-	public void updateZone(Zone zone);
+  public void updateZone(Zone zone);
 
-	public Country updateCountry(Country country);
+  public Country updateCountry(Country country);
 
 }

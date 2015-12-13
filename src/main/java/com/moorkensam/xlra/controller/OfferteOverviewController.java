@@ -31,152 +31,162 @@ import com.moorkensam.xlra.service.impl.FileServiceImpl;
 @ViewScoped
 public class OfferteOverviewController {
 
-	@Inject
-	private QuotationService quotationService;
+  @Inject
+  private QuotationService quotationService;
 
-	@Inject
-	private CountryService countryService;
+  @Inject
+  private CountryService countryService;
 
-	@Inject
-	private EmailService emailService;
+  @Inject
+  private EmailService emailService;
 
-	private FileService fileService;
+  private FileService fileService;
 
-	private List<QuotationResult> quotationResults;
+  private List<QuotationResult> quotationResults;
 
-	private QuotationResult selectedOfferte;
+  private QuotationResult selectedOfferte;
 
-	private List<Country> allCountrys;
+  private List<Country> allCountrys;
 
-	private OfferteSearchFilter searchFilter;
+  private OfferteSearchFilter searchFilter;
 
-	private boolean detail;
+  private boolean detail;
 
-	@PostConstruct
-	public void initialize() {
-		fileService = new FileServiceImpl();
-		quotationResults = quotationService.getAllQuotationResults();
-		allCountrys = countryService.getAllCountriesFullLoad();
-		searchFilter = new OfferteSearchFilter();
-		checkAndLoadOfferteIfPresent();
-	}
+  /**
+   * Initializes the controller.
+   */
+  @PostConstruct
+  public void initialize() {
+    fileService = new FileServiceImpl();
+    quotationResults = quotationService.getAllQuotationResults();
+    allCountrys = countryService.getAllCountriesFullLoad();
+    searchFilter = new OfferteSearchFilter();
+    checkAndLoadOfferteIfPresent();
+  }
 
-	private void checkAndLoadOfferteIfPresent() {
-		String offerteKey = FacesContext.getCurrentInstance()
-				.getExternalContext().getRequestParameterMap()
-				.get("offerteKey");
-		if (StringUtils.isNotBlank(offerteKey)) {
-			selectedOfferte = quotationService
-					.getOfferteByOfferteKey(offerteKey);
-			detail = true;
-		}
-	}
+  private void checkAndLoadOfferteIfPresent() {
+    String offerteKey =
+        FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap()
+            .get("offerteKey");
+    if (StringUtils.isNotBlank(offerteKey)) {
+      selectedOfferte = quotationService.getOfferteByOfferteKey(offerteKey);
+      detail = true;
+    }
+  }
 
-	public void setupOfferteDetail(QuotationResult quotationResult) {
-		selectedOfferte = quotationService.getFullOfferteById(quotationResult
-				.getId());
-		detail = true;
-		MessageUtil.addMessage("Offerte opened",
-				"Offerte " + quotationResult.getOfferteUniqueIdentifier()
-						+ " opened.");
-	}
+  /**
+   * Setup the page to view the offerte details.
+   * 
+   * @param quotationResult The offerte to view the details of.
+   */
+  public void setupOfferteDetail(QuotationResult quotationResult) {
+    selectedOfferte = quotationService.getFullOfferteById(quotationResult.getId());
+    detail = true;
+    MessageUtil.addMessage("Offerte opened",
+        "Offerte " + quotationResult.getOfferteUniqueIdentifier() + " opened.");
+  }
 
-	public void openSearchMode() {
-		detail = false;
-	}
+  public void openSearchMode() {
+    detail = false;
+  }
 
-	public void downloadPdf() throws IOException {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		HttpServletResponse response = (HttpServletResponse) facesContext
-				.getExternalContext().getResponse();
-		response.reset();
-		response.setHeader("Content-Type", "application/pdf");
-		OutputStream responseOutputStream = response.getOutputStream();
-		File generatedPdfFromDisk = getFileService()
-				.getOffertePdfFromFileSystem(selectedOfferte.getPdfFileName());
-		InputStream pdfInputStream = new FileInputStream(generatedPdfFromDisk);
-		byte[] bytesBuffer = new byte[2048];
-		int bytesRead;
-		while ((bytesRead = pdfInputStream.read(bytesBuffer)) > 0) {
-			responseOutputStream.write(bytesBuffer, 0, bytesRead);
-		}
-		responseOutputStream.flush();
-		pdfInputStream.close();
-		responseOutputStream.close();
-		facesContext.responseComplete();
-	}
+  /**
+   * Serve the pdf from the filesystem.
+   * 
+   * @throws IOException Thrown when the pdf could not be read in.
+   */
+  public void downloadPdf() throws IOException {
+    FacesContext facesContext = FacesContext.getCurrentInstance();
+    HttpServletResponse response =
+        (HttpServletResponse) facesContext.getExternalContext().getResponse();
+    response.reset();
+    response.setHeader("Content-Type", "application/pdf");
+    OutputStream responseOutputStream = response.getOutputStream();
+    File generatedPdfFromDisk =
+        getFileService().getOffertePdfFromFileSystem(selectedOfferte.getPdfFileName());
+    InputStream pdfInputStream = new FileInputStream(generatedPdfFromDisk);
+    byte[] bytesBuffer = new byte[2048];
+    int bytesRead;
+    while ((bytesRead = pdfInputStream.read(bytesBuffer)) > 0) {
+      responseOutputStream.write(bytesBuffer, 0, bytesRead);
+    }
+    responseOutputStream.flush();
+    pdfInputStream.close();
+    responseOutputStream.close();
+    facesContext.responseComplete();
+  }
 
-	public void resendEmail() {
-		try {
-			emailService.sendOfferteMail(selectedOfferte);
-			selectedOfferte = quotationService
-					.getFullOfferteById(selectedOfferte.getId());
-			MessageUtil.addMessage("Email resend", "Successfully sent email");
-		} catch (MessagingException e) {
-			MessageUtil
-					.addErrorMessage("Could not send email",
-							"Error sending email! Contact the system admin if this error persists.");
-		}
-	}
+  /**
+   * Resend an email for the offerte.
+   */
+  public void resendEmail() {
+    try {
+      emailService.sendOfferteMail(selectedOfferte);
+      selectedOfferte = quotationService.getFullOfferteById(selectedOfferte.getId());
+      MessageUtil.addMessage("Email resend", "Successfully sent email");
+    } catch (MessagingException e) {
+      MessageUtil.addErrorMessage("Could not send email",
+          "Error sending email! Contact the system admin if this error persists.");
+    }
+  }
 
-	public void search() {
-		quotationResults = quotationService
-				.getQuotationResultsForFilters(searchFilter);
-	}
+  public void search() {
+    quotationResults = quotationService.getQuotationResultsForFilters(searchFilter);
+  }
 
-	public QuotationService getQuotationService() {
-		return quotationService;
-	}
+  public QuotationService getQuotationService() {
+    return quotationService;
+  }
 
-	public void setQuotationService(QuotationService quotationService) {
-		this.quotationService = quotationService;
-	}
+  public void setQuotationService(QuotationService quotationService) {
+    this.quotationService = quotationService;
+  }
 
-	public List<QuotationResult> getQuotationResults() {
-		return quotationResults;
-	}
+  public List<QuotationResult> getQuotationResults() {
+    return quotationResults;
+  }
 
-	public void setQuotationResults(List<QuotationResult> quotationResults) {
-		this.quotationResults = quotationResults;
-	}
+  public void setQuotationResults(List<QuotationResult> quotationResults) {
+    this.quotationResults = quotationResults;
+  }
 
-	public OfferteSearchFilter getSearchFilter() {
-		return searchFilter;
-	}
+  public OfferteSearchFilter getSearchFilter() {
+    return searchFilter;
+  }
 
-	public void setSearchFilter(OfferteSearchFilter searchFilter) {
-		this.searchFilter = searchFilter;
-	}
+  public void setSearchFilter(OfferteSearchFilter searchFilter) {
+    this.searchFilter = searchFilter;
+  }
 
-	public List<Country> getAllCountrys() {
-		return allCountrys;
-	}
+  public List<Country> getAllCountrys() {
+    return allCountrys;
+  }
 
-	public void setAllCountrys(List<Country> allCountrys) {
-		this.allCountrys = allCountrys;
-	}
+  public void setAllCountrys(List<Country> allCountrys) {
+    this.allCountrys = allCountrys;
+  }
 
-	public boolean isDetail() {
-		return detail;
-	}
+  public boolean isDetail() {
+    return detail;
+  }
 
-	public void setDetail(boolean detail) {
-		this.detail = detail;
-	}
+  public void setDetail(boolean detail) {
+    this.detail = detail;
+  }
 
-	public QuotationResult getSelectedOfferte() {
-		return selectedOfferte;
-	}
+  public QuotationResult getSelectedOfferte() {
+    return selectedOfferte;
+  }
 
-	public void setSelectedOfferte(QuotationResult selectedOfferte) {
-		this.selectedOfferte = selectedOfferte;
-	}
+  public void setSelectedOfferte(QuotationResult selectedOfferte) {
+    this.selectedOfferte = selectedOfferte;
+  }
 
-	public FileService getFileService() {
-		return fileService;
-	}
+  public FileService getFileService() {
+    return fileService;
+  }
 
-	public void setFileService(FileService fileService) {
-		this.fileService = fileService;
-	}
+  public void setFileService(FileService fileService) {
+    this.fileService = fileService;
+  }
 }

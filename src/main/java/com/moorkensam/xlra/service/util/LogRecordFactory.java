@@ -18,61 +18,95 @@ import com.moorkensam.xlra.model.security.UserLogRecord;
 
 public class LogRecordFactory {
 
-	private final Logger logger = LogManager.getLogger();
+  private final Logger logger = LogManager.getLogger();
 
-	private static LogRecordFactory instance;
+  private static LogRecordFactory instance;
 
-	private LogRecordFactory() {
+  private LogRecordFactory() {
 
-	}
+  }
 
-	public static LogRecordFactory getInstance() {
-		if (instance == null) {
-			instance = new LogRecordFactory();
-		}
-		return instance;
-	}
+  /**
+   * Gets the instance of this class.
+   * 
+   * @return the instance.
+   */
+  public static LogRecordFactory getInstance() {
+    if (instance == null) {
+      instance = new LogRecordFactory();
+    }
+    return instance;
+  }
 
-	public LogRecord createChfLogRecord(BigDecimal value, BigDecimal newValue) {
-		RateLogRecord record = new RateLogRecord();
-		fillInBasicProperties(record);
-		record.setRate(value);
-		record.setType(LogType.CURRENCYRATE);
-		return record;
-	}
+  /**
+   * Creates a chf log record.
+   * 
+   * @param value the old value.
+   * @param newValue the new value.
+   * @return the generated log record.
+   */
+  public LogRecord createChfLogRecord(BigDecimal value, BigDecimal newValue) {
+    RateLogRecord record = new RateLogRecord();
+    fillInBasicProperties(record);
+    record.setRate(value);
+    record.setType(LogType.CURRENCYRATE);
+    return record;
+  }
 
-	private void fillInBasicProperties(LogRecord record) {
-		record.setLogDate(new Date());
-	}
+  private void fillInBasicProperties(LogRecord record) {
+    record.setLogDate(new Date());
+  }
 
-	public LogRecord createDieselLogRecord(BigDecimal value, BigDecimal newValue) {
-		RateLogRecord record = new RateLogRecord();
-		fillInBasicProperties(record);
-		record.setType(LogType.DIESELRATE);
-		record.setRate(value);
-		record.setNewRate(newValue);
-		return record;
-	}
+  /**
+   * creates a diesel log record.
+   * 
+   * @param value the old value.
+   * @param newValue the new value.
+   * @return the generated record.
+   */
+  public LogRecord createDieselLogRecord(BigDecimal value, BigDecimal newValue) {
+    RateLogRecord record = new RateLogRecord();
+    fillInBasicProperties(record);
+    record.setType(LogType.DIESELRATE);
+    record.setRate(value);
+    record.setNewRate(newValue);
+    return record;
+  }
 
-	public LogRecord createUserRecord(User affectedUser, LogType logType) {
-		UserLogRecord record = new UserLogRecord();
-		record.setLogDate(new Date());
-		record.setType(logType);
-		record.setAffectedAccount(affectedUser.getEmail());
-		return record;
-	}
+  /**
+   * create a user created log record.
+   * 
+   * @param affectedUser the user that was created.
+   * @param logType the type of log.
+   * @return the generaed logrecord.
+   */
+  public LogRecord createUserRecord(User affectedUser, LogType logType) {
+    UserLogRecord record = new UserLogRecord();
+    record.setLogDate(new Date());
+    record.setType(logType);
+    record.setAffectedAccount(affectedUser.getEmail());
+    return record;
+  }
 
-	public RaiseRatesRecord createRaiseRatesRecord(RateOperation operation,
-			double percentage, List<RateFile> fullRateFiles) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Creating log record for " + operation);
-		}
-		RaiseRatesRecord logRecord = new RaiseRatesRecord();
-		logRecord.setPercentage(percentage);
-		logRecord.setRateFiles(fullRateFiles);
-		logRecord.setLogDate(new Date());
-		logRecord.setOperation(operation);
-		return logRecord;
-	}
+  /**
+   * create a raise rates record;
+   * 
+   * @param operation the raise rates operation.
+   * @param percentage the percentage.
+   * @param fullRateFiles The list of ratefiles to raise;
+   * @return the created record.
+   */
+  public RaiseRatesRecord createRaiseRatesRecord(RateOperation operation, double percentage,
+      List<RateFile> fullRateFiles) {
+    if (logger.isDebugEnabled()) {
+      logger.debug("Creating log record for " + operation);
+    }
+    RaiseRatesRecord logRecord = new RaiseRatesRecord();
+    logRecord.setPercentage(percentage);
+    logRecord.setRateFiles(fullRateFiles);
+    logRecord.setLogDate(new Date());
+    logRecord.setOperation(operation);
+    return logRecord;
+  }
 
 }

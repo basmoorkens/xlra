@@ -21,95 +21,95 @@ import com.moorkensam.xlra.service.RateFileService;
 @ViewScoped
 public class RaiseRatesController {
 
-	@Inject
-	private RateFileService rateFileService;
+  @Inject
+  private RateFileService rateFileService;
 
-	@Inject
-	private RaiseRateFileService raiseRatesService;
+  @Inject
+  private RaiseRateFileService raiseRatesService;
 
-	private List<RateFile> allRateFiles;
+  private List<RateFile> allRateFiles;
 
-	private DualListModel<RateFile> rateFiles;
+  private DualListModel<RateFile> rateFiles;
 
-	private List<RateFile> selectedRateFiles;
+  private List<RateFile> selectedRateFiles;
 
-	private double percentage;
+  private double percentage;
 
-	private List<RaiseRatesRecord> logRecords;
+  private List<RaiseRatesRecord> logRecords;
 
-	@PostConstruct
-	public void initializeController() {
-		resetState();
-		rateFiles.setTarget(selectedRateFiles);
-	}
+  @PostConstruct
+  public void initializeController() {
+    resetState();
+    rateFiles.setTarget(selectedRateFiles);
+  }
 
-	private void resetState() {
-		rateFiles = new DualListModel<RateFile>();
-		allRateFiles = rateFileService.getAllRateFiles();
-		rateFiles.setSource(allRateFiles);
-		selectedRateFiles = new ArrayList<RateFile>();
-		refreshLogs();
-	}
+  private void resetState() {
+    rateFiles = new DualListModel<RateFile>();
+    allRateFiles = rateFileService.getAllRateFiles();
+    rateFiles.setSource(allRateFiles);
+    selectedRateFiles = new ArrayList<RateFile>();
+    refreshLogs();
+  }
 
-	private void refreshLogs() {
-		logRecords = raiseRatesService
-				.getRaiseRatesLogRecordsThatAreNotUndone();
-	}
+  private void refreshLogs() {
+    logRecords = raiseRatesService.getRaiseRatesLogRecordsThatAreNotUndone();
+  }
 
-	public String onFlowProcess(FlowEvent event) {
-		return event.getNewStep();
-	}
+  public String onFlowProcess(FlowEvent event) {
+    return event.getNewStep();
+  }
 
-	public void raiseRates() {
-		raiseRatesService.raiseRateFileRateLinesWithPercentage(
-				rateFiles.getTarget(), percentage);
-		MessageUtil.addMessage("Rates raised", "Succesfully raised rates for");
-	}
+  public void raiseRates() {
+    raiseRatesService.raiseRateFileRateLinesWithPercentage(rateFiles.getTarget(), percentage);
+    MessageUtil.addMessage("Rates raised", "Succesfully raised rates for");
+  }
 
-	public void undoLatestRaiseRates() {
-		raiseRatesService.undoLatestRatesRaise();
-		refreshLogs();
-		MessageUtil.addMessage("Rates raised",
-				"Succesfully undid latest rates raise.");
-	}
+  /**
+   * Undo the last raise rates.
+   */
+  public void undoLatestRaiseRates() {
+    raiseRatesService.undoLatestRatesRaise();
+    refreshLogs();
+    MessageUtil.addMessage("Rates raised", "Succesfully undid latest rates raise.");
+  }
 
-	public List<RateFile> getAllRateFiles() {
-		return allRateFiles;
-	}
+  public List<RateFile> getAllRateFiles() {
+    return allRateFiles;
+  }
 
-	public void setAllRateFiles(List<RateFile> allRateFiles) {
-		this.allRateFiles = allRateFiles;
-	}
+  public void setAllRateFiles(List<RateFile> allRateFiles) {
+    this.allRateFiles = allRateFiles;
+  }
 
-	public List<RateFile> getSelectedRateFiles() {
-		return selectedRateFiles;
-	}
+  public List<RateFile> getSelectedRateFiles() {
+    return selectedRateFiles;
+  }
 
-	public void setSelectedRateFiles(List<RateFile> selectedRateFiles) {
-		this.selectedRateFiles = selectedRateFiles;
-	}
+  public void setSelectedRateFiles(List<RateFile> selectedRateFiles) {
+    this.selectedRateFiles = selectedRateFiles;
+  }
 
-	public DualListModel<RateFile> getRateFiles() {
-		return rateFiles;
-	}
+  public DualListModel<RateFile> getRateFiles() {
+    return rateFiles;
+  }
 
-	public void setRateFiles(DualListModel<RateFile> rateFiles) {
-		this.rateFiles = rateFiles;
-	}
+  public void setRateFiles(DualListModel<RateFile> rateFiles) {
+    this.rateFiles = rateFiles;
+  }
 
-	public double getPercentage() {
-		return percentage;
-	}
+  public double getPercentage() {
+    return percentage;
+  }
 
-	public void setPercentage(double percentage) {
-		this.percentage = percentage;
-	}
+  public void setPercentage(double percentage) {
+    this.percentage = percentage;
+  }
 
-	public List<RaiseRatesRecord> getLogRecords() {
-		return logRecords;
-	}
+  public List<RaiseRatesRecord> getLogRecords() {
+    return logRecords;
+  }
 
-	public void setLogRecords(List<RaiseRatesRecord> logRecords) {
-		this.logRecords = logRecords;
-	}
+  public void setLogRecords(List<RaiseRatesRecord> logRecords) {
+    this.logRecords = logRecords;
+  }
 }

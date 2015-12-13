@@ -24,203 +24,225 @@ import com.moorkensam.xlra.model.configuration.Interval;
 @Table(name = "zone")
 public class Zone extends BaseEntity {
 
-	public Zone() {
+  public Zone() {
 
-	}
+  }
 
-	public Zone(String name) {
-		this.name = name;
-	}
+  public Zone(String name) {
+    this.name = name;
+  }
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	private String name;
+  private String name;
 
-	@Enumerated(EnumType.STRING)
-	private ZoneType zoneType;
+  @Enumerated(EnumType.STRING)
+  private ZoneType zoneType;
 
-	@ElementCollection
-	@CollectionTable(name = "alphanumericalpostalcodes", joinColumns = @JoinColumn(name = "zone_id"))
-	@Column(name = "postalcode")
-	private List<String> alphaNumericalPostalCodes;
+  @ElementCollection
+  @CollectionTable(name = "alphanumericalpostalcodes", joinColumns = @JoinColumn(name = "zone_id"))
+  @Column(name = "postalcode")
+  private List<String> alphaNumericalPostalCodes;
 
-	@ElementCollection
-	@CollectionTable(name = "numericalPostalcodes", joinColumns = @JoinColumn(name = "zone_id"))
-	@Column(name = "postalcode")
-	private List<Interval> numericalPostalCodes;
+  @ElementCollection
+  @CollectionTable(name = "numericalPostalcodes", joinColumns = @JoinColumn(name = "zone_id"))
+  @Column(name = "postalcode")
+  private List<Interval> numericalPostalCodes;
 
-	@ManyToOne
-	@JoinColumn(name = "rateFileId")
-	private RateFile rateFile;
+  @ManyToOne
+  @JoinColumn(name = "rateFileId")
+  private RateFile rateFile;
 
-	@Transient
-	private String alphaNumericPostalCodesAsString;
+  @Transient
+  private String alphaNumericPostalCodesAsString;
 
-	@Transient
-	private String numericalPostalCodesAsString;
+  @Transient
+  private String numericalPostalCodesAsString;
 
-	@ManyToOne
-	@JoinColumn(name = "countryId")
-	private Country country;
+  @ManyToOne
+  @JoinColumn(name = "countryId")
+  private Country country;
 
-	private String extraInfo;
+  private String extraInfo;
 
-	public List<String> getAlphaNumericalPostalCodes() {
-		return alphaNumericalPostalCodes;
-	}
+  public List<String> getAlphaNumericalPostalCodes() {
+    return alphaNumericalPostalCodes;
+  }
 
-	public void setAlphaNumericalPostalCodes(List<String> toSet) {
-		this.alphaNumericalPostalCodes = toSet;
-	}
+  public void setAlphaNumericalPostalCodes(List<String> toSet) {
+    this.alphaNumericalPostalCodes = toSet;
+  }
 
-	public ZoneType getZoneType() {
-		return zoneType;
-	}
+  public ZoneType getZoneType() {
+    return zoneType;
+  }
 
-	public void setZoneType(ZoneType zoneType) {
-		this.zoneType = zoneType;
-	}
+  public void setZoneType(ZoneType zoneType) {
+    this.zoneType = zoneType;
+  }
 
-	public Country getCountry() {
-		return this.country;
-	}
+  public Country getCountry() {
+    return this.country;
+  }
 
-	public void setCountry(Country country) {
-		this.country = country;
-	}
+  public void setCountry(Country country) {
+    this.country = country;
+  }
 
-	public String getAlphaNumericPostalCodesAsString() {
-		return alphaNumericPostalCodesAsString;
-	}
+  public String getAlphaNumericPostalCodesAsString() {
+    return alphaNumericPostalCodesAsString;
+  }
 
-	public void setAlphaNumericPostalCodesAsString(
-			String alphaNumericPostalCodesAsString) {
-		this.alphaNumericPostalCodesAsString = alphaNumericPostalCodesAsString;
-	}
+  public void setAlphaNumericPostalCodesAsString(String alphaNumericPostalCodesAsString) {
+    this.alphaNumericPostalCodesAsString = alphaNumericPostalCodesAsString;
+  }
 
-	public void convertAlphaNumericPostalCodeListToString() {
-		if (alphaNumericalPostalCodes != null
-				&& !alphaNumericalPostalCodes.isEmpty()) {
-			String alphaCodes = "";
-			for (String s : alphaNumericalPostalCodes) {
-				alphaCodes += (s + ",");
-			}
+  /**
+   * Convert the alphanumeric postal codes to a string list.
+   */
+  public void convertAlphaNumericPostalCodeListToString() {
+    if (alphaNumericalPostalCodes != null && !alphaNumericalPostalCodes.isEmpty()) {
+      String alphaCodes = "";
+      for (String s : alphaNumericalPostalCodes) {
+        alphaCodes += (s + ",");
+      }
 
-			alphaCodes = alphaCodes.substring(0, alphaCodes.length() - 1);
-			setAlphaNumericPostalCodesAsString(alphaCodes);
+      alphaCodes = alphaCodes.substring(0, alphaCodes.length() - 1);
+      setAlphaNumericPostalCodesAsString(alphaCodes);
 
-		}
-	}
+    }
+  }
 
-	public void convertNumericalPostalCodeListToString() {
-		if (numericalPostalCodes != null && !numericalPostalCodes.isEmpty()) {
-			String numericalCodes = "";
-			for (Interval interval : numericalPostalCodes) {
-				numericalCodes += interval.toIntString() + ",";
-			}
-			numericalCodes = numericalCodes.substring(0,
-					numericalCodes.length() - 1);
-			setNumericalPostalCodesAsString(numericalCodes);
-		}
-	}
+  /**
+   * fill in the numericalpostal codes from the list.
+   */
+  public void convertNumericalPostalCodeListToString() {
+    if (numericalPostalCodes != null && !numericalPostalCodes.isEmpty()) {
+      String numericalCodes = "";
+      for (Interval interval : numericalPostalCodes) {
+        numericalCodes += interval.toIntString() + ",";
+      }
+      numericalCodes = numericalCodes.substring(0, numericalCodes.length() - 1);
+      setNumericalPostalCodesAsString(numericalCodes);
+    }
+  }
 
-	public void convertNumericalPostalCodeStringToList() {
-		if (numericalPostalCodesAsString != null
-				&& !numericalPostalCodesAsString.isEmpty()) {
-			List<Interval> intervals = new ArrayList<Interval>();
-			String[] numericArray = numericalPostalCodesAsString.split(",");
-			numericArray = trimSpaces(numericArray);
-			for (String s : numericArray) {
-				String[] ints = s.split("-");
-				ints = trimSpaces(ints);
-				Interval interval = new Interval(ints);
-				intervals.add(interval);
-			}
-			setNumericalPostalCodes(intervals);
-		}
-	}
+  /**
+   * convert the numericalpostalcodes string to a list.
+   */
+  public void convertNumericalPostalCodeStringToList() {
+    if (numericalPostalCodesAsString != null && !numericalPostalCodesAsString.isEmpty()) {
+      List<Interval> intervals = new ArrayList<Interval>();
+      String[] numericArray = numericalPostalCodesAsString.split(",");
+      numericArray = trimSpaces(numericArray);
+      for (String s : numericArray) {
+        String[] ints = s.split("-");
+        ints = trimSpaces(ints);
+        Interval interval = new Interval(ints);
+        intervals.add(interval);
+      }
+      setNumericalPostalCodes(intervals);
+    }
+  }
 
-	public String[] trimSpaces(String[] input) {
-		String[] result = new String[input.length];
-		for (int i = 0; i < input.length; i++) {
-			result[i] = input[i].trim();
-		}
-		return result;
-	}
+  /**
+   * Trim the spaces from an input array.
+   * 
+   * @param input the array.
+   * @return the trimmed array.
+   */
+  public String[] trimSpaces(String[] input) {
+    String[] result = new String[input.length];
+    for (int i = 0; i < input.length; i++) {
+      result[i] = input[i].trim();
+    }
+    return result;
+  }
 
-	public void convertAlphaNumericPostalCodeStringToList() {
-		if (alphaNumericPostalCodesAsString != null
-				&& !alphaNumericPostalCodesAsString.isEmpty()) {
-			String[] alphaArray = alphaNumericPostalCodesAsString.split(",");
-			alphaArray = trimSpaces(alphaArray);
-			setAlphaNumericalPostalCodes(Arrays.asList(alphaArray));
-		}
-	}
+  /**
+   * convert the alphanumerical postalcodes string to a list.
+   */
+  public void convertAlphaNumericPostalCodeStringToList() {
+    if (alphaNumericPostalCodesAsString != null && !alphaNumericPostalCodesAsString.isEmpty()) {
+      String[] alphaArray = alphaNumericPostalCodesAsString.split(",");
+      alphaArray = trimSpaces(alphaArray);
+      setAlphaNumericalPostalCodes(Arrays.asList(alphaArray));
+    }
+  }
 
-	public String getName() {
-		return name;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public String getNumericalPostalCodesAsString() {
-		return numericalPostalCodesAsString;
-	}
+  public String getNumericalPostalCodesAsString() {
+    return numericalPostalCodesAsString;
+  }
 
-	public void setNumericalPostalCodesAsString(
-			String numericalPostalCodesAsString) {
-		this.numericalPostalCodesAsString = numericalPostalCodesAsString;
-	}
+  public void setNumericalPostalCodesAsString(String numericalPostalCodesAsString) {
+    this.numericalPostalCodesAsString = numericalPostalCodesAsString;
+  }
 
-	public List<Interval> getNumericalPostalCodes() {
-		return numericalPostalCodes;
-	}
+  public List<Interval> getNumericalPostalCodes() {
+    return numericalPostalCodes;
+  }
 
-	public void setNumericalPostalCodes(List<Interval> numericalPostalCodes) {
-		this.numericalPostalCodes = numericalPostalCodes;
-	}
+  public void setNumericalPostalCodes(List<Interval> numericalPostalCodes) {
+    this.numericalPostalCodes = numericalPostalCodes;
+  }
 
-	public RateFile getRateFile() {
-		return rateFile;
-	}
+  public RateFile getRateFile() {
+    return rateFile;
+  }
 
-	public void setRateFile(RateFile rateFile) {
-		this.rateFile = rateFile;
-	}
+  public void setRateFile(RateFile rateFile) {
+    this.rateFile = rateFile;
+  }
 
-	public String getExtraInfo() {
-		return extraInfo;
-	}
+  public String getExtraInfo() {
+    return extraInfo;
+  }
 
-	public void setExtraInfo(String extraInfo) {
-		this.extraInfo = extraInfo;
-	}
+  public void setExtraInfo(String extraInfo) {
+    this.extraInfo = extraInfo;
+  }
 
-	public String getAsColumnHeader() {
-		String header = name + " ";
-		if (zoneType == ZoneType.ALPHANUMERIC_LIST) {
-			header += "( " + getAlphaNumericPostalCodesAsString() + " )";
-		} else {
-			header += "( " + getNumericalPostalCodesAsString() + " )";
-		}
+  /**
+   * Get the column header for the zone.
+   * 
+   * @return the header.
+   */
+  public String getAsColumnHeader() {
+    String header = name + " ";
+    if (zoneType == ZoneType.ALPHANUMERIC_LIST) {
+      header += "( " + getAlphaNumericPostalCodesAsString() + " )";
+    } else {
+      header += "( " + getNumericalPostalCodesAsString() + " )";
+    }
 
-		return header;
-	}
+    return header;
+  }
 
-	public Zone deepCopy() {
-		Zone copy = new Zone();
-		copy.setName(name);
-		copy.setAlphaNumericPostalCodesAsString(alphaNumericPostalCodesAsString);
-		copy.setNumericalPostalCodesAsString(numericalPostalCodesAsString);
-		copy.setAlphaNumericalPostalCodes(alphaNumericalPostalCodes);
-		copy.setNumericalPostalCodes(numericalPostalCodes);
-		copy.setCountry(country);
-		copy.setExtraInfo(extraInfo);
-		copy.setZoneType(zoneType);
-		copy.setRateFile(null);
-		return copy;
-	}
+  /**
+   * deep copy function.
+   * 
+   * @return the deep copy.
+   */
+  public Zone deepCopy() {
+    Zone copy = new Zone();
+    copy.setName(name);
+    copy.setAlphaNumericPostalCodesAsString(alphaNumericPostalCodesAsString);
+    copy.setNumericalPostalCodesAsString(numericalPostalCodesAsString);
+    copy.setAlphaNumericalPostalCodes(alphaNumericalPostalCodes);
+    copy.setNumericalPostalCodes(numericalPostalCodes);
+    copy.setCountry(country);
+    copy.setExtraInfo(extraInfo);
+    copy.setZoneType(zoneType);
+    copy.setRateFile(null);
+    return copy;
+  }
 
 }

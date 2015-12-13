@@ -17,54 +17,55 @@ import com.moorkensam.xlra.model.configuration.Language;
 @Entity
 @Table(name = "mailTemplate")
 @NamedQueries({
-		@NamedQuery(name = "MailTemplate.findAll", query = "SELECT m FROM MailTemplate m"),
-		@NamedQuery(name = "MailTemplate.findByLanguage", query = "SELECT m FROM MailTemplate m where m.language = :language") })
+    @NamedQuery(name = "MailTemplate.findAll", query = "SELECT m FROM MailTemplate m"),
+    @NamedQuery(name = "MailTemplate.findByLanguage",
+        query = "SELECT m FROM MailTemplate m where m.language = :language")})
 public class MailTemplate extends BaseEntity {
 
-	private static final long serialVersionUID = -7712260056891764597L;
+  private static final long serialVersionUID = -7712260056891764597L;
 
-	@Enumerated(EnumType.STRING)
-	private Language language;
+  @Enumerated(EnumType.STRING)
+  private Language language;
 
-	@ManyToOne
-	@JoinColumn(name = "xlraConfigurationId")
-	private Configuration xlraConfiguration;
+  @ManyToOne
+  @JoinColumn(name = "xlraConfigurationId")
+  private Configuration xlraConfiguration;
 
-	private String subject;
+  private String subject;
 
-	@Lob
-	private String template;
+  @Lob
+  private String template;
 
-	public Language getLanguage() {
-		return language;
-	}
+  public Language getLanguage() {
+    return language;
+  }
 
-	public void setLanguage(Language language) {
-		this.language = language;
-	}
+  public void setLanguage(Language language) {
+    this.language = language;
+  }
 
-	public String getTemplate() {
-		return template;
-	}
+  public String getTemplate() {
+    return template;
+  }
 
-	public void setTemplate(String template) {
-		this.template = template;
-	}
+  public void setTemplate(String template) {
+    this.template = template;
+  }
 
-	public Configuration getXlraConfiguration() {
-		return xlraConfiguration;
-	}
+  public Configuration getXlraConfiguration() {
+    return xlraConfiguration;
+  }
 
-	public void setXlraConfiguration(Configuration xlraConfiguration) {
-		this.xlraConfiguration = xlraConfiguration;
-	}
+  public void setXlraConfiguration(Configuration xlraConfiguration) {
+    this.xlraConfiguration = xlraConfiguration;
+  }
 
-	public String getSubject() {
-		return subject;
-	}
+  public String getSubject() {
+    return subject;
+  }
 
-	public void setSubject(String subject) {
-		this.subject = subject;
-	}
+  public void setSubject(String subject) {
+    this.subject = subject;
+  }
 
 }

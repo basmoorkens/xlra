@@ -16,82 +16,82 @@ import javax.persistence.Version;
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	protected long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  protected long id;
 
-	@Version
-	protected long version;
+  @Version
+  protected long version;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdDateTime;
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date createdDateTime;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date lastUpdatedDateTime;
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date lastUpdatedDateTime;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date deletedDateTime;
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date deletedDateTime;
 
-	private boolean deleted;
+  private boolean deleted;
 
-	@PrePersist
-	public void onCreate() {
-		setCreatedDateTime(new Date());
-	}
+  @PrePersist
+  public void onCreate() {
+    setCreatedDateTime(new Date());
+  }
 
-	@PreUpdate
-	public void onUpdate() {
-		setLastUpdatedDateTime(new Date());
-	}
+  @PreUpdate
+  public void onUpdate() {
+    setLastUpdatedDateTime(new Date());
+  }
 
-	public long getId() {
-		return id;
-	}
+  public long getId() {
+    return id;
+  }
 
-	public void setId(long id) {
-		this.id = id;
-	}
+  public void setId(long id) {
+    this.id = id;
+  }
 
-	public Date getCreatedDateTime() {
-		return createdDateTime;
-	}
+  public Date getCreatedDateTime() {
+    return createdDateTime;
+  }
 
-	public void setCreatedDateTime(Date createdDateTime) {
-		this.createdDateTime = createdDateTime;
-	}
+  public void setCreatedDateTime(Date createdDateTime) {
+    this.createdDateTime = createdDateTime;
+  }
 
-	public Date getLastUpdatedDateTime() {
-		return lastUpdatedDateTime;
-	}
+  public Date getLastUpdatedDateTime() {
+    return lastUpdatedDateTime;
+  }
 
-	public void setLastUpdatedDateTime(Date lastUpdatedDateTime) {
-		this.lastUpdatedDateTime = lastUpdatedDateTime;
-	}
+  public void setLastUpdatedDateTime(Date lastUpdatedDateTime) {
+    this.lastUpdatedDateTime = lastUpdatedDateTime;
+  }
 
-	public boolean isDeleted() {
-		return deleted;
-	}
+  public boolean isDeleted() {
+    return deleted;
+  }
 
-	public void setDeleted(boolean deleted) {
-		this.deleted = deleted;
-	}
+  public void setDeleted(boolean deleted) {
+    this.deleted = deleted;
+  }
 
-	public Date getDeletedDateTime() {
-		return deletedDateTime;
-	}
+  public Date getDeletedDateTime() {
+    return deletedDateTime;
+  }
 
-	public void setDeletedDateTime(Date deletedDateTime) {
-		this.deletedDateTime = deletedDateTime;
-	}
+  public void setDeletedDateTime(Date deletedDateTime) {
+    this.deletedDateTime = deletedDateTime;
+  }
 
-	public long getVersion() {
-		return version;
-	}
+  public long getVersion() {
+    return version;
+  }
 
-	public void setVersion(long version) {
-		this.version = version;
-	}
+  public void setVersion(long version) {
+    this.version = version;
+  }
 
 }

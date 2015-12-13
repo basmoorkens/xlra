@@ -15,29 +15,28 @@ import com.moorkensam.xlra.model.translation.TranslationKey;
 
 public class ConditionFactoryTest extends UnitilsJUnit4 {
 
-	private ConditionFactory conditionFactory;
+  private ConditionFactory conditionFactory;
 
-	@Mock
-	private TranslationUtil translationUtil;
+  @Mock
+  private TranslationUtil translationUtil;
 
-	@Before
-	public void init() {
-		conditionFactory = new ConditionFactory();
-		conditionFactory.setTranslationUtil(translationUtil);
-	}
+  @Before
+  public void init() {
+    conditionFactory = new ConditionFactory();
+    conditionFactory.setTranslationUtil(translationUtil);
+  }
 
-	@Test
-	public void testCreateCondition() {
-		translationUtil.fillInTranslation(EasyMock.isA(Condition.class));
-		EasyMock.expectLastCall();
-		EasyMockUnitils.replay();
+  @Test
+  public void testCreateCondition() {
+    translationUtil.fillInTranslation(EasyMock.isA(Condition.class));
+    EasyMock.expectLastCall();
+    EasyMockUnitils.replay();
 
-		Condition cond = conditionFactory.createCondition(
-				TranslationKey.ADR_MINIMUM, "100");
-		Assert.assertNotNull(cond);
-		Assert.assertEquals(ConditionType.CALCULATION, cond.getConditionType());
-		Assert.assertEquals(TranslationKey.ADR_MINIMUM, cond.getConditionKey());
-		Assert.assertNotNull(cond.getI8nKey());
-	}
+    Condition cond = conditionFactory.createCondition(TranslationKey.ADR_MINIMUM, "100");
+    Assert.assertNotNull(cond);
+    Assert.assertEquals(ConditionType.CALCULATION, cond.getConditionType());
+    Assert.assertEquals(TranslationKey.ADR_MINIMUM, cond.getConditionKey());
+    Assert.assertNotNull(cond.getI8nKey());
+  }
 
 }

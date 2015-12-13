@@ -17,53 +17,59 @@ import com.moorkensam.xlra.service.RolePermissionService;
 @ViewScoped
 public class PermissionController {
 
-	@Inject
-	private RolePermissionService rolePermissionService;
+  @Inject
+  private RolePermissionService rolePermissionService;
 
-	private List<Permission> allPermissions;
+  private List<Permission> allPermissions;
 
-	private Permission newPermission;
+  private Permission newPermission;
 
-	@PostConstruct
-	public void initialize() {
-		newPermission = new Permission();
-		refreshPermissions();
-	}
+  @PostConstruct
+  public void initialize() {
+    newPermission = new Permission();
+    refreshPermissions();
+  }
 
-	public void onPermissionRowEdit(RowEditEvent event) {
-		Permission permission = (Permission) event.getObject();
-		MessageUtil.addMessage("Permission updated",
-				"Updated " + permission.getKey() + " to ");
-		rolePermissionService.updatePermission(permission);
-		refreshPermissions();
-	}
+  /**
+   * Triggered when a permission is selected for edit.
+   * 
+   * @param event The triggering event.
+   */
+  public void onPermissionRowEdit(RowEditEvent event) {
+    Permission permission = (Permission) event.getObject();
+    MessageUtil.addMessage("Permission updated", "Updated " + permission.getKey() + " to ");
+    rolePermissionService.updatePermission(permission);
+    refreshPermissions();
+  }
 
-	private void refreshPermissions() {
-		allPermissions = rolePermissionService.getAllPermissions();
-	}
+  private void refreshPermissions() {
+    allPermissions = rolePermissionService.getAllPermissions();
+  }
 
-	public void saveNewPermission() {
-		rolePermissionService.createPermission(newPermission);
-		MessageUtil.addMessage("Permission created", "Created permission"
-				+ newPermission.getKey());
-		newPermission = new Permission();
-		refreshPermissions();
-	}
+  /**
+   * Save the new permission.
+   */
+  public void saveNewPermission() {
+    rolePermissionService.createPermission(newPermission);
+    MessageUtil.addMessage("Permission created", "Created permission" + newPermission.getKey());
+    newPermission = new Permission();
+    refreshPermissions();
+  }
 
-	public List<Permission> getAllPermissions() {
-		return allPermissions;
-	}
+  public List<Permission> getAllPermissions() {
+    return allPermissions;
+  }
 
-	public void setAllPermissions(List<Permission> allPermissions) {
-		this.allPermissions = allPermissions;
-	}
+  public void setAllPermissions(List<Permission> allPermissions) {
+    this.allPermissions = allPermissions;
+  }
 
-	public Permission getNewPermission() {
-		return newPermission;
-	}
+  public Permission getNewPermission() {
+    return newPermission;
+  }
 
-	public void setNewPermission(Permission newPermission) {
-		this.newPermission = newPermission;
-	}
+  public void setNewPermission(Permission newPermission) {
+    this.newPermission = newPermission;
+  }
 
 }

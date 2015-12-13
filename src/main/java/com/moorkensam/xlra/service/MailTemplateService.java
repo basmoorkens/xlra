@@ -10,15 +10,15 @@ import com.moorkensam.xlra.model.offerte.QuotationResult;
 
 public interface MailTemplateService {
 
-	void updateEmailTemplate(MailTemplate mailTemplate);
+  void updateEmailTemplate(MailTemplate mailTemplate);
 
-	MailTemplatesForForLanguages getAllTemplates();
+  MailTemplatesForForLanguages getAllTemplates();
 
-	MailTemplate getMailTemplateForLanguage(Language language);
+  MailTemplate getMailTemplateForLanguage(Language language);
 
-	void saveMailTemplateDTO(MailTemplatesForForLanguages mailTemplateDTO);
+  void saveMailTemplateDto(MailTemplatesForForLanguages mailTemplateDto);
 
-	public EmailResult initializeOfferteEmail(QuotationResult result)
-			throws TemplatingException, RateFileException;
+  public EmailResult initializeOfferteEmail(QuotationResult result) throws TemplatingException,
+      RateFileException;
 
 }

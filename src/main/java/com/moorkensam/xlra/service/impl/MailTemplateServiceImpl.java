@@ -8,7 +8,7 @@ import javax.persistence.NoResultException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.moorkensam.xlra.dao.EmailTemplateDAO;
+import com.moorkensam.xlra.dao.EmailTemplateDao;
 import com.moorkensam.xlra.dto.MailTemplatesForForLanguages;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.error.RateFileException;
@@ -21,83 +21,79 @@ import com.moorkensam.xlra.service.MailTemplateService;
 @Stateless
 public class MailTemplateServiceImpl implements MailTemplateService {
 
-	@Inject
-	private EmailTemplateDAO mailTemplateDAO;
+  @Inject
+  private EmailTemplateDao mailTemplateDao;
 
-	private TemplateParseService templateParseService;
+  private TemplateParseService templateParseService;
 
-	private final static Logger logger = LogManager.getLogger();
+  private final static Logger logger = LogManager.getLogger();
 
-	@PostConstruct
-	public void init() {
-		setTemplateParseService(TemplateParseServiceImpl.getInstance());
-		templateParseService = TemplateParseServiceImpl.getInstance();
-	}
+  @PostConstruct
+  public void init() {
+    setTemplateParseService(TemplateParseServiceImpl.getInstance());
+    templateParseService = TemplateParseServiceImpl.getInstance();
+  }
 
-	@Override
-	public void updateEmailTemplate(MailTemplate mailTemplate) {
-		getMailTemplateDAO().updateEmailTemplate(mailTemplate);
-	}
+  @Override
+  public void updateEmailTemplate(MailTemplate mailTemplate) {
+    getMailTemplateDao().updateEmailTemplate(mailTemplate);
+  }
 
-	@Override
-	public MailTemplatesForForLanguages getAllTemplates() {
-		MailTemplatesForForLanguages dto = new MailTemplatesForForLanguages(getMailTemplateDAO()
-				.getAllTemplates());
-		return dto;
-	}
+  @Override
+  public MailTemplatesForForLanguages getAllTemplates() {
+    MailTemplatesForForLanguages dto =
+        new MailTemplatesForForLanguages(getMailTemplateDao().getAllTemplates());
+    return dto;
+  }
 
-	@Override
-	public void saveMailTemplateDTO(MailTemplatesForForLanguages mailTemplateDTO) {
-		for (MailTemplate mt : mailTemplateDTO.getMailTemplates()) {
-			getMailTemplateDAO().updateEmailTemplate(mt);
-		}
-	}
+  @Override
+  public void saveMailTemplateDto(MailTemplatesForForLanguages mailTemplateDto) {
+    for (MailTemplate mt : mailTemplateDto.getMailTemplates()) {
+      getMailTemplateDao().updateEmailTemplate(mt);
+    }
+  }
 
-	@Override
-	public MailTemplate getMailTemplateForLanguage(Language language) {
-		return getMailTemplateDAO().getMailTemplateForLanguage(language);
-	}
+  @Override
+  public MailTemplate getMailTemplateForLanguage(Language language) {
+    return getMailTemplateDao().getMailTemplateForLanguage(language);
+  }
 
-	@Override
-	public EmailResult initializeOfferteEmail(QuotationResult result)
-			throws TemplatingException, RateFileException {
-		EmailResult dto = new EmailResult();
-		try {
-			MailTemplate template = getMailTemplateDAO()
-					.getMailTemplateForLanguage(
-							result.getQuery().getResultLanguage());
-			logger.info("Parsing template: " + template.getTemplate());
-			String emailMessage = templateParseService
-					.parseOfferteEmailTemplate(template.getTemplate(), result);
-			dto.setToAddress(result.getQuery().getCustomer().getEmail());
-			dto.setSubject(template.getSubject());
-			dto.setEmail(emailMessage);
-		} catch (NoResultException nre) {
-			logger.error("Could not find email template for "
-					+ result.getQuery().getResultLanguage());
-			throw new RateFileException(
-					"Could not find email template for language "
-							+ result.getQuery().getResultLanguage());
-		}
-		return dto;
+  @Override
+  public EmailResult initializeOfferteEmail(QuotationResult result) throws TemplatingException,
+      RateFileException {
+    EmailResult dto = new EmailResult();
+    try {
+      MailTemplate template =
+          getMailTemplateDao().getMailTemplateForLanguage(result.getQuery().getResultLanguage());
+      logger.info("Parsing template: " + template.getTemplate());
+      String emailMessage =
+          templateParseService.parseOfferteEmailTemplate(template.getTemplate(), result);
+      dto.setToAddress(result.getQuery().getCustomer().getEmail());
+      dto.setSubject(template.getSubject());
+      dto.setEmail(emailMessage);
+    } catch (NoResultException nre) {
+      logger.error("Could not find email template for " + result.getQuery().getResultLanguage());
+      throw new RateFileException("Could not find email template for language "
+          + result.getQuery().getResultLanguage());
+    }
+    return dto;
 
-	}
+  }
 
-	public EmailTemplateDAO getMailTemplateDAO() {
-		return mailTemplateDAO;
-	}
+  public EmailTemplateDao getMailTemplateDao() {
+    return mailTemplateDao;
+  }
 
-	public void setMailTemplateDAO(EmailTemplateDAO mailTemplateDAO) {
-		this.mailTemplateDAO = mailTemplateDAO;
-	}
+  public void setMailTemplateDao(EmailTemplateDao mailTemplateDao) {
+    this.mailTemplateDao = mailTemplateDao;
+  }
 
-	public TemplateParseService getTemplateParseService() {
-		return templateParseService;
-	}
+  public TemplateParseService getTemplateParseService() {
+    return templateParseService;
+  }
 
-	public void setTemplateParseService(
-			TemplateParseService templateParseService) {
-		this.templateParseService = templateParseService;
-	}
+  public void setTemplateParseService(TemplateParseService templateParseService) {
+    this.templateParseService = templateParseService;
+  }
 
 }

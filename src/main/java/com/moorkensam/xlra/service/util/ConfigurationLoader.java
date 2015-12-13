@@ -9,63 +9,67 @@ import org.apache.logging.log4j.Logger;
 
 public class ConfigurationLoader {
 
-	private final static Logger logger = LogManager.getLogger();
+  private static final Logger logger = LogManager.getLogger();
 
-	public final static String MAIL_SENDER = "email.from";
+  public static final String MAIL_SENDER = "email.from";
 
-	public final static String APPLICATION_PASSWORD_SETUP_URL = "application.password.setup.url";
+  public static final String APPLICATION_PASSWORD_SETUP_URL = "application.password.setup.url";
 
-	public final static String APPLICAITON_PASSWORD_RESET_URL = "application.password.reset.url";
+  public static final String APPLICAITON_PASSWORD_RESET_URL = "application.password.reset.url";
 
-	public final static String APPLICATION_BASE_URL = "application.base.url";
+  public static final String APPLICATION_BASE_URL = "application.base.url";
 
-	public final static String PDF_GENERATION_PATH = "pdf.generate.path";
+  public static final String PDF_GENERATION_PATH = "pdf.generate.path";
 
-	public final static String PDF_TEMPORARY_PATH = "pdf.temp.path";
+  public static final String PDF_TEMPORARY_PATH = "pdf.temp.path";
 
-	public final static String PDF_AUTHOR = "pdf.author";
+  public static final String PDF_AUTHOR = "pdf.author";
 
-	public final static String PDF_TITLE_PREFIX = "pdf.title.prefix";
-	
-	public final static String IMAGE_PATH = "image.path";
+  public static final String PDF_TITLE_PREFIX = "pdf.title.prefix";
 
-	public static ConfigurationLoader instance;
+  public static final String IMAGE_PATH = "image.path";
 
-	private Properties properties;
+  public static ConfigurationLoader instance;
 
-	private ConfigurationLoader() {
-		try {
-			loadProperties();
-		} catch (IOException e) {
-			logger.error("Failed to read in properties file " + e);
-		}
-	}
+  private Properties properties;
 
-	public static ConfigurationLoader getInstance() {
-		if (instance == null) {
-			instance = new ConfigurationLoader();
-		}
-		return instance;
-	}
+  private ConfigurationLoader() {
+    try {
+      loadProperties();
+    } catch (IOException e) {
+      logger.error("Failed to read in properties file " + e);
+    }
+  }
 
-	private void loadProperties() throws IOException {
-		properties = new Properties();
-		InputStream in = ConfigurationLoader.class
-				.getResourceAsStream("/configuration.properties");
-		properties.load(in);
-		in.close();
-	}
+  /**
+   * gets the instance.
+   * 
+   * @return the instance.
+   */
+  public static ConfigurationLoader getInstance() {
+    if (instance == null) {
+      instance = new ConfigurationLoader();
+    }
+    return instance;
+  }
 
-	public Properties getProperties() {
-		return properties;
-	}
+  private void loadProperties() throws IOException {
+    properties = new Properties();
+    InputStream in = ConfigurationLoader.class.getResourceAsStream("/configuration.properties");
+    properties.load(in);
+    in.close();
+  }
 
-	public void setProperties(Properties properties) {
-		this.properties = properties;
-	}
+  public Properties getProperties() {
+    return properties;
+  }
 
-	public String getProperty(String propertyToFind) {
-		return properties.getProperty(propertyToFind);
-	}
+  public void setProperties(Properties properties) {
+    this.properties = properties;
+  }
+
+  public String getProperty(String propertyToFind) {
+    return properties.getProperty(propertyToFind);
+  }
 
 }

@@ -7,20 +7,20 @@ import com.moorkensam.xlra.model.security.Role;
 
 public interface RolePermissionService {
 
-	public void createRole(Role role);
+  public void createRole(Role role);
 
-	public Role updateRole(Role role);
+  public Role updateRole(Role role);
 
-	public List<Role> getAllRoles();
+  public List<Role> getAllRoles();
 
-	public Role getRoleById(long id);
+  public Role getRoleById(long id);
 
-	public List<Permission> getAllPermissions();
+  public List<Permission> getAllPermissions();
 
-	public void createPermission(Permission p);
+  public void createPermission(Permission perm);
 
-	public Permission updatePermission(Permission p);
+  public Permission updatePermission(Permission perm);
 
-	public Permission getPermissionById(long id);
+  public Permission getPermissionById(long id);
 
 }

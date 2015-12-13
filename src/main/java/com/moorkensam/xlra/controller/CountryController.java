@@ -17,46 +17,51 @@ import com.moorkensam.xlra.service.CountryService;
 @ViewScoped
 public class CountryController {
 
-	@Inject
-	private CountryService countryService;
+  @Inject
+  private CountryService countryService;
 
-	private List<Country> countries;
+  private List<Country> countries;
 
-	private Country selectedCountry;
+  private Country selectedCountry;
 
-	@PostConstruct
-	public void init() {
-		countries = countryService.getAllCountriesFullLoad();
-	}
+  @PostConstruct
+  public void init() {
+    countries = countryService.getAllCountriesFullLoad();
+  }
 
-	public void onCountryRowEdit(RowEditEvent event) {
-		Country c = (Country) event.getObject();
-		MessageUtil.addMessage("Country updated", "Country " + c.getShortName()
-				+ " was successfully");
-		c = countryService.updateCountry(c);
-	}
+  /**
+   * Executed when a country is edited.
+   * 
+   * @param event The event that triggered the update.
+   */
+  public void onCountryRowEdit(RowEditEvent event) {
+    Country country = (Country) event.getObject();
+    MessageUtil.addMessage("Country updated", "Country " + country.getShortName()
+        + " was successfully");
+    country = countryService.updateCountry(country);
+  }
 
-	public Country getSelectedCountry() {
-		return selectedCountry;
-	}
+  public Country getSelectedCountry() {
+    return selectedCountry;
+  }
 
-	public void setSelectedCountry(Country selectedCountry) {
-		this.selectedCountry = selectedCountry;
-	}
+  public void setSelectedCountry(Country selectedCountry) {
+    this.selectedCountry = selectedCountry;
+  }
 
-	public List<Country> getCountries() {
-		return countries;
-	}
+  public List<Country> getCountries() {
+    return countries;
+  }
 
-	public void setCountries(List<Country> countries) {
-		this.countries = countries;
-	}
+  public void setCountries(List<Country> countries) {
+    this.countries = countries;
+  }
 
-	public CountryService getCountryService() {
-		return countryService;
-	}
+  public CountryService getCountryService() {
+    return countryService;
+  }
 
-	public void setCountryService(CountryService countryService) {
-		this.countryService = countryService;
-	}
+  public void setCountryService(CountryService countryService) {
+    this.countryService = countryService;
+  }
 }

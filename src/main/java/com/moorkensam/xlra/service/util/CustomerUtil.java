@@ -5,25 +5,36 @@ import com.moorkensam.xlra.model.customer.Customer;
 
 public class CustomerUtil {
 
-	private static CustomerUtil instance;
+  private static CustomerUtil instance;
 
-	public static CustomerUtil getInstance() {
-		if (instance == null) {
-			instance = new CustomerUtil();
-		}
-		return instance;
-	}
+  /**
+   * Gets the instance.
+   * 
+   * @return the instance.
+   */
+  public static CustomerUtil getInstance() {
+    if (instance == null) {
+      instance = new CustomerUtil();
+    }
+    return instance;
+  }
 
-	public Customer promoteToFullCustomer(Customer customer) {
-		customer.setHasOwnRateFile(true);
-		if (customer.getAddress() == null) {
-			customer.setAddress(new Address());
-		}
-		return customer;
-	}
+  /**
+   * promote a 'base' customer to a full customer.
+   * 
+   * @param customer the customer to promote.
+   * @return the promoted customer.
+   */
+  public Customer promoteToFullCustomer(Customer customer) {
+    customer.setHasOwnRateFile(true);
+    if (customer.getAddress() == null) {
+      customer.setAddress(new Address());
+    }
+    return customer;
+  }
 
-	private CustomerUtil() {
+  private CustomerUtil() {
 
-	}
+  }
 
 }

@@ -1,15 +1,15 @@
 package com.moorkensam.xlra.model.rate;
 
 public enum CalculationValueType {
-	PERCENTAGE("%"), CONSTANT("EUR");
+  PERCENTAGE("%"), CONSTANT("EUR");
 
-	String suffix;
+  String suffix;
 
-	private CalculationValueType(String suffix) {
-		this.suffix = suffix;
-	}
+  private CalculationValueType(String suffix) {
+    this.suffix = suffix;
+  }
 
-	public String getSuffix() {
-		return suffix;
-	}
+  public String getSuffix() {
+    return suffix;
+  }
 }

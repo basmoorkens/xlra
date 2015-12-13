@@ -8,19 +8,18 @@ import com.moorkensam.xlra.model.error.RateFileException;
 
 public interface CurrencyService {
 
-	void updateCurrencyRate(CurrencyRate currencyRate);
+  void updateCurrencyRate(CurrencyRate currencyRate);
 
-	void createCurrencyRate(CurrencyRate currencyRate);
+  void createCurrencyRate(CurrencyRate currencyRate);
 
-	List<CurrencyRate> getAllCurrencyRates();
+  List<CurrencyRate> getAllCurrencyRates();
 
-	List<CurrencyRate> getAllChfRates();
+  List<CurrencyRate> getAllChfRates();
 
-	void updateCurrentChfValue(BigDecimal value);
+  void updateCurrentChfValue(BigDecimal value);
 
-	CurrencyRate getChfRateForCurrentPrice(BigDecimal price)
-			throws RateFileException;
+  CurrencyRate getChfRateForCurrentPrice(BigDecimal price) throws RateFileException;
 
-	public void deleteCurrencyRate(CurrencyRate toDelete);
+  public void deleteCurrencyRate(CurrencyRate toDelete);
 
 }

@@ -6,16 +6,16 @@ import com.moorkensam.xlra.model.customer.Customer;
 
 public interface CustomerService {
 
-	public Customer getCustomerById(long id);
+  public Customer getCustomerById(long id);
 
-	public Customer createCustomer(Customer customer);
+  public Customer createCustomer(Customer customer);
 
-	public void updateCustomer(Customer customer);
+  public void updateCustomer(Customer customer);
 
-	public List<Customer> getAllFullCustomers();
+  public List<Customer> getAllFullCustomers();
 
-	public void deleteCustomer(Customer customer);
+  public void deleteCustomer(Customer customer);
 
-	public List<Customer> getAllCustomers();
+  public List<Customer> getAllCustomers();
 
 }

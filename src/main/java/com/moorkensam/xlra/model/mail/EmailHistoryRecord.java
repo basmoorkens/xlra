@@ -16,49 +16,49 @@ import com.moorkensam.xlra.model.offerte.QuotationResult;
 @Table(name = "emailHistoryrecord")
 public class EmailHistoryRecord extends BaseEntity {
 
-	private static final long serialVersionUID = 4167800588284752022L;
+  private static final long serialVersionUID = 4167800588284752022L;
 
-	private EmailSentStatus status;
+  private EmailSentStatus status;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date dateTime;
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date dateTime;
 
-	private String username;
+  private String username;
 
-	@ManyToOne
-	@JoinColumn(name = "offerte_id")
-	private QuotationResult offerte;
+  @ManyToOne
+  @JoinColumn(name = "offerte_id")
+  private QuotationResult offerte;
 
-	public String getUsername() {
-		return username;
-	}
+  public String getUsername() {
+    return username;
+  }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+  public void setUsername(String username) {
+    this.username = username;
+  }
 
-	public Date getDateTime() {
-		return dateTime;
-	}
+  public Date getDateTime() {
+    return dateTime;
+  }
 
-	public void setDateTime(Date dateTime) {
-		this.dateTime = dateTime;
-	}
+  public void setDateTime(Date dateTime) {
+    this.dateTime = dateTime;
+  }
 
-	public EmailSentStatus getStatus() {
-		return status;
-	}
+  public EmailSentStatus getStatus() {
+    return status;
+  }
 
-	public void setStatus(EmailSentStatus status) {
-		this.status = status;
-	}
+  public void setStatus(EmailSentStatus status) {
+    this.status = status;
+  }
 
-	public QuotationResult getOfferte() {
-		return offerte;
-	}
+  public QuotationResult getOfferte() {
+    return offerte;
+  }
 
-	public void setOfferte(QuotationResult offerte) {
-		this.offerte = offerte;
-	}
+  public void setOfferte(QuotationResult offerte) {
+    this.offerte = offerte;
+  }
 
 }

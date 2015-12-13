@@ -31,275 +31,327 @@ import com.moorkensam.xlra.service.util.TranslationUtil;
 @ViewScoped
 public class ManageRatesController {
 
-	@Inject
-	private RateFileService rateFileService;
+  @Inject
+  private RateFileService rateFileService;
 
-	@Inject
-	private UserSessionController sessionController;
+  @Inject
+  private UserSessionController sessionController;
 
-	private TranslationUtil translationUtil;
+  private TranslationUtil translationUtil;
 
-	private ConditionFactory conditionFactory;
+  private ConditionFactory conditionFactory;
 
-	private List<RateFile> rateFiles;
+  private List<RateFile> rateFiles;
 
-	private boolean collapseConditionsDetailGrid = true;
+  private boolean collapseConditionsDetailGrid = true;
 
-	private boolean collapseRateLinesDetailGrid = true;
+  private boolean collapseRateLinesDetailGrid = true;
 
-	private boolean collapseZonesDetailGrid = true;
+  private boolean collapseZonesDetailGrid = true;
 
-	private RateFile selectedRateFile;
+  private RateFile selectedRateFile;
 
-	private List<String> columnHeaders = new ArrayList<String>();
+  private List<String> columnHeaders = new ArrayList<String>();
 
-	private boolean hasRateFileSelected = false;
+  private boolean hasRateFileSelected = false;
 
-	private TranslationKey keyToAdd;
+  private TranslationKey keyToAdd;
 
-	private boolean editable;
+  private boolean editable;
 
-	private Condition selectedCondition;
+  private Condition selectedCondition;
 
-	@PostConstruct
-	public void initializeController() {
-		editable = sessionController.isAdmin();
-		refreshRates();
-		resetSelectedRateFile();
-		translationUtil = new TranslationUtil();
-		conditionFactory = new ConditionFactory();
-	}
+  /**
+   * Logic to initialize the controller.
+   */
+  @PostConstruct
+  public void initializeController() {
+    editable = sessionController.isAdmin();
+    refreshRates();
+    resetSelectedRateFile();
+    translationUtil = new TranslationUtil();
+    conditionFactory = new ConditionFactory();
+  }
 
-	private void resetSelectedRateFile() {
-		selectedRateFile = new RateFile();
-	}
+  private void resetSelectedRateFile() {
+    selectedRateFile = new RateFile();
+  }
 
-	public void saveRateFile() {
-		rateFileService.updateRateFile(selectedRateFile);
-		resetPage();
-	}
+  public void saveRateFile() {
+    rateFileService.updateRateFile(selectedRateFile);
+    resetPage();
+  }
 
-	private void resetPage() {
-		resetSelectedRateFile();
-		collapseConditionsDetailGrid = true;
-		collapseRateLinesDetailGrid = true;
-		collapseZonesDetailGrid = true;
-		completeRateName("");
-		hasRateFileSelected = false;
-		columnHeaders = new ArrayList<String>();
-	}
+  private void resetPage() {
+    resetSelectedRateFile();
+    collapseConditionsDetailGrid = true;
+    collapseRateLinesDetailGrid = true;
+    collapseZonesDetailGrid = true;
+    completeRateName("");
+    hasRateFileSelected = false;
+    columnHeaders = new ArrayList<String>();
+  }
 
-	/**
-	 * Method that executes when a ratelinecell gets edited.
-	 * 
-	 * @param event
-	 */
-	public void onRateLineCellEdit(CellEditEvent event) {
-		RateUtil.onRateLineCellEdit(event);
-		updateRateFile();
-	}
+  /**
+   * Method that executes when a ratelinecell gets edited.
+   * 
+   * @param event The event that triggered this.
+   */
+  public void onRateLineCellEdit(CellEditEvent event) {
+    RateUtil.onRateLineCellEdit(event);
+    updateRateFile();
+  }
 
-	public void setupEditCondition(Condition condition) {
-		this.selectedCondition = condition;
-		RequestContext context = RequestContext.getCurrentInstance();
-		context.execute("PF('editConditionDialog').show();");
-	}
+  /**
+   * Setup the page to edit a condition.
+   * 
+   * @param condition The condition to edit.
+   */
+  public void setupEditCondition(Condition condition) {
+    this.selectedCondition = condition;
+    RequestContext context = RequestContext.getCurrentInstance();
+    context.execute("PF('editConditionDialog').show();");
+  }
 
-	public void saveEditCondition() {
-		updateRateFile();
-		MessageUtil.addMessage("Condition updated", "Your changes were saved.");
-		selectedCondition = null;
-	}
+  /**
+   * Save the edited condition.
+   */
+  public void saveEditCondition() {
+    updateRateFile();
+    MessageUtil.addMessage("Condition updated", "Your changes were saved.");
+    selectedCondition = null;
+  }
 
-	public boolean isNumericRateFileZone() {
-		if (selectedRateFile != null) {
-			return selectedRateFile.isNumericalZoneRateFile();
-		}
-		return false;
-	}
+  /**
+   * Check if the selected ratefile has numericalzones.
+   * 
+   * @return True when numerical, false otherwise.
+   */
+  public boolean isNumericRateFileZone() {
+    if (selectedRateFile != null) {
+      return selectedRateFile.isNumericalZoneRateFile();
+    }
+    return false;
+  }
 
-	public boolean isAlphaNumericRateFileZone() {
-		if (selectedRateFile != null) {
-			return selectedRateFile.isAlphaNumericalZoneRateFile();
-		}
-		return false;
-	}
+  /**
+   * Check if the selected ratefile has alpha numericalzones.
+   * 
+   * @return True when alphanumerical, false otherwise.
+   */
+  public boolean isAlphaNumericRateFileZone() {
+    if (selectedRateFile != null) {
+      return selectedRateFile.isAlphaNumericalZoneRateFile();
+    }
+    return false;
+  }
 
-	public void onZoneEdit(RowEditEvent event) {
-		Zone zone = (Zone) event.getObject();
-		MessageUtil.addMessage("Zone update", zone.getName()
-				+ " successfully updated.");
-		updateRateFile();
-	}
+  /**
+   * Triggered on zone edit event.
+   * 
+   * @param event The event that triggered this.
+   */
+  public void onZoneEdit(RowEditEvent event) {
+    Zone zone = (Zone) event.getObject();
+    MessageUtil.addMessage("Zone update", zone.getName() + " successfully updated.");
+    updateRateFile();
+  }
 
-	public void deleteZone(Zone zone) {
-		selectedRateFile = rateFileService.deleteZone(zone);
-	}
+  public void deleteZone(Zone zone) {
+    selectedRateFile = rateFileService.deleteZone(zone);
+  }
 
-	public void deleteCondition(Condition condition) {
-		MessageUtil.addMessage("condition removed",
-				condition.getTranslatedKey() + " was successfully removed.");
-		selectedRateFile.getConditions().remove(condition);
-		condition.setRateFile(null);
-		updateRateFile();
-	}
+  /**
+   * Delete a condition.
+   * 
+   * @param condition The condition to delete.
+   */
+  public void deleteCondition(Condition condition) {
+    MessageUtil.addMessage("condition removed", condition.getTranslatedKey()
+        + " was successfully removed.");
+    selectedRateFile.getConditions().remove(condition);
+    condition.setRateFile(null);
+    updateRateFile();
+  }
 
-	public void fetchDetailsOfRatefile(SelectEvent event) {
-		selectedRateFile = rateFileService.getFullRateFile(((RateFile) event
-				.getObject()).getId());
-		collapseConditionsDetailGrid = false;
-		collapseRateLinesDetailGrid = false;
-		collapseZonesDetailGrid = false;
-		hasRateFileSelected = true;
-		refreshRateLineColumns();
-		translationUtil.fillInTranslations(selectedRateFile.getConditions());
-	}
+  /**
+   * Fetches the details of the selected ratefile.
+   * 
+   * @param event The triggering event.
+   */
+  public void fetchDetailsOfRatefile(SelectEvent event) {
+    selectedRateFile = rateFileService.getFullRateFile(((RateFile) event.getObject()).getId());
+    collapseConditionsDetailGrid = false;
+    collapseRateLinesDetailGrid = false;
+    collapseZonesDetailGrid = false;
+    hasRateFileSelected = true;
+    refreshRateLineColumns();
+    translationUtil.fillInTranslations(selectedRateFile.getConditions());
+  }
 
-	private void refreshRates() {
-		rateFiles = rateFileService.getAllRateFiles();
-	}
+  private void refreshRates() {
+    rateFiles = rateFileService.getAllRateFiles();
+  }
 
-	public List<RateFile> completeRateName(String input) {
-		List<RateFile> filteredRateFiles = new ArrayList<RateFile>();
-		for (RateFile rf : rateFiles) {
-			if (rf.getName().toLowerCase().contains(input.toLowerCase())) {
-				filteredRateFiles.add(rf);
-			}
-		}
-		return filteredRateFiles;
-	}
+  /**
+   * Auto complete method.
+   * 
+   * @param input The input string.
+   * @return List of ratefiles that match the input.
+   */
+  public List<RateFile> completeRateName(String input) {
+    List<RateFile> filteredRateFiles = new ArrayList<RateFile>();
+    for (RateFile rf : rateFiles) {
+      if (rf.getName().toLowerCase().contains(input.toLowerCase())) {
+        filteredRateFiles.add(rf);
+      }
+    }
+    return filteredRateFiles;
+  }
 
-	public List<RateFile> getRateFiles() {
-		return rateFiles;
-	}
+  public List<RateFile> getRateFiles() {
+    return rateFiles;
+  }
 
-	public void setRateFiles(List<RateFile> rateFiles) {
-		this.rateFiles = rateFiles;
-	}
+  public void setRateFiles(List<RateFile> rateFiles) {
+    this.rateFiles = rateFiles;
+  }
 
-	public RateFileService getRateFileService() {
-		return rateFileService;
-	}
+  public RateFileService getRateFileService() {
+    return rateFileService;
+  }
 
-	public void setRateFileService(RateFileService rateFileService) {
-		this.rateFileService = rateFileService;
-	}
+  public void setRateFileService(RateFileService rateFileService) {
+    this.rateFileService = rateFileService;
+  }
 
-	public RateFile getSelectedRateFile() {
-		return selectedRateFile;
-	}
+  public RateFile getSelectedRateFile() {
+    return selectedRateFile;
+  }
 
-	public void setSelectedRateFile(RateFile selectedRateFile) {
-		this.selectedRateFile = selectedRateFile;
-	}
+  public void setSelectedRateFile(RateFile selectedRateFile) {
+    this.selectedRateFile = selectedRateFile;
+  }
 
-	public RateFile getRateFileById(long id) {
-		for (RateFile rf : rateFiles) {
-			if (rf.getId() == id) {
-				return rf;
-			}
-		}
-		return null;
-	}
+  /**
+   * fetches a ratefile by id.
+   * 
+   * @param id The id to fetch.
+   * @return The fetched ratefile.
+   */
+  public RateFile getRateFileById(long id) {
+    for (RateFile rf : rateFiles) {
+      if (rf.getId() == id) {
+        return rf;
+      }
+    }
+    return null;
+  }
 
-	public boolean isCollapseConditionsDetailGrid() {
-		return collapseConditionsDetailGrid;
-	}
+  public boolean isCollapseConditionsDetailGrid() {
+    return collapseConditionsDetailGrid;
+  }
 
-	public void setCollapseConditionsDetailGrid(
-			boolean collapseConditionsDetailGrid) {
-		this.collapseConditionsDetailGrid = collapseConditionsDetailGrid;
-	}
+  public void setCollapseConditionsDetailGrid(boolean collapseConditionsDetailGrid) {
+    this.collapseConditionsDetailGrid = collapseConditionsDetailGrid;
+  }
 
-	public boolean isCollapseRateLinesDetailGrid() {
-		return collapseRateLinesDetailGrid;
-	}
+  public boolean isCollapseRateLinesDetailGrid() {
+    return collapseRateLinesDetailGrid;
+  }
 
-	public void setCollapseRateLinesDetailGrid(
-			boolean collapseRateLinesDetailGrid) {
-		this.collapseRateLinesDetailGrid = collapseRateLinesDetailGrid;
-	}
+  public void setCollapseRateLinesDetailGrid(boolean collapseRateLinesDetailGrid) {
+    this.collapseRateLinesDetailGrid = collapseRateLinesDetailGrid;
+  }
 
-	public boolean isHasRateFileSelected() {
-		return hasRateFileSelected;
-	}
+  public boolean isHasRateFileSelected() {
+    return hasRateFileSelected;
+  }
 
-	public void setHasRateFileSelected(boolean hasRateFileSelected) {
-		this.hasRateFileSelected = hasRateFileSelected;
-	}
+  public void setHasRateFileSelected(boolean hasRateFileSelected) {
+    this.hasRateFileSelected = hasRateFileSelected;
+  }
 
-	private List<String> refreshRateLineColumns() {
-		columnHeaders = new ArrayList<String>();
-		for (RateLine rl : selectedRateFile.getRateLines()) {
-			columnHeaders.add(rl.getZone().getName());
-		}
-		return columnHeaders;
-	}
+  private List<String> refreshRateLineColumns() {
+    columnHeaders = new ArrayList<String>();
+    for (RateLine rl : selectedRateFile.getRateLines()) {
+      columnHeaders.add(rl.getZone().getName());
+    }
+    return columnHeaders;
+  }
 
-	public String getMeasurementTitle() {
-		if (selectedRateFile.getId() != 0) {
-			return selectedRateFile.getMeasurement().getDescription();
-		} else {
-			return "Measurement";
-		}
-	}
+  /**
+   * Get the title for the measurement.
+   * 
+   * @return The title string.
+   */
+  public String getMeasurementTitle() {
+    if (selectedRateFile.getId() != 0) {
+      return selectedRateFile.getMeasurement().getDescription();
+    } else {
+      return "Measurement";
+    }
+  }
 
-	public List<String> getColumnHeaders() {
-		return columnHeaders;
-	}
+  public List<String> getColumnHeaders() {
+    return columnHeaders;
+  }
 
-	public void setColumnHeaders(List<String> columnHeaders) {
-		this.columnHeaders = columnHeaders;
-	}
+  public void setColumnHeaders(List<String> columnHeaders) {
+    this.columnHeaders = columnHeaders;
+  }
 
-	public TranslationKey getKeyToAdd() {
-		return keyToAdd;
-	}
+  public TranslationKey getKeyToAdd() {
+    return keyToAdd;
+  }
 
-	public void setKeyToAdd(TranslationKey keyToAdd) {
-		this.keyToAdd = keyToAdd;
-	}
+  public void setKeyToAdd(TranslationKey keyToAdd) {
+    this.keyToAdd = keyToAdd;
+  }
 
-	public void createConditionForSelectedTranslationKey(ActionEvent event) {
-		Condition createCondition = conditionFactory.createCondition(keyToAdd,
-				"");
-		selectedRateFile.addCondition(createCondition);
-		keyToAdd = null;
-		updateRateFile();
-	}
+  /**
+   * Create a condition for the selected translation key.
+   * 
+   * @param event The creation event.
+   */
+  public void createConditionForSelectedTranslationKey(ActionEvent event) {
+    Condition createCondition = conditionFactory.createCondition(keyToAdd, "");
+    selectedRateFile.addCondition(createCondition);
+    keyToAdd = null;
+    updateRateFile();
+  }
 
-	private void updateRateFile() {
-		selectedRateFile = rateFileService.updateRateFile(selectedRateFile);
-		translationUtil.fillInTranslations(selectedRateFile.getConditions());
-	}
+  private void updateRateFile() {
+    selectedRateFile = rateFileService.updateRateFile(selectedRateFile);
+    translationUtil.fillInTranslations(selectedRateFile.getConditions());
+  }
 
-	public List<TranslationKey> getAvailableTranslationKeysForSelectedRateFile() {
-		return translationUtil
-				.getAvailableTranslationKeysForSelectedRateFile(selectedRateFile);
-	}
+  public List<TranslationKey> getAvailableTranslationKeysForSelectedRateFile() {
+    return translationUtil.getAvailableTranslationKeysForSelectedRateFile(selectedRateFile);
+  }
 
-	public boolean isCollapseZonesDetailGrid() {
-		return collapseZonesDetailGrid;
-	}
+  public boolean isCollapseZonesDetailGrid() {
+    return collapseZonesDetailGrid;
+  }
 
-	public void setCollapseZonesDetailGrid(boolean collapseZonesDetailGrid) {
-		this.collapseZonesDetailGrid = collapseZonesDetailGrid;
-	}
+  public void setCollapseZonesDetailGrid(boolean collapseZonesDetailGrid) {
+    this.collapseZonesDetailGrid = collapseZonesDetailGrid;
+  }
 
-	public boolean isCanEdit() {
-		return editable;
-	}
+  public boolean isCanEdit() {
+    return editable;
+  }
 
-	public Condition getSelectedCondition() {
-		return selectedCondition;
-	}
+  public Condition getSelectedCondition() {
+    return selectedCondition;
+  }
 
-	public void setSelectedCondition(Condition selectedCondition) {
-		this.selectedCondition = selectedCondition;
-	}
+  public void setSelectedCondition(Condition selectedCondition) {
+    this.selectedCondition = selectedCondition;
+  }
 
-	public List<Language> getLanguages() {
-		return Arrays.asList(Language.values());
-	}
+  public List<Language> getLanguages() {
+    return Arrays.asList(Language.values());
+  }
 
 }

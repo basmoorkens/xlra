@@ -22,49 +22,48 @@ import com.moorkensam.xlra.service.util.ExcelUploadParser;
 @Stateless
 public class ExcelServiceImpl implements ExcelService {
 
-	@Inject
-	private RateFileService rateFileService;
+  @Inject
+  private RateFileService rateFileService;
 
-	private ExcelToModelMapper mapper;
+  private ExcelToModelMapper mapper;
 
-	private ExcelUploadParser parser;
+  private ExcelUploadParser parser;
 
-	@PostConstruct
-	public void init() {
-		this.mapper = new ExcelToModelMapper();
-		this.parser = new ExcelUploadParser();
-	}
+  @PostConstruct
+  public void init() {
+    this.mapper = new ExcelToModelMapper();
+    this.parser = new ExcelUploadParser();
+  }
 
-	@Override
-	public void uploadRateFileExcel(RateFile rf, XSSFWorkbook workBook) {
-		ExcelUploadUtilData parseRateFileExcel = getParser()
-				.parseRateFileExcel(workBook);
-		getMapper().mapExcelToModel(rf, parseRateFileExcel);
-		getRateFileService().createRateFile(rf);
-	}
+  @Override
+  public void uploadRateFileExcel(RateFile rf, XSSFWorkbook workBook) {
+    ExcelUploadUtilData parseRateFileExcel = getParser().parseRateFileExcel(workBook);
+    getMapper().mapExcelToModel(rf, parseRateFileExcel);
+    getRateFileService().createRateFile(rf);
+  }
 
-	public ExcelUploadParser getParser() {
-		return parser;
-	}
+  public ExcelUploadParser getParser() {
+    return parser;
+  }
 
-	public void setParser(ExcelUploadParser parser) {
-		this.parser = parser;
-	}
+  public void setParser(ExcelUploadParser parser) {
+    this.parser = parser;
+  }
 
-	public ExcelToModelMapper getMapper() {
-		return mapper;
-	}
+  public ExcelToModelMapper getMapper() {
+    return mapper;
+  }
 
-	public void setMapper(ExcelToModelMapper mapper) {
-		this.mapper = mapper;
-	}
+  public void setMapper(ExcelToModelMapper mapper) {
+    this.mapper = mapper;
+  }
 
-	public RateFileService getRateFileService() {
-		return rateFileService;
-	}
+  public RateFileService getRateFileService() {
+    return rateFileService;
+  }
 
-	public void setRateFileService(RateFileService rateFileService) {
-		this.rateFileService = rateFileService;
-	}
+  public void setRateFileService(RateFileService rateFileService) {
+    this.rateFileService = rateFileService;
+  }
 
 }

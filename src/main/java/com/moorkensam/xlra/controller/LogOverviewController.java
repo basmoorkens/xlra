@@ -14,38 +14,38 @@ import com.moorkensam.xlra.model.log.RateLogRecord;
 @ViewScoped
 public class LogOverviewController {
 
-	private List<RateLogRecord> rateLogRecords;
+  private List<RateLogRecord> rateLogRecords;
 
-	private List<RaiseRatesRecord> raiseRatesLogRecords;
+  private List<RaiseRatesRecord> raiseRatesLogRecords;
 
-	private List<QuotationLogRecord> quotationLogRecords;
+  private List<QuotationLogRecord> quotationLogRecords;
 
-	@PostConstruct
-	public void init() {
+  @PostConstruct
+  public void init() {
 
-	}
+  }
 
-	public List<QuotationLogRecord> getQuotationLogRecords() {
-		return quotationLogRecords;
-	}
+  public List<QuotationLogRecord> getQuotationLogRecords() {
+    return quotationLogRecords;
+  }
 
-	public void setQuotationLogRecords(List<QuotationLogRecord> quotationLogRecords) {
-		this.quotationLogRecords = quotationLogRecords;
-	}
+  public void setQuotationLogRecords(List<QuotationLogRecord> quotationLogRecords) {
+    this.quotationLogRecords = quotationLogRecords;
+  }
 
-	public List<RaiseRatesRecord> getRaiseRatesLogRecords() {
-		return raiseRatesLogRecords;
-	}
+  public List<RaiseRatesRecord> getRaiseRatesLogRecords() {
+    return raiseRatesLogRecords;
+  }
 
-	public void setRaiseRatesLogRecords(List<RaiseRatesRecord> raiseRatesLogRecords) {
-		this.raiseRatesLogRecords = raiseRatesLogRecords;
-	}
+  public void setRaiseRatesLogRecords(List<RaiseRatesRecord> raiseRatesLogRecords) {
+    this.raiseRatesLogRecords = raiseRatesLogRecords;
+  }
 
-	public List<RateLogRecord> getRateLogRecords() {
-		return rateLogRecords;
-	}
+  public List<RateLogRecord> getRateLogRecords() {
+    return rateLogRecords;
+  }
 
-	public void setRateLogRecords(List<RateLogRecord> rateLogRecords) {
-		this.rateLogRecords = rateLogRecords;
-	}
+  public void setRateLogRecords(List<RateLogRecord> rateLogRecords) {
+    this.rateLogRecords = rateLogRecords;
+  }
 }

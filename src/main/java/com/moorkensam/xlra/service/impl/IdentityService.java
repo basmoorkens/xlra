@@ -8,42 +8,52 @@ import org.apache.logging.log4j.Logger;
 
 public class IdentityService {
 
-	private final static Logger logger = LogManager.getLogger();
+  private static final Logger logger = LogManager.getLogger();
 
-	private static IdentityService instance;
+  private static IdentityService instance;
 
-	public static IdentityService getInstance() {
-		if (instance == null) {
-			instance = new IdentityService();
-		}
-		return instance;
-	}
+  /**
+   * get the instance.
+   * 
+   * @return the instance
+   */
+  public static IdentityService getInstance() {
+    if (instance == null) {
+      instance = new IdentityService();
+    }
+    return instance;
+  }
 
-	private IdentityService() {
+  private IdentityService() {
 
-	}
+  }
 
-	public String getNextIdentifier() {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Generating uq identifier for offerte");
-		}
+  /**
+   * get the next identifier from the generator.
+   * 
+   * @return the generated identifier.
+   */
+  public String getNextIdentifier() {
+    if (logger.isDebugEnabled()) {
+      logger.debug("Generating uq identifier for offerte");
+    }
 
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			logger.error("Error whilst sleeping in identifier generation");
-		}
-		String identifier = "";
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(new Date());
-		int year = calendar.get(Calendar.YEAR);
-		identifier = year + "-";
-		String uqPart = calendar.getTime().getTime() + "";
-		identifier += uqPart.substring(2, uqPart.length() - 3);
+    try {
+      Thread.sleep(1000);
+    } catch (InterruptedException e) {
+      logger.error("Error whilst sleeping in identifier generation");
+    }
+    String identifier = "";
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(new Date());
+    int year = calendar.get(Calendar.YEAR);
+    identifier = year + "-";
+    String uqPart = calendar.getTime().getTime() + "";
+    identifier += uqPart.substring(2, uqPart.length() - 3);
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("Generated " + identifier);
-		}
-		return identifier;
-	}
+    if (logger.isDebugEnabled()) {
+      logger.debug("Generated " + identifier);
+    }
+    return identifier;
+  }
 }

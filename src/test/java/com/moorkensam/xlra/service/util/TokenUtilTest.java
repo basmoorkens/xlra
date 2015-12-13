@@ -9,11 +9,11 @@ import com.moorkensam.xlra.model.security.TokenInfo;
 
 public class TokenUtilTest extends UnitilsJUnit4 {
 
-	@Test
-	public void testGetNextToken() {
-		TokenInfo ti = TokenUtil.getNextToken();
-		Assert.assertNotNull(ti);
-		Assert.assertNotNull(ti.getVerificationToken());
-		Assert.assertNotNull(ti.getValidTo());
-	}
+  @Test
+  public void testGetNextToken() {
+    TokenInfo ti = TokenUtil.getNextToken();
+    Assert.assertNotNull(ti);
+    Assert.assertNotNull(ti.getVerificationToken());
+    Assert.assertNotNull(ti.getValidTo());
+  }
 }

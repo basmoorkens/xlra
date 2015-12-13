@@ -7,46 +7,46 @@ import javax.persistence.Lob;
 @Embeddable
 public class EmailResult {
 
-	@Lob
-	@Column(name = "email")
-	private String email;
+  @Lob
+  @Column(name = "email")
+  private String email;
 
-	private String subject;
+  private String subject;
 
-	private String toAddress;
+  private String toAddress;
 
-	private boolean send;
+  private boolean send;
 
-	public String getToAddress() {
-		return toAddress;
-	}
+  public String getToAddress() {
+    return toAddress;
+  }
 
-	public void setToAddress(String toAddress) {
-		this.toAddress = toAddress;
-	}
+  public void setToAddress(String toAddress) {
+    this.toAddress = toAddress;
+  }
 
-	public String getSubject() {
-		return subject;
-	}
+  public String getSubject() {
+    return subject;
+  }
 
-	public void setSubject(String subject) {
-		this.subject = subject;
-	}
+  public void setSubject(String subject) {
+    this.subject = subject;
+  }
 
-	public String getEmail() {
-		return email;
-	}
+  public String getEmail() {
+    return email;
+  }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+  public void setEmail(String email) {
+    this.email = email;
+  }
 
-	public boolean isSend() {
-		return send;
-	}
+  public boolean isSend() {
+    return send;
+  }
 
-	public void setSend(boolean send) {
-		this.send = send;
-	}
+  public void setSend(boolean send) {
+    this.send = send;
+  }
 
 }

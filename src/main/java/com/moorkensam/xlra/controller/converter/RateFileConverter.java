@@ -16,37 +16,36 @@ import com.moorkensam.xlra.service.RateFileService;
 @RequestScoped
 public class RateFileConverter implements Converter {
 
-	@Inject
-	private RateFileService rateFileService;
+  @Inject
+  private RateFileService rateFileService;
 
-	@Override
-	public Object getAsObject(FacesContext fc, UIComponent arg1, String value) {
-		if (value != null && value.length() > 0) {
-			try {
-				return rateFileService.getFullRateFile(Long.parseLong(value));
-			} catch (NumberFormatException e) {
-				throw new ConverterException(new FacesMessage(
-						FacesMessage.SEVERITY_ERROR, "Conversion Error",
-						"Not a valid rate file."));
-			}
-		}
-		return null;
-	}
+  @Override
+  public Object getAsObject(FacesContext fc, UIComponent arg1, String value) {
+    if (value != null && value.length() > 0) {
+      try {
+        return rateFileService.getFullRateFile(Long.parseLong(value));
+      } catch (NumberFormatException e) {
+        throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR,
+            "Conversion Error", "Not a valid rate file."));
+      }
+    }
+    return null;
+  }
 
-	@Override
-	public String getAsString(FacesContext arg0, UIComponent arg1, Object object) {
-		if (object != null) {
-			return String.valueOf(((RateFile) object).getId());
-		}
-		return null;
-	}
+  @Override
+  public String getAsString(FacesContext arg0, UIComponent arg1, Object object) {
+    if (object != null) {
+      return String.valueOf(((RateFile) object).getId());
+    }
+    return null;
+  }
 
-	public RateFileService getRateFileService() {
-		return rateFileService;
-	}
+  public RateFileService getRateFileService() {
+    return rateFileService;
+  }
 
-	public void setRateFileService(RateFileService rateFileService) {
-		this.rateFileService = rateFileService;
-	}
+  public void setRateFileService(RateFileService rateFileService) {
+    this.rateFileService = rateFileService;
+  }
 
 }

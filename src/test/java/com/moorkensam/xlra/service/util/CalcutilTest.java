@@ -11,18 +11,18 @@ import org.unitils.UnitilsJUnit4;
 
 public class CalcutilTest extends UnitilsJUnit4 {
 
-	private CalcUtil calcUtil;
+  private CalcUtil calcUtil;
 
-	@Before
-	public void init() {
-		calcUtil = CalcUtil.getInstance();
-	}
+  @Before
+  public void init() {
+    calcUtil = CalcUtil.getInstance();
+  }
 
-	@Test
-	public void testConvertPercentagEtoBaseMultiplier() {
-		BigDecimal result = calcUtil.convertPercentageToBaseMultiplier(20d);
-		BigDecimal exp = BigDecimal.valueOf(0.2d);
-		exp = exp.setScale(2, RoundingMode.HALF_UP);
-		Assert.assertEquals(exp, result);
-	}
+  @Test
+  public void testConvertPercentagEtoBaseMultiplier() {
+    BigDecimal result = calcUtil.convertPercentageToBaseMultiplier(20d);
+    BigDecimal exp = BigDecimal.valueOf(0.2d);
+    exp = exp.setScale(2, RoundingMode.HALF_UP);
+    Assert.assertEquals(exp, result);
+  }
 }

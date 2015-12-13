@@ -11,16 +11,16 @@ import com.moorkensam.xlra.model.log.LogRecord;
 @Table(name = "userlogrecord")
 public class UserLogRecord extends LogRecord {
 
-	private static final long serialVersionUID = 2081940571427192204L;
+  private static final long serialVersionUID = 2081940571427192204L;
 
-	private String affectedAccount;
+  private String affectedAccount;
 
-	public String getAffectedAccount() {
-		return affectedAccount;
-	}
+  public String getAffectedAccount() {
+    return affectedAccount;
+  }
 
-	public void setAffectedAccount(String affectedAccount) {
-		this.affectedAccount = affectedAccount;
-	}
+  public void setAffectedAccount(String affectedAccount) {
+    this.affectedAccount = affectedAccount;
+  }
 
 }

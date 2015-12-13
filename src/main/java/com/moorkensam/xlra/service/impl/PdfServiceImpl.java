@@ -1,6 +1,5 @@
 package com.moorkensam.xlra.service.impl;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -35,95 +34,87 @@ import com.moorkensam.xlra.service.util.ConfigurationLoader;
 
 public class PdfServiceImpl implements PdfService {
 
-	private ConfigurationLoader configLoader;
+  private ConfigurationLoader configLoader;
 
-	@Inject
-	private TemplateParseService templateParseService;
+  @Inject
+  private TemplateParseService templateParseService;
 
-	private FileService fileService;
+  private FileService fileService;
 
-	private final static Logger logger = LogManager.getLogger();
+  private final static Logger logger = LogManager.getLogger();
 
-	@PostConstruct
-	public void init() {
-		configLoader = ConfigurationLoader.getInstance();
-		setFileService(new FileServiceImpl());
-	}
+  @PostConstruct
+  public void init() {
+    configLoader = ConfigurationLoader.getInstance();
+    setFileService(new FileServiceImpl());
+  }
 
-	@Override
-	public void generateTransientOffertePdf(QuotationResult offerte,
-			Language language) throws FileNotFoundException, DocumentException,
-			TemplatingException {
-		Document document = new Document();
-		String fullPdfFileName = fileService.getTemporaryFilePathForPdf(offerte
-				.getOfferteUniqueIdentifier());
+  @Override
+  public void generateTransientOffertePdf(QuotationResult offerte, Language language)
+      throws FileNotFoundException, DocumentException, TemplatingException {
+    Document document = new Document();
+    String fullPdfFileName =
+        fileService.getTemporaryFilePathForPdf(offerte.getOfferteUniqueIdentifier());
 
-		offerte.setPdfFileName(fullPdfFileName);
-		document.open();
-		fillInHeaderProperties(document);
+    offerte.setPdfFileName(fullPdfFileName);
+    document.open();
+    fillInHeaderProperties(document);
 
-		HtmlPipelineContext htmlContext = new HtmlPipelineContext(null);
-		htmlContext.setImageProvider(new AbstractImageProvider() {
+    HtmlPipelineContext htmlContext = new HtmlPipelineContext(null);
+    htmlContext.setImageProvider(new AbstractImageProvider() {
 
-			@Override
-			public String getImageRootPath() {
-				return configLoader.getProperty(ConfigurationLoader.IMAGE_PATH);
-			}
-		});
+      @Override
+      public String getImageRootPath() {
+        return configLoader.getProperty(ConfigurationLoader.IMAGE_PATH);
+      }
+    });
 
-		htmlContext.setTagFactory(Tags.getHtmlTagProcessorFactory());
-		PdfWriter pdfWriter = PdfWriter.getInstance(document,
-				new FileOutputStream(fullPdfFileName));
+    htmlContext.setTagFactory(Tags.getHtmlTagProcessorFactory());
+    PdfWriter pdfWriter = PdfWriter.getInstance(document, new FileOutputStream(fullPdfFileName));
 
-		CSSResolver cssResolver = XMLWorkerHelper.getInstance()
-				.getDefaultCssResolver(true);
-		Pipeline<?> pipeline = new CssResolverPipeline(cssResolver,
-				new HtmlPipeline(htmlContext, new PdfWriterPipeline(document,
-						pdfWriter)));
-		XMLWorker worker = new XMLWorker(pipeline, true);
-		XMLParser p = new XMLParser(worker);
-		String pdfBody = templateParseService
-				.parseOffertePdf(offerte, language);
-		try {
-			p.parse(new StringReader(pdfBody));
-			document.close();
-		} catch (IOException e) {
-			logger.error("Error creating inputstream from pdfbod text", e);
-		}
-	}
+    CSSResolver cssResolver = XMLWorkerHelper.getInstance().getDefaultCssResolver(true);
+    Pipeline<?> pipeline =
+        new CssResolverPipeline(cssResolver, new HtmlPipeline(htmlContext, new PdfWriterPipeline(
+            document, pdfWriter)));
+    XMLWorker worker = new XMLWorker(pipeline, true);
+    XMLParser parser = new XMLParser(worker);
+    String pdfBody = templateParseService.parseOffertePdf(offerte, language);
+    try {
+      parser.parse(new StringReader(pdfBody));
+      document.close();
+    } catch (IOException e) {
+      logger.error("Error creating inputstream from pdfbod text", e);
+    }
+  }
 
-	private void fillInHeaderProperties(Document document) {
-		document.addAuthor(configLoader
-				.getProperty(ConfigurationLoader.PDF_AUTHOR));
-		document.addCreator(configLoader
-				.getProperty(ConfigurationLoader.PDF_AUTHOR));
-		document.addCreationDate();
-		document.addTitle(configLoader
-				.getProperty(ConfigurationLoader.PDF_TITLE_PREFIX));
-	}
+  private void fillInHeaderProperties(Document document) {
+    document.addAuthor(configLoader.getProperty(ConfigurationLoader.PDF_AUTHOR));
+    document.addCreator(configLoader.getProperty(ConfigurationLoader.PDF_AUTHOR));
+    document.addCreationDate();
+    document.addTitle(configLoader.getProperty(ConfigurationLoader.PDF_TITLE_PREFIX));
+  }
 
-	public ConfigurationLoader getConfigLoader() {
-		return configLoader;
-	}
+  public ConfigurationLoader getConfigLoader() {
+    return configLoader;
+  }
 
-	public void setConfigLoader(ConfigurationLoader configLoader) {
-		this.configLoader = configLoader;
-	}
+  public void setConfigLoader(ConfigurationLoader configLoader) {
+    this.configLoader = configLoader;
+  }
 
-	public TemplateParseService getTemplateParseService() {
-		return templateParseService;
-	}
+  public TemplateParseService getTemplateParseService() {
+    return templateParseService;
+  }
 
-	public void setTemplateParseService(
-			TemplateParseService templateParseService) {
-		this.templateParseService = templateParseService;
-	}
+  public void setTemplateParseService(TemplateParseService templateParseService) {
+    this.templateParseService = templateParseService;
+  }
 
-	public FileService getFileService() {
-		return fileService;
-	}
+  public FileService getFileService() {
+    return fileService;
+  }
 
-	public void setFileService(FileService fileService) {
-		this.fileService = fileService;
-	}
+  public void setFileService(FileService fileService) {
+    this.fileService = fileService;
+  }
 }

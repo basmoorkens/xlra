@@ -15,14 +15,14 @@ import org.apache.logging.log4j.Logger;
 import org.primefaces.model.SortOrder;
 
 import com.itextpdf.text.DocumentException;
-import com.moorkensam.xlra.dao.PriceCalculationDAO;
-import com.moorkensam.xlra.dao.QuotationQueryDAO;
-import com.moorkensam.xlra.dao.QuotationResultDAO;
+import com.moorkensam.xlra.dao.PriceCalculationDao;
+import com.moorkensam.xlra.dao.QuotationQueryDao;
+import com.moorkensam.xlra.dao.QuotationResultDao;
 import com.moorkensam.xlra.model.error.PdfException;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.error.TemplatingException;
 import com.moorkensam.xlra.model.mail.EmailResult;
-import com.moorkensam.xlra.model.offerte.OfferteOptionDTO;
+import com.moorkensam.xlra.model.offerte.OfferteOptionDto;
 import com.moorkensam.xlra.model.offerte.OfferteSearchFilter;
 import com.moorkensam.xlra.model.offerte.PriceCalculation;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
@@ -43,315 +43,306 @@ import com.moorkensam.xlra.service.util.QuotationUtil;
 @Stateless
 public class QuotationServiceImpl implements QuotationService {
 
-	private final static Logger logger = LogManager.getLogger();
+  private final static Logger logger = LogManager.getLogger();
 
-	@Inject
-	private QuotationQueryDAO quotationDAO;
+  @Inject
+  private QuotationQueryDao quotationDao;
 
-	@Inject
-	private QuotationResultDAO quotationResultDAO;
+  @Inject
+  private QuotationResultDao quotationResultDao;
 
-	@Inject
-	private PriceCalculationDAO priceCalculationDAO;
+  @Inject
+  private PriceCalculationDao priceCalculationDao;
 
-	@Inject
-	private EmailService emailService;
+  @Inject
+  private EmailService emailService;
 
-	@Inject
-	private MailTemplateService mailTemplateService;
+  @Inject
+  private MailTemplateService mailTemplateService;
 
-	@Inject
-	private CalculationService calculationService;
+  @Inject
+  private CalculationService calculationService;
 
-	@Inject
-	private RateFileService rateFileService;
+  @Inject
+  private RateFileService rateFileService;
 
-	@Inject
-	private PdfService pdfService;
+  @Inject
+  private PdfService pdfService;
 
-	@Inject
-	private UserService userService;
+  @Inject
+  private UserService userService;
 
-	private FileService fileService;
+  private FileService fileService;
 
-	private IdentityService identityService;
+  private IdentityService identityService;
 
-	private QuotationUtil quotationUtil;
+  private QuotationUtil quotationUtil;
 
-	@PostConstruct
-	public void init() {
-		identityService = IdentityService.getInstance();
-		fileService = new FileServiceImpl();
-		setQuotationUtil(QuotationUtil.getInstance());
-	}
+  /**
+   * Inits for the service.
+   */
+  @PostConstruct
+  public void init() {
+    identityService = IdentityService.getInstance();
+    fileService = new FileServiceImpl();
+    setQuotationUtil(QuotationUtil.getInstance());
+  }
 
-	@Override
-	public void createQuotationQuery(QuotationQuery quotation) {
-		logger.info("Creating quotation query: " + quotation);
-		getQuotationDAO().createQuotationQuery(quotation);
-	}
+  @Override
+  public void createQuotationQuery(QuotationQuery quotation) {
+    logger.info("Creating quotation query: " + quotation);
+    getQuotationDao().createQuotationQuery(quotation);
+  }
 
-	@Override
-	public QuotationQuery updateQuotationQuery(QuotationQuery quotation) {
-		return getQuotationDAO().updateQuotationQuery(quotation);
-	}
+  @Override
+  public QuotationQuery updateQuotationQuery(QuotationQuery quotation) {
+    return getQuotationDao().updateQuotationQuery(quotation);
+  }
 
-	@Override
-	public List<QuotationQuery> getAllQuotationQueries() {
-		return getQuotationDAO().getAllQuotationQueries();
-	}
+  @Override
+  public List<QuotationQuery> getAllQuotationQueries() {
+    return getQuotationDao().getAllQuotationQueries();
+  }
 
-	@Override
-	public void createQuotationResult(QuotationResult result) {
-		logger.info("Creating quotation result");
-		getQuotationResultDAO().createQuotationResult(result);
-	}
+  @Override
+  public void createQuotationResult(QuotationResult result) {
+    logger.info("Creating quotation result");
+    getQuotationResultDao().createQuotationResult(result);
+  }
 
-	@Override
-	public QuotationResult updateQuotationResult(QuotationResult result) {
-		return getQuotationResultDAO().updateQuotationResult(result);
-	}
+  @Override
+  public QuotationResult updateQuotationResult(QuotationResult result) {
+    return getQuotationResultDao().updateQuotationResult(result);
+  }
 
-	@Override
-	public List<QuotationResult> getAllQuotationResults() {
-		return getQuotationResultDAO().getAllQuotationResults();
-	}
+  @Override
+  public List<QuotationResult> getAllQuotationResults() {
+    return getQuotationResultDao().getAllQuotationResults();
+  }
 
-	@Override
-	public QuotationResult generateQuotationResultForQuotationQuery(
-			QuotationQuery query) throws RateFileException {
-		QuotationResult offerte = initializeQuotationResult(query);
-		query.setQuotationDate(new Date());
-		RateLine result;
-		try {
-			RateFile rf = rateFileService.getRateFileForQuery(query);
-			result = rf.getRateLineForQuantityAndPostalCode(
-					query.getQuantity(), query.getPostalCode());
-			List<OfferteOptionDTO> options = quotationUtil
-					.generateOfferteOptionsForRateFileAndLanguage(rf, offerte
-							.getQuery().getResultLanguage());
-			offerte.setSelectableOptions(options);
-			PriceCalculation calculatedPrice = new PriceCalculation();
-			calculatedPrice.setBasePrice(result.getValue());
-			offerte.setCalculation(calculatedPrice);
-		} catch (RateFileException e1) {
-			logger.error(e1.getBusinessException() + e1.getMessage());
-			throw e1;
-		}
-		return offerte;
-	}
+  @Override
+  public QuotationResult generateQuotationResultForQuotationQuery(QuotationQuery query)
+      throws RateFileException {
+    QuotationResult offerte = initializeQuotationResult(query);
+    query.setQuotationDate(new Date());
+    RateLine result;
+    try {
+      RateFile rf = rateFileService.getRateFileForQuery(query);
+      result = rf.getRateLineForQuantityAndPostalCode(query.getQuantity(), query.getPostalCode());
+      List<OfferteOptionDto> options =
+          quotationUtil.generateOfferteOptionsForRateFileAndLanguage(rf, offerte.getQuery()
+              .getResultLanguage());
+      offerte.setSelectableOptions(options);
+      PriceCalculation calculatedPrice = new PriceCalculation();
+      calculatedPrice.setBasePrice(result.getValue());
+      offerte.setCalculation(calculatedPrice);
+    } catch (RateFileException e1) {
+      logger.error(e1.getBusinessException() + e1.getMessage());
+      throw e1;
+    }
+    return offerte;
+  }
 
-	@Override
-	public QuotationResult generateEmailAndPdfForOfferte(QuotationResult offerte)
-			throws RateFileException {
-		try {
-			PriceCalculation calculatedPrice = calculationService
-					.calculatePriceAccordingToConditions(offerte);
-			offerte.setCalculation(calculatedPrice);
-			EmailResult dto = mailTemplateService
-					.initializeOfferteEmail(offerte);
-			offerte.setEmailResult(dto);
-			pdfService.generateTransientOffertePdf(offerte, offerte.getQuery()
-					.getResultLanguage());
-		} catch (TemplatingException e) {
-			logger.error("Failed to parse Template" + e.getMessage());
-			throw new RateFileException("Failed to parse email template.");
-		} catch (FileNotFoundException | DocumentException e) {
-			logger.error("Failed to create PDF." + e.getMessage());
-			throw new RateFileException("Failed to generate pdf");
-		}
-		return offerte;
-	}
+  @Override
+  public QuotationResult generateEmailAndPdfForOfferte(QuotationResult offerte)
+      throws RateFileException {
+    try {
+      PriceCalculation calculatedPrice =
+          calculationService.calculatePriceAccordingToConditions(offerte);
+      offerte.setCalculation(calculatedPrice);
+      EmailResult dto = mailTemplateService.initializeOfferteEmail(offerte);
+      offerte.setEmailResult(dto);
+      pdfService.generateTransientOffertePdf(offerte, offerte.getQuery().getResultLanguage());
+    } catch (TemplatingException e) {
+      logger.error("Failed to parse Template" + e.getMessage());
+      throw new RateFileException("Failed to parse email template.");
+    } catch (FileNotFoundException | DocumentException e) {
+      logger.error("Failed to create PDF." + e.getMessage());
+      throw new RateFileException("Failed to generate pdf");
+    }
+    return offerte;
+  }
 
-	private QuotationResult initializeQuotationResult(QuotationQuery query) {
-		QuotationResult quotationResult = new QuotationResult();
-		quotationResult.setQuery(query);
-		fillInMailLanguage(query);
-		quotationResult.setOfferteUniqueIdentifier(identityService
-				.getNextIdentifier());
-		User loggedInUser = userService.getUserByUserName(userService
-				.getCurrentUsername());
-		quotationResult.setCreatedUserFullName(loggedInUser.getFullName());
-		return quotationResult;
-	}
+  private QuotationResult initializeQuotationResult(QuotationQuery query) {
+    QuotationResult quotationResult = new QuotationResult();
+    quotationResult.setQuery(query);
+    fillInMailLanguage(query);
+    quotationResult.setOfferteUniqueIdentifier(identityService.getNextIdentifier());
+    User loggedInUser = userService.getUserByUserName(userService.getCurrentUsername());
+    quotationResult.setCreatedUserFullName(loggedInUser.getFullName());
+    return quotationResult;
+  }
 
-	/**
-	 * This method sets the language used to generate the email. If the frontend
-	 * was filled in (quotationquery) it takes that language, else it takes the
-	 * language filled in when creating the customer.
-	 * 
-	 * @param query
-	 */
-	protected void fillInMailLanguage(QuotationQuery query) {
-		query.setResultLanguage(query.getLanguage() != null ? query
-				.getLanguage() : query.getCustomer().getLanguage());
-	}
+  /**
+   * This method sets the language used to generate the email. If the frontend was filled in
+   * (quotationquery) it takes that language, else it takes the language filled in when creating the
+   * customer.
+   * 
+   * @param query The query to fill the language into.
+   */
+  protected void fillInMailLanguage(QuotationQuery query) {
+    query.setResultLanguage(query.getLanguage() != null ? query.getLanguage() : query.getCustomer()
+        .getLanguage());
+  }
 
-	@Override
-	public void submitQuotationResult(QuotationResult result)
-			throws RateFileException {
-		copyTransientResultLanguageToLanguageIfNeeded(result);
-		try {
-			createAndSaveFullOfferte(result);
-			result.setPdfFileName(fileService
-					.convertTransientOfferteToFinal(result
-							.getOfferteUniqueIdentifier()));
-			getEmailService().sendOfferteMail(result);
-		} catch (MessagingException e) {
-			logger.error("Failed to send offerte email");
-			throw new RateFileException("Failed to send email");
-		} catch (PdfException e) {
-			throw new RateFileException(e.getBusinessException());
-		}
-	}
+  @Override
+  public void submitQuotationResult(QuotationResult result) throws RateFileException {
+    copyTransientResultLanguageToLanguageIfNeeded(result);
+    try {
+      createAndSaveFullOfferte(result);
+      result.setPdfFileName(fileService.convertTransientOfferteToFinal(result
+          .getOfferteUniqueIdentifier()));
+      getEmailService().sendOfferteMail(result);
+    } catch (MessagingException e) {
+      logger.error("Failed to send offerte email");
+      throw new RateFileException("Failed to send email");
+    } catch (PdfException e) {
+      throw new RateFileException(e.getBusinessException());
+    }
+  }
 
-	private void createAndSaveFullOfferte(QuotationResult offerte) {
-		offerte.getQuery().setQuotationDate(new Date());
-		QuotationQuery managedQuery = getQuotationDAO().createQuotationQuery(
-				offerte.getQuery());
-		offerte.setQuery(managedQuery);
-		PriceCalculation managedCalculation = priceCalculationDAO
-				.createCalculation(offerte.getCalculation());
-		offerte.setCalculation(managedCalculation);
-		getQuotationResultDAO().createQuotationResult(offerte);
-	}
+  private void createAndSaveFullOfferte(QuotationResult offerte) {
+    offerte.getQuery().setQuotationDate(new Date());
+    QuotationQuery managedQuery = getQuotationDao().createQuotationQuery(offerte.getQuery());
+    offerte.setQuery(managedQuery);
+    PriceCalculation managedCalculation =
+        priceCalculationDao.createCalculation(offerte.getCalculation());
+    offerte.setCalculation(managedCalculation);
+    getQuotationResultDao().createQuotationResult(offerte);
+  }
 
-	/**
-	 * If no language was selected for the quotation query then this method
-	 * copies the calculated language to that field. Its just done to improve
-	 * the data readability in the db so each quotationrecord has a language.
-	 * 
-	 * @param result
-	 */
-	protected void copyTransientResultLanguageToLanguageIfNeeded(
-			QuotationResult result) {
-		if (result.getQuery().getLanguage() == null) {
-			result.getQuery()
-					.setLanguage(result.getQuery().getResultLanguage());
-		}
-	}
+  /**
+   * If no language was selected for the quotation query then this method copies the calculated
+   * language to that field. Its just done to improve the data readability in the db so each
+   * quotationrecord has a language.
+   * 
+   * @param result The result to fill the language into.
+   */
+  protected void copyTransientResultLanguageToLanguageIfNeeded(QuotationResult result) {
+    if (result.getQuery().getLanguage() == null) {
+      result.getQuery().setLanguage(result.getQuery().getResultLanguage());
+    }
+  }
 
-	public IdentityService getIdentityService() {
-		return identityService;
-	}
+  public IdentityService getIdentityService() {
+    return identityService;
+  }
 
-	public void setIdentityService(IdentityService identityService) {
-		this.identityService = identityService;
-	}
+  public void setIdentityService(IdentityService identityService) {
+    this.identityService = identityService;
+  }
 
-	public QuotationQueryDAO getQuotationDAO() {
-		return quotationDAO;
-	}
+  public QuotationQueryDao getQuotationDao() {
+    return quotationDao;
+  }
 
-	public void setQuotationDAO(QuotationQueryDAO quotationDAO) {
-		this.quotationDAO = quotationDAO;
-	}
+  public void setQuotationDao(QuotationQueryDao quotationDao) {
+    this.quotationDao = quotationDao;
+  }
 
-	public QuotationResultDAO getQuotationResultDAO() {
-		return quotationResultDAO;
-	}
+  public QuotationResultDao getQuotationResultDao() {
+    return quotationResultDao;
+  }
 
-	public void setQuotationResultDAO(QuotationResultDAO quotationResultDAO) {
-		this.quotationResultDAO = quotationResultDAO;
-	}
+  public void setQuotationResultDao(QuotationResultDao quotationResultDao) {
+    this.quotationResultDao = quotationResultDao;
+  }
 
-	public EmailService getEmailService() {
-		return emailService;
-	}
+  public EmailService getEmailService() {
+    return emailService;
+  }
 
-	public void setEmailService(EmailService emailService) {
-		this.emailService = emailService;
-	}
+  public void setEmailService(EmailService emailService) {
+    this.emailService = emailService;
+  }
 
-	public RateFileService getRateFileService() {
-		return rateFileService;
-	}
+  public RateFileService getRateFileService() {
+    return rateFileService;
+  }
 
-	public void setRateFileService(RateFileService rateFileService) {
-		this.rateFileService = rateFileService;
-	}
+  public void setRateFileService(RateFileService rateFileService) {
+    this.rateFileService = rateFileService;
+  }
 
-	public CalculationService getCalculationService() {
-		return calculationService;
-	}
+  public CalculationService getCalculationService() {
+    return calculationService;
+  }
 
-	public void setCalculationService(CalculationService calculationService) {
-		this.calculationService = calculationService;
-	}
+  public void setCalculationService(CalculationService calculationService) {
+    this.calculationService = calculationService;
+  }
 
-	public MailTemplateService getMailTemplateService() {
-		return mailTemplateService;
-	}
+  public MailTemplateService getMailTemplateService() {
+    return mailTemplateService;
+  }
 
-	public void setMailTemplateService(MailTemplateService mailTemplateService) {
-		this.mailTemplateService = mailTemplateService;
-	}
+  public void setMailTemplateService(MailTemplateService mailTemplateService) {
+    this.mailTemplateService = mailTemplateService;
+  }
 
-	@Override
-	public List<QuotationResult> getQuotationQueries(int first, int pageSize,
-			String sortField, SortOrder sortOrder, Map<String, String> filters) {
-		return quotationResultDAO.getQuotationResults(first, pageSize,
-				sortField, sortOrder, filters);
-	}
+  @Override
+  public List<QuotationResult> getQuotationQueries(int first, int pageSize, String sortField,
+      SortOrder sortOrder, Map<String, String> filters) {
+    return quotationResultDao.getQuotationResults(first, pageSize, sortField, sortOrder, filters);
+  }
 
-	@Override
-	public int getQuotationQueryCount(Map<String, String> filters) {
-		return quotationResultDAO.getQuotationResultCount(filters);
-	}
+  @Override
+  public int getQuotationQueryCount(Map<String, String> filters) {
+    return quotationResultDao.getQuotationResultCount(filters);
+  }
 
-	@Override
-	public List<QuotationResult> getQuotationResultsForFilters(
-			OfferteSearchFilter filter) {
-		return quotationResultDAO.getQuotationResultsForFilter(filter);
-	}
+  @Override
+  public List<QuotationResult> getQuotationResultsForFilters(OfferteSearchFilter filter) {
+    return quotationResultDao.getQuotationResultsForFilter(filter);
+  }
 
-	public PriceCalculationDAO getPriceCalculationDAO() {
-		return priceCalculationDAO;
-	}
+  public PriceCalculationDao getPriceCalculationDao() {
+    return priceCalculationDao;
+  }
 
-	public void setPriceCalculationDAO(PriceCalculationDAO priceCalculationDAO) {
-		this.priceCalculationDAO = priceCalculationDAO;
-	}
+  public void setPriceCalculationDao(PriceCalculationDao priceCalculationDao) {
+    this.priceCalculationDao = priceCalculationDao;
+  }
 
-	public PdfService getPdfService() {
-		return pdfService;
-	}
+  public PdfService getPdfService() {
+    return pdfService;
+  }
 
-	public void setPdfService(PdfService pdfService) {
-		this.pdfService = pdfService;
-	}
+  public void setPdfService(PdfService pdfService) {
+    this.pdfService = pdfService;
+  }
 
-	public FileService getFileService() {
-		return fileService;
-	}
+  public FileService getFileService() {
+    return fileService;
+  }
 
-	public void setFileService(FileService fileService) {
-		this.fileService = fileService;
-	}
+  public void setFileService(FileService fileService) {
+    this.fileService = fileService;
+  }
 
-	public UserService getUserService() {
-		return userService;
-	}
+  public UserService getUserService() {
+    return userService;
+  }
 
-	public void setUserService(UserService userService) {
-		this.userService = userService;
-	}
+  public void setUserService(UserService userService) {
+    this.userService = userService;
+  }
 
-	public QuotationUtil getQuotationUtil() {
-		return quotationUtil;
-	}
+  public QuotationUtil getQuotationUtil() {
+    return quotationUtil;
+  }
 
-	public void setQuotationUtil(QuotationUtil quotationUtil) {
-		this.quotationUtil = quotationUtil;
-	}
+  public void setQuotationUtil(QuotationUtil quotationUtil) {
+    this.quotationUtil = quotationUtil;
+  }
 
-	@Override
-	public QuotationResult getFullOfferteById(Long id) {
-		return quotationResultDAO.getQuotationResultById(id);
-	}
+  @Override
+  public QuotationResult getFullOfferteById(Long id) {
+    return quotationResultDao.getQuotationResultById(id);
+  }
 
-	@Override
-	public QuotationResult getOfferteByOfferteKey(String offerteKey) {
-		return quotationResultDAO.getOfferteByKey(offerteKey);
-	}
+  @Override
+  public QuotationResult getOfferteByOfferteKey(String offerteKey) {
+    return quotationResultDao.getOfferteByKey(offerteKey);
+  }
 }

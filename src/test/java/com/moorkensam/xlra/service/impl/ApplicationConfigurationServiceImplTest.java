@@ -13,63 +13,64 @@ import org.unitils.easymock.EasyMockUnitils;
 import org.unitils.easymock.annotation.Mock;
 
 import com.moorkensam.xlra.dao.ConfigurationDao;
-import com.moorkensam.xlra.dao.EmailTemplateDAO;
+import com.moorkensam.xlra.dao.EmailTemplateDao;
 import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.mail.MailTemplate;
 
 public class ApplicationConfigurationServiceImplTest extends UnitilsJUnit4 {
 
-	private ApplicationConfigurationServiceImpl service;
+  private ApplicationConfigurationServiceImpl service;
 
-	@Mock
-	private ConfigurationDao configurationDao;
+  @Mock
+  private ConfigurationDao configurationDao;
 
-	@Mock
-	private EmailTemplateDAO emailTemplateDao;
+  @Mock
+  private EmailTemplateDao emailTemplateDao;
 
-	@Before
-	public void init() {
-		service = new ApplicationConfigurationServiceImpl();
-		service.setXlraConfigurationDAO(configurationDao);
-		service.setEmailTemplateDAO(emailTemplateDao);
-	}
+  /**
+   * Init the service.
+   */
+  @Before
+  public void init() {
+    service = new ApplicationConfigurationServiceImpl();
+    service.setXlraConfigurationDao(configurationDao);
+    service.setEmailTemplateDao(emailTemplateDao);
+  }
 
-	@Test
-	public void testGetAllMailTemplates() {
-		EasyMock.expect(emailTemplateDao.getAllTemplates()).andReturn(
-				new ArrayList<MailTemplate>());
-		EasyMockUnitils.replay();
-		List<MailTemplate> templates = service.getAllEmailTemplates();
-		Assert.assertNotNull(templates);
-	}
+  @Test
+  public void testGetAllMailTemplates() {
+    EasyMock.expect(emailTemplateDao.getAllTemplates()).andReturn(new ArrayList<MailTemplate>());
+    EasyMockUnitils.replay();
+    List<MailTemplate> templates = service.getAllEmailTemplates();
+    Assert.assertNotNull(templates);
+  }
 
-	@Test
-	public void testGetApplicationConfiguration() {
-		EasyMock.expect(configurationDao.getXlraConfiguration()).andReturn(
-				new Configuration());
-		EasyMockUnitils.replay();
+  @Test
+  public void testGetApplicationConfiguration() {
+    EasyMock.expect(configurationDao.getXlraConfiguration()).andReturn(new Configuration());
+    EasyMockUnitils.replay();
 
-		Configuration config = service.getConfiguration();
-		Assert.assertNotNull(config);
-	}
+    Configuration config = service.getConfiguration();
+    Assert.assertNotNull(config);
+  }
 
-	@Test
-	public void testUpdateConfiguration() {
-		Configuration config = new Configuration();
-		configurationDao.updateXlraConfiguration(config);
-		EasyMock.expectLastCall();
-		EasyMockUnitils.replay();
+  @Test
+  public void testUpdateConfiguration() {
+    Configuration config = new Configuration();
+    configurationDao.updateXlraConfiguration(config);
+    EasyMock.expectLastCall();
+    EasyMockUnitils.replay();
 
-		service.updateXlraConfiguration(config);
-	}
+    service.updateXlraConfiguration(config);
+  }
 
-	@Test
-	public void testUpdateEmailTemplate() {
-		MailTemplate template = new MailTemplate();
+  @Test
+  public void testUpdateEmailTemplate() {
+    MailTemplate template = new MailTemplate();
 
-		emailTemplateDao.updateEmailTemplate(template);
-		EasyMock.expectLastCall();
-		EasyMockUnitils.replay();
-		service.updateEmailTemplate(template);
-	}
+    emailTemplateDao.updateEmailTemplate(template);
+    EasyMock.expectLastCall();
+    EasyMockUnitils.replay();
+    service.updateEmailTemplate(template);
+  }
 }

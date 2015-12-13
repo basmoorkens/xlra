@@ -7,39 +7,41 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "quotationLogRecord")
-@NamedQueries({ @NamedQuery(name = "QuotationLogRecord.getQuotationLogRecordsByDate", query = "SELECT q FROM QuotationLogRecord q WHERE q.logDate > :startDate AND q.logDate < :endDate") })
+@NamedQueries({@NamedQuery(
+    name = "QuotationLogRecord.getQuotationLogRecordsByDate",
+    query = "SELECT q FROM QuotationLogRecord q WHERE q.logDate > :startDate AND q.logDate < :endDate")})
 public class QuotationLogRecord extends LogRecord {
 
-	private static final long serialVersionUID = 3740455597206707650L;
+  private static final long serialVersionUID = 3740455597206707650L;
 
-	private String offerteKey;
+  private String offerteKey;
 
-	private String createdUserName;
+  private String createdUserName;
 
-	private String customerName;
+  private String customerName;
 
-	public String getCustomerName() {
-		return customerName;
-	}
+  public String getCustomerName() {
+    return customerName;
+  }
 
-	public void setCustomerName(String customerName) {
-		this.customerName = customerName;
-	}
+  public void setCustomerName(String customerName) {
+    this.customerName = customerName;
+  }
 
-	public String getCreatedUserName() {
-		return createdUserName;
-	}
+  public String getCreatedUserName() {
+    return createdUserName;
+  }
 
-	public void setCreatedUserName(String createdUserName) {
-		this.createdUserName = createdUserName;
-	}
+  public void setCreatedUserName(String createdUserName) {
+    this.createdUserName = createdUserName;
+  }
 
-	public String getOfferteKey() {
-		return offerteKey;
-	}
+  public String getOfferteKey() {
+    return offerteKey;
+  }
 
-	public void setOfferteKey(String offerteKey) {
-		this.offerteKey = offerteKey;
-	}
+  public void setOfferteKey(String offerteKey) {
+    this.offerteKey = offerteKey;
+  }
 
 }

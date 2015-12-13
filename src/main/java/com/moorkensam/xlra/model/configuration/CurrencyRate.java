@@ -13,47 +13,48 @@ import javax.validation.constraints.NotNull;
 @Cacheable
 @Table(name = "currencyrate")
 @NamedQueries({
-		@NamedQuery(name = "CurrencyRate.findAll", query = "SELECT c FROM CurrencyRate c where c.deleted = false"),
-		@NamedQuery(name = "CurrencyRate.findAllChf", query = "SELECT c FROM CurrencyRate c WHERE c.deleted = false and c.currencyType = com.moorkensam.xlra.model.configuration.XLRACurrency.CHF") })
+    @NamedQuery(name = "CurrencyRate.findAll",
+        query = "SELECT c FROM CurrencyRate c where c.deleted = false"),
+    @NamedQuery(
+        name = "CurrencyRate.findAllChf",
+        query = "SELECT c FROM CurrencyRate c WHERE c.deleted = false and c.currencyType = com.moorkensam.xlra.model.configuration.XlraCurrency.CHF")})
 public class CurrencyRate extends AbstractRate {
 
-	private static final long serialVersionUID = -7687370103653996637L;
+  private static final long serialVersionUID = -7687370103653996637L;
 
-	@Enumerated(EnumType.STRING)
-	@NotNull
-	private XLRACurrency currencyType;
+  @Enumerated(EnumType.STRING)
+  @NotNull
+  private XlraCurrency currencyType;
 
-	public XLRACurrency getCurrencyType() {
-		return currencyType;
-	}
+  public XlraCurrency getCurrencyType() {
+    return currencyType;
+  }
 
-	public void setCurrencyType(XLRACurrency currencyType) {
-		this.currencyType = currencyType;
-	}
+  public void setCurrencyType(XlraCurrency currencyType) {
+    this.currencyType = currencyType;
+  }
 
-	@Override
-	public int hashCode() {
-		return currencyType.hashCode() + getInterval().hashCode();
-	}
+  @Override
+  public int hashCode() {
+    return currencyType.hashCode() + getInterval().hashCode();
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof CurrencyRate) {
-			CurrencyRate cr = (CurrencyRate) obj;
-			if (this.getCurrencyType().equals(cr.getCurrencyType())
-					&& this.getSurchargePercentage() == cr
-							.getSurchargePercentage()
-					&& this.getInterval().equals(cr.getInterval())) {
-				return true;
-			}
-		}
-		return false;
-	}
+  @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof CurrencyRate) {
+      CurrencyRate cr = (CurrencyRate) obj;
+      if (this.getCurrencyType().equals(cr.getCurrencyType())
+          && this.getSurchargePercentage() == cr.getSurchargePercentage()
+          && this.getInterval().equals(cr.getInterval())) {
+        return true;
+      }
+    }
+    return false;
+  }
 
-	@Override
-	public String toString() {
-		return "Id: " + id + " interval: " + getInterval() + " Value: "
-				+ getSurchargePercentage();
-	}
+  @Override
+  public String toString() {
+    return "Id: " + id + " interval: " + getInterval() + " Value: " + getSurchargePercentage();
+  }
 
 }

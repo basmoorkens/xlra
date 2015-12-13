@@ -13,39 +13,38 @@ import com.moorkensam.xlra.service.MailTemplateService;
 @ViewScoped
 public class MailTemplateController {
 
-	@Inject
-	private MailTemplateService mailTemplateService;
+  @Inject
+  private MailTemplateService mailTemplateService;
 
-	private MailTemplatesForForLanguages mailTemplateDTO;
+  private MailTemplatesForForLanguages mailTemplateDto;
 
-	@PostConstruct
-	public void init() {
-		refreshTemplates();
-	}
+  @PostConstruct
+  public void init() {
+    refreshTemplates();
+  }
 
-	public void saveMailTemplates() {
-		mailTemplateService.saveMailTemplateDTO(mailTemplateDTO);
-		MessageUtil.addMessage("Update succesful",
-				"Succesfully updated email templates");
-	}
+  public void saveMailTemplates() {
+    mailTemplateService.saveMailTemplateDto(mailTemplateDto);
+    MessageUtil.addMessage("Update succesful", "Succesfully updated email templates");
+  }
 
-	private void refreshTemplates() {
-		mailTemplateDTO = mailTemplateService.getAllTemplates();
-	}
+  private void refreshTemplates() {
+    mailTemplateDto = mailTemplateService.getAllTemplates();
+  }
 
-	public MailTemplateService getMailTemplateService() {
-		return mailTemplateService;
-	}
+  public MailTemplateService getMailTemplateService() {
+    return mailTemplateService;
+  }
 
-	public void setMailTemplateService(MailTemplateService mailTemplateService) {
-		this.mailTemplateService = mailTemplateService;
-	}
+  public void setMailTemplateService(MailTemplateService mailTemplateService) {
+    this.mailTemplateService = mailTemplateService;
+  }
 
-	public MailTemplatesForForLanguages getMailTemplateDTO() {
-		return mailTemplateDTO;
-	}
+  public MailTemplatesForForLanguages getMailTemplateDto() {
+    return mailTemplateDto;
+  }
 
-	public void setMailTemplateDTO(MailTemplatesForForLanguages mailTemplateDTO) {
-		this.mailTemplateDTO = mailTemplateDTO;
-	}
+  public void setMailTemplateDto(MailTemplatesForForLanguages mailTemplateDto) {
+    this.mailTemplateDto = mailTemplateDto;
+  }
 }

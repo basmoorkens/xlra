@@ -10,16 +10,15 @@ import com.moorkensam.xlra.service.util.ConfigurationLoader;
 @Named
 public class ErrorController {
 
-	private ConfigurationLoader configLoader;
+  private ConfigurationLoader configLoader;
 
-	@PostConstruct
-	public void initialize() {
-		configLoader = ConfigurationLoader.getInstance();
-	}
+  @PostConstruct
+  public void initialize() {
+    configLoader = ConfigurationLoader.getInstance();
+  }
 
-	public String getApplicationBaseUrl() {
-		return configLoader
-				.getProperty(ConfigurationLoader.APPLICATION_BASE_URL);
-	}
+  public String getApplicationBaseUrl() {
+    return configLoader.getProperty(ConfigurationLoader.APPLICATION_BASE_URL);
+  }
 
 }

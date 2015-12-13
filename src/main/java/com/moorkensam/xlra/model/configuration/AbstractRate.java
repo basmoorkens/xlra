@@ -11,46 +11,45 @@ import com.moorkensam.xlra.model.BaseEntity;
 @MappedSuperclass
 public abstract class AbstractRate extends BaseEntity {
 
-	private static final long serialVersionUID = -2217292746928883653L;
+  private static final long serialVersionUID = -2217292746928883653L;
 
-	@Embedded
-	@AttributeOverrides({
-			@AttributeOverride(name = "start", column = @Column(name = "start")),
-			@AttributeOverride(name = "end", column = @Column(name = "end")) })
-	private Interval interval;
+  @Embedded
+  @AttributeOverrides({@AttributeOverride(name = "start", column = @Column(name = "start")),
+      @AttributeOverride(name = "end", column = @Column(name = "end"))})
+  private Interval interval;
 
-	private double surchargePercentage;
+  private double surchargePercentage;
 
-	public Interval getInterval() {
-		return interval;
-	}
+  public Interval getInterval() {
+    return interval;
+  }
 
-	public void setInterval(Interval interval) {
-		this.interval = interval;
-	}
+  public void setInterval(Interval interval) {
+    this.interval = interval;
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (!(obj instanceof AbstractRate)) {
-			return false;
-		}
-		AbstractRate otherRate = (AbstractRate) obj;
-		if (this.getInterval().equals(otherRate.getInterval())
-				&& this.surchargePercentage == otherRate.surchargePercentage) {
-			return true;
-		}
-		return false;
-	}
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (!(obj instanceof AbstractRate)) {
+      return false;
+    }
+    AbstractRate otherRate = (AbstractRate) obj;
+    if (this.getInterval().equals(otherRate.getInterval())
+        && this.surchargePercentage == otherRate.surchargePercentage) {
+      return true;
+    }
+    return false;
+  }
 
-	public double getSurchargePercentage() {
-		return surchargePercentage;
-	}
+  public double getSurchargePercentage() {
+    return surchargePercentage;
+  }
 
-	public void setSurchargePercentage(double surchargePercentage) {
-		this.surchargePercentage = surchargePercentage;
-	}
+  public void setSurchargePercentage(double surchargePercentage) {
+    this.surchargePercentage = surchargePercentage;
+  }
 
 }

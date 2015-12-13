@@ -14,7 +14,7 @@ import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.CurrencyRate;
 import com.moorkensam.xlra.model.configuration.Interval;
-import com.moorkensam.xlra.model.configuration.XLRACurrency;
+import com.moorkensam.xlra.model.configuration.XlraCurrency;
 import com.moorkensam.xlra.service.ApplicationConfigurationService;
 import com.moorkensam.xlra.service.CurrencyService;
 
@@ -22,143 +22,158 @@ import com.moorkensam.xlra.service.CurrencyService;
 @ViewScoped
 public class ChfController {
 
-	@Inject
-	private ApplicationConfigurationService applicationConfigurationService;
+  @Inject
+  private ApplicationConfigurationService applicationConfigurationService;
 
-	@Inject
-	private CurrencyService currencyService;
+  @Inject
+  private CurrencyService currencyService;
 
-	private List<CurrencyRate> chfRates;
+  private List<CurrencyRate> chfRates;
 
-	private CurrencyRate selectedChfRate;
+  private CurrencyRate selectedChfRate;
 
-	private BigDecimal currentChfValue;
+  private BigDecimal currentChfValue;
 
-	private Configuration configuration;
+  private Configuration configuration;
 
-	private CurrencyRate newCurrencyRate;
+  private CurrencyRate newCurrencyRate;
 
-	private boolean showAddCurrencyPanel;
+  private boolean showAddCurrencyPanel;
 
-	@PostConstruct
-	public void initPage() {
-		refreshCurrencyRates();
-	}
+  @PostConstruct
+  public void initPage() {
+    refreshCurrencyRates();
+  }
 
-	private void refreshCurrencyRates() {
-		chfRates = currencyService.getAllChfRates();
-		configuration = applicationConfigurationService.getConfiguration();
-		setupCurrentRates();
-	}
+  private void refreshCurrencyRates() {
+    chfRates = currencyService.getAllChfRates();
+    configuration = applicationConfigurationService.getConfiguration();
+    setupCurrentRates();
+  }
 
-	public void setupPageForNewCurrencyRate() {
-		newCurrencyRate = new CurrencyRate();
-		newCurrencyRate.setCurrencyType(XLRACurrency.CHF);
-		newCurrencyRate.setInterval(new Interval());
-		showAddCurrencyPanel = true;
-	}
+  /**
+   * Setup the page for a new currency rate.
+   */
+  public void setupPageForNewCurrencyRate() {
+    newCurrencyRate = new CurrencyRate();
+    newCurrencyRate.setCurrencyType(XlraCurrency.CHF);
+    newCurrencyRate.setInterval(new Interval());
+    showAddCurrencyPanel = true;
+  }
 
-	public void saveNewCurrencyRate() {
-		currencyService.createCurrencyRate(newCurrencyRate);
-		showAddCurrencyPanel = false;
-		MessageUtil.addMessage(
-				"Swiss franc rate created",
-				"Successfully created swiss franc rate for "
-						+ newCurrencyRate.getInterval()
-						+ " with surcharge percentage "
-						+ newCurrencyRate.getSurchargePercentage());
-		refreshCurrencyRates();
-		newCurrencyRate = null;
-	}
+  /**
+   * Save a new currency rate.
+   */
+  public void saveNewCurrencyRate() {
+    currencyService.createCurrencyRate(newCurrencyRate);
+    showAddCurrencyPanel = false;
+    MessageUtil.addMessage("Swiss franc rate created",
+        "Successfully created swiss franc rate for " + newCurrencyRate.getInterval()
+            + " with surcharge percentage " + newCurrencyRate.getSurchargePercentage());
+    refreshCurrencyRates();
+    newCurrencyRate = null;
+  }
 
-	public void deleteChfRate(CurrencyRate rate) {
-		currencyService.deleteCurrencyRate(rate);
-		refreshCurrencyRates();
-		MessageUtil.addMessage("Successfully deleted rate",
-				"Sucessfully deleted Swiss franc rate.");
-	}
+  /**
+   * Delete a currency rate.
+   * 
+   * @param rate The rate to delete.
+   */
+  public void deleteChfRate(CurrencyRate rate) {
+    currencyService.deleteCurrencyRate(rate);
+    refreshCurrencyRates();
+    MessageUtil.addMessage("Successfully deleted rate", "Sucessfully deleted Swiss franc rate.");
+  }
 
-	public void cancelAddNewCurrencyRate() {
-		showAddCurrencyPanel = false;
-		newCurrencyRate = null;
-	}
+  public void cancelAddNewCurrencyRate() {
+    showAddCurrencyPanel = false;
+    newCurrencyRate = null;
+  }
 
-	public void updateCurrentChfRate() {
-		if (configuration.getCurrentChfValue() != getCurrentChfValue()) {
-			currencyService.updateCurrentChfValue(getCurrentChfValue());
-			MessageUtil.addMessage("Current swiss franc price",
-					"Updated current swiss franc price to "
-							+ getCurrentChfValue());
-			setupCurrentRates();
-		} else {
-			MessageUtil.addMessage("Current swiss franc price",
-					"The new price is the same as the old, not updating.");
-		}
-	}
+  /**
+   * Update the currenctly selected chf rate.
+   */
+  public void updateCurrentChfRate() {
+    if (configuration.getCurrentChfValue() != getCurrentChfValue()) {
+      currencyService.updateCurrentChfValue(getCurrentChfValue());
+      MessageUtil.addMessage("Current swiss franc price", "Updated current swiss franc price to "
+          + getCurrentChfValue());
+      setupCurrentRates();
+    } else {
+      MessageUtil.addMessage("Current swiss franc price",
+          "The new price is the same as the old, not updating.");
+    }
+  }
 
-	private void setupCurrentRates() {
-		currentChfValue = configuration.getCurrentChfValue();
-	}
+  private void setupCurrentRates() {
+    currentChfValue = configuration.getCurrentChfValue();
+  }
 
-	public void onChfCurrencyRateRowEdit(RowEditEvent event) {
-		CurrencyRate newRate = (CurrencyRate) event.getObject();
+  /**
+   * Executed when the onedit event is triggered.
+   * 
+   * @param event The event that was triggered.
+   */
+  public void onChfCurrencyRateRowEdit(RowEditEvent event) {
+    CurrencyRate newRate = (CurrencyRate) event.getObject();
 
-		updateChfRate(newRate);
-		MessageUtil.addMessage("Swiss franc rate updated",
-				"Updated swiss franc rate for " + newRate.getInterval()
-						+ " to " + newRate.getSurchargePercentage());
-		refreshCurrencyRates();
-	}
+    updateChfRate(newRate);
+    MessageUtil.addMessage(
+        "Swiss franc rate updated",
+        "Updated swiss franc rate for " + newRate.getInterval() + " to "
+            + newRate.getSurchargePercentage());
+    refreshCurrencyRates();
+  }
 
-	private void updateChfRate(CurrencyRate rate) {
-		currencyService.updateCurrencyRate(rate);
-	}
+  private void updateChfRate(CurrencyRate rate) {
+    currencyService.updateCurrencyRate(rate);
+  }
 
-	public List<CurrencyRate> getChfRates() {
-		return chfRates;
-	}
+  public List<CurrencyRate> getChfRates() {
+    return chfRates;
+  }
 
-	public CurrencyRate getSelectedChfRate() {
-		return selectedChfRate;
-	}
+  public CurrencyRate getSelectedChfRate() {
+    return selectedChfRate;
+  }
 
-	public void setSelectedChfRate(CurrencyRate selectedChfRate) {
-		this.selectedChfRate = selectedChfRate;
-	}
+  public void setSelectedChfRate(CurrencyRate selectedChfRate) {
+    this.selectedChfRate = selectedChfRate;
+  }
 
-	public Configuration getConfiguration() {
-		return configuration;
-	}
+  public Configuration getConfiguration() {
+    return configuration;
+  }
 
-	public BigDecimal getCurrentChfValue() {
-		return currentChfValue;
-	}
+  public BigDecimal getCurrentChfValue() {
+    return currentChfValue;
+  }
 
-	public void setCurrentChfValue(BigDecimal currentChfValue) {
-		this.currentChfValue = currentChfValue;
-	}
+  public void setCurrentChfValue(BigDecimal currentChfValue) {
+    this.currentChfValue = currentChfValue;
+  }
 
-	public CurrencyService getCurrencyService() {
-		return currencyService;
-	}
+  public CurrencyService getCurrencyService() {
+    return currencyService;
+  }
 
-	public void setCurrencyService(CurrencyService currencyService) {
-		this.currencyService = currencyService;
-	}
+  public void setCurrencyService(CurrencyService currencyService) {
+    this.currencyService = currencyService;
+  }
 
-	public CurrencyRate getNewCurrencyRate() {
-		return newCurrencyRate;
-	}
+  public CurrencyRate getNewCurrencyRate() {
+    return newCurrencyRate;
+  }
 
-	public void setNewCurrencyRate(CurrencyRate newCurrencyRate) {
-		this.newCurrencyRate = newCurrencyRate;
-	}
+  public void setNewCurrencyRate(CurrencyRate newCurrencyRate) {
+    this.newCurrencyRate = newCurrencyRate;
+  }
 
-	public boolean isShowAddCurrencyPanel() {
-		return showAddCurrencyPanel;
-	}
+  public boolean isShowAddCurrencyPanel() {
+    return showAddCurrencyPanel;
+  }
 
-	public void setShowAddCurrencyPanel(boolean showAddCurrencyPanel) {
-		this.showAddCurrencyPanel = showAddCurrencyPanel;
-	}
+  public void setShowAddCurrencyPanel(boolean showAddCurrencyPanel) {
+    this.showAddCurrencyPanel = showAddCurrencyPanel;
+  }
 }

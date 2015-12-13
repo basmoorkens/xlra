@@ -11,32 +11,32 @@ import com.moorkensam.xlra.model.customer.Customer;
 
 public class CustomerUtilTest extends UnitilsJUnit4 {
 
-	@TestedObject
-	private CustomerUtil customerUtil;
+  @TestedObject
+  private CustomerUtil customerUtil;
 
-	private Customer customer;
+  private Customer customer;
 
-	@Before
-	public void init() {
-		customerUtil = CustomerUtil.getInstance();
-	}
+  @Before
+  public void init() {
+    customerUtil = CustomerUtil.getInstance();
+  }
 
-	@Test
-	public void test() {
-		customer = new Customer();
-		customerUtil.promoteToFullCustomer(customer);
+  @Test
+  public void test() {
+    customer = new Customer();
+    customerUtil.promoteToFullCustomer(customer);
 
-		Assert.assertTrue(customer.isHasOwnRateFile());
-		Assert.assertNotNull(customer.getAddress());
-	}
+    Assert.assertTrue(customer.isHasOwnRateFile());
+    Assert.assertNotNull(customer.getAddress());
+  }
 
-	@Test
-	public void testNullAddres() {
-		customer = new Customer();
-		customer.setAddress(null);
-		customerUtil.promoteToFullCustomer(customer);
+  @Test
+  public void testNullAddres() {
+    customer = new Customer();
+    customer.setAddress(null);
+    customerUtil.promoteToFullCustomer(customer);
 
-		Assert.assertTrue(customer.isHasOwnRateFile());
-		Assert.assertNotNull(customer.getAddress());
-	}
+    Assert.assertTrue(customer.isHasOwnRateFile());
+    Assert.assertNotNull(customer.getAddress());
+  }
 }

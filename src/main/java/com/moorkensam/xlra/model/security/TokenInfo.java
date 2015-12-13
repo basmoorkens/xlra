@@ -7,23 +7,23 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class TokenInfo {
 
-	private String verificationToken;
+  private String verificationToken;
 
-	private Date validTo;
+  private Date validTo;
 
-	public Date getValidTo() {
-		return validTo;
-	}
+  public Date getValidTo() {
+    return validTo;
+  }
 
-	public void setValidTo(Date validTo) {
-		this.validTo = validTo;
-	}
+  public void setValidTo(Date validTo) {
+    this.validTo = validTo;
+  }
 
-	public String getVerificationToken() {
-		return verificationToken;
-	}
+  public String getVerificationToken() {
+    return verificationToken;
+  }
 
-	public void setVerificationToken(String verificationToken) {
-		this.verificationToken = verificationToken;
-	}
+  public void setVerificationToken(String verificationToken) {
+    this.verificationToken = verificationToken;
+  }
 }

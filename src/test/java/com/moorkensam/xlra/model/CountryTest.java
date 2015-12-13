@@ -10,14 +10,14 @@ import com.moorkensam.xlra.model.rate.Country;
 
 public class CountryTest extends UnitilsJUnit4 {
 
-	@TestedObject
-	private Country country;
+  @TestedObject
+  private Country country;
 
-	@Test
-	public void testInitEmptyLangNameMap() {
-		country = new Country();
-		country.buildEmptyLanguageMap();
-		Assert.assertNotNull(country.getNames());
-		Assert.assertEquals(4, country.getNames().size());
-	}
+  @Test
+  public void testInitEmptyLangNameMap() {
+    country = new Country();
+    country.buildEmptyLanguageMap();
+    Assert.assertNotNull(country.getNames());
+    Assert.assertEquals(4, country.getNames().size());
+  }
 }

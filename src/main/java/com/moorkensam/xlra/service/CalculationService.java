@@ -7,7 +7,7 @@ import com.moorkensam.xlra.model.offerte.QuotationResult;
 
 public interface CalculationService {
 
-	public PriceCalculation calculatePriceAccordingToConditions(
-			QuotationResult result) throws RateFileException;
+  public PriceCalculation calculatePriceAccordingToConditions(QuotationResult result)
+      throws RateFileException;
 
 }

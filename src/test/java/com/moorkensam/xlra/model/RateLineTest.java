@@ -13,19 +13,19 @@ import com.moorkensam.xlra.model.rate.Zone;
 
 public class RateLineTest extends UnitilsJUnit4 {
 
-	@TestedObject
-	private RateLine rl;
+  @TestedObject
+  private RateLine rl;
 
-	@Test
-	public void testDeepCopy() {
-		rl.setValue(new BigDecimal(100d));
-		rl.setZone(new Zone());
-		rl.getZone().setName("ZONETEST");
-		rl.setMeasurement(10);
-		RateLine copy = rl.deepCopy();
-		Assert.assertNotNull(rl);
-		Assert.assertEquals(new BigDecimal(100d), copy.getValue());
-		Assert.assertEquals(copy.getZone().getName(), "ZONETEST");
-		Assert.assertEquals(10.0d, copy.getMeasurement());
-	}
+  @Test
+  public void testDeepCopy() {
+    rl.setValue(new BigDecimal(100d));
+    rl.setZone(new Zone());
+    rl.getZone().setName("ZONETEST");
+    rl.setMeasurement(10);
+    RateLine copy = rl.deepCopy();
+    Assert.assertNotNull(rl);
+    Assert.assertEquals(new BigDecimal(100d), copy.getValue());
+    Assert.assertEquals(copy.getZone().getName(), "ZONETEST");
+    Assert.assertEquals(10.0d, copy.getMeasurement());
+  }
 }
