@@ -15,12 +15,14 @@ import org.apache.logging.log4j.Logger;
 import org.primefaces.model.SortOrder;
 
 import com.itextpdf.text.DocumentException;
+import com.moorkensam.xlra.dao.LogDao;
 import com.moorkensam.xlra.dao.PriceCalculationDao;
 import com.moorkensam.xlra.dao.QuotationQueryDao;
 import com.moorkensam.xlra.dao.QuotationResultDao;
 import com.moorkensam.xlra.model.error.PdfException;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.error.TemplatingException;
+import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.model.mail.EmailResult;
 import com.moorkensam.xlra.model.offerte.OfferteOptionDto;
 import com.moorkensam.xlra.model.offerte.OfferteSearchFilter;
@@ -38,6 +40,7 @@ import com.moorkensam.xlra.service.PdfService;
 import com.moorkensam.xlra.service.QuotationService;
 import com.moorkensam.xlra.service.RateFileService;
 import com.moorkensam.xlra.service.UserService;
+import com.moorkensam.xlra.service.util.LogRecordFactory;
 import com.moorkensam.xlra.service.util.QuotationUtil;
 
 @Stateless
@@ -72,6 +75,11 @@ public class QuotationServiceImpl implements QuotationService {
   @Inject
   private UserService userService;
 
+  @Inject
+  private LogDao logDao;
+
+  private LogRecordFactory logFactory;
+
   private FileService fileService;
 
   private IdentityService identityService;
@@ -86,6 +94,7 @@ public class QuotationServiceImpl implements QuotationService {
     identityService = IdentityService.getInstance();
     fileService = new FileServiceImpl();
     setQuotationUtil(QuotationUtil.getInstance());
+    logFactory = LogRecordFactory.getInstance();
   }
 
   @Override
@@ -190,6 +199,7 @@ public class QuotationServiceImpl implements QuotationService {
     copyTransientResultLanguageToLanguageIfNeeded(result);
     try {
       createAndSaveFullOfferte(result);
+      logOfferteSubmit(result);
       result.setPdfFileName(fileService.convertTransientOfferteToFinal(result
           .getOfferteUniqueIdentifier()));
       getEmailService().sendOfferteMail(result);
@@ -199,6 +209,11 @@ public class QuotationServiceImpl implements QuotationService {
     } catch (PdfException e) {
       throw new RateFileException(e.getBusinessException());
     }
+  }
+
+  private void logOfferteSubmit(QuotationResult result) {
+    LogRecord log = logFactory.createOfferteLogRecord(result);
+    logDao.createLogRecord(log);
   }
 
   private void createAndSaveFullOfferte(QuotationResult offerte) {
@@ -344,5 +359,21 @@ public class QuotationServiceImpl implements QuotationService {
   @Override
   public QuotationResult getOfferteByOfferteKey(String offerteKey) {
     return quotationResultDao.getOfferteByKey(offerteKey);
+  }
+
+  public LogDao getLogDao() {
+    return logDao;
+  }
+
+  public void setLogDao(LogDao logDao) {
+    this.logDao = logDao;
+  }
+
+  public LogRecordFactory getLogFactory() {
+    return logFactory;
+  }
+
+  public void setLogFactory(LogRecordFactory logFactory) {
+    this.logFactory = logFactory;
   }
 }

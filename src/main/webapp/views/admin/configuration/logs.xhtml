@@ -13,6 +13,24 @@
 	</ui:define>
 	<ui:define name="body">
 		<h:form id="ratesLogsForm">
+			<p:panel header="Offerte logs">
+				<p:dataTable value="#{logOverviewController.quotationLogRecords}"
+					var="log" emptyMessage="No offerte  logs found." id="offerteLogs">
+					<p:column>
+						<f:facet name="header">offerteKey</f:facet>
+						#{log.offerteKey}
+					</p:column>
+					<p:column>
+						<f:facet name="header">createdUserName</f:facet>
+						#{log.createdUserName}
+					</p:column>
+					<p:column>
+						<f:facet name="header">customerName</f:facet>
+						#{log.customerName}
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+
 			<p:panel header="Diesel / Chf  logs">
 				<p:dataTable value="#{logOverviewController.rateLogRecords}"
 					var="log" emptyMessage="No chf / diesel logs found.." id="rateLogs"

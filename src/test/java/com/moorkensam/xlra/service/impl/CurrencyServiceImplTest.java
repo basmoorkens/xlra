@@ -123,11 +123,11 @@ public class CurrencyServiceImplTest extends UnitilsJUnit4 {
 
   @Test
   public void testupdateCurrentChfValue() {
-    LogRecord record = new RateLogRecord();
     Configuration config = new Configuration();
     config.setCurrentChfValue(new BigDecimal(110d));
     EasyMock.expect(configDao.getXlraConfiguration()).andReturn(config);
     EasyMock.expect(userService.getCurrentUsername()).andReturn("bas");
+    LogRecord record = new RateLogRecord();
     EasyMock.expect(
         logRecordFactory.createChfLogRecord(new BigDecimal(110d), new BigDecimal(100d), "bas"))
         .andReturn(record);

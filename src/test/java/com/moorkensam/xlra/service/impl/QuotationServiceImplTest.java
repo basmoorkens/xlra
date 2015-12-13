@@ -18,6 +18,7 @@ import org.unitils.easymock.annotation.Mock;
 
 import com.itextpdf.text.DocumentException;
 import com.moorkensam.xlra.dao.EmailTemplateDao;
+import com.moorkensam.xlra.dao.LogDao;
 import com.moorkensam.xlra.dao.PriceCalculationDao;
 import com.moorkensam.xlra.dao.QuotationQueryDao;
 import com.moorkensam.xlra.dao.QuotationResultDao;
@@ -26,6 +27,8 @@ import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.PdfException;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.error.TemplatingException;
+import com.moorkensam.xlra.model.log.LogRecord;
+import com.moorkensam.xlra.model.log.QuotationLogRecord;
 import com.moorkensam.xlra.model.mail.EmailResult;
 import com.moorkensam.xlra.model.mail.MailTemplate;
 import com.moorkensam.xlra.model.offerte.OfferteOptionDto;
@@ -44,6 +47,7 @@ import com.moorkensam.xlra.service.MailTemplateService;
 import com.moorkensam.xlra.service.PdfService;
 import com.moorkensam.xlra.service.RateFileService;
 import com.moorkensam.xlra.service.UserService;
+import com.moorkensam.xlra.service.util.LogRecordFactory;
 import com.moorkensam.xlra.service.util.QuotationUtil;
 
 public class QuotationServiceImplTest extends UnitilsJUnit4 {
@@ -99,6 +103,12 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
   @Mock
   private UserService userService;
 
+  @Mock
+  private LogRecordFactory logRecordFactory;
+
+  @Mock
+  private LogDao logDao;
+
   private QuotationQuery query;
 
   /**
@@ -131,6 +141,8 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
     quotationService.setPdfService(pdfService);
     quotationService.setUserService(userService);
     quotationService.setQuotationUtil(quotationUtil);
+    quotationService.setLogDao(logDao);
+    quotationService.setLogFactory(logRecordFactory);
   }
 
   @Test
@@ -164,7 +176,10 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
     quotationResultDao.createQuotationResult(result);
     EasyMock.expectLastCall();
     EasyMock.expect(fileService.convertTransientOfferteToFinal("uq123")).andReturn("uq123.pdf");
-
+    LogRecord log = new QuotationLogRecord();
+    EasyMock.expect(logRecordFactory.createOfferteLogRecord(result)).andReturn(log);
+    logDao.createLogRecord(log);
+    EasyMock.expectLastCall();
     mailService.sendOfferteMail(result);
     EasyMock.expectLastCall();
 

@@ -9,8 +9,10 @@ import org.apache.logging.log4j.Logger;
 
 import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.model.log.LogType;
+import com.moorkensam.xlra.model.log.QuotationLogRecord;
 import com.moorkensam.xlra.model.log.RaiseRatesRecord;
 import com.moorkensam.xlra.model.log.RateLogRecord;
+import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateOperation;
 import com.moorkensam.xlra.model.security.User;
@@ -72,6 +74,21 @@ public class LogRecordFactory {
     record.setRate(value);
     record.setNewRate(newValue);
     record.setUserName(username);
+    return record;
+  }
+
+  /**
+   * Create a offerte log record.
+   * 
+   * @param offerte The offerte to generate a log for.
+   * @return The generated logrecord.
+   */
+  public LogRecord createOfferteLogRecord(QuotationResult offerte) {
+    QuotationLogRecord record = new QuotationLogRecord();
+    record.setCustomerName(offerte.getQuery().getCustomer().getName());
+    record.setOfferteKey(offerte.getOfferteUniqueIdentifier());
+    record.setUserName(offerte.getCreatedUserFullName());
+    fillInBasicProperties(record);
     return record;
   }
 

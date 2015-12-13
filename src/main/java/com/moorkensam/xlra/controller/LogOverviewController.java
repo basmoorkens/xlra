@@ -34,9 +34,9 @@ public class LogOverviewController {
   public void init() {
     Date logDateNow = new Date();
     Date lastMonthDate = getDateMin1Month(logDateNow);
-    rateLogRecords = logService.getRateLogRecordsByDate(logDateNow, lastMonthDate);
-    raiseRatesLogRecords = logService.getRaiseRatesLogRecordByDate(logDateNow, lastMonthDate);
-    quotationLogRecords = logService.getQuotationLogRecordsByDate(logDateNow, lastMonthDate);
+    rateLogRecords = logService.getRateLogRecordsByDate(lastMonthDate, logDateNow);
+    raiseRatesLogRecords = logService.getRaiseRatesLogRecordByDate(lastMonthDate, logDateNow);
+    quotationLogRecords = logService.getQuotationLogRecordsByDate(lastMonthDate, logDateNow);
   }
 
   private Date getDateMin1Month(Date inputDate) {

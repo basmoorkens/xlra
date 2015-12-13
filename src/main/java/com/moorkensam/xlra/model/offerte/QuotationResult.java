@@ -168,6 +168,11 @@ public class QuotationResult extends BaseEntity {
     emailHistory.add(record);
   }
 
+  /**
+   * Fetches the offerte country of the quotation query if present.
+   * 
+   * @return the offerte country.
+   */
   @Transient
   public Country getOfferteCountry() {
     if (query != null) {
