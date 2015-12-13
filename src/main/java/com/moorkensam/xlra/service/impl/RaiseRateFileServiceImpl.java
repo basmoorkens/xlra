@@ -20,6 +20,7 @@ import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.RateOperation;
 import com.moorkensam.xlra.service.RaiseRateFileService;
+import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.util.CalcUtil;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
 
@@ -35,6 +36,9 @@ public class RaiseRateFileServiceImpl implements RaiseRateFileService {
 
   @Inject
   private RateFileDao rateFileDao;
+
+  @Inject
+  private UserService userService;
 
   private CalcUtil calcUtil;
 
@@ -85,7 +89,8 @@ public class RaiseRateFileServiceImpl implements RaiseRateFileService {
     raiseRateFiles(percentage, fullRateFiles, operation);
 
     RaiseRatesRecord createRaiseRatesRecord =
-        getLogRecordFactory().createRaiseRatesRecord(operation, percentage, fullRateFiles);
+        getLogRecordFactory().createRaiseRatesRecord(operation, percentage, fullRateFiles,
+            getUserService().getCurrentUsername());
     logDao.createLogRecord(createRaiseRatesRecord);
 
     for (RateFile rf : fullRateFiles) {
@@ -189,6 +194,14 @@ public class RaiseRateFileServiceImpl implements RaiseRateFileService {
 
   public void setCalcUtil(CalcUtil calcUtil) {
     this.calcUtil = calcUtil;
+  }
+
+  public UserService getUserService() {
+    return userService;
+  }
+
+  public void setUserService(UserService userService) {
+    this.userService = userService;
   }
 
 }

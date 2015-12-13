@@ -20,6 +20,7 @@ import com.moorkensam.xlra.model.configuration.DieselRate;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.service.DieselService;
+import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
 
 @Stateless
@@ -35,6 +36,9 @@ public class DieselServiceImpl implements DieselService {
 
   @Inject
   private LogDao logDao;
+
+  @Inject
+  private UserService userService;
 
   private LogRecordFactory logRecordFactory;
 
@@ -64,7 +68,8 @@ public class DieselServiceImpl implements DieselService {
     Configuration config = getXlraConfigurationDao().getXlraConfiguration();
 
     LogRecord createDieselLogRecord =
-        logRecordFactory.createDieselLogRecord(config.getCurrentDieselPrice(), value);
+        logRecordFactory.createDieselLogRecord(config.getCurrentDieselPrice(), value,
+            getUserService().getCurrentUsername());
     logger.info("Saving dieselprice logrecord " + createDieselLogRecord);
     getLogDao().createLogRecord(createDieselLogRecord);
 
@@ -122,5 +127,13 @@ public class DieselServiceImpl implements DieselService {
 
   public void setXlraConfigurationDao(ConfigurationDao xlraConfigurationDao) {
     this.xlraConfigurationDao = xlraConfigurationDao;
+  }
+
+  public UserService getUserService() {
+    return userService;
+  }
+
+  public void setUserService(UserService userService) {
+    this.userService = userService;
   }
 }

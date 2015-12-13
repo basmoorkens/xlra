@@ -35,7 +35,7 @@ public class LogRecordFactoryTest extends UnitilsJUnit4 {
     RateOperation operation = RateOperation.RAISE;
     RateFile rf = new RateFile();
     RaiseRatesRecord record =
-        factory.createRaiseRatesRecord(operation, percentage, Arrays.asList(rf));
+        factory.createRaiseRatesRecord(operation, percentage, Arrays.asList(rf), "bas");
     Assert.assertNotNull(record);
     Assert.assertEquals(RateOperation.RAISE, record.getOperation());
     Assert.assertEquals(record.getPercentage(), percentage);
@@ -48,7 +48,7 @@ public class LogRecordFactoryTest extends UnitilsJUnit4 {
     expected.setType(LogType.DIESELRATE);
     expected.setRate(BigDecimal.valueOf(11.44d));
     LogRecord result =
-        factory.createDieselLogRecord(BigDecimal.valueOf(11.44d), BigDecimal.valueOf(10d));
+        factory.createDieselLogRecord(BigDecimal.valueOf(11.44d), BigDecimal.valueOf(10d), "bas");
     Assert.assertNotNull(result);
     Assert.assertTrue(result instanceof RateLogRecord);
     RateLogRecord rl = (RateLogRecord) result;
@@ -74,7 +74,7 @@ public class LogRecordFactoryTest extends UnitilsJUnit4 {
     expected.setType(LogType.CURRENCYRATE);
     expected.setRate(BigDecimal.valueOf(10.05d));
     LogRecord result =
-        factory.createChfLogRecord(BigDecimal.valueOf(10.05d), BigDecimal.valueOf(10d));
+        factory.createChfLogRecord(BigDecimal.valueOf(10.05d), BigDecimal.valueOf(10d), "bas");
     Assert.assertNotNull(result);
     Assert.assertTrue(result instanceof RateLogRecord);
     RateLogRecord rl = (RateLogRecord) result;

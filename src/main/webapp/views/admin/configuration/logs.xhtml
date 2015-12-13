@@ -35,6 +35,25 @@
 					</p:column>
 				</p:dataTable>
 			</p:panel>
+
+			<p:panel header="Raise rate logs">
+				<p:dataTable value="#{logOverviewController.raiseRatesLogRecords}"
+					var="log" emptyMessage="No raise rate logrecords found"
+					id="raiseRateLogs" rows="10">
+					<p:column>
+						<f:facet name="header">Date time</f:facet>
+						#{log.logDate}
+					</p:column>
+					<p:column>
+						<f:facet name="header">Operation</f:facet>
+						#{log.operation}
+					</p:column>
+					<p:column>
+						<f:facet name="header">Percentage</f:facet>
+						#{log.percentage}
+					</p:column>
+				</p:dataTable>
+			</p:panel>
 		</h:form>
 	</ui:define>
 </ui:composition>

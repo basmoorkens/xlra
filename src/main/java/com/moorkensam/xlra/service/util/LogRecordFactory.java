@@ -45,11 +45,12 @@ public class LogRecordFactory {
    * @param newValue the new value.
    * @return the generated log record.
    */
-  public LogRecord createChfLogRecord(BigDecimal value, BigDecimal newValue) {
+  public LogRecord createChfLogRecord(BigDecimal value, BigDecimal newValue, String username) {
     RateLogRecord record = new RateLogRecord();
     fillInBasicProperties(record);
     record.setRate(value);
     record.setType(LogType.CURRENCYRATE);
+    record.setUserName(username);
     return record;
   }
 
@@ -64,12 +65,13 @@ public class LogRecordFactory {
    * @param newValue the new value.
    * @return the generated record.
    */
-  public LogRecord createDieselLogRecord(BigDecimal value, BigDecimal newValue) {
+  public LogRecord createDieselLogRecord(BigDecimal value, BigDecimal newValue, String username) {
     RateLogRecord record = new RateLogRecord();
     fillInBasicProperties(record);
     record.setType(LogType.DIESELRATE);
     record.setRate(value);
     record.setNewRate(newValue);
+    record.setUserName(username);
     return record;
   }
 
@@ -97,7 +99,7 @@ public class LogRecordFactory {
    * @return the created record.
    */
   public RaiseRatesRecord createRaiseRatesRecord(RateOperation operation, double percentage,
-      List<RateFile> fullRateFiles) {
+      List<RateFile> fullRateFiles, String username) {
     if (logger.isDebugEnabled()) {
       logger.debug("Creating log record for " + operation);
     }
@@ -106,6 +108,7 @@ public class LogRecordFactory {
     logRecord.setRateFiles(fullRateFiles);
     logRecord.setLogDate(new Date());
     logRecord.setOperation(operation);
+    logRecord.setUserName(username);
     return logRecord;
   }
 

@@ -20,6 +20,7 @@ import com.moorkensam.xlra.model.configuration.CurrencyRate;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.service.CurrencyService;
+import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
 
 /**
@@ -41,6 +42,9 @@ public class CurrencyServiceImpl implements CurrencyService {
 
   @Inject
   private CurrencyRateDao currencyRateDao;
+
+  @Inject
+  private UserService userService;
 
   private LogRecordFactory logRecordFactory;
 
@@ -75,7 +79,8 @@ public class CurrencyServiceImpl implements CurrencyService {
     Configuration config = getXlraConfigurationDao().getXlraConfiguration();
 
     LogRecord createChfLogRecord =
-        logRecordFactory.createChfLogRecord(config.getCurrentChfValue(), value);
+        logRecordFactory.createChfLogRecord(config.getCurrentChfValue(), value, getUserService()
+            .getCurrentUsername());
     logger.info("saving chfprice logrecord" + createChfLogRecord);
     getLogDao().createLogRecord(createChfLogRecord);
 
@@ -137,6 +142,14 @@ public class CurrencyServiceImpl implements CurrencyService {
 
   public void setLogRecordFactory(LogRecordFactory logRecordFactory) {
     this.logRecordFactory = logRecordFactory;
+  }
+
+  public UserService getUserService() {
+    return userService;
+  }
+
+  public void setUserService(UserService userService) {
+    this.userService = userService;
   }
 
 }

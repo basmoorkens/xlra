@@ -1,5 +1,8 @@
 package com.moorkensam.xlra.service.impl;
 
+import java.security.Principal;
+
+import javax.ejb.SessionContext;
 import javax.mail.MessagingException;
 
 import org.easymock.EasyMock;
