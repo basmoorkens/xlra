@@ -136,7 +136,8 @@ public class CalculationServiceTest extends UnitilsJUnit4 {
     EasyMockUnitils.replay();
     QuotationResult offerte = new QuotationResult();
     offerte.setCalculation(priceDto);
-    calcService.calculateChfSurchargePrice(offerte, config);
+    calcService.calculateChfSurchargePrice(offerte.getSelectableOptions(),
+        offerte.getCalculation(), config.getCurrentChfValue());
 
     BigDecimal expected = new BigDecimal(50.00d);
     expected = expected.setScale(2, RoundingMode.HALF_UP);
@@ -150,7 +151,8 @@ public class CalculationServiceTest extends UnitilsJUnit4 {
     EasyMockUnitils.replay();
     QuotationResult offerte = new QuotationResult();
     offerte.setCalculation(priceDto);
-    calcService.calculateDieselSurchargePrice(offerte, config);
+    calcService.calculateDieselSurchargePrice(offerte.getSelectableOptions(),
+        offerte.getCalculation(), config.getCurrentDieselPrice());
     BigDecimal expected = new BigDecimal(25.00d);
     expected = expected.setScale(2, RoundingMode.HALF_UP);
     Assert.assertEquals(expected, priceDto.getDieselPrice());

@@ -68,9 +68,7 @@ public class MailTemplateServiceImpl implements MailTemplateService {
       logger.info("Parsing template: " + template.getTemplate());
       String emailMessage =
           templateParseService.parseOfferteEmailTemplate(template.getTemplate(), result);
-      dto.setToAddress(result.getQuery().getCustomer().getEmail());
-      dto.setSubject(template.getSubject());
-      dto.setEmail(emailMessage);
+      fillInEmailResult(result, dto, template, emailMessage);
     } catch (NoResultException nre) {
       logger.error("Could not find email template for " + result.getQuery().getResultLanguage());
       throw new RateFileException("Could not find email template for language "
@@ -78,6 +76,13 @@ public class MailTemplateServiceImpl implements MailTemplateService {
     }
     return dto;
 
+  }
+
+  private void fillInEmailResult(QuotationResult result, EmailResult dto, MailTemplate template,
+      String emailMessage) {
+    dto.setToAddress(result.getQuery().getCustomer().getEmail());
+    dto.setSubject(template.getSubject());
+    dto.setEmail(emailMessage);
   }
 
   public EmailTemplateDao getMailTemplateDao() {

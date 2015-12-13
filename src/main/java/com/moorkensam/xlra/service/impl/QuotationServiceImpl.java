@@ -133,9 +133,7 @@ public class QuotationServiceImpl implements QuotationService {
           quotationUtil.generateOfferteOptionsForRateFileAndLanguage(rf, offerte.getQuery()
               .getResultLanguage());
       offerte.setSelectableOptions(options);
-      PriceCalculation calculatedPrice = new PriceCalculation();
-      calculatedPrice.setBasePrice(result.getValue());
-      offerte.setCalculation(calculatedPrice);
+      offerte.getCalculation().setBasePrice(result.getValue());
     } catch (RateFileException e1) {
       logger.error(e1.getBusinessException() + e1.getMessage());
       throw e1;
@@ -170,6 +168,8 @@ public class QuotationServiceImpl implements QuotationService {
     quotationResult.setOfferteUniqueIdentifier(identityService.getNextIdentifier());
     User loggedInUser = userService.getUserByUserName(userService.getCurrentUsername());
     quotationResult.setCreatedUserFullName(loggedInUser.getFullName());
+    PriceCalculation calculatedPrice = new PriceCalculation();
+    quotationResult.setCalculation(calculatedPrice);
     return quotationResult;
   }
 

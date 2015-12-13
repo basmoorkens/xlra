@@ -63,6 +63,19 @@ public class PdfServiceImpl implements PdfService {
     document.open();
     fillInHeaderProperties(document);
 
+    Pipeline<?> pipeline = setupPipelines(document, pdfWriter);
+
+    XMLParser parser = new XMLParser(new XMLWorker(pipeline, true));
+    String pdfBody = templateParseService.parseOffertePdf(offerte, language);
+    try {
+      parser.parse(new StringReader(pdfBody));
+      document.close();
+    } catch (IOException e) {
+      logger.error("Error creating inputstream from pdfbod text", e);
+    }
+  }
+
+  private Pipeline<?> setupPipelines(Document document, final PdfWriter pdfWriter) {
     HtmlPipelineContext htmlContext = new HtmlPipelineContext(null);
     htmlContext.setImageProvider(new AbstractImageProvider() {
 
@@ -77,15 +90,7 @@ public class PdfServiceImpl implements PdfService {
     Pipeline<?> pipeline =
         new CssResolverPipeline(cssResolver, new HtmlPipeline(htmlContext, new PdfWriterPipeline(
             document, pdfWriter)));
-    XMLWorker worker = new XMLWorker(pipeline, true);
-    XMLParser parser = new XMLParser(worker);
-    String pdfBody = templateParseService.parseOffertePdf(offerte, language);
-    try {
-      parser.parse(new StringReader(pdfBody));
-      document.close();
-    } catch (IOException e) {
-      logger.error("Error creating inputstream from pdfbod text", e);
-    }
+    return pipeline;
   }
 
   private void fillInHeaderProperties(Document document) {

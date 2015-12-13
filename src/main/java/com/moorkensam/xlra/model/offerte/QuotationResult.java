@@ -167,4 +167,12 @@ public class QuotationResult extends BaseEntity {
     }
     emailHistory.add(record);
   }
+
+  @Transient
+  public Country getOfferteCountry() {
+    if (query != null) {
+      return query.getCountry();
+    }
+    return null;
+  }
 }

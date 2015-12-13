@@ -38,11 +38,7 @@ public class IdentityService {
       logger.debug("Generating uq identifier for offerte");
     }
 
-    try {
-      Thread.sleep(1000);
-    } catch (InterruptedException e) {
-      logger.error("Error whilst sleeping in identifier generation");
-    }
+    ensureUniqueness();
     String identifier = "";
     Calendar calendar = Calendar.getInstance();
     calendar.setTime(new Date());
@@ -55,5 +51,13 @@ public class IdentityService {
       logger.debug("Generated " + identifier);
     }
     return identifier;
+  }
+
+  private void ensureUniqueness() {
+    try {
+      Thread.sleep(1000);
+    } catch (InterruptedException e) {
+      logger.error("Error whilst sleeping in identifier generation");
+    }
   }
 }

@@ -1,6 +1,7 @@
 package com.moorkensam.xlra.service.impl;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -55,43 +56,57 @@ public class CalculationServiceImpl implements CalculationService {
     calculation.setBasePrice(offerte.getCalculation().getBasePrice());
     offerte.setCalculation(calculation);
 
-    Configuration config = getConfigurationDao().getXlraConfiguration();
+    calculateOptionsInOfferte(offerte.getSelectableOptions(), offerte.getCalculation(), offerte
+        .getOfferteCountry().getShortName());
 
-    for (OfferteOptionDto option : offerte.getSelectableOptions()) {
+    applyAfterConditionLogic(offerte.getCalculation());
+    offerte.getCalculation().calculateTotalPrice();
+    return offerte.getCalculation();
+  }
+
+  private void calculateOptionsInOfferte(List<OfferteOptionDto> options, PriceCalculation calc,
+      String countryShortName) throws RateFileException {
+    calculateVariableOptions(options, calc);
+    calculateFixedOptions(options, calc, countryShortName);
+  }
+
+  private void calculateFixedOptions(List<OfferteOptionDto> options, PriceCalculation calc,
+      String countryShortName) throws RateFileException {
+    Configuration config = getConfigurationDao().getXlraConfiguration();
+    calculateDieselSurchargePrice(options, calc, config.getCurrentDieselPrice());
+    if (countryShortName.equalsIgnoreCase(CHF)) {
+      calculateChfSurchargePrice(options, calc, config.getCurrentChfValue());
+    }
+  }
+
+  private void calculateVariableOptions(List<OfferteOptionDto> options, PriceCalculation calc)
+      throws RateFileException {
+    for (OfferteOptionDto option : options) {
       switch (option.getKey()) {
         case ADR_SURCHARGE:
           if (option.isSelected()) {
-            calculateAddressSurcharge(offerte.getCalculation(), option);
+            calculateAddressSurcharge(calc, option);
           }
           break;
         case ADR_MINIMUM:
           if (option.isSelected()) {
-            calculateAddressSurchargeMinimum(offerte.getCalculation(), option);
+            calculateAddressSurchargeMinimum(calc, option);
           }
           break;
         case IMPORT_FORM:
           if (option.isSelected()) {
-            calculateImportFormality(offerte.getCalculation(), option);
+            calculateImportFormality(calc, option);
           }
           break;
         case EXPORT_FORM:
           if (option.isSelected()) {
-            calculateExportFormality(offerte.getCalculation(), option);
+            calculateExportFormality(calc, option);
           }
           break;
         default:
           break;
       }
     }
-
-    calculateDieselSurchargePrice(offerte, config);
-    if (offerte.getCountry().getShortName().equalsIgnoreCase(CHF)) {
-      calculateChfSurchargePrice(offerte, config);
-    }
-
-    applyAfterConditionLogic(offerte.getCalculation());
-    offerte.getCalculation().calculateTotalPrice();
-    return offerte.getCalculation();
   }
 
   /**
@@ -116,17 +131,17 @@ public class CalculationServiceImpl implements CalculationService {
   /**
    * Calculates the import formalities.
    * 
-   * @param priceCalculation The pricecalculation to fill the export forms into.
+   * @param priceCalc The pricecalculation to fill the export forms into.
    * 
    * @param option The option that has the value.
    * @throws RateFileException Thrown when an invalid number was in the value.
    */
-  protected void calculateImportFormality(PriceCalculation priceCalculation, OfferteOptionDto option)
+  protected void calculateImportFormality(PriceCalculation priceCalc, OfferteOptionDto option)
       throws RateFileException {
     try {
       BigDecimal importFormalities = new BigDecimal(Double.parseDouble(option.getValue()));
       importFormalities = getCalcUtil().roundBigDecimal(importFormalities);
-      priceCalculation.setImportFormalities(importFormalities);
+      priceCalc.setImportFormalities(importFormalities);
     } catch (NumberFormatException exc) {
       throw new RateFileException("Invalid value for " + option.getKey() + ": " + ""
           + option.getValue());
@@ -190,50 +205,41 @@ public class CalculationServiceImpl implements CalculationService {
     }
   }
 
-  protected void calculateChfSurchargePrice(QuotationResult offerte, Configuration config)
-      throws RateFileException {
-    CurrencyRate chfRate =
-        getCurrencyService().getChfRateForCurrentPrice(config.getCurrentChfValue());
+  protected void calculateChfSurchargePrice(List<OfferteOptionDto> options, PriceCalculation calc,
+      BigDecimal currentChfValue) throws RateFileException {
+    CurrencyRate chfRate = getCurrencyService().getChfRateForCurrentPrice(currentChfValue);
     BigDecimal multiplier =
         getCalcUtil().convertPercentageToBaseMultiplier(chfRate.getSurchargePercentage());
     BigDecimal result =
-        new BigDecimal(offerte.getCalculation().getBasePrice().doubleValue()
-            * multiplier.doubleValue());
+        new BigDecimal(calc.getBasePrice().doubleValue() * multiplier.doubleValue());
     result = getCalcUtil().roundBigDecimal(result);
-    offerte.getCalculation().setChfPrice(result);
+    calc.setChfPrice(result);
 
-    if (!quotationUtil.offerteOptionsContainsKey(offerte.getSelectableOptions(),
-        TranslationKey.CHF_SURCHARGE)) {
-      offerte.getSelectableOptions().add(
-          quotationUtil.createCalculationOption(TranslationKey.CHF_SURCHARGE, result));
+    if (!quotationUtil.offerteOptionsContainsKey(options, TranslationKey.CHF_SURCHARGE)) {
+      options.add(quotationUtil.createCalculationOption(TranslationKey.CHF_SURCHARGE, result));
     }
   }
 
   /**
-   * Calculates the diesel supplement for the found base price.
    * 
-   * @param priceCalculation The pricedto object to take the base price from and to save the diesel
-   *        surcharge into.
-   * @param config The config object to take the current diesel price from.
-   * @throws RateFileException Thrown when no dieselpercentage multiplier can be found for the
-   *         current diesel price.
+   * @param options the offerte options, the diesel option will get added to it.
+   * @param calc the calculation object
+   * @param currentDieselValue the current diesel price.
+   * @throws RateFileException thrown when no currentdieselprice or diesel percentage could be
+   *         found.
    */
-  protected void calculateDieselSurchargePrice(QuotationResult offerte, Configuration config)
-      throws RateFileException {
-    DieselRate dieselRate =
-        getDieselService().getDieselRateForCurrentPrice(config.getCurrentDieselPrice());
+  protected void calculateDieselSurchargePrice(List<OfferteOptionDto> options,
+      PriceCalculation calc, BigDecimal currentDieselValue) throws RateFileException {
+    DieselRate dieselRate = getDieselService().getDieselRateForCurrentPrice(currentDieselValue);
     BigDecimal multiplier =
         getCalcUtil().convertPercentageToBaseMultiplier(dieselRate.getSurchargePercentage());
     BigDecimal result =
-        new BigDecimal(offerte.getCalculation().getBasePrice().doubleValue()
-            * multiplier.doubleValue());
+        new BigDecimal(calc.getBasePrice().doubleValue() * multiplier.doubleValue());
     result = getCalcUtil().roundBigDecimal(result);
-    offerte.getCalculation().setDieselPrice(result);
+    calc.setDieselPrice(result);
 
-    if (!quotationUtil.offerteOptionsContainsKey(offerte.getSelectableOptions(),
-        TranslationKey.DIESEL_SURCHARGE)) {
-      offerte.getSelectableOptions().add(
-          quotationUtil.createCalculationOption(TranslationKey.DIESEL_SURCHARGE, result));
+    if (!quotationUtil.offerteOptionsContainsKey(options, TranslationKey.DIESEL_SURCHARGE)) {
+      options.add(quotationUtil.createCalculationOption(TranslationKey.DIESEL_SURCHARGE, result));
     }
   }
 
