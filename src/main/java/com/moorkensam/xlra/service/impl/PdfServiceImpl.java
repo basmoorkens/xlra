@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.service.impl;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -41,7 +42,7 @@ public class PdfServiceImpl implements PdfService {
 
   private FileService fileService;
 
-  private final static Logger logger = LogManager.getLogger();
+  private static final Logger logger = LogManager.getLogger();
 
   @PostConstruct
   public void init() {
@@ -57,6 +58,8 @@ public class PdfServiceImpl implements PdfService {
         fileService.getTemporaryFilePathForPdf(offerte.getOfferteUniqueIdentifier());
 
     offerte.setPdfFileName(fullPdfFileName);
+    final PdfWriter pdfWriter =
+        PdfWriter.getInstance(document, new FileOutputStream(fullPdfFileName));
     document.open();
     fillInHeaderProperties(document);
 
@@ -70,8 +73,6 @@ public class PdfServiceImpl implements PdfService {
     });
 
     htmlContext.setTagFactory(Tags.getHtmlTagProcessorFactory());
-    PdfWriter pdfWriter = PdfWriter.getInstance(document, new FileOutputStream(fullPdfFileName));
-
     CSSResolver cssResolver = XMLWorkerHelper.getInstance().getDefaultCssResolver(true);
     Pipeline<?> pipeline =
         new CssResolverPipeline(cssResolver, new HtmlPipeline(htmlContext, new PdfWriterPipeline(
