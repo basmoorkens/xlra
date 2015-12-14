@@ -42,7 +42,7 @@
 				<ui:param name="canEdit" value="#{manageRatesController.canEdit}"></ui:param>
 			</ui:include>
 		</h:form>
-		<h:form id="rateLinesDetailForm">
+		<h:form id="rateLinesDetailForm" prependId="false">
 			<p:growl id="message" showDetail="true" />
 			<ui:include src="/views/user/rateLinesDetail.xhtml">
 				<ui:param name="rateFile"

@@ -32,7 +32,7 @@ import com.moorkensam.xlra.service.util.LogRecordFactory;
 @Stateless
 public class CurrencyServiceImpl implements CurrencyService {
 
-  private final static Logger logger = LogManager.getLogger();
+  private static final Logger logger = LogManager.getLogger();
 
   @Inject
   private ConfigurationDao xlraConfigurationDao;

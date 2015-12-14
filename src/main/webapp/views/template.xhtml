@@ -116,5 +116,16 @@
 	<p:panel>
 		<ui:insert name="body">Welcome to the Extra logistics Rates application</ui:insert>
 	</p:panel>
+	<script type="text/javascript">
+		$(document).on(
+				"keydown",
+				".ui-cell-editor-input input",
+				function(event) {
+					if (event.keyCode == 13) {
+						$(this).closest("tr").first(
+								".ui-row-editor .ui-icon-check").click();
+					}
+				});
+	</script>
 </h:body>
 </html>
