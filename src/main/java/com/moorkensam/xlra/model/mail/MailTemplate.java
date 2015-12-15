@@ -15,7 +15,7 @@ import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.Language;
 
 @Entity
-@Table(name = "mailTemplate")
+@Table(name = "mailtemplate")
 @NamedQueries({
     @NamedQuery(name = "MailTemplate.findAll", query = "SELECT m FROM MailTemplate m"),
     @NamedQuery(name = "MailTemplate.findByLanguage",

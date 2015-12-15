@@ -18,7 +18,7 @@ import com.moorkensam.xlra.model.rate.RateOperation;
 
 @Entity
 @Cacheable
-@Table(name = "raiseRateLogRecord")
+@Table(name = "raiseratelogrecord")
 @NamedQueries({
     @NamedQuery(name = "RaiseRatesRecord.findAll",
         query = "SELECT r FROM RaiseRatesRecord r WHERE r.deleted = false"),

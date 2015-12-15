@@ -17,7 +17,7 @@ import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.util.CalcUtil;
 
 @Entity
-@Table(name = "priceCalculation")
+@Table(name = "pricecalculation")
 public class PriceCalculation extends BaseEntity {
 
   private static final long serialVersionUID = 1L;

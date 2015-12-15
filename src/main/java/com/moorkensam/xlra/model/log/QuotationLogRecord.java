@@ -6,7 +6,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "quotationLogRecord")
+@Table(name = "quotationlogrecord")
 @NamedQueries({@NamedQuery(
     name = "QuotationLogRecord.getQuotationLogRecordsByDate",
     query = "SELECT q FROM QuotationLogRecord q WHERE q.logDate > :startDate AND q.logDate < :endDate")})

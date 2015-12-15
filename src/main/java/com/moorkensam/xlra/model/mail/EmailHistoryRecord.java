@@ -13,7 +13,7 @@ import com.moorkensam.xlra.model.BaseEntity;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 
 @Entity
-@Table(name = "emailHistoryrecord")
+@Table(name = "emailhistoryrecord")
 public class EmailHistoryRecord extends BaseEntity {
 
   private static final long serialVersionUID = 4167800588284752022L;
