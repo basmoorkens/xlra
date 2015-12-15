@@ -12,17 +12,17 @@
 		<h:outputText value="Customer management" />
 	</ui:define>
 	<ui:define name="body">
-		<h:form>
+		<h:form id="customerOverviewForm">
 			<p:commandButton value="Create customer" title="Add new customer"
 				actionListener="#{customerController.setupPageForNewCustomer}"
-				icon="ui-icon-check" ajax="false" />
-		</h:form>
-		<h:form id="customerOverviewForm">
+				icon="ui-icon-check" ajax="true"  update=":customerDetailForm" immediate="true"/>
 
 			<p:panel id="customerOverview" header="Customer overview">
-				<p:dataTable value="#{customerController.allCustomers}"
-					var="customer" emptyMessage="No customers found."
-					id="customerTable" rows="10">
+				<p:dataTable value="#{customerController.model}" var="customer"
+					emptyMessage="No customers found." lazy="true" paginator="true"
+					id="customerTable" rows="2" sortMode="single"
+					paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+					rowsPerPageTemplate="2,50,100">
 					<p:column>
 						<f:facet name="header">Name</f:facet>
 						#{customer.name}
@@ -41,13 +41,14 @@
 					<p:column style="width:36px;text-align: center">
 						<p:commandButton
 							actionListener="#{customerController.setupPageForEditCustomer(customer)}"
-							icon="ui-icon-search" title="View" ajax="false">
+							icon="ui-icon-search" title="View" ajax="true"
+							update=":customerDetailForm">
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>
 			</p:panel>
 		</h:form>
-		<h:form>
+		<h:form id="customerDetailForm">
 			<ui:include src="/views/admin/customer/customerDetail.xhtml">
 				<ui:param name="customer"
 					value="#{customerController.selectedCustomer}"></ui:param>

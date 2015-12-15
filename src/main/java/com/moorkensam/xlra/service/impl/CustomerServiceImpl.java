@@ -1,12 +1,14 @@
 package com.moorkensam.xlra.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.primefaces.model.SortOrder;
 
 import com.moorkensam.xlra.dao.CustomerDao;
 import com.moorkensam.xlra.model.customer.Customer;
@@ -67,6 +69,18 @@ public class CustomerServiceImpl implements CustomerService {
 
   public void setCustomerDao(CustomerDao customerDao) {
     this.customerDao = customerDao;
+  }
+
+  @Override
+  public List<Customer> getLazyCustomers(int first, int pageSize, String sortField,
+      SortOrder sortOrder, Map<String, Object> filters) {
+    return customerDao.getLazyCustomers(first, pageSize, sortField, sortOrder, filters);
+  }
+
+  @Override
+  public int countCustomers(int first, int pageSize, String sortField, SortOrder sortOrder,
+      Map<String, Object> filters) {
+    return customerDao.countCustomers(first, pageSize, sortField, sortOrder, filters);
   }
 
 }

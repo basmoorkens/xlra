@@ -2,11 +2,15 @@ package com.moorkensam.xlra.controller;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
+
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.configuration.Language;
@@ -25,16 +29,37 @@ public class CustomerController {
 
   private String detailGridTitle;
 
+  private LazyDataModel<Customer> model;
+
   private List<Customer> allCustomers;
 
   /**
    * Property for toggling the grid in the frontend.
    */
-  private boolean collapseDetailGrid;
+  private boolean renderDetailGrid = false;
 
   @PostConstruct
   public void initializeController() {
     reInitializePage();
+    initModel();
+  }
+
+  private void initModel() {
+    model = new LazyDataModel<Customer>() {
+
+      private static final long serialVersionUID = -7346727256149263406L;
+
+      @Override
+      public List<Customer> load(int first, int pageSize, String sortField, SortOrder sortOrder,
+          Map<String, Object> filters) {
+        List<Customer> lazyCustomers =
+            customerService.getLazyCustomers(first, pageSize, sortField, sortOrder, filters);
+        model.setRowCount(customerService.countCustomers(first, pageSize, sortField, sortOrder,
+            filters));
+        return lazyCustomers;
+      }
+
+    };
   }
 
   /**
@@ -68,7 +93,7 @@ public class CustomerController {
 
   private void reInitializePage() {
     setAllCustomers(customerService.getAllCustomers());
-    collapseDetailGrid = true;
+    renderDetailGrid = false;
     detailGridTitle = "Details selected customer";
     selectedCustomer = new Customer();
   }
@@ -102,19 +127,19 @@ public class CustomerController {
   }
 
   public void openDetailGrid() {
-    collapseDetailGrid = false;
+    renderDetailGrid = true;
   }
 
   public void closeDetailGrid() {
-    collapseDetailGrid = true;
+    renderDetailGrid = false;
   }
 
   public boolean isRenderDetailGrid() {
-    return collapseDetailGrid;
+    return renderDetailGrid;
   }
 
   public void setRenderDetailGrid(boolean renderDetailGrid) {
-    this.collapseDetailGrid = renderDetailGrid;
+    this.renderDetailGrid = renderDetailGrid;
   }
 
   public String getDetailGridTitle() {
@@ -139,6 +164,14 @@ public class CustomerController {
 
   public void setAllCustomers(List<Customer> allCustomers) {
     this.allCustomers = allCustomers;
+  }
+
+  public LazyDataModel<Customer> getModel() {
+    return model;
+  }
+
+  public void setModel(LazyDataModel<Customer> model) {
+    this.model = model;
   }
 
 }
