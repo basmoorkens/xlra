@@ -56,11 +56,6 @@
 			<version>5.1</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.moorkensam</groupId>
-			<artifactId>xlra-theme</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
 
 		<!-- Extension on primefaces with util stuff -->
 		<dependency>
