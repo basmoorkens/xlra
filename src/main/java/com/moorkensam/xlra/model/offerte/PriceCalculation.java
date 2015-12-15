@@ -42,7 +42,7 @@ public class PriceCalculation extends BaseEntity {
 
   @ElementCollection
   @Enumerated(EnumType.STRING)
-  @CollectionTable(name = "appliedOperations", joinColumns = @JoinColumn(name = "calculation_id"))
+  @CollectionTable(name = "appliedoperations", joinColumns = @JoinColumn(name = "calculation_id"))
   private List<TranslationKey> appliedOperations;
 
   public BigDecimal getFinalPrice() {

@@ -47,7 +47,7 @@ public class Condition extends BaseEntity implements Translatable {
   private RateFile rateFile;
 
   @ElementCollection
-  @CollectionTable(name = "translationsForLanguages", joinColumns = @JoinColumn(
+  @CollectionTable(name = "translationsforlanguages", joinColumns = @JoinColumn(
       name = "condition_id"))
   private List<TranslationForLanguage> translations;
 

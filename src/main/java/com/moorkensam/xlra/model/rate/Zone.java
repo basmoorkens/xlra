@@ -45,7 +45,7 @@ public class Zone extends BaseEntity {
   private List<String> alphaNumericalPostalCodes;
 
   @ElementCollection
-  @CollectionTable(name = "numericalPostalcodes", joinColumns = @JoinColumn(name = "zone_id"))
+  @CollectionTable(name = "numericalpostalcodes", joinColumns = @JoinColumn(name = "zone_id"))
   @Column(name = "postalcode")
   private List<Interval> numericalPostalCodes;
 
