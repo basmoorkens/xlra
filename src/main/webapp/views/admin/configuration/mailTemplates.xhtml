@@ -42,63 +42,63 @@
 			<p:panel id="mailTemplatePanel" header="Email templates">
 				<p:panelGrid columns="2" style="width:100%;">
 					<h:outputText
-						value="#{mailTemplateController.mailTemplateDTO.enTemplate.language.description}" />
+						value="#{mailTemplateController.mailTemplateDto.enTemplate.language.description}" />
 					<p:panel>
 						<p>
 							<h:outputText value="Email subject:" />
 							<p:inputText style="width:99%;"
-								value="#{mailTemplateController.mailTemplateDTO.enTemplate.subject}" />
+								value="#{mailTemplateController.mailTemplateDto.enTemplate.subject}" />
 							<br />
 						</p>
 						<h:outputText value="Email body:" />
 						<br />
 						<p:editor
-							value="#{mailTemplateController.mailTemplateDTO.enTemplate.template}" />
+							value="#{mailTemplateController.mailTemplateDto.enTemplate.template}" />
 					</p:panel>
 
 					<h:outputText
-						value="#{mailTemplateController.mailTemplateDTO.nlTemplate.language.description}" />
+						value="#{mailTemplateController.mailTemplateDto.nlTemplate.language.description}" />
 					<p:panel>
 						<p>
 							<h:outputText value="Email subject:" />
 							<p:inputText style="width:99%;"
-								value="#{mailTemplateController.mailTemplateDTO.nlTemplate.subject}" />
+								value="#{mailTemplateController.mailTemplateDto.nlTemplate.subject}" />
 							<br />
 						</p>
 						<h:outputText value="Email body:" />
 						<br />
 						<p:editor
-							value="#{mailTemplateController.mailTemplateDTO.nlTemplate.template}" />
+							value="#{mailTemplateController.mailTemplateDto.nlTemplate.template}" />
 					</p:panel>
 
 					<h:outputText
-						value="#{mailTemplateController.mailTemplateDTO.frTemplate.language.description}" />
+						value="#{mailTemplateController.mailTemplateDto.frTemplate.language.description}" />
 					<p:panel>
 						<p>
 							<h:outputText value="Email subject:" />
 							<p:inputText style="width:99%;"
-								value="#{mailTemplateController.mailTemplateDTO.frTemplate.subject}" />
+								value="#{mailTemplateController.mailTemplateDto.frTemplate.subject}" />
 							<br />
 						</p>
 						<h:outputText value="Email body:" />
 						<br />
 						<p:editor
-							value="#{mailTemplateController.mailTemplateDTO.frTemplate.template}" />
+							value="#{mailTemplateController.mailTemplateDto.frTemplate.template}" />
 					</p:panel>
 
 					<h:outputText
-						value="#{mailTemplateController.mailTemplateDTO.deTemplate.language.description}" />
+						value="#{mailTemplateController.mailTemplateDto.deTemplate.language.description}" />
 					<p:panel>
 						<p>
 							<h:outputText value="Email subject:" />
 							<p:inputText style="width:99%;"
-								value="#{mailTemplateController.mailTemplateDTO.deTemplate.subject}" />
+								value="#{mailTemplateController.mailTemplateDto.deTemplate.subject}" />
 							<br />
 						</p>
 						<h:outputText value="Email body:" />
 						<br />
 						<p:editor
-							value="#{mailTemplateController.mailTemplateDTO.deTemplate.template}" />
+							value="#{mailTemplateController.mailTemplateDto.deTemplate.template}" />
 					</p:panel>
 				</p:panelGrid>
 				<p:commandButton title="Save mail templates"
