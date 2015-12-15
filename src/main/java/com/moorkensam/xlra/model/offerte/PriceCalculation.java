@@ -17,7 +17,7 @@ import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.util.CalcUtil;
 
 @Entity
-@Table(name = "priceCalculation")
+@Table(name = "pricecalculation")
 public class PriceCalculation extends BaseEntity {
 
   private static final long serialVersionUID = 1L;
@@ -42,7 +42,7 @@ public class PriceCalculation extends BaseEntity {
 
   @ElementCollection
   @Enumerated(EnumType.STRING)
-  @CollectionTable(name = "appliedOperations", joinColumns = @JoinColumn(name = "calculation_id"))
+  @CollectionTable(name = "appliedoperations", joinColumns = @JoinColumn(name = "calculation_id"))
   private List<TranslationKey> appliedOperations;
 
   public BigDecimal getFinalPrice() {
