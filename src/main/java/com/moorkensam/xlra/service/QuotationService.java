@@ -6,7 +6,6 @@ import java.util.Map;
 import org.primefaces.model.SortOrder;
 
 import com.moorkensam.xlra.model.error.RateFileException;
-import com.moorkensam.xlra.model.offerte.OfferteSearchFilter;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 
@@ -58,10 +57,28 @@ public interface QuotationService {
 
   public int getQuotationQueryCount(Map<String, String> filters);
 
-  public List<QuotationResult> getQuotationResultsForFilters(OfferteSearchFilter filter);
-
   public QuotationResult getFullOfferteById(Long id);
 
   public QuotationResult getOfferteByOfferteKey(String offertekey);
+
+  /**
+   * This method loads the offertes in pages.
+   * 
+   * @param first The first offerte to take.
+   * @param pageSize The size of offertes to take.
+   * @param sortField The sortfield.
+   * @param sortOrder The sortorder;
+   * @param filters The filters to apply.
+   * @return The page of offertes according to sorting and filtering.
+   */
+  public List<QuotationResult> getLazyloadedOffertes(int first, int pageSize, String sortField,
+      SortOrder sortOrder, Map<String, Object> filters);
+
+  /**
+   * Counts how many offertes are in the database.
+   * 
+   * @return the number of offertes.
+   */
+  public int countOffertes();
 
 }

@@ -31,8 +31,6 @@ public class CustomerController {
 
   private LazyDataModel<Customer> model;
 
-  private List<Customer> allCustomers;
-
   /**
    * Property for toggling the grid in the frontend.
    */
@@ -91,7 +89,6 @@ public class CustomerController {
   }
 
   private void reInitializePage() {
-    setAllCustomers(customerService.getAllCustomers());
     renderDetailGrid = false;
     detailGridTitle = "Details selected customer";
     selectedCustomer = new Customer();
@@ -155,14 +152,6 @@ public class CustomerController {
 
   public void setSelectedCustomer(Customer selectedCustomer) {
     this.selectedCustomer = selectedCustomer;
-  }
-
-  public List<Customer> getAllCustomers() {
-    return allCustomers;
-  }
-
-  public void setAllCustomers(List<Customer> allCustomers) {
-    this.allCustomers = allCustomers;
   }
 
   public LazyDataModel<Customer> getModel() {

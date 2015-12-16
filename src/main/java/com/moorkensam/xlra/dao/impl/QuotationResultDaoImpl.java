@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.dao.impl;
 
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,8 +12,8 @@ import org.primefaces.model.SortOrder;
 
 import com.moorkensam.xlra.dao.BaseDao;
 import com.moorkensam.xlra.dao.QuotationResultDao;
-import com.moorkensam.xlra.model.offerte.OfferteSearchFilter;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
+import com.moorkensam.xlra.service.util.JpaUtil;
 
 public class QuotationResultDaoImpl extends BaseDao implements QuotationResultDao {
 
@@ -83,39 +84,6 @@ public class QuotationResultDaoImpl extends BaseDao implements QuotationResultDa
     return new Integer(result + "");
   }
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public List<QuotationResult> getQuotationResultsForFilter(OfferteSearchFilter filter) {
-    StringBuilder queryBuilder = new StringBuilder();
-    Map<String, Object> parameterMap = new HashMap<String, Object>();
-    queryBuilder.append("SELECT q FROM QuotationResult q WHERE 1 = 1 ");
-    if (!StringUtils.isEmpty(filter.getOfferteKey())) {
-      queryBuilder.append("AND q.offerteUniqueIdentifier = :offerteKey ");
-      parameterMap.put("offerteKey", filter.getOfferteKey());
-    }
-    if (!StringUtils.isEmpty(filter.getCustomerName())) {
-      queryBuilder.append("AND q.query.customer.name LIKE :customerName ");
-      parameterMap.put("customerName", "%" + filter.getCustomerName() + "%");
-    }
-    if (!StringUtils.isEmpty(filter.getPostalCode())) {
-      queryBuilder.append("AND q.query.postalCode = :postalCode ");
-      parameterMap.put("postalCode", filter.getPostalCode());
-    }
-    if (filter.getCountry() != null) {
-      queryBuilder.append("AND q.query.country = :country ");
-      parameterMap.put("country", filter.getCountry());
-    }
-    if (filter.getStartDate() != null) {
-      queryBuilder.append("AND q.quotationDate = :quotationDate");
-      parameterMap.put("quotationDate", filter.getStartDate());
-    }
-
-    Query query = getEntityManager().createQuery(queryBuilder.toString());
-    fillQueryFromParameterMap(query, parameterMap);
-    return (List<QuotationResult>) query.getResultList();
-
-  }
-
   @Override
   public QuotationResult getQuotationResultById(Long id) {
     QuotationResult result = getEntityManager().find(QuotationResult.class, id);
@@ -130,5 +98,38 @@ public class QuotationResultDaoImpl extends BaseDao implements QuotationResultDa
     QuotationResult result = (QuotationResult) query.getSingleResult();
     fullLoad(result);
     return result;
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public List<QuotationResult> getLazyloadedOffertes(int first, int pageSize, String sortField,
+      SortOrder sortOrder, Map<String, Object> filters) {
+    String queryString = buildLazyLoadQuery(sortField, sortOrder, filters);
+    Query query = getEntityManager().createQuery(queryString);
+    JpaUtil.applyPagination(first, pageSize, query);
+    JpaUtil.fillInParameters(filters, query);
+    return (List<QuotationResult>) query.getResultList();
+  }
+
+  private String buildLazyLoadQuery(String sortField, SortOrder sortOrder,
+      Map<String, Object> filters) {
+    StringBuilder builder = new StringBuilder();
+    builder.append("SELECT q FROM QuotationResult q where 1 = 1 ");
+    if (filters != null) {
+      for (String key : filters.keySet()) {
+        builder.append("AND q." + key + " LIKE :" + key + " ");
+      }
+    }
+    if (StringUtils.isNotBlank(sortField)) {
+      builder.append("ORDER BY q." + sortField + " "
+          + JpaUtil.convertSortOrderToJpaSortOrder(sortOrder));
+    }
+    return builder.toString();
+  }
+
+  @Override
+  public int countOffertes() {
+    Query query = getEntityManager().createNamedQuery("QuotationResult.countOffertes");
+    return ((Long) query.getSingleResult()).intValue();
   }
 }

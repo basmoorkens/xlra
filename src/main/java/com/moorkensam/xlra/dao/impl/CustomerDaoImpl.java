@@ -12,6 +12,7 @@ import org.primefaces.model.SortOrder;
 import com.moorkensam.xlra.dao.BaseDao;
 import com.moorkensam.xlra.dao.CustomerDao;
 import com.moorkensam.xlra.model.customer.Customer;
+import com.moorkensam.xlra.service.util.JpaUtil;
 
 public class CustomerDaoImpl extends BaseDao implements CustomerDao {
 
@@ -55,30 +56,9 @@ public class CustomerDaoImpl extends BaseDao implements CustomerDao {
       SortOrder sortOrder, Map<String, Object> filters) {
     String queryString = buildLazyLoadCustomersQuery(sortField, sortOrder, filters);
     Query query = getEntityManager().createQuery(queryString);
-    applyPagination(first, pageSize, query);
-    fillInParameters(filters, query);
+    JpaUtil.applyPagination(first, pageSize, query);
+    JpaUtil.fillInParameters(filters, query);
     return (List<Customer>) query.getResultList();
-  }
-
-  /*
-   * Fill in the parameters for the query.
-   */
-  private void fillInParameters(Map<String, Object> filters, Query query) {
-    if (filters != null) {
-      for (String key : filters.keySet()) {
-        query.setParameter(key, "%" + filters.get(key) + "%");
-      }
-    }
-  }
-
-  /*
-   * Apply pagination parameters to the query.
-   */
-  private void applyPagination(int first, int pageSize, Query query) {
-    if (first >= 0) {
-      query.setFirstResult(first);
-    }
-    query.setMaxResults(pageSize);
   }
 
   /*
@@ -95,27 +75,15 @@ public class CustomerDaoImpl extends BaseDao implements CustomerDao {
       }
     }
     if (StringUtils.isNotBlank(sortField)) {
-      builder.append("ORDER BY b." + sortField + " " + convertSortOrderToJpaSortOrder(sortOrder));
+      builder.append("ORDER BY b." + sortField + " "
+          + JpaUtil.convertSortOrderToJpaSortOrder(sortOrder));
     }
     return builder.toString();
   }
 
-  private String convertSortOrderToJpaSortOrder(SortOrder sortOrder) {
-    switch (sortOrder) {
-      case ASCENDING:
-        return "ASC";
-      case DESCENDING:
-        return "DESC";
-      default:
-        return "ASC";
-    }
-  }
-
   @Override
   public int countCustomers() {
-    StringBuilder builder = new StringBuilder();
-    builder.append("SELECT count(c.id) FROM Customer c ");
-    Query query = getEntityManager().createQuery(builder.toString());
+    Query query = getEntityManager().createNamedQuery("Customer.countCustomers");
     Long result = (Long) query.getSingleResult();
     return Integer.parseInt(result + "");
   }

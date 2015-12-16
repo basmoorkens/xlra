@@ -1,11 +1,11 @@
 package com.moorkensam.xlra.dao;
 
+
 import java.util.List;
 import java.util.Map;
 
 import org.primefaces.model.SortOrder;
 
-import com.moorkensam.xlra.model.offerte.OfferteSearchFilter;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 
 public interface QuotationResultDao {
@@ -21,10 +21,23 @@ public interface QuotationResultDao {
 
   public List<QuotationResult> getAllQuotationResults();
 
-  public List<QuotationResult> getQuotationResultsForFilter(OfferteSearchFilter filter);
-
   public QuotationResult getQuotationResultById(Long id);
 
   public QuotationResult getOfferteByKey(String offerteKey);
+
+  /**
+   * This method loads the offertes in pages.
+   * 
+   * @param first The first offerte to take.
+   * @param pageSize The size of offertes to take.
+   * @param sortField The sortfield.
+   * @param sortOrder The sortorder;
+   * @param filters The filters to apply.
+   * @return The page of offertes according to sorting and filtering.
+   */
+  public List<QuotationResult> getLazyloadedOffertes(int first, int pageSize, String sortField,
+      SortOrder sortOrder, Map<String, Object> filters);
+
+  public int countOffertes();
 
 }

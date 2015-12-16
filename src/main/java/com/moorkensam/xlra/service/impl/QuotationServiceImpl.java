@@ -25,7 +25,6 @@ import com.moorkensam.xlra.model.error.TemplatingException;
 import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.model.mail.EmailResult;
 import com.moorkensam.xlra.model.offerte.OfferteOptionDto;
-import com.moorkensam.xlra.model.offerte.OfferteSearchFilter;
 import com.moorkensam.xlra.model.offerte.PriceCalculation;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
@@ -306,11 +305,6 @@ public class QuotationServiceImpl implements QuotationService {
     return quotationResultDao.getQuotationResultCount(filters);
   }
 
-  @Override
-  public List<QuotationResult> getQuotationResultsForFilters(OfferteSearchFilter filter) {
-    return quotationResultDao.getQuotationResultsForFilter(filter);
-  }
-
   public PriceCalculationDao getPriceCalculationDao() {
     return priceCalculationDao;
   }
@@ -375,5 +369,16 @@ public class QuotationServiceImpl implements QuotationService {
 
   public void setLogFactory(LogRecordFactory logFactory) {
     this.logFactory = logFactory;
+  }
+
+  @Override
+  public List<QuotationResult> getLazyloadedOffertes(int first, int pageSize, String sortField,
+      SortOrder sortOrder, Map<String, Object> filters) {
+    return quotationResultDao.getLazyloadedOffertes(first, pageSize, sortField, sortOrder, filters);
+  }
+
+  @Override
+  public int countOffertes() {
+    return quotationResultDao.countOffertes();
   }
 }

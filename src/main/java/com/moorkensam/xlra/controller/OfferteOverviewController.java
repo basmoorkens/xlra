@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -16,9 +17,11 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
-import com.moorkensam.xlra.model.offerte.OfferteSearchFilter;
+import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.service.CountryService;
@@ -42,13 +45,11 @@ public class OfferteOverviewController {
 
   private FileService fileService;
 
-  private List<QuotationResult> quotationResults;
+  private LazyDataModel<QuotationResult> model;
 
   private QuotationResult selectedOfferte;
 
   private List<Country> allCountrys;
-
-  private OfferteSearchFilter searchFilter;
 
   private boolean detail;
 
@@ -58,10 +59,26 @@ public class OfferteOverviewController {
   @PostConstruct
   public void initialize() {
     fileService = new FileServiceImpl();
-    quotationResults = quotationService.getAllQuotationResults();
     allCountrys = countryService.getAllCountriesFullLoad();
-    searchFilter = new OfferteSearchFilter();
     checkAndLoadOfferteIfPresent();
+    initModel();
+  }
+
+  private void initModel() {
+    model = new LazyDataModel<QuotationResult>() {
+
+      private static final long serialVersionUID = 1130768020033685725L;
+
+      @Override
+      public List<QuotationResult> load(int first, int pageSize, String sortField,
+          SortOrder sortOrder, Map<String, Object> filters) {
+        List<QuotationResult> lazyloadedOffertes =
+            quotationService.getLazyloadedOffertes(first, pageSize, sortField, sortOrder, filters);
+        model.setRowCount(quotationService.countOffertes());
+        return lazyloadedOffertes;
+      }
+
+    };
   }
 
   private void checkAndLoadOfferteIfPresent() {
@@ -130,32 +147,12 @@ public class OfferteOverviewController {
     }
   }
 
-  public void search() {
-    quotationResults = quotationService.getQuotationResultsForFilters(searchFilter);
-  }
-
   public QuotationService getQuotationService() {
     return quotationService;
   }
 
   public void setQuotationService(QuotationService quotationService) {
     this.quotationService = quotationService;
-  }
-
-  public List<QuotationResult> getQuotationResults() {
-    return quotationResults;
-  }
-
-  public void setQuotationResults(List<QuotationResult> quotationResults) {
-    this.quotationResults = quotationResults;
-  }
-
-  public OfferteSearchFilter getSearchFilter() {
-    return searchFilter;
-  }
-
-  public void setSearchFilter(OfferteSearchFilter searchFilter) {
-    this.searchFilter = searchFilter;
   }
 
   public List<Country> getAllCountrys() {
@@ -188,5 +185,13 @@ public class OfferteOverviewController {
 
   public void setFileService(FileService fileService) {
     this.fileService = fileService;
+  }
+
+  public LazyDataModel<QuotationResult> getModel() {
+    return model;
+  }
+
+  public void setModel(LazyDataModel<QuotationResult> model) {
+    this.model = model;
   }
 }

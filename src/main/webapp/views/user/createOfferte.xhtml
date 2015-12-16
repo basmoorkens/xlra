@@ -199,6 +199,7 @@
 				<p:commandButton value="View offerte details"
 					actionListener="#{createQuotationController.goToOfferteDetail}" />
 				<p:commandButton value="Create another offerte"
+					update=":customerForm :resultForm"
 					actionListener="#{createQuotationController.resetPage}" />
 			</p:panel>
 		</h:form>
