@@ -1,12 +1,12 @@
 package com.moorkensam.xlra.dao.impl;
 
-import java.util.List;
-
-import javax.persistence.Query;
-
 import com.moorkensam.xlra.dao.BaseDao;
 import com.moorkensam.xlra.dao.RoleDao;
 import com.moorkensam.xlra.model.security.Role;
+
+import java.util.List;
+
+import javax.persistence.Query;
 
 public class RoleDaoImpl extends BaseDao implements RoleDao {
 

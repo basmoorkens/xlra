@@ -1,16 +1,5 @@
 package com.moorkensam.xlra.dao.impl;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
-import javax.persistence.Query;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.moorkensam.xlra.dao.BaseDao;
 import com.moorkensam.xlra.dao.RateFileDao;
 import com.moorkensam.xlra.dto.RateFileIdNameDto;
@@ -20,6 +9,15 @@ import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.rate.ZoneType;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.persistence.Query;
 
 public class RateFileDaoImpl extends BaseDao implements RateFileDao {
 

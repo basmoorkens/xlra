@@ -1,12 +1,12 @@
 package com.moorkensam.xlra.model;
 
+import com.moorkensam.xlra.model.rate.Country;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.TestedObject;
-
-import com.moorkensam.xlra.model.rate.Country;
 
 public class CountryTest extends UnitilsJUnit4 {
 

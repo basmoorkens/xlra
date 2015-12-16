@@ -1,7 +1,9 @@
 package com.moorkensam.xlra.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.moorkensam.xlra.dao.ConfigurationDao;
+import com.moorkensam.xlra.dao.EmailTemplateDao;
+import com.moorkensam.xlra.model.configuration.Configuration;
+import com.moorkensam.xlra.model.mail.MailTemplate;
 
 import junit.framework.Assert;
 
@@ -12,10 +14,8 @@ import org.unitils.UnitilsJUnit4;
 import org.unitils.easymock.EasyMockUnitils;
 import org.unitils.easymock.annotation.Mock;
 
-import com.moorkensam.xlra.dao.ConfigurationDao;
-import com.moorkensam.xlra.dao.EmailTemplateDao;
-import com.moorkensam.xlra.model.configuration.Configuration;
-import com.moorkensam.xlra.model.mail.MailTemplate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ApplicationConfigurationServiceImplTest extends UnitilsJUnit4 {
 

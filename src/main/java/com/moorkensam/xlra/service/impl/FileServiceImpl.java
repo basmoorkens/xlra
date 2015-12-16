@@ -1,13 +1,13 @@
 package com.moorkensam.xlra.service.impl;
 
-import java.io.File;
+import com.moorkensam.xlra.model.error.PdfException;
+import com.moorkensam.xlra.service.FileService;
+import com.moorkensam.xlra.service.util.ConfigurationLoader;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.moorkensam.xlra.model.error.PdfException;
-import com.moorkensam.xlra.service.FileService;
-import com.moorkensam.xlra.service.util.ConfigurationLoader;
+import java.io.File;
 
 public class FileServiceImpl implements FileService {
 

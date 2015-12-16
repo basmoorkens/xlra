@@ -1,13 +1,5 @@
 package com.moorkensam.xlra.service.impl;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.persistence.NoResultException;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.moorkensam.xlra.dao.EmailTemplateDao;
 import com.moorkensam.xlra.dto.MailTemplatesForForLanguages;
 import com.moorkensam.xlra.model.configuration.Language;
@@ -17,6 +9,14 @@ import com.moorkensam.xlra.model.mail.EmailResult;
 import com.moorkensam.xlra.model.mail.MailTemplate;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.service.MailTemplateService;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.persistence.NoResultException;
 
 @Stateless
 public class MailTemplateServiceImpl implements MailTemplateService {

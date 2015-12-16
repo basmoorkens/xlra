@@ -1,15 +1,15 @@
 package com.moorkensam.xlra.service.impl;
 
-import java.util.List;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import com.moorkensam.xlra.dao.PermissionDao;
 import com.moorkensam.xlra.dao.RoleDao;
 import com.moorkensam.xlra.model.security.Permission;
 import com.moorkensam.xlra.model.security.Role;
 import com.moorkensam.xlra.service.RolePermissionService;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 @Stateless
 public class RolePermissionServiceImpl implements RolePermissionService {

@@ -1,12 +1,12 @@
 package com.moorkensam.xlra.dao.impl;
 
-import java.util.List;
-
-import javax.persistence.Query;
-
 import com.moorkensam.xlra.dao.BaseDao;
 import com.moorkensam.xlra.dao.PermissionDao;
 import com.moorkensam.xlra.model.security.Permission;
+
+import java.util.List;
+
+import javax.persistence.Query;
 
 public class PermissionDaoImpl extends BaseDao implements PermissionDao {
 

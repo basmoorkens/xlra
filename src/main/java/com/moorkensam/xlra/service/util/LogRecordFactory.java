@@ -1,12 +1,5 @@
 package com.moorkensam.xlra.service.util;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.model.log.LogType;
 import com.moorkensam.xlra.model.log.QuotationLogRecord;
@@ -17,6 +10,13 @@ import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateOperation;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.model.security.UserLogRecord;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 public class LogRecordFactory {
 

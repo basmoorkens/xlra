@@ -1,18 +1,18 @@
 package com.moorkensam.xlra.service.impl;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import com.moorkensam.xlra.dao.CustomerDao;
+import com.moorkensam.xlra.model.customer.Customer;
+import com.moorkensam.xlra.service.CustomerService;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.primefaces.model.SortOrder;
 
-import com.moorkensam.xlra.dao.CustomerDao;
-import com.moorkensam.xlra.model.customer.Customer;
-import com.moorkensam.xlra.service.CustomerService;
+import java.util.List;
+import java.util.Map;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 /**
  * Service to fetch and update customers.

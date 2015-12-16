@@ -1,5 +1,10 @@
 package com.moorkensam.xlra.controller;
 
+import com.moorkensam.xlra.model.log.QuotationLogRecord;
+import com.moorkensam.xlra.model.log.RaiseRatesRecord;
+import com.moorkensam.xlra.model.log.RateLogRecord;
+import com.moorkensam.xlra.service.LogService;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -8,11 +13,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
-
-import com.moorkensam.xlra.model.log.QuotationLogRecord;
-import com.moorkensam.xlra.model.log.RaiseRatesRecord;
-import com.moorkensam.xlra.model.log.RateLogRecord;
-import com.moorkensam.xlra.service.LogService;
 
 @ManagedBean
 @ViewScoped

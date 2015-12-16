@@ -1,10 +1,10 @@
 package com.moorkensam.xlra.model.security;
 
+import com.moorkensam.xlra.model.log.LogRecord;
+
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
-import com.moorkensam.xlra.model.log.LogRecord;
 
 @Entity
 @Cacheable

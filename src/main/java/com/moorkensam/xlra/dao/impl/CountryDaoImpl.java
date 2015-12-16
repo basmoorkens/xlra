@@ -1,12 +1,12 @@
 package com.moorkensam.xlra.dao.impl;
 
-import java.util.List;
-
-import javax.persistence.Query;
-
 import com.moorkensam.xlra.dao.BaseDao;
 import com.moorkensam.xlra.dao.CountryDao;
 import com.moorkensam.xlra.model.rate.Country;
+
+import java.util.List;
+
+import javax.persistence.Query;
 
 public class CountryDaoImpl extends BaseDao implements CountryDao {
 

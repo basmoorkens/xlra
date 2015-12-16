@@ -1,13 +1,13 @@
 package com.moorkensam.xlra.service.util;
 
+import com.moorkensam.xlra.model.customer.Customer;
+
 import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.TestedObject;
-
-import com.moorkensam.xlra.model.customer.Customer;
 
 public class CustomerUtilTest extends UnitilsJUnit4 {
 

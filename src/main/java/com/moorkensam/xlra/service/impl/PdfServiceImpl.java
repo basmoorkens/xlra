@@ -1,16 +1,11 @@
 package com.moorkensam.xlra.service.impl;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.StringReader;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.moorkensam.xlra.model.configuration.Language;
+import com.moorkensam.xlra.model.error.TemplatingException;
+import com.moorkensam.xlra.model.offerte.QuotationResult;
+import com.moorkensam.xlra.service.FileService;
+import com.moorkensam.xlra.service.PdfService;
+import com.moorkensam.xlra.service.util.ConfigurationLoader;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -26,12 +21,17 @@ import com.itextpdf.tool.xml.pipeline.end.PdfWriterPipeline;
 import com.itextpdf.tool.xml.pipeline.html.AbstractImageProvider;
 import com.itextpdf.tool.xml.pipeline.html.HtmlPipeline;
 import com.itextpdf.tool.xml.pipeline.html.HtmlPipelineContext;
-import com.moorkensam.xlra.model.configuration.Language;
-import com.moorkensam.xlra.model.error.TemplatingException;
-import com.moorkensam.xlra.model.offerte.QuotationResult;
-import com.moorkensam.xlra.service.FileService;
-import com.moorkensam.xlra.service.PdfService;
-import com.moorkensam.xlra.service.util.ConfigurationLoader;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.StringReader;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
 public class PdfServiceImpl implements PdfService {
 

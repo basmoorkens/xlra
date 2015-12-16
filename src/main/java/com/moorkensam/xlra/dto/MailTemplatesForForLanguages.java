@@ -1,9 +1,9 @@
 package com.moorkensam.xlra.dto;
 
-import java.util.List;
-
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.mail.MailTemplate;
+
+import java.util.List;
 
 public class MailTemplatesForForLanguages {
 

@@ -1,8 +1,9 @@
 package com.moorkensam.xlra.service.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.moorkensam.xlra.dao.CountryDao;
+import com.moorkensam.xlra.dao.ZoneDao;
+import com.moorkensam.xlra.model.rate.Country;
+import com.moorkensam.xlra.model.rate.Zone;
 
 import junit.framework.Assert;
 
@@ -14,10 +15,9 @@ import org.unitils.easymock.EasyMockUnitils;
 import org.unitils.easymock.annotation.Mock;
 import org.unitils.inject.annotation.TestedObject;
 
-import com.moorkensam.xlra.dao.CountryDao;
-import com.moorkensam.xlra.dao.ZoneDao;
-import com.moorkensam.xlra.model.rate.Country;
-import com.moorkensam.xlra.model.rate.Zone;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class CountryServiceImplTest extends UnitilsJUnit4 {
 

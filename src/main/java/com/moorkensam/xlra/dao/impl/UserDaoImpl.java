@@ -1,18 +1,18 @@
 package com.moorkensam.xlra.dao.impl;
 
-import java.util.List;
-
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.moorkensam.xlra.dao.BaseDao;
 import com.moorkensam.xlra.dao.UserDao;
 import com.moorkensam.xlra.model.security.Role;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.model.security.UserStatus;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.List;
+
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
 
 public class UserDaoImpl extends BaseDao implements UserDao {
 

@@ -1,16 +1,16 @@
 package com.moorkensam.xlra.service.util;
 
+import com.moorkensam.xlra.model.rate.Condition;
+import com.moorkensam.xlra.model.rate.RateFile;
+import com.moorkensam.xlra.model.translation.Translatable;
+import com.moorkensam.xlra.model.translation.TranslationKey;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import javax.faces.context.FacesContext;
-
-import com.moorkensam.xlra.model.rate.Condition;
-import com.moorkensam.xlra.model.rate.RateFile;
-import com.moorkensam.xlra.model.translation.Translatable;
-import com.moorkensam.xlra.model.translation.TranslationKey;
 
 public class TranslationUtil {
 

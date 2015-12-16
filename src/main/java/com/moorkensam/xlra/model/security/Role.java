@@ -1,5 +1,7 @@
 package com.moorkensam.xlra.model.security;
 
+import com.moorkensam.xlra.model.BaseEntity;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +14,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import com.moorkensam.xlra.model.BaseEntity;
 
 @Entity
 @Table(name = "role")

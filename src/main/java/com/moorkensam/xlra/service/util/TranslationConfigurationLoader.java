@@ -1,15 +1,15 @@
 package com.moorkensam.xlra.service.util;
 
+import com.moorkensam.xlra.model.configuration.Language;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.moorkensam.xlra.model.configuration.Language;
 
 public class TranslationConfigurationLoader {
 

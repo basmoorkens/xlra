@@ -1,5 +1,9 @@
 package com.moorkensam.xlra.model.security;
 
+import com.moorkensam.xlra.model.BaseEntity;
+
+import org.hibernate.annotations.BatchSize;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,10 +20,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
-
-import org.hibernate.annotations.BatchSize;
-
-import com.moorkensam.xlra.model.BaseEntity;
 
 @Entity
 @Table(name = "user")

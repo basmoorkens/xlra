@@ -1,8 +1,8 @@
 package com.moorkensam.xlra.service;
 
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import com.moorkensam.xlra.model.rate.RateFile;
+
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public interface ExcelService {
 

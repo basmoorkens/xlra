@@ -1,12 +1,12 @@
 package com.moorkensam.xlra.model.security;
 
+import com.moorkensam.xlra.model.BaseEntity;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-
-import com.moorkensam.xlra.model.BaseEntity;
 
 @Entity
 @Table(name = "permissions")

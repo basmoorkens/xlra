@@ -1,11 +1,11 @@
 package com.moorkensam.xlra.dao.impl;
 
 
-import javax.persistence.Query;
-
 import com.moorkensam.xlra.dao.BaseDao;
 import com.moorkensam.xlra.dao.ConfigurationDao;
 import com.moorkensam.xlra.model.configuration.Configuration;
+
+import javax.persistence.Query;
 
 public class ConfigurationDaoImpl extends BaseDao implements ConfigurationDao {
 

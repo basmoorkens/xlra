@@ -1,18 +1,5 @@
 package com.moorkensam.xlra.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
-import javax.faces.event.ActionEvent;
-import javax.inject.Inject;
-
-import org.primefaces.context.RequestContext;
-import org.primefaces.event.CellEditEvent;
-
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.controller.util.RateUtil;
 import com.moorkensam.xlra.model.configuration.Language;
@@ -30,6 +17,19 @@ import com.moorkensam.xlra.service.CustomerService;
 import com.moorkensam.xlra.service.RateFileService;
 import com.moorkensam.xlra.service.util.ConditionFactory;
 import com.moorkensam.xlra.service.util.TranslationUtil;
+
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.CellEditEvent;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.event.ActionEvent;
+import javax.inject.Inject;
 
 @ViewScoped
 @ManagedBean

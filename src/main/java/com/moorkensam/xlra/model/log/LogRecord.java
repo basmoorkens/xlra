@@ -1,5 +1,7 @@
 package com.moorkensam.xlra.model.log;
 
+import com.moorkensam.xlra.model.BaseEntity;
+
 import java.util.Date;
 
 import javax.persistence.EnumType;
@@ -7,8 +9,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import com.moorkensam.xlra.model.BaseEntity;
 
 @MappedSuperclass
 public abstract class LogRecord extends BaseEntity {

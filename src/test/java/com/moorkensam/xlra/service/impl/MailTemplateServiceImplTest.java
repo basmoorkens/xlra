@@ -1,17 +1,5 @@
 package com.moorkensam.xlra.service.impl;
 
-import java.util.ArrayList;
-
-import junit.framework.Assert;
-
-import org.easymock.EasyMock;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.UnitilsJUnit4;
-import org.unitils.easymock.EasyMockUnitils;
-import org.unitils.easymock.annotation.Mock;
-import org.unitils.inject.annotation.TestedObject;
-
 import com.moorkensam.xlra.dao.EmailTemplateDao;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Customer;
@@ -26,6 +14,18 @@ import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.EmailService;
+
+import junit.framework.Assert;
+
+import org.easymock.EasyMock;
+import org.junit.Before;
+import org.junit.Test;
+import org.unitils.UnitilsJUnit4;
+import org.unitils.easymock.EasyMockUnitils;
+import org.unitils.easymock.annotation.Mock;
+import org.unitils.inject.annotation.TestedObject;
+
+import java.util.ArrayList;
 
 public class MailTemplateServiceImplTest extends UnitilsJUnit4 {
 

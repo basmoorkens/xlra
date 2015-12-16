@@ -1,8 +1,8 @@
 package com.moorkensam.xlra.model.rate;
 
-import java.io.Serializable;
-
 import com.moorkensam.xlra.model.customer.Customer;
+
+import java.io.Serializable;
 
 public class RateFileSearchFilter implements Serializable {
 

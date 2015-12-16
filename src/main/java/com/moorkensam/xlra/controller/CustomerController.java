@@ -1,5 +1,14 @@
 package com.moorkensam.xlra.controller;
 
+import com.moorkensam.xlra.controller.util.MessageUtil;
+import com.moorkensam.xlra.model.configuration.Language;
+import com.moorkensam.xlra.model.customer.Customer;
+import com.moorkensam.xlra.service.CustomerService;
+import com.moorkensam.xlra.service.util.CustomerUtil;
+
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -8,15 +17,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
-
-import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortOrder;
-
-import com.moorkensam.xlra.controller.util.MessageUtil;
-import com.moorkensam.xlra.model.configuration.Language;
-import com.moorkensam.xlra.model.customer.Customer;
-import com.moorkensam.xlra.service.CustomerService;
-import com.moorkensam.xlra.service.util.CustomerUtil;
 
 @ManagedBean
 @ViewScoped

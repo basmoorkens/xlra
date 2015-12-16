@@ -1,6 +1,7 @@
 package com.moorkensam.xlra.service.impl;
 
-import java.util.Arrays;
+import com.moorkensam.xlra.dao.CustomerDao;
+import com.moorkensam.xlra.model.customer.Customer;
 
 import org.easymock.EasyMock;
 import org.junit.Before;
@@ -10,8 +11,7 @@ import org.unitils.easymock.EasyMockUnitils;
 import org.unitils.easymock.annotation.Mock;
 import org.unitils.inject.annotation.TestedObject;
 
-import com.moorkensam.xlra.dao.CustomerDao;
-import com.moorkensam.xlra.model.customer.Customer;
+import java.util.Arrays;
 
 public class CustomerServiceImplTest extends UnitilsJUnit4 {
 

@@ -1,15 +1,15 @@
 package com.moorkensam.xlra.service.impl;
 
-import java.util.List;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import com.moorkensam.xlra.dao.CountryDao;
 import com.moorkensam.xlra.dao.ZoneDao;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.service.CountryService;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 /**
  * Service to fetch and update countries. This service can also create zones for countries and

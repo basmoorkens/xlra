@@ -1,5 +1,13 @@
 package com.moorkensam.xlra.controller;
 
+import com.moorkensam.xlra.model.security.Permission;
+import com.moorkensam.xlra.model.security.Role;
+import com.moorkensam.xlra.model.security.User;
+import com.moorkensam.xlra.service.UserService;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -7,14 +15,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.moorkensam.xlra.model.security.Permission;
-import com.moorkensam.xlra.model.security.Role;
-import com.moorkensam.xlra.model.security.User;
-import com.moorkensam.xlra.service.UserService;
 
 @ManagedBean
 @SessionScoped

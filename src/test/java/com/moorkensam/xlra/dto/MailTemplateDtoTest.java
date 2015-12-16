@@ -1,6 +1,7 @@
 package com.moorkensam.xlra.dto;
 
-import java.util.Arrays;
+import com.moorkensam.xlra.model.configuration.Language;
+import com.moorkensam.xlra.model.mail.MailTemplate;
 
 import junit.framework.Assert;
 
@@ -9,8 +10,7 @@ import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.TestedObject;
 
-import com.moorkensam.xlra.model.configuration.Language;
-import com.moorkensam.xlra.model.mail.MailTemplate;
+import java.util.Arrays;
 
 public class MailTemplateDtoTest extends UnitilsJUnit4 {
 

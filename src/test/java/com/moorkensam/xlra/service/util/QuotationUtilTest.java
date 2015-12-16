@@ -1,16 +1,5 @@
 package com.moorkensam.xlra.service.util;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-
-import junit.framework.Assert;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.UnitilsJUnit4;
-import org.unitils.inject.annotation.TestedObject;
-
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.offerte.OfferteOptionDto;
@@ -23,6 +12,17 @@ import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
 import com.moorkensam.xlra.model.rate.TransportType;
 import com.moorkensam.xlra.model.translation.TranslationKey;
+
+import junit.framework.Assert;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.unitils.UnitilsJUnit4;
+import org.unitils.inject.annotation.TestedObject;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 
 public class QuotationUtilTest extends UnitilsJUnit4 {
 

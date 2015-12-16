@@ -1,5 +1,8 @@
 package com.moorkensam.xlra.model.log;
 
+import com.moorkensam.xlra.model.rate.RateFile;
+import com.moorkensam.xlra.model.rate.RateOperation;
+
 import java.util.List;
 
 import javax.persistence.Cacheable;
@@ -12,9 +15,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-
-import com.moorkensam.xlra.model.rate.RateFile;
-import com.moorkensam.xlra.model.rate.RateOperation;
 
 @Entity
 @Cacheable

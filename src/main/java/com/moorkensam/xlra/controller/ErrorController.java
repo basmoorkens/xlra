@@ -1,10 +1,10 @@
 package com.moorkensam.xlra.controller;
 
+import com.moorkensam.xlra.service.util.ConfigurationLoader;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.RequestScoped;
 import javax.inject.Named;
-
-import com.moorkensam.xlra.service.util.ConfigurationLoader;
 
 @RequestScoped
 @Named

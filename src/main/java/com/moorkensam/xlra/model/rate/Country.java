@@ -1,5 +1,8 @@
 package com.moorkensam.xlra.model.rate;
 
+import com.moorkensam.xlra.model.BaseEntity;
+import com.moorkensam.xlra.model.configuration.Language;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,9 +20,6 @@ import javax.persistence.MapKeyEnumerated;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-
-import com.moorkensam.xlra.model.BaseEntity;
-import com.moorkensam.xlra.model.configuration.Language;
 
 @Entity
 @Cacheable

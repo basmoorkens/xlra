@@ -1,9 +1,9 @@
 package com.moorkensam.xlra.service.util;
 
+import com.moorkensam.xlra.model.security.TokenInfo;
+
 import java.util.Calendar;
 import java.util.UUID;
-
-import com.moorkensam.xlra.model.security.TokenInfo;
 
 public class TokenUtil {
 

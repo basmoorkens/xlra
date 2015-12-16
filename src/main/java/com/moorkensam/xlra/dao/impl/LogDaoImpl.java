@@ -1,17 +1,17 @@
 package com.moorkensam.xlra.dao.impl;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
-
 import com.moorkensam.xlra.dao.BaseDao;
 import com.moorkensam.xlra.dao.LogDao;
 import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.model.log.QuotationLogRecord;
 import com.moorkensam.xlra.model.log.RaiseRatesRecord;
 import com.moorkensam.xlra.model.log.RateLogRecord;
+
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
 
 public class LogDaoImpl extends BaseDao implements LogDao {
 

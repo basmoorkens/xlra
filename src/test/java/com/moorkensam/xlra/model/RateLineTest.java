@@ -1,6 +1,7 @@
 package com.moorkensam.xlra.model;
 
-import java.math.BigDecimal;
+import com.moorkensam.xlra.model.rate.RateLine;
+import com.moorkensam.xlra.model.rate.Zone;
 
 import junit.framework.Assert;
 
@@ -8,8 +9,7 @@ import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.TestedObject;
 
-import com.moorkensam.xlra.model.rate.RateLine;
-import com.moorkensam.xlra.model.rate.Zone;
+import java.math.BigDecimal;
 
 public class RateLineTest extends UnitilsJUnit4 {
 

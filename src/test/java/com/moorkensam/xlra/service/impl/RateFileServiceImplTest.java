@@ -1,8 +1,11 @@
 package com.moorkensam.xlra.service.impl;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import com.moorkensam.xlra.dao.RateFileDao;
+import com.moorkensam.xlra.model.configuration.Interval;
+import com.moorkensam.xlra.model.rate.RateFile;
+import com.moorkensam.xlra.model.rate.RateLine;
+import com.moorkensam.xlra.model.rate.Zone;
+import com.moorkensam.xlra.model.rate.ZoneType;
 
 import junit.framework.Assert;
 
@@ -13,12 +16,9 @@ import org.unitils.inject.annotation.InjectIntoByType;
 import org.unitils.inject.annotation.TestedObject;
 import org.unitils.mock.Mock;
 
-import com.moorkensam.xlra.dao.RateFileDao;
-import com.moorkensam.xlra.model.configuration.Interval;
-import com.moorkensam.xlra.model.rate.RateFile;
-import com.moorkensam.xlra.model.rate.RateLine;
-import com.moorkensam.xlra.model.rate.Zone;
-import com.moorkensam.xlra.model.rate.ZoneType;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RateFileServiceImplTest extends UnitilsJUnit4 {
 

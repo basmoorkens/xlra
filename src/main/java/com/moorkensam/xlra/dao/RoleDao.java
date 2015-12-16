@@ -1,8 +1,8 @@
 package com.moorkensam.xlra.dao;
 
-import java.util.List;
-
 import com.moorkensam.xlra.model.security.Role;
+
+import java.util.List;
 
 public interface RoleDao {
 

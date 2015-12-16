@@ -1,5 +1,7 @@
 package com.moorkensam.xlra.model.rate;
 
+import com.moorkensam.xlra.model.BaseEntity;
+
 import java.math.BigDecimal;
 
 import javax.persistence.Cacheable;
@@ -9,8 +11,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-
-import com.moorkensam.xlra.model.BaseEntity;
 
 @Entity
 @Cacheable

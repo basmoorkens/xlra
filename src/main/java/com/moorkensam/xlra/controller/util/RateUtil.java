@@ -1,11 +1,11 @@
 package com.moorkensam.xlra.controller.util;
 
-import java.util.Arrays;
-import java.util.List;
+import com.moorkensam.xlra.model.configuration.Language;
 
 import org.primefaces.event.CellEditEvent;
 
-import com.moorkensam.xlra.model.configuration.Language;
+import java.util.Arrays;
+import java.util.List;
 
 public class RateUtil {
 

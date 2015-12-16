@@ -1,12 +1,12 @@
 package com.moorkensam.xlra.service.util;
 
+import com.moorkensam.xlra.model.offerte.QuotationResult;
+
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeBodyPart;
-
-import com.moorkensam.xlra.model.offerte.QuotationResult;
 
 public class EmailAttachmentHelper {
 

@@ -1,5 +1,14 @@
 package com.moorkensam.xlra.controller;
 
+import com.moorkensam.xlra.controller.util.MessageUtil;
+import com.moorkensam.xlra.model.configuration.Configuration;
+import com.moorkensam.xlra.model.configuration.DieselRate;
+import com.moorkensam.xlra.model.configuration.Interval;
+import com.moorkensam.xlra.service.ApplicationConfigurationService;
+import com.moorkensam.xlra.service.DieselService;
+
+import org.primefaces.event.RowEditEvent;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -7,15 +16,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
-
-import org.primefaces.event.RowEditEvent;
-
-import com.moorkensam.xlra.controller.util.MessageUtil;
-import com.moorkensam.xlra.model.configuration.Configuration;
-import com.moorkensam.xlra.model.configuration.DieselRate;
-import com.moorkensam.xlra.model.configuration.Interval;
-import com.moorkensam.xlra.service.ApplicationConfigurationService;
-import com.moorkensam.xlra.service.DieselService;
 
 @ManagedBean
 @ViewScoped

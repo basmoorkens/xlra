@@ -1,5 +1,8 @@
 package com.moorkensam.xlra.model.configuration;
 
+import com.moorkensam.xlra.model.BaseEntity;
+import com.moorkensam.xlra.model.mail.MailTemplate;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -10,9 +13,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import com.moorkensam.xlra.model.BaseEntity;
-import com.moorkensam.xlra.model.mail.MailTemplate;
 
 /**
  * Configuration object for the application. Contains all necessairy parameters to bootstrap the

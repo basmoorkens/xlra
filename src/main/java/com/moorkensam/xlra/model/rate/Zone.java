@@ -1,5 +1,8 @@
 package com.moorkensam.xlra.model.rate;
 
+import com.moorkensam.xlra.model.BaseEntity;
+import com.moorkensam.xlra.model.configuration.Interval;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,9 +18,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import com.moorkensam.xlra.model.BaseEntity;
-import com.moorkensam.xlra.model.configuration.Interval;
 
 @Entity
 @Cacheable

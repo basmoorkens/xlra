@@ -1,22 +1,5 @@
 package com.moorkensam.xlra.service.impl;
 
-import java.io.FileNotFoundException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import javax.mail.MessagingException;
-
-import junit.framework.Assert;
-
-import org.easymock.EasyMock;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.UnitilsJUnit4;
-import org.unitils.easymock.EasyMockUnitils;
-import org.unitils.easymock.annotation.Mock;
-
-import com.itextpdf.text.DocumentException;
 import com.moorkensam.xlra.dao.EmailTemplateDao;
 import com.moorkensam.xlra.dao.LogDao;
 import com.moorkensam.xlra.dao.PriceCalculationDao;
@@ -49,6 +32,24 @@ import com.moorkensam.xlra.service.RateFileService;
 import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
 import com.moorkensam.xlra.service.util.QuotationUtil;
+
+import com.itextpdf.text.DocumentException;
+
+import junit.framework.Assert;
+
+import org.easymock.EasyMock;
+import org.junit.Before;
+import org.junit.Test;
+import org.unitils.UnitilsJUnit4;
+import org.unitils.easymock.EasyMockUnitils;
+import org.unitils.easymock.annotation.Mock;
+
+import java.io.FileNotFoundException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import javax.mail.MessagingException;
 
 public class QuotationServiceImplTest extends UnitilsJUnit4 {
 

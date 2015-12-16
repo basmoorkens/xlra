@@ -1,15 +1,5 @@
 package com.moorkensam.xlra.service.util;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
-
-import junit.framework.Assert;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.UnitilsJUnit4;
-import org.unitils.inject.annotation.TestedObject;
-
 import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.model.log.LogType;
 import com.moorkensam.xlra.model.log.RaiseRatesRecord;
@@ -18,6 +8,16 @@ import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateOperation;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.model.security.UserLogRecord;
+
+import junit.framework.Assert;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.unitils.UnitilsJUnit4;
+import org.unitils.inject.annotation.TestedObject;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
 
 public class LogRecordFactoryTest extends UnitilsJUnit4 {
 

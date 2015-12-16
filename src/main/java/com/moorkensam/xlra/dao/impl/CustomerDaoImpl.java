@@ -1,18 +1,18 @@
 package com.moorkensam.xlra.dao.impl;
 
+import com.moorkensam.xlra.dao.BaseDao;
+import com.moorkensam.xlra.dao.CustomerDao;
+import com.moorkensam.xlra.model.customer.Customer;
+import com.moorkensam.xlra.service.util.JpaUtil;
+
+import org.apache.commons.lang3.StringUtils;
+import org.primefaces.model.SortOrder;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Query;
-
-import org.apache.commons.lang3.StringUtils;
-import org.primefaces.model.SortOrder;
-
-import com.moorkensam.xlra.dao.BaseDao;
-import com.moorkensam.xlra.dao.CustomerDao;
-import com.moorkensam.xlra.model.customer.Customer;
-import com.moorkensam.xlra.service.util.JpaUtil;
 
 public class CustomerDaoImpl extends BaseDao implements CustomerDao {
 

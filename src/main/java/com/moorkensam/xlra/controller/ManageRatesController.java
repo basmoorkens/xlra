@@ -1,21 +1,5 @@
 package com.moorkensam.xlra.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
-import javax.faces.event.ActionEvent;
-import javax.inject.Inject;
-
-import org.primefaces.context.RequestContext;
-import org.primefaces.event.CellEditEvent;
-import org.primefaces.event.RowEditEvent;
-import org.primefaces.event.SelectEvent;
-
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.controller.util.RateUtil;
 import com.moorkensam.xlra.dto.RateFileIdNameDto;
@@ -28,6 +12,21 @@ import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.RateFileService;
 import com.moorkensam.xlra.service.util.ConditionFactory;
 import com.moorkensam.xlra.service.util.TranslationUtil;
+
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.CellEditEvent;
+import org.primefaces.event.RowEditEvent;
+import org.primefaces.event.SelectEvent;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.event.ActionEvent;
+import javax.inject.Inject;
 
 @ManagedBean(name = "manageRatesController")
 @ViewScoped
@@ -123,6 +122,9 @@ public class ManageRatesController {
     selectedCondition = conditionFactory.createCondition(selectedCondition.getConditionKey(), "");
   }
 
+  /**
+   * Setup the page to add a new condition.
+   */
   public void setupAddCondition() {
     selectedCondition = new Condition();
     editMode = false;

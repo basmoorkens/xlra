@@ -1,17 +1,5 @@
 package com.moorkensam.xlra.service.impl;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-
-import junit.framework.Assert;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.UnitilsJUnit4;
-import org.unitils.inject.annotation.TestedObject;
-
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Address;
 import com.moorkensam.xlra.model.customer.Customer;
@@ -28,6 +16,18 @@ import com.moorkensam.xlra.service.util.ConfigurationLoader;
 
 import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Configuration;
+
+import junit.framework.Assert;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.unitils.UnitilsJUnit4;
+import org.unitils.inject.annotation.TestedObject;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 
 public class TemplateParseServiceTest extends UnitilsJUnit4 {
 

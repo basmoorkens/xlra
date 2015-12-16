@@ -1,13 +1,13 @@
 package com.moorkensam.xlra.controller;
 
+import com.moorkensam.xlra.controller.util.MessageUtil;
+import com.moorkensam.xlra.dto.MailTemplatesForForLanguages;
+import com.moorkensam.xlra.service.MailTemplateService;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
-
-import com.moorkensam.xlra.controller.util.MessageUtil;
-import com.moorkensam.xlra.dto.MailTemplatesForForLanguages;
-import com.moorkensam.xlra.service.MailTemplateService;
 
 @ManagedBean
 @ViewScoped

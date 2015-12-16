@@ -1,12 +1,12 @@
 package com.moorkensam.xlra.model.configuration;
 
+import com.moorkensam.xlra.model.BaseEntity;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.MappedSuperclass;
-
-import com.moorkensam.xlra.model.BaseEntity;
 
 @MappedSuperclass
 public abstract class AbstractRate extends BaseEntity {

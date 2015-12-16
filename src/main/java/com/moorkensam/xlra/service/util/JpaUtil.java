@@ -1,10 +1,10 @@
 package com.moorkensam.xlra.service.util;
 
+import org.primefaces.model.SortOrder;
+
 import java.util.Map;
 
 import javax.persistence.Query;
-
-import org.primefaces.model.SortOrder;
 
 public class JpaUtil {
 

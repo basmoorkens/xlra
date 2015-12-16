@@ -1,10 +1,10 @@
 package com.moorkensam.xlra.service;
 
+import com.moorkensam.xlra.model.security.User;
+
 import java.util.List;
 
 import javax.mail.MessagingException;
-
-import com.moorkensam.xlra.model.security.User;
 
 public interface UserService {
 

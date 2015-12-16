@@ -1,20 +1,5 @@
 package com.moorkensam.xlra.service.impl;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
-
-import junit.framework.Assert;
-
-import org.easymock.EasyMock;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.UnitilsJUnit4;
-import org.unitils.easymock.EasyMockUnitils;
-import org.unitils.easymock.annotation.Mock;
-import org.unitils.inject.annotation.TestedObject;
-
 import com.moorkensam.xlra.dao.ConfigurationDao;
 import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.CurrencyRate;
@@ -30,6 +15,21 @@ import com.moorkensam.xlra.service.CurrencyService;
 import com.moorkensam.xlra.service.DieselService;
 import com.moorkensam.xlra.service.util.CalcUtil;
 import com.moorkensam.xlra.service.util.QuotationUtil;
+
+import junit.framework.Assert;
+
+import org.easymock.EasyMock;
+import org.junit.Before;
+import org.junit.Test;
+import org.unitils.UnitilsJUnit4;
+import org.unitils.easymock.EasyMockUnitils;
+import org.unitils.easymock.annotation.Mock;
+import org.unitils.inject.annotation.TestedObject;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CalculationServiceTest extends UnitilsJUnit4 {
   @TestedObject

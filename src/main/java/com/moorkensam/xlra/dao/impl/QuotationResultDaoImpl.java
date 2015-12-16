@@ -1,19 +1,18 @@
 package com.moorkensam.xlra.dao.impl;
 
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.Query;
-
-import org.apache.commons.lang3.StringUtils;
-import org.primefaces.model.SortOrder;
-
 import com.moorkensam.xlra.dao.BaseDao;
 import com.moorkensam.xlra.dao.QuotationResultDao;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.service.util.JpaUtil;
+
+import org.apache.commons.lang3.StringUtils;
+import org.primefaces.model.SortOrder;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.Query;
 
 public class QuotationResultDaoImpl extends BaseDao implements QuotationResultDao {
 

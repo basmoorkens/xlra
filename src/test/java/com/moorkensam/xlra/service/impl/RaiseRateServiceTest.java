@@ -1,21 +1,5 @@
 package com.moorkensam.xlra.service.impl;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import junit.framework.Assert;
-
-import org.easymock.EasyMock;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.UnitilsJUnit4;
-import org.unitils.easymock.EasyMockUnitils;
-import org.unitils.easymock.annotation.Mock;
-import org.unitils.inject.annotation.TestedObject;
-
 import com.moorkensam.xlra.dao.LogDao;
 import com.moorkensam.xlra.dao.RateFileDao;
 import com.moorkensam.xlra.model.log.LogRecord;
@@ -27,6 +11,22 @@ import com.moorkensam.xlra.model.rate.ZoneType;
 import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.util.CalcUtil;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
+
+import junit.framework.Assert;
+
+import org.easymock.EasyMock;
+import org.junit.Before;
+import org.junit.Test;
+import org.unitils.UnitilsJUnit4;
+import org.unitils.easymock.EasyMockUnitils;
+import org.unitils.easymock.annotation.Mock;
+import org.unitils.inject.annotation.TestedObject;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class RaiseRateServiceTest extends UnitilsJUnit4 {
 

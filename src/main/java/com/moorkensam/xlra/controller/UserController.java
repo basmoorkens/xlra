@@ -1,13 +1,13 @@
 package com.moorkensam.xlra.controller;
 
+import com.moorkensam.xlra.controller.util.MessageUtil;
+import com.moorkensam.xlra.model.security.User;
+import com.moorkensam.xlra.service.UserService;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
-
-import com.moorkensam.xlra.controller.util.MessageUtil;
-import com.moorkensam.xlra.model.security.User;
-import com.moorkensam.xlra.service.UserService;
 
 @ManagedBean
 @ViewScoped

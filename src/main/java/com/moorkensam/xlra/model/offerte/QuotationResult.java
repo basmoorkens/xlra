@@ -1,5 +1,11 @@
 package com.moorkensam.xlra.model.offerte;
 
+import com.moorkensam.xlra.model.BaseEntity;
+import com.moorkensam.xlra.model.mail.EmailHistoryRecord;
+import com.moorkensam.xlra.model.mail.EmailResult;
+import com.moorkensam.xlra.model.rate.Country;
+import com.moorkensam.xlra.model.rate.RateFile;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,12 +22,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import com.moorkensam.xlra.model.BaseEntity;
-import com.moorkensam.xlra.model.mail.EmailHistoryRecord;
-import com.moorkensam.xlra.model.mail.EmailResult;
-import com.moorkensam.xlra.model.rate.Country;
-import com.moorkensam.xlra.model.rate.RateFile;
 
 @Entity
 @Cacheable

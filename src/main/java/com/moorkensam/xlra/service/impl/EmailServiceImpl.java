@@ -1,5 +1,21 @@
 package com.moorkensam.xlra.service.impl;
 
+import com.moorkensam.xlra.dao.EmailHistoryDao;
+import com.moorkensam.xlra.model.error.TemplatingException;
+import com.moorkensam.xlra.model.mail.EmailHistoryRecord;
+import com.moorkensam.xlra.model.mail.EmailSentStatus;
+import com.moorkensam.xlra.model.offerte.QuotationResult;
+import com.moorkensam.xlra.model.security.User;
+import com.moorkensam.xlra.service.EmailService;
+import com.moorkensam.xlra.service.FileService;
+import com.moorkensam.xlra.service.UserService;
+import com.moorkensam.xlra.service.util.ConfigurationLoader;
+import com.moorkensam.xlra.service.util.EmailAttachmentHelper;
+import com.moorkensam.xlra.service.util.TransportDelegate;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.Date;
 
 import javax.annotation.PostConstruct;
@@ -15,22 +31,6 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.moorkensam.xlra.dao.EmailHistoryDao;
-import com.moorkensam.xlra.model.error.TemplatingException;
-import com.moorkensam.xlra.model.mail.EmailHistoryRecord;
-import com.moorkensam.xlra.model.mail.EmailSentStatus;
-import com.moorkensam.xlra.model.offerte.QuotationResult;
-import com.moorkensam.xlra.model.security.User;
-import com.moorkensam.xlra.service.EmailService;
-import com.moorkensam.xlra.service.FileService;
-import com.moorkensam.xlra.service.UserService;
-import com.moorkensam.xlra.service.util.ConfigurationLoader;
-import com.moorkensam.xlra.service.util.EmailAttachmentHelper;
-import com.moorkensam.xlra.service.util.TransportDelegate;
 
 /**
  * This service can be used to send emails from the application.

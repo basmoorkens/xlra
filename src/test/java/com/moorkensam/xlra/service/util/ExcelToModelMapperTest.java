@@ -1,11 +1,14 @@
 package com.moorkensam.xlra.service.util;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.moorkensam.xlra.model.ExcelUploadUtilData;
+import com.moorkensam.xlra.model.RateLineExcelImportDto;
+import com.moorkensam.xlra.model.rate.Condition;
+import com.moorkensam.xlra.model.rate.Country;
+import com.moorkensam.xlra.model.rate.RateFile;
+import com.moorkensam.xlra.model.rate.RateLine;
+import com.moorkensam.xlra.model.rate.Zone;
+import com.moorkensam.xlra.model.rate.ZoneType;
+import com.moorkensam.xlra.model.translation.TranslationKey;
 
 import junit.framework.Assert;
 
@@ -17,15 +20,12 @@ import org.unitils.easymock.EasyMockUnitils;
 import org.unitils.easymock.annotation.Mock;
 import org.unitils.inject.annotation.TestedObject;
 
-import com.moorkensam.xlra.model.ExcelUploadUtilData;
-import com.moorkensam.xlra.model.RateLineExcelImportDto;
-import com.moorkensam.xlra.model.rate.Condition;
-import com.moorkensam.xlra.model.rate.Country;
-import com.moorkensam.xlra.model.rate.RateFile;
-import com.moorkensam.xlra.model.rate.RateLine;
-import com.moorkensam.xlra.model.rate.Zone;
-import com.moorkensam.xlra.model.rate.ZoneType;
-import com.moorkensam.xlra.model.translation.TranslationKey;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ExcelToModelMapperTest extends UnitilsJUnit4 {
 

@@ -1,8 +1,8 @@
 package com.moorkensam.xlra.dao;
 
-import java.util.List;
-
 import com.moorkensam.xlra.model.configuration.DieselRate;
+
+import java.util.List;
 
 public interface DieselRateDao {
 

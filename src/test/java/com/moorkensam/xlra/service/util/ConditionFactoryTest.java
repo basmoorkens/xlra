@@ -1,5 +1,9 @@
 package com.moorkensam.xlra.service.util;
 
+import com.moorkensam.xlra.model.rate.Condition;
+import com.moorkensam.xlra.model.rate.ConditionType;
+import com.moorkensam.xlra.model.translation.TranslationKey;
+
 import junit.framework.Assert;
 
 import org.easymock.EasyMock;
@@ -8,10 +12,6 @@ import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.easymock.EasyMockUnitils;
 import org.unitils.easymock.annotation.Mock;
-
-import com.moorkensam.xlra.model.rate.Condition;
-import com.moorkensam.xlra.model.rate.ConditionType;
-import com.moorkensam.xlra.model.translation.TranslationKey;
 
 public class ConditionFactoryTest extends UnitilsJUnit4 {
 

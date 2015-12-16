@@ -1,5 +1,11 @@
 package com.moorkensam.xlra.service.impl;
 
+import com.moorkensam.xlra.model.ExcelUploadUtilData;
+import com.moorkensam.xlra.model.rate.RateFile;
+import com.moorkensam.xlra.service.RateFileService;
+import com.moorkensam.xlra.service.util.ExcelToModelMapper;
+import com.moorkensam.xlra.service.util.ExcelUploadParser;
+
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.easymock.EasyMock;
 import org.junit.Before;
@@ -7,12 +13,6 @@ import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.easymock.EasyMockUnitils;
 import org.unitils.easymock.annotation.Mock;
-
-import com.moorkensam.xlra.model.ExcelUploadUtilData;
-import com.moorkensam.xlra.model.rate.RateFile;
-import com.moorkensam.xlra.service.RateFileService;
-import com.moorkensam.xlra.service.util.ExcelToModelMapper;
-import com.moorkensam.xlra.service.util.ExcelUploadParser;
 
 public class ExcelServiceImplTest extends UnitilsJUnit4 {
 

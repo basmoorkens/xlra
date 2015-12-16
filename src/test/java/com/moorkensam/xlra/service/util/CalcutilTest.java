@@ -1,13 +1,13 @@
 package com.moorkensam.xlra.service.util;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class CalcutilTest extends UnitilsJUnit4 {
 

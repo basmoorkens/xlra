@@ -1,9 +1,9 @@
 package com.moorkensam.xlra.model.offerte;
 
-import java.io.Serializable;
-
 import com.moorkensam.xlra.model.translation.Translatable;
 import com.moorkensam.xlra.model.translation.TranslationKey;
+
+import java.io.Serializable;
 
 public class OfferteOptionDto implements Serializable, Translatable {
 

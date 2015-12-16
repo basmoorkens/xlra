@@ -1,5 +1,9 @@
 package com.moorkensam.xlra.model.offerte;
 
+import com.moorkensam.xlra.model.BaseEntity;
+import com.moorkensam.xlra.model.translation.TranslationKey;
+import com.moorkensam.xlra.service.util.CalcUtil;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +15,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
-
-import com.moorkensam.xlra.model.BaseEntity;
-import com.moorkensam.xlra.model.translation.TranslationKey;
-import com.moorkensam.xlra.service.util.CalcUtil;
 
 @Entity
 @Table(name = "pricecalculation")

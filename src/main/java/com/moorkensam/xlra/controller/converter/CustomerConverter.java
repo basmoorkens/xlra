@@ -1,5 +1,8 @@
 package com.moorkensam.xlra.controller.converter;
 
+import com.moorkensam.xlra.model.customer.Customer;
+import com.moorkensam.xlra.service.CustomerService;
+
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
@@ -8,9 +11,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.inject.Inject;
-
-import com.moorkensam.xlra.model.customer.Customer;
-import com.moorkensam.xlra.service.CustomerService;
 
 @ManagedBean
 @RequestScoped

@@ -1,18 +1,5 @@
 package com.moorkensam.xlra.service.impl;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.moorkensam.xlra.dao.LogDao;
 import com.moorkensam.xlra.dao.RateFileDao;
 import com.moorkensam.xlra.model.log.RaiseRatesRecord;
@@ -23,6 +10,19 @@ import com.moorkensam.xlra.service.RaiseRateFileService;
 import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.util.CalcUtil;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 
 @Stateless
 public class RaiseRateFileServiceImpl implements RaiseRateFileService {

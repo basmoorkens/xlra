@@ -1,5 +1,18 @@
 package com.moorkensam.xlra.controller;
 
+import com.moorkensam.xlra.controller.util.MessageUtil;
+import com.moorkensam.xlra.model.offerte.QuotationResult;
+import com.moorkensam.xlra.model.rate.Country;
+import com.moorkensam.xlra.service.CountryService;
+import com.moorkensam.xlra.service.EmailService;
+import com.moorkensam.xlra.service.FileService;
+import com.moorkensam.xlra.service.QuotationService;
+import com.moorkensam.xlra.service.impl.FileServiceImpl;
+
+import org.apache.commons.lang3.StringUtils;
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,20 +28,6 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang3.StringUtils;
-import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortOrder;
-
-import com.moorkensam.xlra.controller.util.MessageUtil;
-import com.moorkensam.xlra.model.customer.Customer;
-import com.moorkensam.xlra.model.offerte.QuotationResult;
-import com.moorkensam.xlra.model.rate.Country;
-import com.moorkensam.xlra.service.CountryService;
-import com.moorkensam.xlra.service.EmailService;
-import com.moorkensam.xlra.service.FileService;
-import com.moorkensam.xlra.service.QuotationService;
-import com.moorkensam.xlra.service.impl.FileServiceImpl;
 
 @ManagedBean
 @ViewScoped

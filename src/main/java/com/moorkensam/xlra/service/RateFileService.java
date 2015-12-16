@@ -1,8 +1,5 @@
 package com.moorkensam.xlra.service;
 
-import java.util.List;
-import java.util.Map;
-
 import com.moorkensam.xlra.dto.RateFileIdNameDto;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
@@ -10,6 +7,8 @@ import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
 import com.moorkensam.xlra.model.rate.Zone;
+
+import java.util.List;
 
 public interface RateFileService {
 

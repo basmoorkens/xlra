@@ -1,16 +1,16 @@
 package com.moorkensam.xlra.service.util;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import com.moorkensam.xlra.model.ExcelUploadUtilData;
+import com.moorkensam.xlra.model.RateLineExcelImportDto;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.moorkensam.xlra.model.ExcelUploadUtilData;
-import com.moorkensam.xlra.model.RateLineExcelImportDto;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * This clas does the magic of converting the excel to a relational model usable by the application.

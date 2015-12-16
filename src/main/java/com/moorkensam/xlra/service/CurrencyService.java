@@ -1,10 +1,10 @@
 package com.moorkensam.xlra.service;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 import com.moorkensam.xlra.model.configuration.CurrencyRate;
 import com.moorkensam.xlra.model.error.RateFileException;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 public interface CurrencyService {
 

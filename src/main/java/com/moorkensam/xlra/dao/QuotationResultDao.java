@@ -1,12 +1,12 @@
 package com.moorkensam.xlra.dao;
 
 
-import java.util.List;
-import java.util.Map;
+import com.moorkensam.xlra.model.offerte.QuotationResult;
 
 import org.primefaces.model.SortOrder;
 
-import com.moorkensam.xlra.model.offerte.QuotationResult;
+import java.util.List;
+import java.util.Map;
 
 public interface QuotationResultDao {
 

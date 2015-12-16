@@ -1,5 +1,11 @@
 package com.moorkensam.xlra.model.customer;
 
+import com.moorkensam.xlra.model.BaseEntity;
+import com.moorkensam.xlra.model.configuration.Language;
+
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.persistence.Cacheable;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -9,12 +15,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotEmpty;
-
-import com.moorkensam.xlra.model.BaseEntity;
-import com.moorkensam.xlra.model.configuration.Language;
 
 @Entity
 @Cacheable

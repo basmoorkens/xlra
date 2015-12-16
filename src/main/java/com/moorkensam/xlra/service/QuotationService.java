@@ -1,13 +1,13 @@
 package com.moorkensam.xlra.service;
 
-import java.util.List;
-import java.util.Map;
-
-import org.primefaces.model.SortOrder;
-
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
+
+import org.primefaces.model.SortOrder;
+
+import java.util.List;
+import java.util.Map;
 
 public interface QuotationService {
 

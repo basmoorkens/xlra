@@ -1,9 +1,14 @@
 package com.moorkensam.xlra.service.impl;
 
-import java.security.Principal;
-
-import javax.ejb.SessionContext;
-import javax.mail.MessagingException;
+import com.moorkensam.xlra.dao.LogDao;
+import com.moorkensam.xlra.dao.UserDao;
+import com.moorkensam.xlra.model.log.LogRecord;
+import com.moorkensam.xlra.model.log.LogType;
+import com.moorkensam.xlra.model.security.User;
+import com.moorkensam.xlra.model.security.UserLogRecord;
+import com.moorkensam.xlra.model.security.UserStatus;
+import com.moorkensam.xlra.service.EmailService;
+import com.moorkensam.xlra.service.util.LogRecordFactory;
 
 import org.easymock.EasyMock;
 import org.junit.Assert;
@@ -14,15 +19,7 @@ import org.unitils.easymock.EasyMockUnitils;
 import org.unitils.easymock.annotation.Mock;
 import org.unitils.inject.annotation.TestedObject;
 
-import com.moorkensam.xlra.dao.LogDao;
-import com.moorkensam.xlra.dao.UserDao;
-import com.moorkensam.xlra.model.log.LogRecord;
-import com.moorkensam.xlra.model.log.LogType;
-import com.moorkensam.xlra.model.security.User;
-import com.moorkensam.xlra.model.security.UserLogRecord;
-import com.moorkensam.xlra.model.security.UserStatus;
-import com.moorkensam.xlra.service.EmailService;
-import com.moorkensam.xlra.service.util.LogRecordFactory;
+import javax.mail.MessagingException;
 
 
 public class UserServiceImplTest extends UnitilsJUnit4 {

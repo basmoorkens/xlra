@@ -1,5 +1,14 @@
 package com.moorkensam.xlra.controller;
 
+import com.moorkensam.xlra.controller.util.MessageUtil;
+import com.moorkensam.xlra.model.log.RaiseRatesRecord;
+import com.moorkensam.xlra.model.rate.RateFile;
+import com.moorkensam.xlra.service.RaiseRateFileService;
+import com.moorkensam.xlra.service.RateFileService;
+
+import org.primefaces.event.FlowEvent;
+import org.primefaces.model.DualListModel;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,15 +16,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
-
-import org.primefaces.event.FlowEvent;
-import org.primefaces.model.DualListModel;
-
-import com.moorkensam.xlra.controller.util.MessageUtil;
-import com.moorkensam.xlra.model.log.RaiseRatesRecord;
-import com.moorkensam.xlra.model.rate.RateFile;
-import com.moorkensam.xlra.service.RaiseRateFileService;
-import com.moorkensam.xlra.service.RateFileService;
 
 @ManagedBean
 @ViewScoped

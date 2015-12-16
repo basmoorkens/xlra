@@ -1,11 +1,11 @@
 package com.moorkensam.xlra.service;
 
-import java.util.Date;
-import java.util.List;
-
 import com.moorkensam.xlra.model.log.QuotationLogRecord;
 import com.moorkensam.xlra.model.log.RaiseRatesRecord;
 import com.moorkensam.xlra.model.log.RateLogRecord;
+
+import java.util.Date;
+import java.util.List;
 
 public interface LogService {
 

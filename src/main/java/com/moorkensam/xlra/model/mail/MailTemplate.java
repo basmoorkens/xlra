@@ -1,5 +1,9 @@
 package com.moorkensam.xlra.model.mail;
 
+import com.moorkensam.xlra.model.BaseEntity;
+import com.moorkensam.xlra.model.configuration.Configuration;
+import com.moorkensam.xlra.model.configuration.Language;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -9,10 +13,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-
-import com.moorkensam.xlra.model.BaseEntity;
-import com.moorkensam.xlra.model.configuration.Configuration;
-import com.moorkensam.xlra.model.configuration.Language;
 
 @Entity
 @Table(name = "mailtemplate")

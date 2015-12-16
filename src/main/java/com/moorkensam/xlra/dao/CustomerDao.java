@@ -1,11 +1,11 @@
 package com.moorkensam.xlra.dao;
 
-import java.util.List;
-import java.util.Map;
+import com.moorkensam.xlra.model.customer.Customer;
 
 import org.primefaces.model.SortOrder;
 
-import com.moorkensam.xlra.model.customer.Customer;
+import java.util.List;
+import java.util.Map;
 
 public interface CustomerDao {
 

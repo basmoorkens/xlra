@@ -1,5 +1,14 @@
 package com.moorkensam.xlra.controller;
 
+import com.moorkensam.xlra.controller.util.MessageUtil;
+import com.moorkensam.xlra.model.security.Role;
+import com.moorkensam.xlra.model.security.User;
+import com.moorkensam.xlra.service.RolePermissionService;
+import com.moorkensam.xlra.service.UserService;
+
+import org.primefaces.context.RequestContext;
+import org.primefaces.model.DualListModel;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,15 +17,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
-
-import org.primefaces.context.RequestContext;
-import org.primefaces.model.DualListModel;
-
-import com.moorkensam.xlra.controller.util.MessageUtil;
-import com.moorkensam.xlra.model.security.Role;
-import com.moorkensam.xlra.model.security.User;
-import com.moorkensam.xlra.service.RolePermissionService;
-import com.moorkensam.xlra.service.UserService;
 
 @ManagedBean
 @ViewScoped

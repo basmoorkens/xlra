@@ -1,9 +1,9 @@
 package com.moorkensam.xlra.service;
 
-import java.util.List;
-
 import com.moorkensam.xlra.model.security.Permission;
 import com.moorkensam.xlra.model.security.Role;
+
+import java.util.List;
 
 public interface RolePermissionService {
 

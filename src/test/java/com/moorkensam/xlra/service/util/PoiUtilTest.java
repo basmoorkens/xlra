@@ -1,7 +1,5 @@
 package com.moorkensam.xlra.service.util;
 
-import java.io.IOException;
-
 import junit.framework.Assert;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -12,6 +10,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
+
+import java.io.IOException;
 
 public class PoiUtilTest extends UnitilsJUnit4 {
 

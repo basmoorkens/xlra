@@ -1,9 +1,9 @@
 package com.moorkensam.xlra.service;
 
-import java.util.List;
-
 import com.moorkensam.xlra.model.log.RaiseRatesRecord;
 import com.moorkensam.xlra.model.rate.RateFile;
+
+import java.util.List;
 
 public interface RaiseRateFileService {
 

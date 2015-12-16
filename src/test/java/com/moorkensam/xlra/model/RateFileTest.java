@@ -1,7 +1,11 @@
 package com.moorkensam.xlra.model;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
+import com.moorkensam.xlra.model.configuration.Interval;
+import com.moorkensam.xlra.model.error.RateFileException;
+import com.moorkensam.xlra.model.rate.RateFile;
+import com.moorkensam.xlra.model.rate.RateLine;
+import com.moorkensam.xlra.model.rate.Zone;
+import com.moorkensam.xlra.model.rate.ZoneType;
 
 import junit.framework.Assert;
 
@@ -10,12 +14,8 @@ import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.TestedObject;
 
-import com.moorkensam.xlra.model.configuration.Interval;
-import com.moorkensam.xlra.model.error.RateFileException;
-import com.moorkensam.xlra.model.rate.RateFile;
-import com.moorkensam.xlra.model.rate.RateLine;
-import com.moorkensam.xlra.model.rate.Zone;
-import com.moorkensam.xlra.model.rate.ZoneType;
+import java.math.BigDecimal;
+import java.util.Arrays;
 
 public class RateFileTest extends UnitilsJUnit4 {
 

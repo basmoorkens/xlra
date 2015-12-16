@@ -1,5 +1,13 @@
 package com.moorkensam.xlra.model.rate;
 
+import com.moorkensam.xlra.model.BaseEntity;
+import com.moorkensam.xlra.model.configuration.Interval;
+import com.moorkensam.xlra.model.customer.Customer;
+import com.moorkensam.xlra.model.error.RateFileException;
+import com.moorkensam.xlra.service.util.CalcUtil;
+
+import org.hibernate.annotations.BatchSize;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,14 +27,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.hibernate.annotations.BatchSize;
-
-import com.moorkensam.xlra.model.BaseEntity;
-import com.moorkensam.xlra.model.configuration.Interval;
-import com.moorkensam.xlra.model.customer.Customer;
-import com.moorkensam.xlra.model.error.RateFileException;
-import com.moorkensam.xlra.service.util.CalcUtil;
 
 @Entity
 @Cacheable

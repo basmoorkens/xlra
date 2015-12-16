@@ -1,20 +1,5 @@
 package com.moorkensam.xlra.service.impl;
 
-import java.io.FileNotFoundException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.mail.MessagingException;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.primefaces.model.SortOrder;
-
-import com.itextpdf.text.DocumentException;
 import com.moorkensam.xlra.dao.LogDao;
 import com.moorkensam.xlra.dao.PriceCalculationDao;
 import com.moorkensam.xlra.dao.QuotationQueryDao;
@@ -41,6 +26,22 @@ import com.moorkensam.xlra.service.RateFileService;
 import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
 import com.moorkensam.xlra.service.util.QuotationUtil;
+
+import com.itextpdf.text.DocumentException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.primefaces.model.SortOrder;
+
+import java.io.FileNotFoundException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.mail.MessagingException;
 
 @Stateless
 public class QuotationServiceImpl implements QuotationService {

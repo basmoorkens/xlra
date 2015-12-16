@@ -1,18 +1,18 @@
 package com.moorkensam.xlra.service.impl;
 
-import java.util.List;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.moorkensam.xlra.dao.ConfigurationDao;
 import com.moorkensam.xlra.dao.EmailTemplateDao;
 import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.mail.MailTemplate;
 import com.moorkensam.xlra.service.ApplicationConfigurationService;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 // TODO Implement diesel and chf 4 ciphers after.
 /**
