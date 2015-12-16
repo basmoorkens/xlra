@@ -24,6 +24,5 @@ public interface CustomerDao {
   public List<Customer> getLazyCustomers(int first, int pageSize, String sortField,
       SortOrder sortOrder, Map<String, Object> filters);
 
-  public int countCustomers(int first, int pageSize, String sortField, SortOrder sortOrder,
-      Map<String, Object> filters);
+  public int countCustomers();
 }

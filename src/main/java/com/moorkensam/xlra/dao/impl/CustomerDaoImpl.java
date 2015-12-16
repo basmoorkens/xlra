@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.persistence.Query;
 
+import org.apache.commons.lang3.StringUtils;
 import org.primefaces.model.SortOrder;
 
 import com.moorkensam.xlra.dao.BaseDao;
@@ -48,22 +49,70 @@ public class CustomerDaoImpl extends BaseDao implements CustomerDao {
     return (List<Customer>) query.getResultList();
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public List<Customer> getLazyCustomers(int first, int pageSize, String sortField,
       SortOrder sortOrder, Map<String, Object> filters) {
+    String queryString = buildLazyLoadCustomersQuery(sortField, sortOrder, filters);
+    Query query = getEntityManager().createQuery(queryString);
+    applyPagination(first, pageSize, query);
+    fillInParameters(filters, query);
+    return (List<Customer>) query.getResultList();
+  }
 
-    Query query = getEntityManager().createNamedQuery("Customer.findAll");
+  /*
+   * Fill in the parameters for the query.
+   */
+  private void fillInParameters(Map<String, Object> filters, Query query) {
+    if (filters != null) {
+      for (String key : filters.keySet()) {
+        query.setParameter(key, "%" + filters.get(key) + "%");
+      }
+    }
+  }
+
+  /*
+   * Apply pagination parameters to the query.
+   */
+  private void applyPagination(int first, int pageSize, Query query) {
     if (first >= 0) {
       query.setFirstResult(first);
     }
     query.setMaxResults(pageSize);
+  }
 
-    return (List<Customer>) query.getResultList();
+  /*
+   * Build the lazy loading datatable query for customers. PAgination, sorting and filtering are
+   * included.
+   */
+  private String buildLazyLoadCustomersQuery(String sortField, SortOrder sortOrder,
+      Map<String, Object> filters) {
+    StringBuilder builder = new StringBuilder();
+    builder.append("SELECT b FROM Customer b where 1 = 1 ");
+    if (filters != null) {
+      for (String key : filters.keySet()) {
+        builder.append("AND b." + key + " LIKE :" + key + " ");
+      }
+    }
+    if (StringUtils.isNotBlank(sortField)) {
+      builder.append("ORDER BY b." + sortField + " " + convertSortOrderToJpaSortOrder(sortOrder));
+    }
+    return builder.toString();
+  }
+
+  private String convertSortOrderToJpaSortOrder(SortOrder sortOrder) {
+    switch (sortOrder) {
+      case ASCENDING:
+        return "ASC";
+      case DESCENDING:
+        return "DESC";
+      default:
+        return "ASC";
+    }
   }
 
   @Override
-  public int countCustomers(int first, int pageSize, String sortField, SortOrder sortOrder,
-      Map<String, Object> filters) {
+  public int countCustomers() {
     StringBuilder builder = new StringBuilder();
     builder.append("SELECT count(c.id) FROM Customer c ");
     Query query = getEntityManager().createQuery(builder.toString());

@@ -2,6 +2,7 @@ package com.moorkensam.xlra.controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -17,6 +18,7 @@ import org.primefaces.event.SelectEvent;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.controller.util.RateUtil;
+import com.moorkensam.xlra.dto.RateFileIdNameDto;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.RateFile;
@@ -41,8 +43,6 @@ public class ManageRatesController {
 
   private ConditionFactory conditionFactory;
 
-  private List<RateFile> rateFiles;
-
   private boolean collapseConditionsDetailGrid = true;
 
   private boolean collapseRateLinesDetailGrid = true;
@@ -61,16 +61,20 @@ public class ManageRatesController {
 
   private Condition selectedCondition;
 
+  private List<RateFileIdNameDto> autoCompleteItems;
+
+  private boolean editMode = false;
+
   /**
    * Logic to initialize the controller.
    */
   @PostConstruct
   public void initializeController() {
     editable = sessionController.isAdmin();
-    refreshRates();
     resetSelectedRateFile();
     translationUtil = new TranslationUtil();
     conditionFactory = new ConditionFactory();
+    autoCompleteItems = rateFileService.getRateFilesIdAndNamesForAutoComplete();
   }
 
   private void resetSelectedRateFile() {
@@ -109,6 +113,19 @@ public class ManageRatesController {
    */
   public void setupEditCondition(Condition condition) {
     this.selectedCondition = condition;
+    editMode = true;
+    RequestContext context = RequestContext.getCurrentInstance();
+    context.execute("PF('editConditionDialog').show();");
+  }
+
+
+  public void loadConditionBasedOnKey() {
+    selectedCondition = conditionFactory.createCondition(selectedCondition.getConditionKey(), "");
+  }
+
+  public void setupAddCondition() {
+    selectedCondition = new Condition();
+    editMode = false;
     RequestContext context = RequestContext.getCurrentInstance();
     context.execute("PF('editConditionDialog').show();");
   }
@@ -189,10 +206,6 @@ public class ManageRatesController {
     translationUtil.fillInTranslations(selectedRateFile.getConditions());
   }
 
-  private void refreshRates() {
-    rateFiles = rateFileService.getAllRateFiles();
-  }
-
   /**
    * Auto complete method.
    * 
@@ -200,21 +213,15 @@ public class ManageRatesController {
    * @return List of ratefiles that match the input.
    */
   public List<RateFile> completeRateName(String input) {
-    List<RateFile> filteredRateFiles = new ArrayList<RateFile>();
-    for (RateFile rf : rateFiles) {
-      if (rf.getName().toLowerCase().contains(input.toLowerCase())) {
-        filteredRateFiles.add(rf);
+    List<Long> filterIds = new ArrayList<Long>();
+    for (RateFileIdNameDto dto : autoCompleteItems) {
+      if (dto.getName().toLowerCase().contains(input.toLowerCase())) {
+        filterIds.add(dto.getId());
       }
     }
+
+    List<RateFile> filteredRateFiles = rateFileService.getRateFilesByIdList(filterIds);
     return filteredRateFiles;
-  }
-
-  public List<RateFile> getRateFiles() {
-    return rateFiles;
-  }
-
-  public void setRateFiles(List<RateFile> rateFiles) {
-    this.rateFiles = rateFiles;
   }
 
   public RateFileService getRateFileService() {
@@ -233,19 +240,8 @@ public class ManageRatesController {
     this.selectedRateFile = selectedRateFile;
   }
 
-  /**
-   * fetches a ratefile by id.
-   * 
-   * @param id The id to fetch.
-   * @return The fetched ratefile.
-   */
   public RateFile getRateFileById(long id) {
-    for (RateFile rf : rateFiles) {
-      if (rf.getId() == id) {
-        return rf;
-      }
-    }
-    return null;
+    return rateFileService.getRateFileById(id);
   }
 
   public boolean isCollapseConditionsDetailGrid() {
@@ -352,6 +348,22 @@ public class ManageRatesController {
 
   public List<Language> getLanguages() {
     return Arrays.asList(Language.values());
+  }
+
+  public List<RateFileIdNameDto> getAutoCompleteItems() {
+    return autoCompleteItems;
+  }
+
+  public void setAutoCompleteItems(List<RateFileIdNameDto> autoCompleteItems) {
+    this.autoCompleteItems = autoCompleteItems;
+  }
+
+  public boolean isEditMode() {
+    return editMode;
+  }
+
+  public void setEditMode(boolean editMode) {
+    this.editMode = editMode;
   }
 
 }

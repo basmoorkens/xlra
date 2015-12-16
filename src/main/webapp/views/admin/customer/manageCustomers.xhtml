@@ -15,28 +15,32 @@
 		<h:form id="customerOverviewForm">
 			<p:commandButton value="Create customer" title="Add new customer"
 				actionListener="#{customerController.setupPageForNewCustomer}"
-				icon="ui-icon-check" ajax="true"  update=":customerDetailForm" immediate="true"/>
+				icon="ui-icon-check" ajax="true" update=":customerDetailForm"
+				immediate="true" />
 
 			<p:panel id="customerOverview" header="Customer overview">
 				<p:dataTable value="#{customerController.model}" var="customer"
 					emptyMessage="No customers found." lazy="true" paginator="true"
-					id="customerTable" rows="2" sortMode="single"
+					id="customerTable" rows="10" sortMode="single"
+					currentPageReportTemplate="Customers {startRecord} - {endRecord} of {totalRecords}, Page: {currentPage}/{totalPages}"
 					paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
-					rowsPerPageTemplate="2,50,100">
-					<p:column>
+					rowsPerPageTemplate="10,25,50,100" paginatorPosition="top">
+					<p:column sortBy="#{customer.name}" filterBy="#{customer.name}">
 						<f:facet name="header">Name</f:facet>
 						#{customer.name}
 					</p:column>
-					<p:column>
+					<p:column sortBy="#{customer.email}" filterBy="#{customer.email}">
 						<f:facet name="header">Email</f:facet>
 						#{customer.email}
 					</p:column>
-					<p:column>
+					<p:column sortBy="#{customer.phone}" filterBy="#{customer.phone}">
 						<f:facet name="header">Phone</f:facet>
 						#{customer.phone}
 					</p:column>
-					<p:column>
-
+					<p:column sortBy="#{customer.language}"
+						filterBy="#{customer.language})">
+						<f:facet name="header">Language</f:facet>
+						#{customer.language}
 					</p:column>
 					<p:column style="width:36px;text-align: center">
 						<p:commandButton

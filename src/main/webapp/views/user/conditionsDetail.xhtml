@@ -56,16 +56,29 @@
 				</p:commandButton>
 			</p:column>
 		</p:dataTable>
-		<p:commandButton value="Add condition" rendered="#{canEdit}"
-			onclick="PF('addConditionDialog').show();" />
+
+		<p:commandButton value="Add condition" icon="ui-icon-pencil"
+			title="Add" actionListener="#{controller.setupAddCondition}"
+			ajax="true" immediate="true" update=":conditionsDetailForm">
+		</p:commandButton>
 
 		<p:dialog id="editDialog" header="Edit condition"
 			widgetVar="editConditionDialog" modal="true" width="50%" height="50%"
 			dynamic="true">
 			<p:panel style="width:80%; margin:auto;">
-				<h:outputLabel style="font-weight:bold;"
-					value="#{controller.selectedCondition.translatedKey}" />
 				<p:panelGrid columns="2" style="width:100%;margin-top:10px;">
+					<h:outputLabel value="Selected key" />
+					<h:outputLabel style="font-weight:bold;"
+						rendered="#{controller.editMode}"
+						value="#{controller.selectedCondition.translatedKey}" />
+					<p:selectOneMenu
+						value="#{controller.selectedCondition.conditionKey}"
+						rendered="#{!controller.editMode}" style="width:200px;">
+						<f:selectItems
+							value="#{controller.availableTranslationKeysForSelectedRateFile}" />
+						<p:ajax listener="#{controller.loadConditionBasedOnKey}"
+							update=":conditionsDetailForm" />
+					</p:selectOneMenu>
 
 					<h:outputLabel value="New value:"
 						rendered="#{controller.selectedCondition.calculationCondition}" />
@@ -87,35 +100,13 @@
 					<p:commandButton value="Cancel"
 						onclick="PF('editConditionDialog').hide();" />
 					<p:commandButton style="margin-left:20px;" value="Save"
-						oncomplete="handleAddCustomerRequest(xhr, status, args)"
+						oncomplete="handleEditConditionRequest(xhr, status, args)"
 						actionListener="#{controller.saveEditCondition}"
 						update=":conditionsDetailForm" />
 				</f:facet>
 			</p:panel>
 		</p:dialog>
 
-		<p:dialog id="addDialog" header="Add condition"
-			widgetVar="addConditionDialog" modal="true" height="150px"
-			width="300px" dynamic="true">
-			<p:selectOneMenu value="#{controller.keyToAdd}" style="width:200px;">
-				<f:selectItems
-					value="#{controller.availableTranslationKeysForSelectedRateFile}" />
-			</p:selectOneMenu>
-			<f:facet name="footer">
-				<p:commandButton value="Cancel"
-					onclick="PF('editConditionDialog').hide();" />
-				<c:if test="${controllerName == 'manageRatesController'}">
-					<p:commandButton value="Add condition"
-						actionListener="#{manageRatesController.createConditionForSelectedTranslationKey}"
-						ajax="true" update=":conditionsDetailForm" />
-				</c:if>
-				<c:if test="${controllerName == 'createRatesController'}">
-					<p:commandButton value="Add condition"
-						actionListener="#{createRatesController.createConditionForSelectedTranslationKey}"
-						ajax="true" update=":conditionsDetailForm" />
-				</c:if>
-			</f:facet>
-		</p:dialog>
 		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
 			<p:commandButton value="Yes" type="button"
 				styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
@@ -124,7 +115,7 @@
 		</p:confirmDialog>
 	</p:panel>
 	<script type="text/javascript">
-		function handleAddCustomerRequest(xhr, status, args) {
+		function handleEditConditionRequest(xhr, status, args) {
 			if (args.validationFailed) {
 				PF('editConditionDialog').jq.effect("shake", {
 					times : 5

@@ -1,7 +1,9 @@
 package com.moorkensam.xlra.dao;
 
 import java.util.List;
+import java.util.Map;
 
+import com.moorkensam.xlra.dto.RateFileIdNameDto;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
 import com.moorkensam.xlra.model.rate.RateLine;
@@ -25,4 +27,8 @@ public interface RateFileDao {
   public void lazyLoadRateFile(RateFile rf);
 
   public RateFile getFullRateFileForFilter(RateFileSearchFilter filter);
+
+  List<RateFileIdNameDto> getRateFilesIdAndNamesForAutoComplete();
+
+  List<RateFile> getRateFilesById(List<Long> ids);
 }

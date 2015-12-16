@@ -78,9 +78,8 @@ public class CustomerServiceImpl implements CustomerService {
   }
 
   @Override
-  public int countCustomers(int first, int pageSize, String sortField, SortOrder sortOrder,
-      Map<String, Object> filters) {
-    return customerDao.countCustomers(first, pageSize, sortField, sortOrder, filters);
+  public int countCustomers() {
+    return customerDao.countCustomers();
   }
 
 }

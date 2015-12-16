@@ -54,8 +54,7 @@ public class CustomerController {
           Map<String, Object> filters) {
         List<Customer> lazyCustomers =
             customerService.getLazyCustomers(first, pageSize, sortField, sortOrder, filters);
-        model.setRowCount(customerService.countCustomers(first, pageSize, sortField, sortOrder,
-            filters));
+        model.setRowCount(customerService.countCustomers());
         return lazyCustomers;
       }
 

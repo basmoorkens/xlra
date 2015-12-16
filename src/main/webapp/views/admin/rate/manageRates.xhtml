@@ -21,8 +21,8 @@
 				<p:autoComplete size="90" id="rateSelector" dropdown="true"
 					value="#{manageRatesController.selectedRateFile}"
 					completeMethod="#{manageRatesController.completeRateName}"
-					var="rateFile" itemLabel="#{rateFile.name}" itemValue="#{rateFile}"
-					converter="#{rateFileConverter}">
+					queryDelay="1000" var="rateFile" itemLabel="#{rateFile.name}"
+					itemValue="#{rateFile}" converter="#{rateFileConverter}">
 					<p:ajax event="itemSelect"
 						update=":conditionsDetailForm :rateLinesDetailForm :zoneDetailForm"
 						listener="#{manageRatesController.fetchDetailsOfRatefile}" />

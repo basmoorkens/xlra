@@ -10,7 +10,7 @@ import javax.persistence.Table;
 @Cacheable
 @Table(name = "dieselrate")
 @NamedQueries(@NamedQuery(name = "DieselRate.findAll",
-    query = "SELECT d FROM DieselRate d where d.deleted = false"))
+    query = "SELECT d FROM DieselRate d where d.deleted = false ORDER BY d.interval.start ASC"))
 public class DieselRate extends AbstractRate {
   private static final long serialVersionUID = 1424312481303614643L;
 

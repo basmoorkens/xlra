@@ -1,7 +1,9 @@
 package com.moorkensam.xlra.service;
 
 import java.util.List;
+import java.util.Map;
 
+import com.moorkensam.xlra.dto.RateFileIdNameDto;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.rate.Condition;
@@ -78,4 +80,14 @@ public interface RateFileService {
    * @return The resulting rf.
    */
   RateFile getCopyOfRateFileForFilter(RateFileSearchFilter filter);
+
+  /**
+   * This method fetches the names and ids of all ratefiles and puts them in a list of dtos. This
+   * can be used by autocomplete functionality on the frontend then.
+   * 
+   * @return The list of id to names.
+   */
+  List<RateFileIdNameDto> getRateFilesIdAndNamesForAutoComplete();
+
+  List<RateFile> getRateFilesByIdList(List<Long> ids);
 }

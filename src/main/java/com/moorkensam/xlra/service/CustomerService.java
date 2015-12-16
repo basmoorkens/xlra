@@ -21,8 +21,7 @@ public interface CustomerService {
 
   public List<Customer> getAllCustomers();
 
-  public int countCustomers(int first, int pageSize, String sortField, SortOrder sortOrder,
-      Map<String, Object> filters);
+  public int countCustomers();
 
   public List<Customer> getLazyCustomers(int first, int pageSize, String sortField,
       SortOrder sortOrder, Map<String, Object> filters);

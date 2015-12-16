@@ -1,7 +1,9 @@
 package com.moorkensam.xlra.dao.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.Query;
@@ -11,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.moorkensam.xlra.dao.BaseDao;
 import com.moorkensam.xlra.dao.RateFileDao;
+import com.moorkensam.xlra.dto.RateFileIdNameDto;
 import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
@@ -163,4 +166,19 @@ public class RateFileDaoImpl extends BaseDao implements RateFileDao {
     rateFile.fillUpRateLineRelationalMap();
   }
 
+  @SuppressWarnings("unchecked")
+  @Override
+  public List<RateFileIdNameDto> getRateFilesIdAndNamesForAutoComplete() {
+    Query query = getEntityManager().createNamedQuery("RateFile.findAllIdAndNames");
+    return (List<RateFileIdNameDto>) query.getResultList();
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public List<RateFile> getRateFilesById(List<Long> ids) {
+    Query query = getEntityManager().createNamedQuery("RateFile.findByIds");
+    query.setParameter("ids", ids);
+    List<RateFile> resultList = (List<RateFile>) query.getResultList();
+    return resultList;
+  }
 }

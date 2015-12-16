@@ -2,6 +2,7 @@ package com.moorkensam.xlra.service.impl;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -14,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 import com.moorkensam.xlra.dao.BaseDao;
 import com.moorkensam.xlra.dao.ConditionDao;
 import com.moorkensam.xlra.dao.RateFileDao;
+import com.moorkensam.xlra.dto.RateFileIdNameDto;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.rate.Condition;
@@ -235,5 +237,15 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
 
   public void setTranslationMapper(TranslationKeyToi8nMapper translationMapper) {
     this.translationMapper = translationMapper;
+  }
+
+  @Override
+  public List<RateFileIdNameDto> getRateFilesIdAndNamesForAutoComplete() {
+    return rateFileDao.getRateFilesIdAndNamesForAutoComplete();
+  }
+
+  @Override
+  public List<RateFile> getRateFilesByIdList(List<Long> ids) {
+    return rateFileDao.getRateFilesById(ids);
   }
 }

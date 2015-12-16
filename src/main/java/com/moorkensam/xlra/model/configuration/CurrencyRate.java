@@ -14,10 +14,11 @@ import javax.validation.constraints.NotNull;
 @Table(name = "currencyrate")
 @NamedQueries({
     @NamedQuery(name = "CurrencyRate.findAll",
-        query = "SELECT c FROM CurrencyRate c where c.deleted = false"),
-    @NamedQuery(
-        name = "CurrencyRate.findAllChf",
-        query = "SELECT c FROM CurrencyRate c WHERE c.deleted = false and c.currencyType = com.moorkensam.xlra.model.configuration.XlraCurrency.CHF")})
+        query = "SELECT c FROM CurrencyRate c where c.deleted = false "
+            + "ORDER BY c.interval.start ASC"),
+    @NamedQuery(name = "CurrencyRate.findAllChf",
+        query = "SELECT c FROM CurrencyRate c WHERE c.deleted = false "
+            + "and c.currencyType = com.moorkensam.xlra.model.configuration.XlraCurrency.CHF")})
 public class CurrencyRate extends AbstractRate {
 
   private static final long serialVersionUID = -7687370103653996637L;
