@@ -16,9 +16,9 @@ public abstract class AbstractRate extends BaseEntity {
   @Embedded
   @AttributeOverrides({@AttributeOverride(name = "start", column = @Column(name = "start")),
       @AttributeOverride(name = "end", column = @Column(name = "end"))})
-  private Interval interval;
+  protected Interval interval;
 
-  private double surchargePercentage;
+  protected double surchargePercentage;
 
   public Interval getInterval() {
     return interval;

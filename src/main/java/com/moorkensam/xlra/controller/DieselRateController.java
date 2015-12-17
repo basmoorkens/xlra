@@ -4,9 +4,11 @@ import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.DieselRate;
 import com.moorkensam.xlra.model.configuration.Interval;
+import com.moorkensam.xlra.model.error.IntervalOverlapException;
 import com.moorkensam.xlra.service.ApplicationConfigurationService;
 import com.moorkensam.xlra.service.DieselService;
 
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.RowEditEvent;
 
 import java.math.BigDecimal;
@@ -35,8 +37,6 @@ public class DieselRateController {
 
   private BigDecimal currentDieselValue;
 
-  private boolean showAddDieselRate;
-
   private DieselRate newDieselRate;
 
   /**
@@ -59,6 +59,7 @@ public class DieselRateController {
 
   private void updateDieselRate(DieselRate rate) {
     dieselService.updateDieselRate(rate);
+    MessageUtil.addMessage("Diesel rate updated", "Successfully updated dieselrate");
   }
 
   /**
@@ -67,25 +68,39 @@ public class DieselRateController {
   public void setupPageForNewRate() {
     newDieselRate = new DieselRate();
     newDieselRate.setInterval(new Interval());
-    showAddDieselRate = true;
+    showAddDialog();
   }
 
   public void cancelAddNewRate() {
-    showAddDieselRate = false;
     newDieselRate = null;
+    hideAddDialog();
+  }
+
+  private void hideAddDialog() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    context.execute("PF('addDieselDialog').hide();");
+  }
+
+  private void showAddDialog() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    context.execute("PF('addDieselDialog').show();");
   }
 
   /**
    * Save a new diesel rate.
    */
   public void saveNewDieselRate() {
-    dieselService.createDieselRate(newDieselRate);
-    refreshDieselRates();
-    showAddDieselRate = false;
-    MessageUtil.addMessage("New diesel rate created",
-        "successfully created diesel rate for " + newDieselRate.getInterval()
-            + " with surcharge percentage " + newDieselRate.getSurchargePercentage());
-    newDieselRate = null;
+    try {
+      dieselService.createDieselRate(newDieselRate);
+      refreshDieselRates();
+      MessageUtil.addMessage("New diesel rate created",
+          "successfully created diesel rate for " + newDieselRate.getInterval()
+              + " with surcharge percentage " + newDieselRate.getSurchargePercentage());
+      newDieselRate = null;
+    } catch (IntervalOverlapException exc) {
+      MessageUtil.addErrorMessage("Illegal interval", exc.getBusinessException());
+      showAddDialog();
+    }
   }
 
   /**
@@ -169,14 +184,6 @@ public class DieselRateController {
 
   public void setDieselService(DieselService dieselService) {
     this.dieselService = dieselService;
-  }
-
-  public boolean isShowAddDieselRate() {
-    return showAddDieselRate;
-  }
-
-  public void setShowAddDieselRate(boolean showAddDieselRate) {
-    this.showAddDieselRate = showAddDieselRate;
   }
 
   public DieselRate getNewDieselRate() {

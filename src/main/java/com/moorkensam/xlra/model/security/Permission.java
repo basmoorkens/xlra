@@ -12,7 +12,8 @@ import javax.persistence.Table;
 @Table(name = "permissions")
 @NamedQueries({
     @NamedQuery(name = "Permission.findAll", query = "SELECT p FROM Permission p"),
-    @NamedQuery(name = "Permission.findById", query = "SELECT p FROM Permission p WHERE p.id = :id")})
+    @NamedQuery(name = "Permission.findById", query = "SELECT p FROM Permission p "
+        + "WHERE p.id = :id")})
 public class Permission extends BaseEntity {
 
   private static final long serialVersionUID = 5223990771708418257L;

@@ -22,12 +22,11 @@ import javax.persistence.Table;
 @NamedQueries({
     @NamedQuery(name = "RaiseRatesRecord.findAll",
         query = "SELECT r FROM RaiseRatesRecord r WHERE r.deleted = false"),
-    @NamedQuery(
-        name = "RaiseRatesRecord.findLast",
-        query = "SELECT r FROM RaiseRatesRecord r WHERE r.operation = com.moorkensam.xlra.model.rate.RateOperation.RAISE AND r.id = (SELECT MAX(r2.id) FROM RaiseRatesRecord r2)"),
-    @NamedQuery(
-        name = "RaiseRatesRecord.findByDates",
-        query = "SELECT r FROM RaiseRatesRecord r WHERE r.logDate > :startDate AND r.logDate < :endDate")})
+    @NamedQuery(name = "RaiseRatesRecord.findLast", query = "SELECT r FROM RaiseRatesRecord r "
+        + "WHERE r.operation = com.moorkensam.xlra.model.rate.RateOperation.RAISE "
+        + "AND r.id = (SELECT MAX(r2.id) FROM RaiseRatesRecord r2)"),
+    @NamedQuery(name = "RaiseRatesRecord.findByDates", query = "SELECT r FROM RaiseRatesRecord r "
+        + "WHERE r.logDate > :startDate AND r.logDate < :endDate")})
 public class RaiseRatesRecord extends LogRecord {
 
   private static final long serialVersionUID = 7232906192502786501L;

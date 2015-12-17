@@ -13,9 +13,9 @@ public class FileServiceImpl implements FileService {
 
   private ConfigurationLoader configurationLoader;
 
-  private final static Logger logger = LogManager.getLogger();
+  private static final Logger logger = LogManager.getLogger();
 
-  private final static String PDF_SUFFIX = "_offerte.pdf";
+  private static final String PDF_SUFFIX = "_offerte.pdf";
 
   public FileServiceImpl() {
     configurationLoader = ConfigurationLoader.getInstance();

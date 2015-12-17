@@ -36,8 +36,6 @@ public class PdfServiceTest extends UnitilsJUnit4 {
 
   private QuotationResult offerte;
 
-  private Language offerteLanguage;
-
   @Mock
   private FileService fileService;
 
@@ -61,7 +59,6 @@ public class PdfServiceTest extends UnitilsJUnit4 {
     templateParseService.setTranslationLoader(translationLoader);
     pdfService.setTemplateParseService(templateParseService);
     pdfService.setConfigLoader(configLoader);
-    offerteLanguage = Language.NL;
     QuotationQuery query = new QuotationQuery();
     offerte.setQuery(query);
     query.setQuotationDate(new Date());

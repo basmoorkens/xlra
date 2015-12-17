@@ -26,7 +26,7 @@ public class CustomerServiceImpl implements CustomerService {
   @Inject
   private CustomerDao customerDao;
 
-  private final static Logger logger = LogManager.getLogger();
+  private static final Logger logger = LogManager.getLogger();
 
   @Override
   public Customer createCustomer(Customer customer) {

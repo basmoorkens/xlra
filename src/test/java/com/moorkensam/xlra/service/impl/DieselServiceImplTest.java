@@ -6,6 +6,7 @@ import com.moorkensam.xlra.dao.LogDao;
 import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.DieselRate;
 import com.moorkensam.xlra.model.configuration.Interval;
+import com.moorkensam.xlra.model.error.IntervalOverlapException;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.model.log.RateLogRecord;
@@ -24,6 +25,7 @@ import org.unitils.inject.annotation.TestedObject;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class DieselServiceImplTest extends UnitilsJUnit4 {
@@ -52,12 +54,18 @@ public class DieselServiceImplTest extends UnitilsJUnit4 {
 
   private DieselRate r2;
 
+  private DieselRate existing1;
+
+  private DieselRate existing2;
+
   /**
    * init the test.
    */
   @Before
   public void init() {
     service = new DieselServiceImpl();
+    existing1 = new DieselRate(1.0d, 2.0d);
+    existing2 = new DieselRate(2.0d, 3.0d);
     service.setDieselRateDao(dieselRateDao);
     service.setUserService(userService);
     service.setLogRecordFactory(logFactory);
@@ -127,6 +135,35 @@ public class DieselServiceImplTest extends UnitilsJUnit4 {
 
     EasyMockUnitils.replay();
     service.updateCurrentDieselValue(new BigDecimal(2d));
+  }
+
+  @Test
+  public void testValidCreateDieselRate() throws IntervalOverlapException {
+    DieselRate newRate = new DieselRate(3.0d, 3.5d);
+    EasyMock.expect(dieselRateDao.getAllDieselRates()).andReturn(
+        Arrays.asList(existing1, existing2));
+    dieselRateDao.createDieselRate(newRate);
+    EasyMock.expectLastCall();
+    EasyMockUnitils.replay();
+    service.createDieselRate(newRate);
+  }
+
+  @Test(expected = IntervalOverlapException.class)
+  public void testInvalidIntervalInsertEndValue() throws IntervalOverlapException {
+    DieselRate newRate = new DieselRate(0.9d, 1.6d);
+    EasyMock.expect(dieselRateDao.getAllDieselRates()).andReturn(
+        Arrays.asList(existing1, existing2));
+    EasyMockUnitils.replay();
+    service.createDieselRate(newRate);
+  }
+
+  @Test(expected = IntervalOverlapException.class)
+  public void testInsertIntervalWithOverlapStart() throws IntervalOverlapException {
+    DieselRate newRate = new DieselRate(1.5d, 1.6d);
+    EasyMock.expect(dieselRateDao.getAllDieselRates()).andReturn(
+        Arrays.asList(existing1, existing2));
+    EasyMockUnitils.replay();
+    service.createDieselRate(newRate);
   }
 
 }

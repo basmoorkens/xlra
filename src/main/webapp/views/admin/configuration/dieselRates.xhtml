@@ -15,13 +15,6 @@
 		<h:form id="dieselPriceForm">
 			<p:panel id="dieselPanel" header="Diesel charges">
 				<p:growl id="msgs" showDetail="true" />
-
-				<p:panel>
-					<p:commandButton value="Add new diesel rate"
-						actionListener="#{dieselRateController.setupPageForNewRate}"
-						update=":dieselPriceForm :addDieselRateForm"
-						disabled="#{dieselRateController.showAddDieselRate}" />
-				</p:panel>
 				<p:dataTable editable="true"
 					value="#{dieselRateController.dieselRates}" var="dieselRate"
 					emptyMessage="No dieselrates found." id="dieselRateTable">
@@ -36,10 +29,7 @@
 								<h:outputText value="#{dieselRate.interval}" />
 							</f:facet>
 							<f:facet name="input">
-								<p:inputText value="#{dieselRate.interval.start}"
-									style="width:100%" />
-								<p:inputText value="#{dieselRate.interval.end}"
-									style="width:100%" />
+								<h:outputText value="#{dieselRate.interval}" />
 							</f:facet>
 						</p:cellEditor>
 					</p:column>
@@ -68,12 +58,15 @@
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>
-			</p:panel>
-		</h:form>
 
-		<h:form id="addDieselRateForm">
-			<p:panel header="Current diesel price" style="margin-top:20px;"
-				rendered="#{!dieselRateController.showAddDieselRate}">
+				<p:panel>
+					<p:commandButton value="Add new diesel rate"
+						actionListener="#{dieselRateController.setupPageForNewRate}"
+						update=":dieselPriceForm :addDieselRateForm" />
+				</p:panel>
+			</p:panel>
+
+			<p:panel header="Current diesel price" style="margin-top:20px;">
 				<h:outputLabel for="currentDieselRateField">Current diesel price:</h:outputLabel>
 				<p:inputText size="50"
 					value="#{dieselRateController.currentDieselValue}"
@@ -82,39 +75,44 @@
 					action="#{dieselRateController.updateCurrentDieselRate}"
 					value="Save current diesel price" update=":dieselPriceForm:msgs" />
 			</p:panel>
+		</h:form>
 
-			<p:panel header="Create new diesel rate"
-				style="margin-top:20px; width:100%;"
-				rendered="#{dieselRateController.showAddDieselRate}">
-				<p:panelGrid columns="2">
-					<h:outputText value="Start: " />
-					<p:inputText size="100"
-						value="#{dieselRateController.newDieselRate.interval.start}" />
+		<h:form id="addDieselRateForm">
+			<p:dialog id="addDialog" header="Create new diesel rate"
+				widgetVar="addDieselDialog" modal="true" width="70%" height="50%"
+				dynamic="true">
+				<p:panel header="Create new diesel rate" style="width:100%;">
+					<p:panelGrid columns="2" style="width:100%;">
+						<h:outputText value="Start: " />
+						<p:inputText style="width:100%;"
+							value="#{dieselRateController.newDieselRate.interval.start}" />
 
-					<h:outputText value="End: " />
-					<p:inputText size="100"
-						value="#{dieselRateController.newDieselRate.interval.end}" />
+						<h:outputText value="End: " />
+						<p:inputText style="width:100%;"
+							value="#{dieselRateController.newDieselRate.interval.end}" />
 
-					<h:outputText value="Surcharge percentage: " />
-					<p:inputText size="100"
-						value="#{dieselRateController.newDieselRate.surchargePercentage}" />
+						<h:outputText value="Surcharge percentage: " />
+						<p:inputText style="width:100%;"
+							value="#{dieselRateController.newDieselRate.surchargePercentage}" />
 
-				</p:panelGrid>
-				<p:panel style="margin-top:30px; ">
-					<p:commandButton immediate="true" value="Cancel"
-						style="margin-right:20px; width:200px;" update=":dieselPriceForm :addDieselRateForm"
-						actionListener="#{dieselRateController.cancelAddNewRate}" />
-					<p:commandButton value="Save diesel rate" style="width:200px;"
-						actionListener="#{dieselRateController.saveNewDieselRate}"
-						update=":dieselPriceForm :addDieselRateForm" />
+					</p:panelGrid>
+					<p:panel style="margin-top:30px; ">
+						<p:commandButton immediate="true" value="Cancel"
+							style="margin-right:20px; width:300px;"
+							update=":dieselPriceForm :addDieselRateForm"
+							actionListener="#{dieselRateController.cancelAddNewRate}" />
+						<p:commandButton value="Save diesel rate" style="width:300px;"
+							actionListener="#{dieselRateController.saveNewDieselRate}"
+							update=":dieselPriceForm :addDieselRateForm" />
+					</p:panel>
 				</p:panel>
-			</p:panel>
-			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-				<p:commandButton value="Yes" type="button"
-					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-				<p:commandButton value="No" type="button"
-					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-			</p:confirmDialog>
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Yes" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="No" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</p:dialog>
 		</h:form>
 	</ui:define>
 </ui:composition>

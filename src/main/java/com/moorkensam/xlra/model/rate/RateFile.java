@@ -34,12 +34,12 @@ import javax.persistence.Transient;
 @NamedQueries({
     @NamedQuery(name = "RateFile.findAll",
         query = "SELECT r FROM RateFile r WHERE r.deleted = false"),
-    @NamedQuery(
-        name = "RateFile.findDistinctMeasurements",
-        query = "SELECT distinct rs.measurement FROM RateFile r join r.rateLines rs WHERE r.id = :ratefileid ORDER BY rs.measurement"),
-    @NamedQuery(
-        name = "RateFile.findAllIdAndNames",
-        query = "SELECT new com.moorkensam.xlra.dto.RateFileIdNameDto(r.id, r.name) FROM RateFile r"),
+    @NamedQuery(name = "RateFile.findDistinctMeasurements",
+        query = "SELECT distinct rs.measurement FROM RateFile r "
+            + "join r.rateLines rs WHERE r.id = :ratefileid ORDER BY rs.measurement"),
+    @NamedQuery(name = "RateFile.findAllIdAndNames",
+        query = "SELECT new com.moorkensam.xlra.dto.RateFileIdNameDto(r.id, r.name) "
+            + "FROM RateFile r"),
     @NamedQuery(name = "RateFile.findByIds",
         query = "SELECT r FROM RateFile r where r.id in (:ids)")})
 public class RateFile extends BaseEntity {

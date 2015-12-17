@@ -6,7 +6,6 @@ import com.moorkensam.xlra.model.translation.Translatable;
 import com.moorkensam.xlra.model.translation.TranslationKey;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 

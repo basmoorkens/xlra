@@ -14,6 +14,20 @@ import javax.persistence.Table;
 public class DieselRate extends AbstractRate {
   private static final long serialVersionUID = 1424312481303614643L;
 
+  public DieselRate() {}
+
+  /**
+   * Constructor that constructs a new rate with a specified start and end.
+   * 
+   * @param start Start of the interval.
+   * @param end End of the interval.
+   */
+  public DieselRate(double start, double end) {
+    interval = new Interval();
+    interval.setStart(start);
+    interval.setEnd(end);
+  }
+
   @Override
   public String toString() {
     return "Id: " + getId() + " Interval: " + getInterval() + " Value: " + getSurchargePercentage();
