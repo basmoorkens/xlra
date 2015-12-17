@@ -5,11 +5,13 @@ import com.moorkensam.xlra.dao.CurrencyRateDao;
 import com.moorkensam.xlra.dao.LogDao;
 import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.CurrencyRate;
+import com.moorkensam.xlra.model.error.IntervalOverlapException;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.service.CurrencyService;
 import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
+import com.moorkensam.xlra.service.util.RateUtil;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -59,7 +61,8 @@ public class CurrencyServiceImpl implements CurrencyService {
   }
 
   @Override
-  public void createCurrencyRate(CurrencyRate currencyRate) {
+  public void createCurrencyRate(CurrencyRate currencyRate) throws IntervalOverlapException {
+    RateUtil.validateRateInterval(currencyRate, currencyRateDao.getAllChfRates());
     getCurrencyRateDao().createCurrencyRate(currencyRate);
   }
 

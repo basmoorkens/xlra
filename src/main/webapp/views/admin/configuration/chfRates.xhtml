@@ -14,14 +14,6 @@
 	<ui:define name="body">
 		<h:form id="chfRatesForm">
 			<p:growl id="msgs" showDetail="true" />
-
-			<p:panel>
-				<p:commandButton value="Add new Swiss franc rate"
-					actionListener="#{chfController.setupPageForNewCurrencyRate}"
-					disabled="#{chfController.showAddCurrencyPanel}"
-					update=":chfRatesForm :addChfRateForm" />
-			</p:panel>
-
 			<p:panel id="chfRatePanel" header="Swiss franc charges">
 				<p:dataTable editable="true" value="#{chfController.chfRates}"
 					var="chfRate" emptyMessage="No swiss franc rates found."
@@ -68,43 +60,15 @@
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>
-			</p:panel>
-		</h:form>
 
-		<h:form id="addChfRateForm">
-			<p:growl id="msgs" showDetail="true" />
-			<p:panel header="Create new Swiss franc rate"
-				rendered="#{chfController.showAddCurrencyPanel}">
-				<p:panelGrid columns="2">
-					<h:outputText value="Start: " />
-					<p:inputText size="100"
-						value="#{chfController.newCurrencyRate.interval.start}"
-						required="true" />
-
-					<h:outputText value="End: " />
-					<p:inputText value="#{chfController.newCurrencyRate.interval.end}"
-						size="100" required="true" />
-
-					<h:outputText value="Surcharge percentage: " />
-					<p:inputText size="100"
-						value="#{chfController.newCurrencyRate.surchargePercentage}"
-						required="true">
-					</p:inputText>
-
-				</p:panelGrid>
-				<p:panel style="margin-top:30px; ">
-					<p:commandButton immediate="true" value="Cancel"
-						style="margin-right:20px; width:250px;"
-						update=":chfRatesForm :addChfRateForm"
-						actionListener="#{chfController.cancelAddNewCurrencyRate}" />
-					<p:commandButton value="Save swiss franc rate" style="width:250px;"
-						actionListener="#{chfController.saveNewCurrencyRate}"
-						update=":chfRatesForm :addChfRateForm :addChfRateForm:msgs" />
+				<p:panel>
+					<p:commandButton value="Add new Swiss franc rate"
+						actionListener="#{chfController.setupPageForNewCurrencyRate}"
+						update=":chfRatesForm :addChfRateForm" />
 				</p:panel>
 			</p:panel>
 
-			<p:panel header="Current swiss franc price"
-				rendered="#{!chfController.showAddCurrencyPanel}">
+			<p:panel header="Current swiss franc price">
 				<h:outputLabel for="currentChfRateField">Current swiss franc price:</h:outputLabel>
 				<p:inputText size="50" value="#{chfController.currentChfValue}"
 					id="currentChfRateField">
@@ -112,6 +76,44 @@
 				<p:commandButton action="#{chfController.updateCurrentChfRate}"
 					value="Save new price" update=":chfRatesForm:msgs" />
 			</p:panel>
+		</h:form>
+
+		<h:form id="addChfRateForm">
+			<p:dialog id="addDialog" header="Create new chf rate"
+				widgetVar="addChfDialog" modal="true" width="70%" height="50%"
+				dynamic="true">
+				<p:growl id="msgs" showDetail="true" />
+				<p:panel>
+					<p:panelGrid columns="2">
+						<h:outputText value="Start: " />
+						<p:inputText style="width:100%;"
+							value="#{chfController.newCurrencyRate.interval.start}"
+							required="true" />
+
+						<h:outputText value="End: " />
+						<p:inputText value="#{chfController.newCurrencyRate.interval.end}"
+							style="width:100%;" required="true" />
+
+						<h:outputText value="Surcharge percentage: " />
+						<p:inputText style="width:100%;"
+							value="#{chfController.newCurrencyRate.surchargePercentage}"
+							required="true">
+						</p:inputText>
+
+					</p:panelGrid>
+					<p:panel style="margin-top:30px; ">
+						<p:commandButton immediate="true" value="Cancel"
+							style="margin-right:20px; width:400px;"
+							update=":chfRatesForm :addChfRateForm"
+							actionListener="#{chfController.cancelAddNewCurrencyRate}" />
+						<p:commandButton value="Save swiss franc rate"
+							style="width:400px;"
+							actionListener="#{chfController.saveNewCurrencyRate}"
+							update=":chfRatesForm :addChfRateForm :addChfRateForm:msgs" />
+					</p:panel>
+				</p:panel>
+			</p:dialog>
+
 			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
 				<p:commandButton value="Yes" type="button"
 					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />

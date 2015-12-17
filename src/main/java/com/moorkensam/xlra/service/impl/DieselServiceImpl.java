@@ -11,6 +11,7 @@ import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.service.DieselService;
 import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
+import com.moorkensam.xlra.service.util.RateUtil;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -55,30 +56,8 @@ public class DieselServiceImpl implements DieselService {
 
   @Override
   public void createDieselRate(DieselRate dieselRate) throws IntervalOverlapException {
-    validateDieselInterval(dieselRate);
+    RateUtil.validateRateInterval(dieselRate, dieselRateDao.getAllDieselRates());
     getDieselRateDao().createDieselRate(dieselRate);
-  }
-
-  private void validateDieselInterval(DieselRate dieselRate) throws IntervalOverlapException {
-    if (dieselRate.getInterval().getStart() >= dieselRate.getInterval().getEnd()) {
-      throw new IntervalOverlapException(
-          "The start value of the rate should be smaller then the end value.");
-    }
-    List<DieselRate> existingRates = dieselRateDao.getAllDieselRates();
-    for (DieselRate existing : existingRates) {
-      if (dieselRate.getInterval().getStart() >= existing.getInterval().getStart()
-          && dieselRate.getInterval().getStart() < existing.getInterval().getEnd()) {
-        logger.error("Interval overlap: " + dieselRate.getInterval().toString());
-        throw new IntervalOverlapException(
-            "The start value of this dieselrate is already in another dieselrate.");
-      }
-      if (dieselRate.getInterval().getEnd() >= existing.getInterval().getStart()
-          && dieselRate.getInterval().getEnd() < existing.getInterval().getEnd()) {
-        logger.error("Interval overlap: " + dieselRate.getInterval().toString());
-        throw new IntervalOverlapException(
-            "The end value of this dieselrate is already in another dieselrate.");
-      }
-    }
   }
 
   @Override

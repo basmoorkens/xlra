@@ -1,6 +1,5 @@
 package com.moorkensam.xlra.controller;
 
-import com.moorkensam.xlra.controller.util.RateUtil;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Kind;
@@ -9,6 +8,7 @@ import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.TransportType;
 import com.moorkensam.xlra.service.CountryService;
 import com.moorkensam.xlra.service.ExcelService;
+import com.moorkensam.xlra.service.util.RateUtil;
 
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.event.FileUploadEvent;

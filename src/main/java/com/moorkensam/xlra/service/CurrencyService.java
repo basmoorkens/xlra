@@ -1,6 +1,7 @@
 package com.moorkensam.xlra.service;
 
 import com.moorkensam.xlra.model.configuration.CurrencyRate;
+import com.moorkensam.xlra.model.error.IntervalOverlapException;
 import com.moorkensam.xlra.model.error.RateFileException;
 
 import java.math.BigDecimal;
@@ -10,7 +11,7 @@ public interface CurrencyService {
 
   void updateCurrencyRate(CurrencyRate currencyRate);
 
-  void createCurrencyRate(CurrencyRate currencyRate);
+  void createCurrencyRate(CurrencyRate currencyRate) throws IntervalOverlapException;
 
   List<CurrencyRate> getAllCurrencyRates();
 

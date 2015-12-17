@@ -5,9 +5,11 @@ import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.CurrencyRate;
 import com.moorkensam.xlra.model.configuration.Interval;
 import com.moorkensam.xlra.model.configuration.XlraCurrency;
+import com.moorkensam.xlra.model.error.IntervalOverlapException;
 import com.moorkensam.xlra.service.ApplicationConfigurationService;
 import com.moorkensam.xlra.service.CurrencyService;
 
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.RowEditEvent;
 
 import java.math.BigDecimal;
@@ -38,8 +40,6 @@ public class ChfController {
 
   private CurrencyRate newCurrencyRate;
 
-  private boolean showAddCurrencyPanel;
-
   @PostConstruct
   public void initPage() {
     refreshCurrencyRates();
@@ -58,20 +58,35 @@ public class ChfController {
     newCurrencyRate = new CurrencyRate();
     newCurrencyRate.setCurrencyType(XlraCurrency.CHF);
     newCurrencyRate.setInterval(new Interval());
-    showAddCurrencyPanel = true;
+    showAddDialog();
   }
 
   /**
    * Save a new currency rate.
    */
   public void saveNewCurrencyRate() {
-    currencyService.createCurrencyRate(newCurrencyRate);
-    showAddCurrencyPanel = false;
-    MessageUtil.addMessage("Swiss franc rate created",
-        "Successfully created swiss franc rate for " + newCurrencyRate.getInterval()
-            + " with surcharge percentage " + newCurrencyRate.getSurchargePercentage());
-    refreshCurrencyRates();
-    newCurrencyRate = null;
+    try {
+      currencyService.createCurrencyRate(newCurrencyRate);
+      MessageUtil.addMessage("Swiss franc rate created",
+          "Successfully created swiss franc rate for " + newCurrencyRate.getInterval()
+              + " with surcharge percentage " + newCurrencyRate.getSurchargePercentage());
+      refreshCurrencyRates();
+      newCurrencyRate = null;
+      hideAddDialog();
+    } catch (IntervalOverlapException e) {
+      MessageUtil.addErrorMessage("Illegal interval", e.getBusinessException());
+      showAddDialog();
+    }
+  }
+
+  private void hideAddDialog() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    context.execute("PF('addChfDialog').hide();");
+  }
+
+  private void showAddDialog() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    context.execute("PF('addChfDialog').show();");
   }
 
   /**
@@ -86,8 +101,8 @@ public class ChfController {
   }
 
   public void cancelAddNewCurrencyRate() {
-    showAddCurrencyPanel = false;
     newCurrencyRate = null;
+    hideAddDialog();
   }
 
   /**
@@ -167,13 +182,5 @@ public class ChfController {
 
   public void setNewCurrencyRate(CurrencyRate newCurrencyRate) {
     this.newCurrencyRate = newCurrencyRate;
-  }
-
-  public boolean isShowAddCurrencyPanel() {
-    return showAddCurrencyPanel;
-  }
-
-  public void setShowAddCurrencyPanel(boolean showAddCurrencyPanel) {
-    this.showAddCurrencyPanel = showAddCurrencyPanel;
   }
 }

@@ -1,7 +1,6 @@
 package com.moorkensam.xlra.controller;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
-import com.moorkensam.xlra.controller.util.RateUtil;
 import com.moorkensam.xlra.dto.RateFileIdNameDto;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.rate.Condition;
@@ -11,6 +10,7 @@ import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.RateFileService;
 import com.moorkensam.xlra.service.util.ConditionFactory;
+import com.moorkensam.xlra.service.util.RateUtil;
 import com.moorkensam.xlra.service.util.TranslationUtil;
 
 import org.primefaces.context.RequestContext;
