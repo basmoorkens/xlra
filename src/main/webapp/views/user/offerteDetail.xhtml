@@ -11,6 +11,18 @@
 			header="Offerte #{offerteOverviewController.selectedOfferte.offerteUniqueIdentifier} details"
 			id="detailPanel" rendered="#{offerteOverviewController.detail}">
 
+			<p:panel header="Administration">
+				<p:panelGrid columns="2" style="width:100%;">
+					<h:outputText value="Created by: " />
+					<h:outputText
+						value="#{offerteOverviewController.selectedOfferte.createdUserFullName}" />
+
+					<h:outputText value="Created on: " />
+					<h:outputText
+						value="#{offerteOverviewController.selectedOfferte.query.quotationDate}" />
+				</p:panelGrid>
+			</p:panel>
+
 			<p:panel header="Input parameters">
 				<p:panelGrid columns="2" style="width:100%;">
 					<h:outputText value="Customer: " />
@@ -45,9 +57,6 @@
 					<h:outputText
 						value="#{offerteOverviewController.selectedOfferte.query.postalCode}" />
 
-					<h:outputText value="Date: " />
-					<h:outputText
-						value="#{offerteOverviewController.selectedOfferte.query.quotationDate}" />
 				</p:panelGrid>
 			</p:panel>
 

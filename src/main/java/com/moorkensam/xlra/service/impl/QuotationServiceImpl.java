@@ -46,7 +46,7 @@ import javax.mail.MessagingException;
 @Stateless
 public class QuotationServiceImpl implements QuotationService {
 
-  private final static Logger logger = LogManager.getLogger();
+  private static final Logger logger = LogManager.getLogger();
 
   @Inject
   private QuotationQueryDao quotationDao;

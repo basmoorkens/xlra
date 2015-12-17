@@ -16,8 +16,6 @@ public class QuotationLogRecord extends LogRecord {
 
   private String offerteKey;
 
-  private String createdUserName;
-
   private String customerName;
 
   public String getCustomerName() {
@@ -26,14 +24,6 @@ public class QuotationLogRecord extends LogRecord {
 
   public void setCustomerName(String customerName) {
     this.customerName = customerName;
-  }
-
-  public String getCreatedUserName() {
-    return createdUserName;
-  }
-
-  public void setCreatedUserName(String createdUserName) {
-    this.createdUserName = createdUserName;
   }
 
   public String getOfferteKey() {
