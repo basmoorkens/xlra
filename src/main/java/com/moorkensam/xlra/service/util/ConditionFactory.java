@@ -45,6 +45,16 @@ public class ConditionFactory {
     return condition;
   }
 
+  /**
+   * Creates an empty condition.
+   * 
+   * @return The condition.
+   */
+  public Condition createEmptyCondition() {
+    Condition condition = new Condition();
+    return condition;
+  }
+
   private void initializeTranslations(String value, Condition condition) {
     condition.addTranslation(Language.NL, value);
     condition.addTranslation(Language.EN, "");

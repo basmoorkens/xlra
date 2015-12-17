@@ -206,4 +206,8 @@ public class Condition extends BaseEntity implements Translatable {
   public void setCalculationValueType(CalculationValueType calculationValueType) {
     this.calculationValueType = calculationValueType;
   }
+
+  public boolean isShowInApplication() {
+    return this.conditionKey.isShowInApplication();
+  }
 }

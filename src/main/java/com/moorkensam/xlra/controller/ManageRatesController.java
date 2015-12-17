@@ -113,13 +113,24 @@ public class ManageRatesController {
   public void setupEditCondition(Condition condition) {
     this.selectedCondition = condition;
     editMode = true;
+    showConditionDetailDialog();
+  }
+
+  private void showConditionDetailDialog() {
     RequestContext context = RequestContext.getCurrentInstance();
     context.execute("PF('editConditionDialog').show();");
   }
 
-
+  /**
+   * Load a condition based on the key that was selected.
+   */
   public void loadConditionBasedOnKey() {
-    selectedCondition = conditionFactory.createCondition(selectedCondition.getConditionKey(), "");
+    if (selectedCondition.getConditionKey() == null) {
+      selectedCondition = conditionFactory.createEmptyCondition();
+    } else {
+      selectedCondition = conditionFactory.createCondition(selectedCondition.getConditionKey(), "");
+    }
+    showConditionDetailDialog();
   }
 
   /**
@@ -128,8 +139,7 @@ public class ManageRatesController {
   public void setupAddCondition() {
     selectedCondition = new Condition();
     editMode = false;
-    RequestContext context = RequestContext.getCurrentInstance();
-    context.execute("PF('editConditionDialog').show();");
+    showConditionDetailDialog();
   }
 
   /**

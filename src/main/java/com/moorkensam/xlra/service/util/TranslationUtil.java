@@ -44,26 +44,48 @@ public class TranslationUtil {
    * @return the list of available translation keys.
    */
   public List<TranslationKey> getAvailableTranslationKeysForSelectedRateFile(RateFile rf) {
-    List<TranslationKey> allKeys = TranslationUtil.getTranslationKeyKeys();
+    List<TranslationKey> allKeys = getTranslationKeysToShowInApplication();
     if (rf != null && rf.getConditions() != null && !rf.getConditions().isEmpty()) {
-      List<TranslationKey> usedKeys = new ArrayList<TranslationKey>();
-      for (Condition c : rf.getConditions()) {
-        usedKeys.add(c.getConditionKey());
-      }
-      List<TranslationKey> result = new ArrayList<TranslationKey>();
-      for (TranslationKey key : allKeys) {
-        if (!usedKeys.contains(key)) {
-          result.add(key);
-        }
-      }
+      List<TranslationKey> usedKeys = getUsedKeysInOfferte(rf);
+      List<TranslationKey> result = getNotUsedKeysFromAllAndUsed(allKeys, usedKeys);
       return result;
     }
     return allKeys;
   }
 
-  public static List<TranslationKey> getTranslationKeyKeys() {
-    return Arrays.asList(TranslationKey.values());
+  private List<TranslationKey> getNotUsedKeysFromAllAndUsed(List<TranslationKey> allKeys,
+      List<TranslationKey> usedKeys) {
+    List<TranslationKey> result = new ArrayList<TranslationKey>();
+    for (TranslationKey key : allKeys) {
+      if (!usedKeys.contains(key)) {
+        result.add(key);
+      }
+    }
+    return result;
+  }
 
+  private List<TranslationKey> getUsedKeysInOfferte(RateFile rf) {
+    List<TranslationKey> usedKeys = new ArrayList<TranslationKey>();
+    for (Condition c : rf.getConditions()) {
+      usedKeys.add(c.getConditionKey());
+    }
+    return usedKeys;
+  }
+
+  /**
+   * Get all the translation keys that should be shown in the application.
+   * 
+   * @return The list of translationkeys to be shown.
+   */
+  public List<TranslationKey> getTranslationKeysToShowInApplication() {
+    List<TranslationKey> filteredKeys = new ArrayList<TranslationKey>();
+    TranslationKey[] values = TranslationKey.values();
+    for (TranslationKey tk : values) {
+      if (tk.isShowInApplication()) {
+        filteredKeys.add(tk);
+      }
+    }
+    return filteredKeys;
   }
 
 }
