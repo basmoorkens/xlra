@@ -93,11 +93,6 @@
 	    </form-login-config>
 	</login-config>
 	
-	<context-param>  
-    	<param-name>primefaces.THEME</param-name>  
-    	<param-value>xlra</param-value>  
-	</context-param>
-	
 	<session-config>
     	<session-timeout>60</session-timeout>
 	</session-config>
