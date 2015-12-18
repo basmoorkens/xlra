@@ -6,6 +6,7 @@ import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.service.CustomerService;
 import com.moorkensam.xlra.service.util.CustomerUtil;
 
+import org.primefaces.context.RequestContext;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 
@@ -30,11 +31,6 @@ public class CustomerController {
   private String detailGridTitle;
 
   private LazyDataModel<Customer> model;
-
-  /**
-   * Property for toggling the grid in the frontend.
-   */
-  private boolean renderDetailGrid = false;
 
   @PostConstruct
   public void initializeController() {
@@ -81,15 +77,22 @@ public class CustomerController {
    * Deletes the selected customer.
    * 
    */
-  public void deleteCustomer() {
-    if (selectedCustomer.getId() != 0) {
-      customerService.deleteCustomer(selectedCustomer);
-    }
-    reInitializePage();
+  public void deleteCustomer(Customer customer) {
+    customerService.deleteCustomer(customer);
+  }
+
+  private void hideAddDialog() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    context.execute("PF('addCustomerDialog').hide();");
+  }
+
+  private void showAddDialog() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    context.execute("PF('addCustomerDialog').show();");
   }
 
   private void reInitializePage() {
-    renderDetailGrid = false;
+    hideAddDialog();
     detailGridTitle = "Details selected customer";
     selectedCustomer = new Customer();
   }
@@ -105,7 +108,12 @@ public class CustomerController {
     detailGridTitle = "Details for new customer";
     selectedCustomer = new Customer();
     selectedCustomer.setHasOwnRateFile(true);
-    openDetailGrid();
+    showAddDialog();
+  }
+
+  public void cancelDetail() {
+    selectedCustomer = null;
+    hideAddDialog();
   }
 
   /**
@@ -118,24 +126,8 @@ public class CustomerController {
       customer = CustomerUtil.getInstance().promoteToFullCustomer(customer);
     }
     selectedCustomer = customer;
-    openDetailGrid();
     detailGridTitle = "Details for customer " + selectedCustomer.getName();
-  }
-
-  public void openDetailGrid() {
-    renderDetailGrid = true;
-  }
-
-  public void closeDetailGrid() {
-    renderDetailGrid = false;
-  }
-
-  public boolean isRenderDetailGrid() {
-    return renderDetailGrid;
-  }
-
-  public void setRenderDetailGrid(boolean renderDetailGrid) {
-    this.renderDetailGrid = renderDetailGrid;
+    showAddDialog();
   }
 
   public String getDetailGridTitle() {

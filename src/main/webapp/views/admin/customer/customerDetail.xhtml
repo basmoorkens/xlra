@@ -4,81 +4,46 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
-	<p:panel id="customerDetailPanel"
-		rendered="#{customerController.renderDetailGrid}"
-		header="#{customerController.detailGridTitle}">
+	<p:panel id="customerDetailPanel">
 		<p:growl id="message" showDetail="true" />
-		<p:panelGrid columns="3" cellpadding="0"
+		<p:panelGrid columns="2" cellpadding="0"
 			styleClass="customerCreateGrid">
 			<h:outputLabel for="nameField">Name</h:outputLabel>
 			<p:inputText size="50" value="#{customer.name}" id="nameField"></p:inputText>
-			<p:message for="nameField" />
-
 
 			<h:outputLabel for="emailField">Email</h:outputLabel>
 			<p:inputText size="50" value="#{customer.email}" id="emailField"></p:inputText>
-			<p:message for="emailField" />
-
-
 
 			<h:outputLabel for="phoneField">Phone</h:outputLabel>
 			<p:inputText size="50" value="#{customer.phone}" id="phoneField"></p:inputText>
-			<p:message for="phoneField" />
-
 
 			<h:outputLabel for="streetField">Street</h:outputLabel>
 			<p:inputText size="50" value="#{customer.address.street}"
 				id="streetField"></p:inputText>
-			<p:message for="streetField" />
-
 
 			<h:outputLabel for="numberField">Number</h:outputLabel>
 			<p:inputText size="50" value="#{customer.address.number}"
 				id="numberField"></p:inputText>
-			<p:message for="numberField" />
-
-
 
 			<h:outputLabel for="zipField">ZIP</h:outputLabel>
 			<p:inputText size="50" value="#{customer.address.zip}" id="zipField"></p:inputText>
-			<p:message for="zipField" />
-
-
 
 			<h:outputLabel for="cityField">City</h:outputLabel>
 			<p:inputText size="50" value="#{customer.address.city}"
 				id="cityField"></p:inputText>
-			<p:message for="cityField" />
-
-
 
 			<h:outputLabel for="countryField">Country</h:outputLabel>
 			<p:inputText size="50" value="#{customer.address.country}"
 				id="countryField"></p:inputText>
-			<p:message for="countryField" />
-
 
 			<h:outputLabel for="btwField">BTW number</h:outputLabel>
 			<p:inputText size="50" value="#{customer.btwNumber}" id="btwField"></p:inputText>
-			<p:message for="btwField" />
-
 
 			<h:outputLabel for="languageField">Language</h:outputLabel>
 			<p:selectOneRadio value="#{customer.language}" id="languageField">
 				<f:selectItems value="#{customerController.allLanguages}"></f:selectItems>
 			</p:selectOneRadio>
-			<p:message for="languageField" />
 		</p:panelGrid>
-
-
-		<p:commandButton
-			rendered="#{customerController.selectedCustomer.id != 0}"
-			action="#{customerController.deleteCustomer}" title="delete"
-			update="message @form " immediate="true" icon="ui-icon-closethick">
-			<p:confirm header="Confirm delete"
-				message="Are you sure you want to delete customer #{customerController.selectedCustomer.name}"
-				icon="ui-icon-alert" />
-		</p:commandButton>
 
 		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
 			<p:commandButton value="Yes" type="button"
@@ -88,11 +53,11 @@
 		</p:confirmDialog>
 
 		<p:commandButton value="Cancel" title="Cancel" immediate="true"
-			actionListener="#{customerController.closeDetailGrid}" ajax="true"
-			update=":customerDetailForm" style="width:200px;" />
+			actionListener="#{customerController.cancelDetail}" ajax="true"
+			update=":customerDetailForm" style="width:300px;" />
 		<p:commandButton value="Save customer" title="Save customer"
 			actionListener="#{customerController.createCustomerOrUpdate}"
-			style="width:200px;" icon="ui-icon-check" validateClient="true"
+			style="width:300px;" icon="ui-icon-check" validateClient="true"
 			ajax="false" update=":customerDetailForm :customerOverviewForm" />
 	</p:panel>
 </ui:composition>

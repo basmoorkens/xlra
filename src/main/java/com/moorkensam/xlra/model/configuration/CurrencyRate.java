@@ -18,7 +18,8 @@ import javax.validation.constraints.NotNull;
             + "ORDER BY c.interval.start ASC"),
     @NamedQuery(name = "CurrencyRate.findAllChf",
         query = "SELECT c FROM CurrencyRate c WHERE c.deleted = false "
-            + "and c.currencyType = com.moorkensam.xlra.model.configuration.XlraCurrency.CHF")})
+            + "and c.currencyType = com.moorkensam.xlra.model.configuration.XlraCurrency.CHF "
+            + "ORDER BY c.interval.start ASC")})
 public class CurrencyRate extends AbstractRate {
 
   private static final long serialVersionUID = -7687370103653996637L;

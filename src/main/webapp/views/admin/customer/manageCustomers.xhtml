@@ -13,11 +13,6 @@
 	</ui:define>
 	<ui:define name="body">
 		<h:form id="customerOverviewForm">
-			<p:commandButton value="Create customer" title="Add new customer"
-				actionListener="#{customerController.setupPageForNewCustomer}"
-				icon="ui-icon-check" ajax="true" update=":customerDetailForm"
-				immediate="true" />
-
 			<p:panel id="customerOverview" header="Customer overview">
 				<p:dataTable value="#{customerController.model}" var="customer"
 					emptyMessage="No customers found." lazy="true" paginator="true"
@@ -45,18 +40,41 @@
 					<p:column style="width:36px;text-align: center">
 						<p:commandButton
 							actionListener="#{customerController.setupPageForEditCustomer(customer)}"
-							icon="ui-icon-search" title="View" ajax="true"
+							icon="ui-icon-pencil" title="View" ajax="true"
 							update=":customerDetailForm">
 						</p:commandButton>
 					</p:column>
+					<p:column style="width:36px;text-align: center">
+						<p:commandButton
+							actionListener="#{customerController.deleteCustomer(customer)}"
+							ajax="true" title="delete" update=":customerOverviewForm"
+							icon="ui-icon-trash">
+							<p:confirm header="Confirm delete"
+								message="Are you sure you want to delete this customer?"
+								icon="ui-icon-alert" />
+						</p:commandButton>
+					</p:column>
 				</p:dataTable>
+
+				<p:panel style="margin-top:20px;">
+					<p:commandButton value="Add new customer" title="Add new customer"
+						actionListener="#{customerController.setupPageForNewCustomer}"
+						icon="ui-icon-check" ajax="true" update=":customerDetailForm"
+						immediate="true" />
+				</p:panel>
 			</p:panel>
 		</h:form>
 		<h:form id="customerDetailForm">
-			<ui:include src="/views/admin/customer/customerDetail.xhtml">
-				<ui:param name="customer"
-					value="#{customerController.selectedCustomer}"></ui:param>
-			</ui:include>
+			<p:dialog id="addDialog"
+				header="#{customerController.detailGridTitle}"
+				widgetVar="addCustomerDialog" modal="true" width="70%" height="50%"
+				dynamic="true">
+				<p:growl id="msgs" showDetail="true" />
+				<ui:include src="/views/admin/customer/customerDetail.xhtml">
+					<ui:param name="customer"
+						value="#{customerController.selectedCustomer}"></ui:param>
+				</ui:include>
+			</p:dialog>
 		</h:form>
 	</ui:define>
 </ui:composition>
