@@ -13,6 +13,7 @@
 	</ui:define>
 	<ui:define name="body">
 		<h:form id="customerOverviewForm">
+			<p:growl id="msgs" showDetail="true" />
 			<p:panel id="customerOverview" header="Customer overview">
 				<p:dataTable value="#{customerController.model}" var="customer"
 					emptyMessage="No customers found." lazy="true" paginator="true"
@@ -69,13 +70,19 @@
 				header="#{customerController.detailGridTitle}"
 				widgetVar="addCustomerDialog" modal="true" width="70%" height="50%"
 				dynamic="true">
-				<p:growl id="msgs" showDetail="true" />
 				<ui:include src="/views/admin/customer/customerDetail.xhtml">
 					<ui:param name="customer"
 						value="#{customerController.selectedCustomer}"></ui:param>
 				</ui:include>
 			</p:dialog>
 		</h:form>
+
+		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+			<p:commandButton value="Yes" type="button"
+				styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+			<p:commandButton value="No" type="button" immediate="true"
+				styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+		</p:confirmDialog>
 	</ui:define>
 </ui:composition>
 </html>

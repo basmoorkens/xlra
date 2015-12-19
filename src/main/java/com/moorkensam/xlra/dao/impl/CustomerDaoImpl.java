@@ -68,7 +68,7 @@ public class CustomerDaoImpl extends BaseDao implements CustomerDao {
   private String buildLazyLoadCustomersQuery(String sortField, SortOrder sortOrder,
       Map<String, Object> filters) {
     StringBuilder builder = new StringBuilder();
-    builder.append("SELECT b FROM Customer b where 1 = 1 ");
+    builder.append("SELECT b FROM Customer b where b.deleted = false ");
     if (filters != null) {
       for (String key : filters.keySet()) {
         builder.append("AND b." + key + " LIKE :" + key + " ");

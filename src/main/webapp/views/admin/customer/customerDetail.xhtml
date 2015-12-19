@@ -45,19 +45,12 @@
 			</p:selectOneRadio>
 		</p:panelGrid>
 
-		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-			<p:commandButton value="Yes" type="button"
-				styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-			<p:commandButton value="No" type="button" immediate="true"
-				styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-		</p:confirmDialog>
-
 		<p:commandButton value="Cancel" title="Cancel" immediate="true"
 			actionListener="#{customerController.cancelDetail}" ajax="true"
 			update=":customerDetailForm" style="width:300px;" />
 		<p:commandButton value="Save customer" title="Save customer"
 			actionListener="#{customerController.createCustomerOrUpdate}"
 			style="width:300px;" icon="ui-icon-check" validateClient="true"
-			ajax="false" update=":customerDetailForm :customerOverviewForm" />
+			ajax="true" update=":customerDetailForm :customerOverviewForm" />
 	</p:panel>
 </ui:composition>

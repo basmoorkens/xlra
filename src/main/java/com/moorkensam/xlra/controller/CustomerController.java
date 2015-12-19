@@ -18,6 +18,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
+import javax.mail.Message;
 
 @ManagedBean
 @ViewScoped
@@ -61,16 +62,14 @@ public class CustomerController {
   public void createCustomerOrUpdate() {
     if (selectedCustomer.getId() == 0) {
       customerService.createCustomer(selectedCustomer);
+      MessageUtil.addMessage("Customer added", "Customer " + selectedCustomer.getName()
+          + " was successfully added.");
     } else {
       customerService.updateCustomer(selectedCustomer);
+      MessageUtil.addMessage("Customer updated", "Customer " + selectedCustomer.getName()
+          + " was successfully updated.");
     }
-
     reInitializePage();
-  }
-
-  public void confirmDeleteCustomer() {
-    MessageUtil.addMessage("Confirm delete",
-        "Confirm delete of customer " + selectedCustomer.getName());
   }
 
   /**
@@ -79,6 +78,7 @@ public class CustomerController {
    */
   public void deleteCustomer(Customer customer) {
     customerService.deleteCustomer(customer);
+    MessageUtil.addMessage("Customer removed", "Successfully removed customer.");
   }
 
   private void hideAddDialog() {
