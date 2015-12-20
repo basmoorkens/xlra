@@ -15,7 +15,7 @@
 
 		<h:form id="offertesForm">
 			<p:panel id="overviewPanel" header="Offerte overview"
-				toggleable="true" collapsed="#{offerteOverviewController.detail}">
+				toggleable="true">
 				<p:dataTable var="quotationResult"
 					value="#{offerteOverviewController.model}" paginator="true"
 					id="offerteTable" emptyMessage="No offertes to view..."
@@ -63,8 +63,14 @@
 				</p:dataTable>
 			</p:panel>
 		</h:form>
-
-		<ui:include src="/views/user/offerteDetail.xhtml" />
+		<h:form id="offerteDetailForm">
+			<p:dialog id="detailDialog"
+				header="Offerte #{offerteOverviewController.selectedOfferte.offerteUniqueIdentifier} details"
+				widgetVar="detailOfferteDialog" modal="true" width="70%"
+				height="50%" dynamic="true">
+				<ui:include src="/views/user/offerteDetail.xhtml" />
+			</p:dialog>
+		</h:form>
 	</ui:define>
 </ui:composition>
 </html>

@@ -5,11 +5,10 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
-	<h:form id="offerteDetailForm">
-		<p:growl id="msgs" />
-		<p:panel
-			header="Offerte #{offerteOverviewController.selectedOfferte.offerteUniqueIdentifier} details"
-			id="detailPanel" rendered="#{offerteOverviewController.detail}">
+
+	<p:growl id="msgs" />
+	<p:scrollPanel style="height:80%;">
+		<p:panel id="detailPanel">
 
 			<p:panel header="Administration">
 				<p:panelGrid columns="2" style="width:100%;">
@@ -133,7 +132,7 @@
 
 			<p:panel style="margin-top:20px;">
 				<p:commandButton value="Back to search"
-					actionListener="#{offerteOverviewController.openSearchMode}"
+					actionListener="#{offerteOverviewController.hideDetailDialog}"
 					ajax="true" update=":offerteDetailForm :offertesForm" />
 				<p:commandButton value="Open pdf" style="margin-left:20px;"
 					actionListener="#{offerteOverviewController.downloadPdf}"
@@ -143,17 +142,18 @@
 					ajax="true" update=":offerteDetailForm" />
 			</p:panel>
 		</p:panel>
+	</p:scrollPanel>
 
-		<p:ajaxStatus onstart="showStatusDialog();"
-			onsuccess="hideStatusDialog();" />
+	<p:ajaxStatus onstart="showStatusDialog();"
+		onsuccess="hideStatusDialog();" />
 
-		<p:dialog id="statusDialog" widgetVar="statusDialog" modal="true"
-			draggable="false" closable="false" resizable="false"
-			showHeader="false">
-			<p:graphicImage url="/resources/images/ajax-loader.gif" />
-		</p:dialog>
+	<p:dialog id="statusDialog" widgetVar="statusDialog" modal="true"
+		draggable="false" closable="false" resizable="false"
+		showHeader="false">
+		<p:graphicImage url="/resources/images/ajax-loader.gif" />
+	</p:dialog>
 
-	</h:form>
+
 
 	<script type="text/javascript">
 		var statusDlgTimer = null;

@@ -10,6 +10,7 @@ import com.moorkensam.xlra.service.QuotationService;
 import com.moorkensam.xlra.service.impl.FileServiceImpl;
 
 import org.apache.commons.lang3.StringUtils;
+import org.primefaces.context.RequestContext;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 
@@ -50,8 +51,6 @@ public class OfferteOverviewController {
 
   private List<Country> allCountrys;
 
-  private boolean detail;
-
   /**
    * Initializes the controller.
    */
@@ -86,7 +85,7 @@ public class OfferteOverviewController {
             .get("offerteKey");
     if (StringUtils.isNotBlank(offerteKey)) {
       selectedOfferte = quotationService.getOfferteByOfferteKey(offerteKey);
-      detail = true;
+      showDetailDialog();
     }
   }
 
@@ -97,13 +96,17 @@ public class OfferteOverviewController {
    */
   public void setupOfferteDetail(QuotationResult quotationResult) {
     selectedOfferte = quotationService.getFullOfferteById(quotationResult.getId());
-    detail = true;
-    MessageUtil.addMessage("Offerte opened",
-        "Offerte " + quotationResult.getOfferteUniqueIdentifier() + " opened.");
+    showDetailDialog();
   }
 
-  public void openSearchMode() {
-    detail = false;
+  public void hideDetailDialog() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    context.execute("PF('detailOfferteDialog').hide();");
+  }
+
+  public void showDetailDialog() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    context.execute("PF('detailOfferteDialog').show();");
   }
 
   /**
@@ -160,14 +163,6 @@ public class OfferteOverviewController {
 
   public void setAllCountrys(List<Country> allCountrys) {
     this.allCountrys = allCountrys;
-  }
-
-  public boolean isDetail() {
-    return detail;
-  }
-
-  public void setDetail(boolean detail) {
-    this.detail = detail;
   }
 
   public QuotationResult getSelectedOfferte() {
