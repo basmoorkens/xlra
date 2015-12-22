@@ -25,7 +25,7 @@ import javax.inject.Inject;
 @Stateless
 public class ApplicationConfigurationServiceImpl implements ApplicationConfigurationService {
 
-  private final static Logger logger = LogManager.getLogger();
+  private static final Logger logger = LogManager.getLogger();
 
   @Inject
   private ConfigurationDao xlraConfigurationDao;

@@ -23,8 +23,8 @@
 					<h:outputText value="Auto generated" />
 
 					<h:outputText value="Customer: " />
-					<p:autoComplete size="100" id="customerSelector" dropdown="true"
-						value="#{createRatesController.rateFile.customer}"
+					<p:autoComplete style="width:100%;" id="customerSelector"
+						dropdown="true" value="#{createRatesController.rateFile.customer}"
 						completeMethod="#{createRatesController.completeCustomerName}"
 						var="customer" itemLabel="#{customer.name}"
 						itemValue="#{customer}" converter="#{customerConverter}"
@@ -32,37 +32,38 @@
 					</p:autoComplete>
 
 					<h:outputText value="Country: " />
-					<p:selectOneRadio converter="#{countryConverter}"
-						id="selectCountry" required="true"
+					<p:selectOneMenu style="width:100%;"
+						converter="#{countryConverter}" id="selectCountry" required="true"
 						requiredMessage="Select a country"
 						value="#{createRatesController.filter.country}">
 						<f:selectItems value="#{createRatesController.countries}"
 							var="country" itemLabel="#{country.englishName}"
 							itemValue="#{country}" />
-					</p:selectOneRadio>
+					</p:selectOneMenu>
 
 					<h:outputText value="Measurement: " />
-					<p:selectOneRadio id="selectMeasurement" required="true"
+					<p:selectOneMenu style="width:100%;" id="selectMeasurement"
+						required="true"
 						value="#{createRatesController.filter.measurement}">
 						<f:selectItems value="#{createRatesController.measurements}"
 							var="measurement" itemLabel="#{measurement.description}"
 							itemValue="#{measurement}" />
-					</p:selectOneRadio>
+					</p:selectOneMenu>
 
 					<h:outputText value="Type of transport: " />
-					<p:selectOneRadio id="selectTypeOfTransport" required="true"
-						value="#{createRatesController.filter.rateKind}">
+					<p:selectOneMenu style="width:100%;" id="selectTypeOfTransport"
+						required="true" value="#{createRatesController.filter.rateKind}">
 						<f:selectItems value="#{createRatesController.kindOfRates}"
 							var="kind" itemLabel="#{kind.description}" itemValue="#{kind}" />
-					</p:selectOneRadio>
+					</p:selectOneMenu>
 
 					<h:outputText value="Transport type:" />
-					<p:selectOneRadio required="true"
+					<p:selectOneMenu style="width:100%;" required="true"
 						value="#{createRatesController.filter.transportationType}">
 						<f:selectItems value="#{createRatesController.allTransportTypes}"
 							var="transportationType" itemValue="#{transportationType}"
 							itemDescription="#{transportationType.description}" />
-					</p:selectOneRadio>
+					</p:selectOneMenu>
 				</p:panelGrid>
 
 				<p:panel style="margin-top:10px;padding:0px;border:0px;">

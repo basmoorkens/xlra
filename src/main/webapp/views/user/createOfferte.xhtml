@@ -49,30 +49,38 @@
 				<p:growl showDetail="true" id="messages" sticky="true" />
 				<p:panelGrid columns="2" style="width:100%;">
 					<h:outputText value="Country: " />
-					<p:selectOneRadio converter="#{countryConverter}" required="true"
+					<p:selectOneMenu style="width:100%;"
+						converter="#{countryConverter}" required="true"
 						value="#{createQuotationController.quotationQuery.country}">
 						<f:selectItems value="#{createQuotationController.allCountries}" />
-					</p:selectOneRadio>
+					</p:selectOneMenu>
 
 					<h:outputText value="Measurement: " />
-					<p:selectOneRadio required="true"
+					<p:selectOneMenu style="width:100%;" required="true"
 						value="#{createQuotationController.quotationQuery.measurement}">
 						<f:selectItems
 							value="#{createQuotationController.allMeasurements}" />
-					</p:selectOneRadio>
+					</p:selectOneMenu>
 
 					<h:outputText value="Type: " />
-					<p:selectOneRadio required="true"
+					<p:selectOneMenu style="width:100%;" required="true"
 						value="#{createQuotationController.quotationQuery.kindOfRate}">
 						<f:selectItems value="#{createQuotationController.allKinds}" />
-					</p:selectOneRadio>
+					</p:selectOneMenu>
 
 					<h:outputText value="Language: " />
-					<p:selectOneRadio required="false"
+					<p:selectOneMenu style="width:100%;" required="false"
 						value="#{createQuotationController.quotationQuery.language}">
 						<f:selectItems value="#{createQuotationController.allLanguages}" />
-					</p:selectOneRadio>
+					</p:selectOneMenu>
 
+					<h:outputText value="Transport type:" />
+					<p:selectOneMenu style="width:100%;"
+						value="#{createQuotationController.quotationQuery.transportType}">
+						<f:selectItems
+							value="#{createQuotationController.allTransportTypes}"
+							itemDescription="description" />
+					</p:selectOneMenu>
 
 					<h:outputText value="Quantity:" />
 					<p:inputText required="true"
@@ -84,13 +92,6 @@
 						requiredMessage="Postal code is required!"
 						value="#{createQuotationController.quotationQuery.postalCode}" />
 
-					<h:outputText value="Transport type:" />
-					<p:selectOneRadio
-						value="#{createQuotationController.quotationQuery.transportType}">
-						<f:selectItems
-							value="#{createQuotationController.allTransportTypes}"
-							itemDescription="description" />
-					</p:selectOneRadio>
 
 				</p:panelGrid>
 				<p:panel style="bottom:20px;  padding:0px;border:0px;">

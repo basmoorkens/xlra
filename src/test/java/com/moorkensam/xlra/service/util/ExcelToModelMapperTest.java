@@ -9,6 +9,7 @@ import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.rate.ZoneType;
 import com.moorkensam.xlra.model.translation.TranslationKey;
+import com.moorkensam.xlra.service.util.excel.ExcelToModelMapper;
 
 import junit.framework.Assert;
 

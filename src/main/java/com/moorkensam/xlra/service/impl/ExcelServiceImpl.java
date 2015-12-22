@@ -4,8 +4,9 @@ import com.moorkensam.xlra.model.ExcelUploadUtilData;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.service.ExcelService;
 import com.moorkensam.xlra.service.RateFileService;
-import com.moorkensam.xlra.service.util.ExcelToModelMapper;
-import com.moorkensam.xlra.service.util.ExcelUploadParser;
+import com.moorkensam.xlra.service.util.excel.ExcelToModelMapper;
+import com.moorkensam.xlra.service.util.excel.ExcelUploadParser;
+import com.moorkensam.xlra.service.util.excel.RateFileToExcelMapper;
 
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -29,10 +30,13 @@ public class ExcelServiceImpl implements ExcelService {
 
   private ExcelUploadParser parser;
 
+  private RateFileToExcelMapper inverseMapper;
+
   @PostConstruct
   public void init() {
     this.mapper = new ExcelToModelMapper();
     this.parser = new ExcelUploadParser();
+    this.inverseMapper = new RateFileToExcelMapper();
   }
 
   @Override
@@ -40,6 +44,11 @@ public class ExcelServiceImpl implements ExcelService {
     ExcelUploadUtilData parseRateFileExcel = getParser().parseRateFileExcel(workBook);
     getMapper().mapExcelToModel(rf, parseRateFileExcel);
     getRateFileService().createRateFile(rf);
+  }
+
+  @Override
+  public XSSFWorkbook exportRateFileToExcel(RateFile rateFile) {
+    return inverseMapper.map(rateFile);
   }
 
   public ExcelUploadParser getParser() {
@@ -66,4 +75,11 @@ public class ExcelServiceImpl implements ExcelService {
     this.rateFileService = rateFileService;
   }
 
+  public RateFileToExcelMapper getInverseMapper() {
+    return inverseMapper;
+  }
+
+  public void setInverseMapper(RateFileToExcelMapper inverseMapper) {
+    this.inverseMapper = inverseMapper;
+  }
 }

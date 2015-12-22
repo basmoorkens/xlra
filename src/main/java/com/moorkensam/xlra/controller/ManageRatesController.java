@@ -8,16 +8,26 @@ import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.translation.TranslationKey;
+import com.moorkensam.xlra.service.ExcelService;
 import com.moorkensam.xlra.service.RateFileService;
 import com.moorkensam.xlra.service.util.ConditionFactory;
 import com.moorkensam.xlra.service.util.RateUtil;
 import com.moorkensam.xlra.service.util.TranslationUtil;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,18 +35,25 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
 
 @ManagedBean(name = "manageRatesController")
 @ViewScoped
 public class ManageRatesController {
+
+  private static final Logger logger = LogManager.getLogger();
 
   @Inject
   private RateFileService rateFileService;
 
   @Inject
   private UserSessionController sessionController;
+
+  @Inject
+  private ExcelService excelService;
 
   private TranslationUtil translationUtil;
 
@@ -218,6 +235,30 @@ public class ManageRatesController {
     refreshRateLineColumns();
     translationUtil.fillInTranslations(selectedRateFile.getConditions());
     MessageUtil.addMessage("Loaded rates", "Displaying rates for " + selectedRateFile.getName());
+  }
+
+  /**
+   * Download a excel file.
+   */
+  public void downloadRateExcel() {
+    FacesContext facesContext = FacesContext.getCurrentInstance();
+    HttpServletResponse response =
+        (HttpServletResponse) facesContext.getExternalContext().getResponse();
+    response.reset();
+    response.setHeader("Content-Type", "application/vnd.ms-excel");
+    response.setHeader("Content-disposition", "attachment; filename=test.xls");
+    XSSFWorkbook exportRateFileToExcel = excelService.exportRateFileToExcel(selectedRateFile);
+    try {
+      OutputStream responseOutputStream = response.getOutputStream();
+      exportRateFileToExcel.write(responseOutputStream);
+      responseOutputStream.flush();
+      responseOutputStream.close();
+    } catch (IOException e) {
+      logger.error(e);
+      MessageUtil.addErrorMessage("Unexpected error", "Could not generate excel");
+    }
+    facesContext.responseComplete();
+
   }
 
   /**

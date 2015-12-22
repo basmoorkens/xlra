@@ -1,4 +1,4 @@
-package com.moorkensam.xlra.service.util;
+package com.moorkensam.xlra.service.util.excel;
 
 import com.moorkensam.xlra.model.ExcelUploadUtilData;
 import com.moorkensam.xlra.model.RateLineExcelImportDto;
@@ -8,6 +8,7 @@ import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.rate.ZoneType;
 import com.moorkensam.xlra.model.translation.TranslationKey;
+import com.moorkensam.xlra.service.util.ConditionFactory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,7 +31,7 @@ public class ExcelToModelMapper {
     conditionFactory = new ConditionFactory();
   }
 
-  private final static Logger logger = LogManager.getLogger();
+  private static final Logger logger = LogManager.getLogger();
 
   /**
    * Map the excel to the internal model of the application.

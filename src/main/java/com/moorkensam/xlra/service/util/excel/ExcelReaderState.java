@@ -1,4 +1,4 @@
-package com.moorkensam.xlra.service.util;
+package com.moorkensam.xlra.service.util.excel;
 
 /**
  * Enum to keep track of the state of the excel parser.

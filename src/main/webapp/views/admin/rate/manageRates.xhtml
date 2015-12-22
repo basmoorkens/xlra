@@ -24,14 +24,21 @@
 					queryDelay="1000" var="rateFile" itemLabel="#{rateFile.name}"
 					itemValue="#{rateFile}" converter="#{rateFileConverter}">
 					<p:ajax event="itemSelect"
-						update=":conditionsDetailForm :rateLinesDetailForm :zoneDetailForm"
+						update=":basicForm :conditionsDetailForm :rateLinesDetailForm :zoneDetailForm"
 						listener="#{manageRatesController.fetchDetailsOfRatefile}" />
 				</p:autoComplete>
-
 			</p:panelGrid>
 		</h:form>
 
 		<h3>Details</h3>
+		<h:form id="basicForm">
+			<p:panel id="basicInfoPanel" toggleable="false"
+				collapsed="#{manageRatesController.collapseZonesDetailGrid}"
+				header="Basic info">
+				<p:commandButton icon="ui-icon-document" ajax="false"
+					actionListener="#{manageRatesController.downloadRateExcel}" />
+			</p:panel>
+		</h:form>
 		<h:form id="zoneDetailForm">
 			<p:growl id="message" showDetail="true" />
 			<ui:include src="/views/user/zoneDetail.xhtml">
