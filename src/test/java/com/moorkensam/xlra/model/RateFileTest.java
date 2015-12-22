@@ -70,7 +70,7 @@ public class RateFileTest extends UnitilsJUnit4 {
         .getZones()
         .get(0)
         .setNumericalPostalCodes(
-            Arrays.asList(new Interval("1000", "2000"), new Interval("2500", "4000")));
+            Arrays.asList(new Interval("1000", "1999"), new Interval("2500", "4000")));
     rateFile
         .getZones()
         .get(1)

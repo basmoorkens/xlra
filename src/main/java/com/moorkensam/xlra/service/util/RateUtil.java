@@ -3,7 +3,9 @@ package com.moorkensam.xlra.service.util;
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.configuration.AbstractRate;
 import com.moorkensam.xlra.model.configuration.Language;
+import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.IntervalOverlapException;
+import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
 
 import org.primefaces.event.CellEditEvent;
 
@@ -42,6 +44,24 @@ public class RateUtil {
 
   public static List<Language> getLanguages() {
     return Arrays.asList(Language.values());
+  }
+
+  /**
+   * Generates the name for a customer ratefile based on the filter and customer.
+   * 
+   * @param filter The filter to use.
+   * @param customer The customer to use.
+   * @return The generated name.
+   */
+  public static String generateNameForCustomerRateFile(RateFileSearchFilter filter,
+      Customer customer) {
+    StringBuilder builder = new StringBuilder();
+    builder.append(customer.getName() + " - ");
+    builder.append(filter.getCountry().getEnglishName() + " - ");
+    builder.append(filter.getMeasurement().getDescription() + " - ");
+    builder.append(filter.getRateKind() + " - ");
+    builder.append(filter.getTransportationType());
+    return builder.toString();
   }
 
   /**

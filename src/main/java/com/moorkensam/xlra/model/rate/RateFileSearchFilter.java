@@ -57,7 +57,7 @@ public class RateFileSearchFilter implements Serializable {
     if (getCustomer() != null) {
       result += " Customer: " + getCustomer().getName();
     }
-    if (transportationType != null) {
+    if (getTransportationType() != null) {
       result += "TransportationType: " + getTransportationType();
     }
     if (result.equals("")) {

@@ -1,6 +1,7 @@
 package com.moorkensam.xlra.service;
 
 import com.moorkensam.xlra.dto.RateFileIdNameDto;
+import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.rate.Condition;
@@ -72,13 +73,16 @@ public interface RateFileService {
   public RateFile getRateFileForQuery(QuotationQuery query) throws RateFileException;
 
   /**
-   * This method returns a new instance of ratefile for a set of searchcriteria. it is not persisted
-   * in anyway its just a full copy of the ratefile that matched the searchfilter.
+   * Generates a ratefile based on the filter and customer given to it.
    * 
-   * @param filter The filter to search for.
-   * @return The resulting rf.
+   * @param filter The filter to use.
+   * @param customer The customer to use.
+   * 
+   * @return The generated ratefile.
+   * @throws RateFileException Thrown when no ratefile could be found for the filter.
    */
-  RateFile getCopyOfRateFileForFilter(RateFileSearchFilter filter);
+  RateFile generateCustomerRateFileForFilterAndCustomer(RateFileSearchFilter filter,
+      Customer customer) throws RateFileException;
 
   /**
    * This method fetches the names and ids of all ratefiles and puts them in a list of dtos. This

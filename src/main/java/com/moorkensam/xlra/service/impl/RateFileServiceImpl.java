@@ -4,6 +4,7 @@ import com.moorkensam.xlra.dao.BaseDao;
 import com.moorkensam.xlra.dao.ConditionDao;
 import com.moorkensam.xlra.dao.RateFileDao;
 import com.moorkensam.xlra.dto.RateFileIdNameDto;
+import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.rate.Condition;
@@ -14,6 +15,7 @@ import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.service.RateFileService;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
 import com.moorkensam.xlra.service.util.QuotationUtil;
+import com.moorkensam.xlra.service.util.RateUtil;
 import com.moorkensam.xlra.service.util.TranslationKeyToi8nMapper;
 
 import org.apache.logging.log4j.LogManager;
@@ -131,16 +133,18 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
   }
 
   @Override
-  public RateFile getCopyOfRateFileForFilter(RateFileSearchFilter filter) {
+  public RateFile generateCustomerRateFileForFilterAndCustomer(RateFileSearchFilter filter,
+      Customer customer) throws RateFileException {
     List<RateFile> rateFiles = getRateFileDao().getRateFilesForFilter(filter);
     if (rateFiles.isEmpty()) {
-      return null;
+      throw new RateFileException("Could not find a ratefile to copy from for this filter.");
     }
     RateFile original = rateFiles.get(0);
     RateFile fullOriginal = getFullRateFile(original.getId());
     fillInConditionKeyTranslations(fullOriginal);
     RateFile copy = fullOriginal.deepCopy();
-
+    copy.setName(RateUtil.generateNameForCustomerRateFile(filter, customer));
+    copy.setCustomer(customer);
     return copy;
   }
 

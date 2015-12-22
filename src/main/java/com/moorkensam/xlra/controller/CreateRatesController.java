@@ -3,6 +3,7 @@ package com.moorkensam.xlra.controller;
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Customer;
+import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Kind;
@@ -64,16 +65,14 @@ public class CreateRatesController {
 
   private boolean hasRateFileSelected = false;
 
-  private boolean collapseRateLinesDetailGrid = false;
-
-  private boolean collapseConditionsDetailGrid = false;
-
   /** Collapsed for panels of the create rates page. */
   private boolean collapseBasicInfoGrid = false;
 
-  private boolean collapseRateLineEditor = true;
+  private boolean collapseConditionsDetailGrid = true;
 
-  private boolean collapseConditionsEditor = true;
+  private boolean collapseRateLinesDetailGrid = false;
+
+  private boolean collapseRateLineEditor = true;
 
   private boolean collapseSummary = true;
 
@@ -99,13 +98,18 @@ public class CreateRatesController {
   /**
    * Copys a ratefile and then sets some basic values for it.
    */
-  public void calculateCopyOfRateFileForFilter() {
-    RateFile copiedFile = rateFileService.getCopyOfRateFileForFilter(filter);
-    copiedFile.setCustomer(rateFile.getCustomer());
-    copiedFile.setName(rateFile.getName());
-    rateFile = copiedFile;
-    translationUtil.fillInTranslations(rateFile.getConditions());
-    showRateLineEditor();
+  public void generateCopyOfRateFileForFilter() {
+    RateFile copiedFile;
+    try {
+      copiedFile =
+          rateFileService.generateCustomerRateFileForFilterAndCustomer(filter,
+              rateFile.getCustomer());
+      rateFile = copiedFile;
+      translationUtil.fillInTranslations(rateFile.getConditions());
+      showRateLineEditor();
+    } catch (RateFileException e) {
+      MessageUtil.addErrorMessage("Could not create ratefile", e.getBusinessException());
+    }
   }
 
   /**
@@ -114,7 +118,7 @@ public class CreateRatesController {
   public void showRateLineEditor() {
     collapseBasicInfoGrid = true;
     collapseRateLineEditor = false;
-    collapseConditionsEditor = true;
+    collapseConditionsDetailGrid = true;
     collapseSummary = true;
   }
 
@@ -124,7 +128,7 @@ public class CreateRatesController {
   public void showSummary() {
     collapseBasicInfoGrid = true;
     collapseRateLineEditor = true;
-    collapseConditionsEditor = true;
+    collapseConditionsDetailGrid = true;
     collapseSummary = false;
   }
 
@@ -134,7 +138,7 @@ public class CreateRatesController {
   public void showBasicInfoGrid() {
     collapseBasicInfoGrid = false;
     collapseRateLineEditor = true;
-    collapseConditionsEditor = true;
+    collapseConditionsDetailGrid = true;
     collapseSummary = true;
   }
 
@@ -144,7 +148,7 @@ public class CreateRatesController {
   public void goToConditionsEditor() {
     collapseBasicInfoGrid = true;
     collapseRateLineEditor = true;
-    collapseConditionsEditor = false;
+    collapseConditionsDetailGrid = false;
     collapseSummary = true;
   }
 
@@ -326,14 +330,6 @@ public class CreateRatesController {
     this.hasRateFileSelected = hasRateFileSelected;
   }
 
-  public boolean isCollapseRateLinesDetailGrid() {
-    return collapseRateLinesDetailGrid;
-  }
-
-  public void setCollapseRateLinesDetailGrid(boolean collapseRateLinesDetailGrid) {
-    this.collapseRateLinesDetailGrid = collapseRateLinesDetailGrid;
-  }
-
   public boolean isCollapseConditionsDetailGrid() {
     return collapseConditionsDetailGrid;
   }
@@ -360,14 +356,6 @@ public class CreateRatesController {
 
   public void setCollapseBasicInfoGrid(boolean collapseBasicInfoGrid) {
     this.collapseBasicInfoGrid = collapseBasicInfoGrid;
-  }
-
-  public boolean isCollapseConditionsEditor() {
-    return collapseConditionsEditor;
-  }
-
-  public void setCollapseConditionsEditor(boolean collapseConditionsEditor) {
-    this.collapseConditionsEditor = collapseConditionsEditor;
   }
 
   public boolean isCollapseSummary() {
@@ -408,6 +396,14 @@ public class CreateRatesController {
 
   public void setEditMode(boolean editMode) {
     this.editMode = editMode;
+  }
+
+  public boolean isCollapseRateLinesDetailGrid() {
+    return collapseRateLinesDetailGrid;
+  }
+
+  public void setCollapseRateLinesDetailGrid(boolean collapseRateLinesDetailGrid) {
+    this.collapseRateLinesDetailGrid = collapseRateLinesDetailGrid;
   }
 
 }

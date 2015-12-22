@@ -1,8 +1,12 @@
 package com.moorkensam.xlra.service.impl;
 
 import com.moorkensam.xlra.dao.RateFileDao;
+import com.moorkensam.xlra.model.configuration.Language;
+import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
+import com.moorkensam.xlra.model.rate.Country;
+import com.moorkensam.xlra.model.rate.Measurement;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
 import com.moorkensam.xlra.model.rate.Zone;
@@ -19,6 +23,7 @@ import org.unitils.easymock.annotation.Mock;
 import org.unitils.inject.annotation.TestedObject;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 import javax.persistence.NoResultException;
 
@@ -96,18 +101,24 @@ public class RateFileServiceTest extends UnitilsJUnit4 {
   }
 
   @Test
-  public void testgetCopyOfRateFileForFilter() {
+  public void testgetCopyOfRateFileForFilter() throws RateFileException {
     RateFile rf1 = new RateFile();
+    Customer customer = new Customer();
+    customer.setName("testje");
     rf1.setId(1L);
     rf1.setName("test");
     EasyMock.expect(rfDao.getRateFilesForFilter(new RateFileSearchFilter())).andReturn(
         Arrays.asList(rf1));
     EasyMock.expect(rfDao.getFullRateFile(1L)).andReturn(rf1);
     EasyMockUnitils.replay();
-
-    RateFile rs = rateFileService.getCopyOfRateFileForFilter(new RateFileSearchFilter());
+    RateFileSearchFilter filter = new RateFileSearchFilter();
+    filter.setCountry(new Country());
+    filter.getCountry().setNames(new HashMap<Language, String>());
+    filter.getCountry().setEnglishName("be");
+    filter.setMeasurement(Measurement.KILO);
+    RateFile rs = rateFileService.generateCustomerRateFileForFilterAndCustomer(filter, customer);
     Assert.assertNotNull(rs);
-    Assert.assertEquals("test", rs.getName());
+    Assert.assertEquals("testje - be - Kilo - null - null", rs.getName());
   }
 
   @Test

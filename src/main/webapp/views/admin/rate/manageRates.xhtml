@@ -53,16 +53,14 @@
 				<ui:param name="sticky" value="false"></ui:param>
 			</ui:include>
 		</h:form>
-		<h:form id="conditionsDetailForm">
-			<p:growl id="message" showDetail="true" />
-			<ui:include src="/views/user/conditionsDetail.xhtml">
-				<ui:param name="conditions"
-					value="#{manageRatesController.selectedRateFile.conditions}" />
-				<ui:param name="controller" value="#{manageRatesController}" />
-				<ui:param name="controllerName" value="manageRatesController" />
-				<ui:param name="canEdit" value="#{manageRatesController.canEdit}"></ui:param>
-			</ui:include>
-		</h:form>
+
+		<ui:include src="/views/user/conditionsDetail.xhtml">
+			<ui:param name="conditions"
+				value="#{manageRatesController.selectedRateFile.conditions}" />
+			<ui:param name="controller" value="#{manageRatesController}" />
+			<ui:param name="controllerName" value="manageRatesController" />
+			<ui:param name="canEdit" value="#{manageRatesController.canEdit}" />
+		</ui:include>
 	</ui:define>
 </ui:composition>
 </html>
