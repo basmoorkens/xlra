@@ -217,6 +217,7 @@ public class ManageRatesController {
     hasRateFileSelected = true;
     refreshRateLineColumns();
     translationUtil.fillInTranslations(selectedRateFile.getConditions());
+    MessageUtil.addMessage("Loaded rates", "Displaying rates for " + selectedRateFile.getName());
   }
 
   /**
