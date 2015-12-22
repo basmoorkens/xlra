@@ -85,7 +85,26 @@ public class Condition extends BaseEntity implements Translatable {
     condition.setConditionKey(conditionKey);
     condition.setStandardSelected(standardSelected);
     condition.setI8nKey(i8nKey);
+    condition.setTranslatedKey(translatedKey);
+    condition.setStandardSelected(standardSelected);
+    condition.setConditionType(conditionType);
+    condition.setCalculationValueType(calculationValueType);
+    for (TranslationForLanguage tlfl : translations) {
+      condition.addTranslationForLanguage(tlfl);
+    }
     return condition;
+  }
+
+  /**
+   * Add a translationforlange to the list.
+   * 
+   * @param translationForLanguage The value to add.
+   */
+  public void addTranslationForLanguage(TranslationForLanguage translationForLanguage) {
+    if (translations == null) {
+      translations = new ArrayList<TranslationForLanguage>();
+    }
+    translations.add(translationForLanguage);
   }
 
   @Override

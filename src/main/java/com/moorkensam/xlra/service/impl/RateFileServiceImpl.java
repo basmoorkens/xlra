@@ -36,7 +36,7 @@ import javax.persistence.NoResultException;
 @Stateless
 public class RateFileServiceImpl extends BaseDao implements RateFileService {
 
-  private final static Logger logger = LogManager.getLogger();
+  private static final Logger logger = LogManager.getLogger();
 
   @Inject
   private ConditionDao conditionDao;

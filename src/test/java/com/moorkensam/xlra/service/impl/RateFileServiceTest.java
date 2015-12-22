@@ -57,7 +57,7 @@ public class RateFileServiceTest extends UnitilsJUnit4 {
   }
 
   @Test
-  public void testgetRateFileQuery() throws RateFileException {
+  public void testgetRateFileQueryFullCustomerRateFileNotFound() throws RateFileException {
     QuotationQuery query = new QuotationQuery();
     RateFileSearchFilter filter = new RateFileSearchFilter();
     EasyMock.expect(quotationUtil.createRateFileSearchFilterForQuery(query, false)).andReturn(

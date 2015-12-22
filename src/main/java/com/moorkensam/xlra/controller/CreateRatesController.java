@@ -79,6 +79,8 @@ public class CreateRatesController {
 
   private Condition selectedCondition;
 
+  private boolean editMode = false;
+
   /**
    * The init method for this controller.
    */
@@ -252,16 +254,48 @@ public class CreateRatesController {
    */
   public void setupEditCondition(Condition condition) {
     this.setSelectedCondition(condition);
+    editMode = true;
+    showConditionDetailDialog();
+  }
+
+  private void showConditionDetailDialog() {
     RequestContext context = RequestContext.getCurrentInstance();
     context.execute("PF('editConditionDialog').show();");
+  }
+
+  /**
+   * Setup the page to add a new condition.
+   */
+  public void setupAddCondition() {
+    selectedCondition = new Condition();
+    editMode = false;
+    showConditionDetailDialog();
+  }
+
+  /**
+   * Load a condition based on the key that was selected.
+   */
+  public void loadConditionBasedOnKey() {
+    if (selectedCondition.getConditionKey() == null) {
+      selectedCondition = conditionFactory.createEmptyCondition();
+    } else {
+      selectedCondition = conditionFactory.createCondition(selectedCondition.getConditionKey(), "");
+    }
+    showConditionDetailDialog();
   }
 
   /**
    * Save the edited condition.
    */
   public void saveEditCondition() {
-    MessageUtil.addMessage("Condition updated", "Updated " + selectedCondition.getTranslatedKey()
-        + ".");
+    if (editMode) {
+      MessageUtil.addMessage("Condition updated", "Updated " + selectedCondition.getTranslatedKey()
+          + ".");
+    } else {
+      rateFile.addCondition(selectedCondition);
+      MessageUtil.addMessage("Condition added",
+          "Added condition " + selectedCondition.getTranslatedKey());
+    }
   }
 
   public List<Language> getLanguages() {
@@ -366,6 +400,14 @@ public class CreateRatesController {
 
   public void setSelectedCondition(Condition selectedCondition) {
     this.selectedCondition = selectedCondition;
+  }
+
+  public boolean isEditMode() {
+    return editMode;
+  }
+
+  public void setEditMode(boolean editMode) {
+    this.editMode = editMode;
   }
 
 }

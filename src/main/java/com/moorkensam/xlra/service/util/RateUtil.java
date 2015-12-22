@@ -2,7 +2,6 @@ package com.moorkensam.xlra.service.util;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.configuration.AbstractRate;
-import com.moorkensam.xlra.model.configuration.DieselRate;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.error.IntervalOverlapException;
 

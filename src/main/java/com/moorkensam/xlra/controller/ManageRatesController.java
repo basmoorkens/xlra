@@ -146,6 +146,7 @@ public class ManageRatesController {
    * Save the edited condition.
    */
   public void saveEditCondition() {
+    selectedRateFile.addCondition(selectedCondition);
     updateRateFile();
     MessageUtil.addMessage("Condition updated", "Your changes were saved.");
     selectedCondition = null;

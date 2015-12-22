@@ -200,6 +200,7 @@ public class RateFile extends BaseEntity {
     rf.setName(getName());
     rf.setCountry(getCountry());
     rf.setKindOfRate(getKindOfRate());
+    rf.setTransportType(transportType);
     rf.setMeasurement(getMeasurement());
     rf.setRateLines(new ArrayList<RateLine>());
     if (zones != null) {
@@ -306,10 +307,9 @@ public class RateFile extends BaseEntity {
           } else {
             for (Interval interval : rl.getZone().getNumericalPostalCodes()) {
               int postalCodeAsInt = Integer.parseInt(postalCode);
-              if (postalCodeAsInt >= interval.getStart() && postalCodeAsInt < interval.getEnd()) {
+              if (postalCodeAsInt >= interval.getStart() && postalCodeAsInt <= interval.getEnd()) {
                 return rl;
               }
-
             }
           }
         }
@@ -318,6 +318,7 @@ public class RateFile extends BaseEntity {
     throw new RateFileException("Could not find price for given input parameters. Quantity: "
         + quantity + " Postal code: " + postalCode);
   }
+
 
   /**
    * find the rateline with the correct quantity.

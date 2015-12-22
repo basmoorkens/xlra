@@ -54,13 +54,10 @@ public class QuotationUtil {
   public RateFileSearchFilter createRateFileSearchFilterForQuery(QuotationQuery query,
       boolean ignoreFullCustomerIfPresent) {
     RateFileSearchFilter filter = new RateFileSearchFilter();
-    if (ignoreFullCustomerIfPresent) {
-      fillInBaseFilterProperties(query, filter);
-    } else {
-      if (query.getCustomer() instanceof Customer) {
+    fillInBaseFilterProperties(query, filter);
+    if (!ignoreFullCustomerIfPresent) {
+      if (query.getCustomer().isHasOwnRateFile()) {
         filter.setCustomer(query.getCustomer());
-      } else {
-        fillInBaseFilterProperties(query, filter);
       }
     }
     return filter;
