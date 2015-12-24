@@ -7,7 +7,6 @@ body {
 	padding: 0p
 }
 
-
 .customerCreateGrid td {
 	border: none;
 }
@@ -49,4 +48,15 @@ body {
 	margin-top: 20px;
 }
 
+.labelColumn {
+	width: 20%;
+	font-weight: bold;
+}
 
+.valuesColumn {
+	width: 80%;
+}
+
+.ui-row-editor {
+	display: inline;
+}

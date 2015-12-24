@@ -142,6 +142,16 @@ public class ManageUsersController {
     return sourceRole;
   }
 
+  public void cancelAddNewUser() {
+    selectedUser = null;
+    hideAddDialog();
+  }
+
+  private void hideAddDialog() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    context.execute("PF('addUserDialog').hide();");
+  }
+
   /**
    * Creates or updates a user.
    */

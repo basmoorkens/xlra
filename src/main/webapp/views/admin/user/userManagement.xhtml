@@ -29,9 +29,10 @@
 					<p:column headerText="roles list">
 						#{user.rolesAsString}
 					</p:column>
-					<p:column>
-						<p:commandButton icon="ui-icon-pencil"
-							update=":usersForm :addUserForm" id="editButton"
+					<p:column style="width:200px;">
+						<p:commandButton style="margin-top:5px;margin-bottom:5px;"
+							icon="ui-icon-pencil" update=":usersForm :addUserForm"
+							id="editButton"
 							actionListener="#{manageUsersController.selectUserForEdit(user)}" />
 						<p:tooltip id="editTip" for="editButton" value="Edit user" />
 						<p:commandButton icon="ui-icon-locked"
@@ -59,7 +60,10 @@
 					<p:commandButton
 						actionListener="#{manageUsersController.setupNewUser}"
 						update=":usersForm :addUserForm" immediate="true" ajax="false"
-						value="Create new user" />
+						value="Create new user" id="gotoCreateButton" />
+					<p:tooltip id="goToCreateTip" for="gotoCreateButton"
+						value="Create a new user" />
+
 				</p:panel>
 			</p:panel>
 			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
@@ -71,26 +75,36 @@
 		</h:form>
 
 		<p:dialog header="Create new user" widgetVar="addUserDialog"
-			modal="true" height="650px" width="1024px" dynamic="true">
+			modal="true" height="650px" style="width:80% !important;" dynamic="true">
 			<h:form id="addUserForm">
 				<p:growl showDetail="true" id="messages" sticky="false" />
-				<p:panel>
-					<p:panelGrid columns="2">
+				<p:tooltip for="userNameInput" id="idUserNameInput"
+					value="The username that will be used to log in to the application." />
+				<p:tooltip for="emailInput" id="emailInputTip"
+					value="This email adres will be used to send the confirmation email to." />
+				<p:tooltip for="rolesPicklist" id="rolesSelectorTip"
+					value="Select the roles which you want to give to the user." />
+				<p:tooltip for="resetPasswordButton" id="resetPasswordButtonTip"
+					value="Disables the user's account and sends out a password reset email to the user. The user can't use the application till he has completed the password reset process." />
+				<p:panel header="User information">
+					<p:panelGrid columns="2" columnClasses="labelColumn,valuesColumn"
+						style="width:100%;">
 						<h:outputText value="UserName: " />
-						<p:inputText
-							value="#{manageUsersController.selectedUser.userName}" size="85" />
+						<p:inputText style="width:100%;"
+							value="#{manageUsersController.selectedUser.userName}"
+							id="userNameInput" />
 
 						<h:outputText value="Email:" />
 						<p:inputText value="#{manageUsersController.selectedUser.email}"
-							size="85" />
+							style="width:100%;" id="emailInput" />
 
 						<h:outputText value="First name:" />
-						<p:inputText size="85"
+						<p:inputText style="width:100%;"
 							value="#{manageUsersController.selectedUser.firstName}" />
 
 						<h:outputText value="Name:" />
 						<p:inputText value="#{manageUsersController.selectedUser.name}"
-							size="85" />
+							style="width:100%;" />
 
 						<h:outputText value="Roles: " />
 						<p:pickList id="rolesPicklist"
@@ -108,12 +122,20 @@
 						</p:pickList>
 					</p:panelGrid>
 					<p:panel style="margin-top:30px;">
+						<p:commandButton immediate="true" value="Cancel"
+							style="margin-right:20px;padding-left:20px;padding-right:20px;"
+							update="
+							:addUserForm"
+							actionListener="#{manageUsersController.cancelAddNewUser}" />
 						<p:commandButton rendered="true" value="Reset password"
-							ajax="true"
+							ajax="true" id="resetPasswordButton"
 							actionListener="#{manageUsersController.resetUserPassword}"
-							update=":usersForm :addUserForm" />
+							update=":usersForm :addUserForm"
+							style="padding-left:20px;padding-right:20px;" />
 						<p:commandButton value="Save" update=":usersForm :addUserForm"
-							ajax="true" style="margin-left:20px;"
+							ajax="true"
+							style="margin-left:20px;padding-left:20px;padding-right:20px;"
+							id="saveButton"
 							actionListener="#{manageUsersController.createOrUpdateUser}"
 							oncomplete="handleAddUserRequest(xhr, status, args)" />
 					</p:panel>

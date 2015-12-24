@@ -85,6 +85,16 @@ public class RolesController {
     getPermissions().setSource(getSourcePermissions(selectedRole));
   }
 
+  public void cancelAddRole() {
+    selectedRole = null;
+    hideAddDialog();
+  }
+
+  private void hideAddDialog() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    context.execute("PF('addRoleDialog').hide();");
+  }
+
   private List<Permission> getSourcePermissions(Role role) {
     List<Permission> sourcePerm = new ArrayList<Permission>();
     for (Permission p : allPermissions) {

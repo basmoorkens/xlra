@@ -5,9 +5,11 @@ import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.CurrencyRate;
 import com.moorkensam.xlra.model.configuration.Interval;
 import com.moorkensam.xlra.model.configuration.XlraCurrency;
+import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.IntervalOverlapException;
 import com.moorkensam.xlra.service.ApplicationConfigurationService;
 import com.moorkensam.xlra.service.CurrencyService;
+import com.moorkensam.xlra.service.util.CustomerUtil;
 
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.RowEditEvent;
@@ -38,7 +40,9 @@ public class ChfController {
 
   private Configuration configuration;
 
-  private CurrencyRate newCurrencyRate;
+  private String detailTitle;
+
+  private boolean editMode = false;
 
   @PostConstruct
   public void initPage() {
@@ -55,9 +59,23 @@ public class ChfController {
    * Setup the page for a new currency rate.
    */
   public void setupPageForNewCurrencyRate() {
-    newCurrencyRate = new CurrencyRate();
-    newCurrencyRate.setCurrencyType(XlraCurrency.CHF);
-    newCurrencyRate.setInterval(new Interval());
+    selectedChfRate = new CurrencyRate();
+    selectedChfRate.setCurrencyType(XlraCurrency.CHF);
+    selectedChfRate.setInterval(new Interval());
+    detailTitle = "Create new Chf rate";
+    editMode = false;
+    showAddDialog();
+  }
+
+  /**
+   * Set up the page to edit a chf rate.
+   * 
+   * @param currencyRate The chf rate to edit.
+   */
+  public void setupPageForEditChfRate(CurrencyRate currencyRate) {
+    selectedChfRate = currencyRate;
+    detailTitle = "Edit chf rate " + currencyRate.getInterval().toString();
+    editMode = true;
     showAddDialog();
   }
 
@@ -65,18 +83,33 @@ public class ChfController {
    * Save a new currency rate.
    */
   public void saveNewCurrencyRate() {
+    if (selectedChfRate.getId() > 0) {
+      updateSelectedRate();
+    } else {
+      persistNewRate();
+    }
+  }
+
+  private void persistNewRate() {
     try {
-      currencyService.createCurrencyRate(newCurrencyRate);
+      currencyService.createCurrencyRate(selectedChfRate);
       MessageUtil.addMessage("Swiss franc rate created",
-          "Successfully created swiss franc rate for " + newCurrencyRate.getInterval()
-              + " with surcharge percentage " + newCurrencyRate.getSurchargePercentage());
+          "Successfully created swiss franc rate for " + selectedChfRate.getInterval()
+              + " with surcharge percentage " + selectedChfRate.getSurchargePercentage());
       refreshCurrencyRates();
-      newCurrencyRate = null;
+      selectedChfRate = null;
       hideAddDialog();
     } catch (IntervalOverlapException e) {
       MessageUtil.addErrorMessage("Illegal interval", e.getBusinessException());
       showAddDialog();
     }
+  }
+
+  private void updateSelectedRate() {
+    currencyService.updateCurrencyRate(selectedChfRate);
+    MessageUtil.addMessage("Swiss franc rate updated", "Updated swiss franc rate for "
+        + selectedChfRate.getInterval() + " to " + selectedChfRate.getSurchargePercentage());
+    refreshCurrencyRates();
   }
 
   private void hideAddDialog() {
@@ -101,7 +134,7 @@ public class ChfController {
   }
 
   public void cancelAddNewCurrencyRate() {
-    newCurrencyRate = null;
+    selectedChfRate = null;
     hideAddDialog();
   }
 
@@ -122,26 +155,6 @@ public class ChfController {
 
   private void setupCurrentRates() {
     currentChfValue = configuration.getCurrentChfValue();
-  }
-
-  /**
-   * Executed when the onedit event is triggered.
-   * 
-   * @param event The event that was triggered.
-   */
-  public void onChfCurrencyRateRowEdit(RowEditEvent event) {
-    CurrencyRate newRate = (CurrencyRate) event.getObject();
-
-    updateChfRate(newRate);
-    MessageUtil.addMessage(
-        "Swiss franc rate updated",
-        "Updated swiss franc rate for " + newRate.getInterval() + " to "
-            + newRate.getSurchargePercentage());
-    refreshCurrencyRates();
-  }
-
-  private void updateChfRate(CurrencyRate rate) {
-    currencyService.updateCurrencyRate(rate);
   }
 
   public List<CurrencyRate> getChfRates() {
@@ -176,11 +189,19 @@ public class ChfController {
     this.currencyService = currencyService;
   }
 
-  public CurrencyRate getNewCurrencyRate() {
-    return newCurrencyRate;
+  public String getDetailTitle() {
+    return detailTitle;
   }
 
-  public void setNewCurrencyRate(CurrencyRate newCurrencyRate) {
-    this.newCurrencyRate = newCurrencyRate;
+  public void setDetailTitle(String detailTitle) {
+    this.detailTitle = detailTitle;
+  }
+
+  public boolean isEditMode() {
+    return editMode;
+  }
+
+  public void setEditMode(boolean editMode) {
+    this.editMode = editMode;
   }
 }

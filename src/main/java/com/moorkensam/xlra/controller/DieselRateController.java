@@ -37,7 +37,9 @@ public class DieselRateController {
 
   private BigDecimal currentDieselValue;
 
-  private DieselRate newDieselRate;
+  private String detailTitle;
+
+  private boolean editMode;
 
   /**
    * Initialize logic for the controller.
@@ -59,20 +61,33 @@ public class DieselRateController {
 
   private void updateDieselRate(DieselRate rate) {
     dieselService.updateDieselRate(rate);
-    MessageUtil.addMessage("Diesel rate updated", "Successfully updated dieselrate");
   }
 
   /**
    * Sets up the page for a new rate.
    */
   public void setupPageForNewRate() {
-    newDieselRate = new DieselRate();
-    newDieselRate.setInterval(new Interval());
+    selectedDieselRate = new DieselRate();
+    selectedDieselRate.setInterval(new Interval());
+    detailTitle = "Create new diesel rate";
+    showAddDialog();
+  }
+
+  /**
+   * Setup the page to display the add dieselrate dialog. Load in the clicked rate and set the
+   * dialog in edit mode.
+   * 
+   * @param dieselRate The rate to load.
+   */
+  public void setupPageForEditRate(DieselRate dieselRate) {
+    selectedDieselRate = dieselRate;
+    detailTitle = "Edit rate " + dieselRate.getInterval().toString();
+    setEditMode(true);
     showAddDialog();
   }
 
   public void cancelAddNewRate() {
-    newDieselRate = null;
+    selectedDieselRate = null;
     hideAddDialog();
   }
 
@@ -90,13 +105,30 @@ public class DieselRateController {
    * Save a new diesel rate.
    */
   public void saveNewDieselRate() {
+    if (selectedDieselRate.getId() > 0) {
+      updateExistingDieselRate();
+    } else {
+      persistNewDieselRate();
+    }
+  }
+
+  private void updateExistingDieselRate() {
+    updateDieselRate(selectedDieselRate);
+    MessageUtil.addMessage(
+        "Diesel rate updated",
+        "Updated diesel rate for " + selectedDieselRate.getInterval() + " to "
+            + selectedDieselRate.getSurchargePercentage());
+    refreshDieselRates();
+  }
+
+  private void persistNewDieselRate() {
     try {
-      dieselService.createDieselRate(newDieselRate);
+      dieselService.createDieselRate(selectedDieselRate);
       refreshDieselRates();
       MessageUtil.addMessage("New diesel rate created",
-          "successfully created diesel rate for " + newDieselRate.getInterval()
-              + " with surcharge percentage " + newDieselRate.getSurchargePercentage());
-      newDieselRate = null;
+          "successfully created diesel rate for " + selectedDieselRate.getInterval()
+              + " with surcharge percentage " + selectedDieselRate.getSurchargePercentage());
+      selectedDieselRate = null;
     } catch (IntervalOverlapException exc) {
       MessageUtil.addErrorMessage("Illegal interval", exc.getBusinessException());
       showAddDialog();
@@ -127,22 +159,6 @@ public class DieselRateController {
       MessageUtil.addMessage("Current diesel price",
           "The new price is the same as the old, not updating.");
     }
-  }
-
-  /**
-   * Triggered when a dieselrate is edited from the datatable.
-   * 
-   * @param event The event that triggered this.
-   */
-  public void onDieselChargeRowEdit(RowEditEvent event) {
-    DieselRate newRate = (DieselRate) event.getObject();
-
-    updateDieselRate(newRate);
-    MessageUtil.addMessage(
-        "Diesel rate updated",
-        "Updated diesel rate for " + newRate.getInterval() + " to "
-            + newRate.getSurchargePercentage());
-    refreshDieselRates();
   }
 
   public List<DieselRate> getDieselRates() {
@@ -186,11 +202,19 @@ public class DieselRateController {
     this.dieselService = dieselService;
   }
 
-  public DieselRate getNewDieselRate() {
-    return newDieselRate;
+  public String getDetailTitle() {
+    return detailTitle;
   }
 
-  public void setNewDieselRate(DieselRate newDieselRate) {
-    this.newDieselRate = newDieselRate;
+  public void setDetailTitle(String detailTitle) {
+    this.detailTitle = detailTitle;
+  }
+
+  public boolean isEditMode() {
+    return editMode;
+  }
+
+  public void setEditMode(boolean editMode) {
+    this.editMode = editMode;
   }
 }

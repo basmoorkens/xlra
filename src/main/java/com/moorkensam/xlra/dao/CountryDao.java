@@ -14,4 +14,5 @@ public interface CountryDao {
 
   Country updateCountry(Country country);
 
+  void deleteCountry(Country country);
 }

@@ -3,7 +3,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
 <ui:composition template="/views/template.xhtml">
 	<ui:define name="title">
 		<h:outputText value="XLRA - Configuration - Swiss franc prices" />
@@ -18,98 +19,93 @@
 				<p:dataTable editable="true" value="#{chfController.chfRates}"
 					var="chfRate" emptyMessage="No swiss franc rates found."
 					id="chfRateTable">
-
-					<p:ajax event="rowEdit"
-						listener="#{chfController.onChfCurrencyRateRowEdit}"
-						update=":chfRatesForm:msgs" />
-
 					<p:column headerText="Start - End">
-						<p:cellEditor>
-							<f:facet name="output">
-								<h:outputText value="#{chfRate.interval}" />
-							</f:facet>
-							<f:facet name="input">
-								<p:inputText value="#{chfRate.interval.start}"
-									style="width:100%" />
-								<p:inputText value="#{chfRate.interval.end}" style="width:100%" />
-							</f:facet>
-						</p:cellEditor>
+						<h:outputText value="#{chfRate.interval}" />
 					</p:column>
 					<p:column headerText="CHF surcharge percent:">
-						<p:cellEditor>
-							<f:facet name="output">
-								<h:outputText value="#{chfRate.surchargePercentage}" />
-								<h:outputText value="%" />
-							</f:facet>
-							<f:facet name="input">
-								<p:inputText value="#{chfRate.surchargePercentage}"
-									style="width:100%">
-								</p:inputText>
-							</f:facet>
-						</p:cellEditor>
+						<h:outputText value="#{chfRate.surchargePercentage}" />
+						<h:outputText value="%" />
 					</p:column>
-					<p:column style="width:32px">
-						<p:rowEditor />
-					</p:column>
-					<p:column style="width:32px;">
+					<p:column style="width:100px">
+						<p:commandButton
+							actionListener="#{chfController.setupPageForEditChfRate(chfRate)}"
+							icon="ui-icon-pencil" title="Edit" ajax="true"
+							id="editChfRateButton" update=":addChfRateForm" />
+						<p:tooltip id="editChfRateTip" for="editChfRateButton"
+							value="Edit the rate value" />
 						<p:commandButton icon="ui-icon-trash" title="Delete"
+							id="deleteChfRateButton"
 							actionListener="#{chfController.deleteChfRate(chfRate)}"
 							ajax="true" immediate="true" update=":chfRatesForm">
 							<p:confirm header="Confirm delete"
 								message="Are you sure you want to delete?" icon="ui-icon-alert" />
 						</p:commandButton>
+						<p:tooltip id="deleteChfRateTip" for="deleteChfRateButton"
+							value="Delete the rate" />
 					</p:column>
 				</p:dataTable>
 
-				<p:panel>
-					<p:commandButton value="Add new Swiss franc rate"
+				<p:panel style="margin-top:20px;">
+					<p:commandButton value="Create rate"
 						actionListener="#{chfController.setupPageForNewCurrencyRate}"
-						update=":chfRatesForm :addChfRateForm" />
+						update=":chfRatesForm :addChfRateForm" id="setupAddButton" />
+					<p:tooltip id="addNewRateTip" for="setupAddButton"
+						value="Create a new chf rate" />
 				</p:panel>
 			</p:panel>
 
-			<p:panel header="Current swiss franc price">
-				<h:outputLabel for="currentChfRateField">Current swiss franc price:</h:outputLabel>
-				<p:inputText size="50" value="#{chfController.currentChfValue}"
-					id="currentChfRateField">
-				</p:inputText>
-				<p:commandButton action="#{chfController.updateCurrentChfRate}"
-					value="Save new price" update=":chfRatesForm:msgs" />
+			<p:panel header="Current swiss franc price" style="margin-top:20px;">
+				<p:panelGrid style="width:100%;" columns="2"
+					columnClasses="labelColumn,valuesColumn">
+					<h:outputLabel for="currentChfRateField">Current swiss franc price:</h:outputLabel>
+					<p:inputText style="width:100%;"
+						value="#{chfController.currentChfValue}" id="currentChfRateField">
+					</p:inputText>
+				</p:panelGrid>
+				<p:panel style="margin-top:20px;">
+					<p:commandButton action="#{chfController.updateCurrentChfRate}"
+						value="Save new price" update=":chfRatesForm:msgs"
+						id="newPriceButton" />
+					<p:tooltip id="saveNewPriceTip" for="newPriceButton"
+						value="Save the current chf price" />
+				</p:panel>
 			</p:panel>
 		</h:form>
 
 		<h:form id="addChfRateForm">
-			<p:dialog id="addDialog" header="Create new chf rate"
-				widgetVar="addChfDialog" modal="true" width="70%" height="50%"
+			<p:dialog id="addDialog" header="#{chfController.detailTitle}"
+				widgetVar="addChfDialog" modal="true" width="80%" height="50%"
 				dynamic="true">
-				<p:growl id="msgs" showDetail="true" />
-				<p:panel>
-					<p:panelGrid columns="2">
+				<p:panel header="Rate info">
+					<p:panelGrid style="width:100%;" columns="2"
+						columnClasses="labelColumn,valuesColumn">
 						<h:outputText value="Start: " />
 						<p:inputText style="width:100%;"
-							value="#{chfController.newCurrencyRate.interval.start}"
-							required="true" />
+							value="#{chfController.selectedChfRate.interval.start}"
+							disabled="#{chfController.editMode}" required="true" />
 
 						<h:outputText value="End: " />
-						<p:inputText value="#{chfController.newCurrencyRate.interval.end}"
-							style="width:100%;" required="true" />
+						<p:inputText value="#{chfController.selectedChfRate.interval.end}"
+							disabled="#{chfController.editMode}" style="width:100%;"
+							required="true" />
 
 						<h:outputText value="Surcharge percentage: " />
 						<p:inputText style="width:100%;"
-							value="#{chfController.newCurrencyRate.surchargePercentage}"
+							value="#{chfController.selectedChfRate.surchargePercentage}"
 							required="true">
 						</p:inputText>
 
 					</p:panelGrid>
 					<p:panel style="margin-top:30px; ">
 						<p:commandButton immediate="true" value="Cancel"
-							style="margin-right:20px; width:400px;"
+							style="margin-right:20px; padding-left:20px;padding-right:20px;"
 							update=":chfRatesForm :addChfRateForm"
-							actionListener="#{chfController.cancelAddNewCurrencyRate}" />
-						<p:commandButton value="Save swiss franc rate"
-							style="width:400px;"
+							actionListener="#{chfController.cancelAddNewCurrencyRate}"
+							id="chfRateCancelButton" />
+						<p:commandButton value="Save"
+							style="padding-left:20px;padding-right:20px;margin-left:20px;"
 							actionListener="#{chfController.saveNewCurrencyRate}"
-							update=":chfRatesForm :addChfRateForm :addChfRateForm:msgs" />
+							update=":chfRatesForm :addChfRateForm" id="chfRateSaveButton" />
 					</p:panel>
 				</p:panel>
 			</p:dialog>

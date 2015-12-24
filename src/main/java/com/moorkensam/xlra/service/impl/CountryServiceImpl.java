@@ -86,4 +86,8 @@ public class CountryServiceImpl implements CountryService {
     this.zoneDao = zoneDao;
   }
 
+  @Override
+  public void deleteCountry(Country country) {
+    countryDao.deleteCountry(country);
+  }
 }

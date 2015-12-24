@@ -12,99 +12,68 @@
 		<h:outputText value="Email templates" />
 	</ui:define>
 	<ui:define name="body">
-		<h:form id="mailTemplateForm">
+		<h:form id="mailTemplateOverviewForm">
 			<p:growl id="msgs" showDetail="true" />
-			<div id="helpDiv">
-				Following parameters can be filled in the email template.
-				<table>
-					<tr>
-						<td>customer</td>
-						<td>The name of the customer</td>
-					</tr>
-					<tr>
-						<td>quantity</td>
-						<td>The quantity of the order</td>
-					</tr>
-					<tr>
-						<td>measurement</td>
-						<td>The measurement (PALET, KILO, LDM)</td>
-					</tr>
-					<tr>
-						<td>destination</td>
-						<td>The destination</td>
-					</tr>
-					<tr>
-						<td>detailCalculation</td>
-						<td>The detailed info of the calculation</td>
-					</tr>
-				</table>
-			</div>
-			<p:panel id="mailTemplatePanel" header="Email templates">
-				<p:panelGrid columns="2" style="width:100%;">
-					<h:outputText
-						value="#{mailTemplateController.mailTemplateDto.enTemplate.language.description}" />
-					<p:panel>
-						<p>
-							<h:outputText value="Email subject:" />
-							<p:inputText style="width:99%;"
-								value="#{mailTemplateController.mailTemplateDto.enTemplate.subject}" />
-							<br />
-						</p>
-						<h:outputText value="Email body:" />
-						<br />
-						<p:editor
-							value="#{mailTemplateController.mailTemplateDto.enTemplate.template}" />
-					</p:panel>
-
-					<h:outputText
-						value="#{mailTemplateController.mailTemplateDto.nlTemplate.language.description}" />
-					<p:panel>
-						<p>
-							<h:outputText value="Email subject:" />
-							<p:inputText style="width:99%;"
-								value="#{mailTemplateController.mailTemplateDto.nlTemplate.subject}" />
-							<br />
-						</p>
-						<h:outputText value="Email body:" />
-						<br />
-						<p:editor
-							value="#{mailTemplateController.mailTemplateDto.nlTemplate.template}" />
-					</p:panel>
-
-					<h:outputText
-						value="#{mailTemplateController.mailTemplateDto.frTemplate.language.description}" />
-					<p:panel>
-						<p>
-							<h:outputText value="Email subject:" />
-							<p:inputText style="width:99%;"
-								value="#{mailTemplateController.mailTemplateDto.frTemplate.subject}" />
-							<br />
-						</p>
-						<h:outputText value="Email body:" />
-						<br />
-						<p:editor
-							value="#{mailTemplateController.mailTemplateDto.frTemplate.template}" />
-					</p:panel>
-
-					<h:outputText
-						value="#{mailTemplateController.mailTemplateDto.deTemplate.language.description}" />
-					<p:panel>
-						<p>
-							<h:outputText value="Email subject:" />
-							<p:inputText style="width:99%;"
-								value="#{mailTemplateController.mailTemplateDto.deTemplate.subject}" />
-							<br />
-						</p>
-						<h:outputText value="Email body:" />
-						<br />
-						<p:editor
-							value="#{mailTemplateController.mailTemplateDto.deTemplate.template}" />
-					</p:panel>
-				</p:panelGrid>
-				<p:commandButton title="Save mail templates"
-					value="Save mail templates" update=":mailTemplateForm"
-					action="#{mailTemplateController.saveMailTemplates}" />
+			<p:panel header="Email templates">
+				<p:dataTable
+					value="#{mailTemplateController.mailTemplateDto.mailTemplates}"
+					var="template">
+					<p:column headerText="Language">
+						<h:outputText value="#{template.language.description}" />
+					</p:column>
+					<p:column headerText="Mail subject">
+						<h:outputText value="#{template.subject}" />
+					</p:column>
+					<p:column headerText="Mail body">
+						<h:outputText value="Edit the template to see this" />
+					</p:column>
+					<p:column style="width:50px">
+						<p:commandButton style="margin-left:5px;margin-right:5px;"
+							actionListener="#{mailTemplateController.setupPageForEdit(template)}"
+							icon="ui-icon-pencil" title="Edit" ajax="true" immediate="true"
+							id="editTemplateButton" update=":editMailTemplateForm" />
+						<p:tooltip id="editTemplateRateTip" for="editTemplateButton"
+							value="Edit the mail template" />
+					</p:column>
+				</p:dataTable>
 			</p:panel>
+		</h:form>
+
+		<h:form id="editMailTemplateForm">
+			<p:growl id="msgs" showDetail="true" />
+			<p:dialog id="editDialog"
+				header="#{mailTemplateController.popupHeader}"
+				widgetVar="editMailDialog" modal="true" width="80%" height="50%"
+				dynamic="true">
+				<p:panel id="mailTemplatePanel" header="Email template">
+					<p:panelGrid columns="2" style="width:100%;"
+						columnClasses="labelColumn,valuesColumn">
+						<h:outputText value="Language " />
+						<h:outputText
+							value="#{mailTemplateController.selectedTemplate.language}" />
+
+						<h:outputText value="Email subject:" />
+						<p:inputText style="width:99%;"
+							value="#{mailTemplateController.selectedTemplate.subject}" />
+
+						<h:outputText value="Email body:" />
+						<p:editor
+							value="#{mailTemplateController.selectedTemplate.template}" />
+					</p:panelGrid>
+
+					<p:panel style="margin-top:20px;">
+						<p:commandButton title="Cancel" value="Cancel"
+							style="padding-left:5px;padding-right:5px;margin-right:20px;"
+							actionListener="#{mailTemplateController.cancelEdit}"
+							update=":editMailTemplateForm" />
+						<p:commandButton title="Save mail templates"
+							style="padding-left:5px;padding-right:5px;margin-right:20px;"
+							id="saveMailTemplatesButton" value="Save mail template"
+							update=":editMailTemplateForm :mailTemplateOverviewForm"
+							actionListener="#{mailTemplateController.saveActiveTemplate}" />
+					</p:panel>
+				</p:panel>
+			</p:dialog>
 		</h:form>
 	</ui:define>
 </ui:composition>

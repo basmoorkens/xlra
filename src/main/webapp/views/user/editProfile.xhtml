@@ -14,29 +14,45 @@
 	<ui:define name="body">
 		<h:form id="userForm">
 			<p:growl showDetail="true" id="messages" sticky="false" />
-			<p:panel>
-				<p:panelGrid columns="2">
-					<h:outputText value="UserName: " />
-					<h:outputText value="#{userController.user.userName}" />
+			<p:panel header="Profile for #{userController.user.fullName}">
+				<p:panel header="Account information">
+					<p:panelGrid columns="2" style="width:100%;"
+						columnClasses="labelColumn,valuesColumn">
+						<h:outputText value="UserName: " />
+						<h:outputText value="#{userController.user.userName}" />
 
-					<h:outputText value="Email: " />
-					<h:outputText value="#{userController.user.email}" />
+						<h:outputText value="Email: " />
+						<h:outputText value="#{userController.user.email}" />
 
-					<h:outputText value="First name: " />
-					<p:inputText size="100" value="#{userController.user.firstName}" />
+					</p:panelGrid>
+				</p:panel>
+				<p:panel header="User information" style="margin-top:20px;">
+					<p:panelGrid columns="2" style="width:100%;"
+						columnClasses="labelColumn,valuesColumn">
+						<h:outputText value="First name: " />
+						<p:inputText style="width:100%;"
+							value="#{userController.user.firstName}" />
 
-					<h:outputText value="Name: " />
-					<p:inputText size="100" value="#{userController.user.name}" />
+						<h:outputText value="Name: " />
+						<p:inputText style="width:100%;"
+							value="#{userController.user.name}" />
 
-					<h:outputText value="New password: " />
-					<p:password size="100" value="#{userController.newPassword}" />
+						<h:outputText value="New password: " />
+						<p:password style="width:100%;"
+							value="#{userController.newPassword}" />
 
-					<h:outputText value="Retype new password: " />
-					<p:password size="100" value="#{userController.retypedPassword}" />
-				</p:panelGrid>
+						<h:outputText value="Retype new password: " />
+						<p:password style="width:100%;"
+							value="#{userController.retypedPassword}" />
+					</p:panelGrid>
+				</p:panel>
 
-				<p:commandButton value="Save"
-					actionListener="#{userController.saveUser}" update=":userForm" />
+				<p:panel style="margin-top:20px;">
+					<p:commandButton value="Save edited profile" id="saveButton"
+						style="padding-left:20px; padding-right:20px;"
+						actionListener="#{userController.saveUser}" update=":userForm" />
+					<p:tooltip id="saveTip" for="saveButton" value="Save the changes you made" />
+				</p:panel>
 			</p:panel>
 		</h:form>
 	</ui:define>

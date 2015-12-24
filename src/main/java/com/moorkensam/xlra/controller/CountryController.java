@@ -26,6 +26,10 @@ public class CountryController {
 
   @PostConstruct
   public void init() {
+    refreshCountries();
+  }
+
+  private void refreshCountries() {
     countries = countryService.getAllCountriesFullLoad();
   }
 
@@ -39,6 +43,18 @@ public class CountryController {
     MessageUtil.addMessage("Country updated", "Country " + country.getShortName()
         + " was successfully");
     country = countryService.updateCountry(country);
+  }
+
+  /**
+   * Delete a country
+   * 
+   * @param country the country to delete.
+   */
+  public void deleteCountry(Country country) {
+    countryService.deleteCountry(country);
+    refreshCountries();
+    MessageUtil.addMessage("Country deleted",
+        "Successfully deleted the country " + country.getEnglishName());
   }
 
   public Country getSelectedCountry() {

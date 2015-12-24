@@ -19,4 +19,6 @@ public interface CountryService {
 
   public Country updateCountry(Country country);
 
+  public void deleteCountry(Country country);
+
 }

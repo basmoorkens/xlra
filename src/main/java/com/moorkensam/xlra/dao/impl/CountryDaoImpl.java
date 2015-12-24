@@ -4,6 +4,7 @@ import com.moorkensam.xlra.dao.BaseDao;
 import com.moorkensam.xlra.dao.CountryDao;
 import com.moorkensam.xlra.model.rate.Country;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -42,6 +43,13 @@ public class CountryDaoImpl extends BaseDao implements CountryDao {
     country = getEntityManager().merge(country);
     lazyLoadCountry(country);
     return country;
+  }
+
+  @Override
+  public void deleteCountry(Country country) {
+    country.setDeleted(true);
+    country.setDeletedDateTime(new Date());
+    getEntityManager().merge(country);
   }
 
 }

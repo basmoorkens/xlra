@@ -72,11 +72,28 @@
 							</f:facet>
 						</p:cellEditor>
 					</p:column>
-					<p:column style="width:32px">
+					<p:column style="width:32px;">
 						<p:rowEditor />
+					</p:column>
+					<p:column style="width:50px;">
+						<p:commandButton icon="ui-icon-trash" title="Delete"
+							id="deleteCountryButton"
+							style="margin-right:5px;margin-left:5px;"
+							actionListener="#{countryController.deleteCountry(country)}"
+							ajax="true" immediate="true" update=":countryForm">
+							<p:confirm header="Confirm delete"
+								message="Are you sure you want to delete the country?"
+								icon="ui-icon-alert" />
+						</p:commandButton>
 					</p:column>
 				</p:dataTable>
 			</p:panel>
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				<p:commandButton value="Yes" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
 		</h:form>
 	</ui:define>
 </ui:composition>
