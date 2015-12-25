@@ -21,7 +21,7 @@ import javax.persistence.Query;
 
 public class RateFileDaoImpl extends BaseDao implements RateFileDao {
 
-  private final static Logger logger = LogManager.getLogger();
+  private static final Logger logger = LogManager.getLogger();
 
   @PostConstruct
   public void init() {}
@@ -69,6 +69,9 @@ public class RateFileDaoImpl extends BaseDao implements RateFileDao {
     if (filter.getCountry() != null) {
       query.setParameter("country", filter.getCountry());
     }
+    if (filter.getTransportationType() != null) {
+      query.setParameter("transportType", filter.getTransportationType());
+    }
   }
 
   private StringBuilder buildSearchQuery(RateFileSearchFilter filter) {
@@ -87,6 +90,9 @@ public class RateFileDaoImpl extends BaseDao implements RateFileDao {
     }
     if (filter.getCountry() != null) {
       builder.append("AND r.country = :country ");
+    }
+    if (filter.getTransportationType() != null) {
+      builder.append("AND r.transportType = :transportType ");
     }
     return builder;
   }

@@ -103,9 +103,7 @@ public class CreateRatesController {
   public void generateCopyOfRateFileForFilter() {
     RateFile copiedFile;
     try {
-      copiedFile =
-          rateFileService.generateCustomerRateFileForFilterAndCustomer(filter,
-              rateFile.getCustomer());
+      copiedFile = rateFileService.generateCustomerRateFileForFilterAndCustomer(filter);
       rateFile = copiedFile;
       translationUtil.fillInTranslations(rateFile.getConditions());
       showRateLineEditor();

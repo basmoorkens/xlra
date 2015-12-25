@@ -81,8 +81,8 @@ public interface RateFileService {
    * @return The generated ratefile.
    * @throws RateFileException Thrown when no ratefile could be found for the filter.
    */
-  RateFile generateCustomerRateFileForFilterAndCustomer(RateFileSearchFilter filter,
-      Customer customer) throws RateFileException;
+  RateFile generateCustomerRateFileForFilterAndCustomer(RateFileSearchFilter filter)
+      throws RateFileException;
 
   /**
    * This method fetches the names and ids of all ratefiles and puts them in a list of dtos. This

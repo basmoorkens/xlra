@@ -139,16 +139,29 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
   }
 
   @Override
-  public RateFile generateCustomerRateFileForFilterAndCustomer(RateFileSearchFilter filter,
-      Customer customer) throws RateFileException {
-    List<RateFile> rateFiles = getRateFileDao().getRateFilesForFilter(filter);
-    if (rateFiles.isEmpty()) {
-      throw new RateFileException("Could not find a ratefile to copy from for this filter.");
+  public RateFile generateCustomerRateFileForFilterAndCustomer(RateFileSearchFilter filter)
+      throws RateFileException {
+    try {
+      RateFile alreadyExistingFileForCustomer = rateFileDao.getFullRateFileForFilter(filter);
+      throw new RateFileException("A ratefile already exists for this customer and these options.");
+    } catch (NoResultException e) {
+      try {
+        Customer customer = filter.getCustomer();
+        filter.setCustomer(null);
+        RateFile baseRateFile = getRateFileDao().getFullRateFileForFilter(filter);
+        fillInConditionKeyTranslations(baseRateFile);
+        RateFile copy = copyRateFile(filter, customer, baseRateFile);
+        filter.setCustomer(customer);
+        return copy;
+      } catch (NoResultException nre2) {
+        throw new RateFileException("Could not find a ratefile to copy from for this filter.");
+      }
     }
-    RateFile original = rateFiles.get(0);
-    RateFile fullOriginal = getFullRateFile(original.getId());
-    fillInConditionKeyTranslations(fullOriginal);
-    RateFile copy = fullOriginal.deepCopy();
+  }
+
+  private RateFile copyRateFile(RateFileSearchFilter filter, Customer customer,
+      RateFile baseRateFile) {
+    RateFile copy = baseRateFile.deepCopy();
     copy.setName(RateUtil.generateNameForCustomerRateFile(filter, customer));
     copy.setCustomer(customer);
     return copy;

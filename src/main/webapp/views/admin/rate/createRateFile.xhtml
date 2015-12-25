@@ -24,7 +24,7 @@
 
 					<h:outputText value="Customer: " />
 					<p:autoComplete style="width:100%;" id="customerSelector"
-						dropdown="true" value="#{createRatesController.rateFile.customer}"
+						dropdown="true" value="#{createRatesController.filter.customer}"
 						completeMethod="#{createRatesController.completeCustomerName}"
 						var="customer" itemLabel="#{customer.name}"
 						itemValue="#{customer}" converter="#{customerConverter}"

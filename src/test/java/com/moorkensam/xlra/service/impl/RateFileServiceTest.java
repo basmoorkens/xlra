@@ -115,18 +115,37 @@ public class RateFileServiceTest extends UnitilsJUnit4 {
     customer.setName("testje");
     rf1.setId(1L);
     rf1.setName("test");
-    EasyMock.expect(rfDao.getRateFilesForFilter(new RateFileSearchFilter())).andReturn(
-        Arrays.asList(rf1));
-    EasyMock.expect(rfDao.getFullRateFile(1L)).andReturn(rf1);
-    EasyMockUnitils.replay();
     RateFileSearchFilter filter = new RateFileSearchFilter();
     filter.setCountry(new Country());
     filter.getCountry().setNames(new HashMap<Language, String>());
     filter.getCountry().setEnglishName("be");
     filter.setMeasurement(Measurement.KILO);
-    RateFile rs = rateFileService.generateCustomerRateFileForFilterAndCustomer(filter, customer);
+    filter.setCustomer(customer);
+    EasyMock.expect(rfDao.getFullRateFileForFilter(filter)).andThrow(new NoResultException());
+    EasyMock.expect(rfDao.getFullRateFileForFilter(EasyMock.isA(RateFileSearchFilter.class)))
+        .andReturn(rf1);
+    EasyMockUnitils.replay();
+    RateFile rs = rateFileService.generateCustomerRateFileForFilterAndCustomer(filter);
     Assert.assertNotNull(rs);
     Assert.assertEquals("testje - be - Kilo - null - null", rs.getName());
+  }
+
+  @Test(expected = RateFileException.class)
+  public void testgetCopyOfRateFileForFilterAlreadyExistsForCustomer() throws RateFileException {
+    RateFile rf1 = new RateFile();
+    Customer customer = new Customer();
+    customer.setName("testje");
+    rf1.setId(1L);
+    rf1.setName("test");
+    RateFileSearchFilter filter = new RateFileSearchFilter();
+    filter.setCountry(new Country());
+    filter.getCountry().setNames(new HashMap<Language, String>());
+    filter.getCountry().setEnglishName("be");
+    filter.setMeasurement(Measurement.KILO);
+    filter.setCustomer(customer);
+    EasyMock.expect(rfDao.getFullRateFileForFilter(filter)).andReturn(rf1);
+    EasyMockUnitils.replay();
+    RateFile rs = rateFileService.generateCustomerRateFileForFilterAndCustomer(filter);
   }
 
   @Test
