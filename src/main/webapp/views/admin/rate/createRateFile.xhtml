@@ -66,11 +66,13 @@
 					</p:selectOneMenu>
 				</p:panelGrid>
 
-				<p:panel style="margin-top:10px;padding:0px;border:0px;">
-					<p:commandButton value="Next"
+				<p:panel style="margin-top:20px;">
+					<p:commandButton value="Next" id="nextToEditRates"
 						actionListener="#{createRatesController.generateCopyOfRateFileForFilter}"
 						update=":createRatesForm :rateLinesDetailForm"
-						style="width:150px; margin-left:20px;" />
+						style="padding-left:20px; padding-right:20px;" />
+					<p:tooltip id="nextToEditTip" for="nextToEditRates"
+						value="Load base ratefile by your filters and go to the edit rates screen" />
 				</p:panel>
 			</p:panel>
 		</h:form>
@@ -87,15 +89,19 @@
 					<ui:param name="sticky" value="false"></ui:param>
 				</ui:include>
 
-				<p:panel style="margin-top:10px;padding:0px;border:0px;">
-					<p:commandButton value="Back"
+				<p:panel style="margin-top:20px;">
+					<p:commandButton value="Back" id="backToBasicInfoButton"
 						actionListener="#{createRatesController.showBasicInfoGrid}"
 						update=":createRatesForm :rateLinesDetailForm"
-						style="width:150px;" />
-					<p:commandButton value="Next"
+						style="padding-left:20px; padding-right:20px; margin-right:20px;" />
+					<p:tooltip id="backToBasicInfoTip" for="backToBasicInfoButton"
+						value="Go back to the basic info screen to adjust your filters or the customer" />
+					<p:commandButton value="Next" id="nextToConditionsEditor"
 						actionListener="#{createRatesController.goToConditionsEditor}"
 						update=":rateLinesDetailForm :conditionsDetailForm"
-						style="width:150px; margin-left:20px;" />
+						style="padding-left:20px; padding-right:20px;" />
+					<p:tooltip id="nextToConditionsTip" for="nextToConditionsEditor"
+						value="Go to the edit conditions screen" />
 				</p:panel>
 			</p:panel>
 		</h:form>
@@ -141,25 +147,30 @@
 					</p:column>
 					<p:column style="width:105px;">
 						<p:commandButton icon="ui-icon-pencil" title="Edit"
+							id="editButton"
 							actionListener="#{createRatesController.setupEditCondition(condition)}"
-							ajax="true" immediate="true" update=":editConditionForm">
-						</p:commandButton>
+							ajax="true" immediate="true" update=":editConditionForm" />
+						<p:tooltip id="editTip" for="editButton"
+							value="Edit this condition" />
 						<p:commandButton style="margin-left:5px;" icon="ui-icon-trash"
-							title="Delete"
+							title="Delete" id="deleteButton"
 							actionListener="#{createRatesController.deleteCondition(condition)}"
 							ajax="true" immediate="true" update=":conditionsDetailForm">
 							<p:confirm header="Confirm delete"
 								message="Are you sure you want to delete?" icon="ui-icon-alert" />
 						</p:commandButton>
+						<p:tooltip id="deleteTip" for="deleteButton"
+							value="Delete this condition" />
 					</p:column>
 				</p:dataTable>
 
 				<p:panel style="margin-top:10px;">
 					<p:commandButton value="Add condition" icon="ui-icon-pencil"
-						title="Add"
+						title="Add" id="addConditionButton"
 						actionListener="#{createRatesController.setupAddCondition}"
-						ajax="true" immediate="true" update=":editConditionForm">
-					</p:commandButton>
+						ajax="true" immediate="true" update=":editConditionForm" />
+					<p:tooltip id="addConditionTip" for="addConditionButton"
+						value="Add a new condition" />
 				</p:panel>
 
 				<p:panel style="margin-top:10px;padding:0px;border:0px;">
@@ -175,12 +186,14 @@
 			</p:panel>
 		</h:form>
 
-		<p:dialog id="editDialog" header="Edit condition"
-			widgetVar="editConditionDialog" modal="true" width="50%" height="50%"
-			dynamic="true">
-			<h:form id="editConditionForm">
-				<p:panel style="width:80%; margin:auto;">
-					<p:panelGrid columns="2" style="width:100%;margin-top:10px;">
+		<h:form id="editConditionForm">
+			<p:dialog id="editDialog"
+				header="#{createRatesController.conditionDialogHeader}"
+				widgetVar="editConditionDialog" modal="true" width="80%"
+				height="50%" dynamic="true">
+				<p:panel header="Condition info">
+					<p:panelGrid columns="2" style="width:100%;margin-top:10px;"
+						columnClasses="labelColumn,valuesColumn">
 						<h:outputLabel value="Selected key" />
 						<h:outputLabel style="font-weight:bold;"
 							rendered="#{createRatesController.editMode}"
@@ -199,7 +212,7 @@
 
 						<h:outputLabel value="New value:"
 							rendered="#{createRatesController.selectedCondition.calculationCondition}" />
-						<p:inputText size="50"
+						<p:inputText style="width:100%;"
 							value="#{createRatesController.selectedCondition.value}"
 							rendered="#{createRatesController.selectedCondition.calculationCondition}" />
 
@@ -207,24 +220,30 @@
 							items="#{createRatesController.selectedCondition.translations}"
 							var="translation">
 							<h:outputText value="#{translation.language}" />
-							<p:inputText size="50" value="#{translation.translation}" />
+							<p:inputText style="width:100%;"
+								value="#{translation.translation}" />
 						</c:forEach>
 
 						<h:outputLabel value="Standard selected:" />
 						<p:selectBooleanCheckbox
 							value="#{createRatesController.selectedCondition.standardSelected}" />
 					</p:panelGrid>
-					<f:facet name="footer">
-						<p:commandButton value="Cancel"
+					<p:panel style="margin-top:20px;">
+						<p:commandButton value="Cancel" id="cancelButton"
 							onclick="PF('editConditionDialog').hide();" />
+						<p:tooltip id="cancelTip" for="cancelButton"
+							value="Cancel the operation" />
 						<p:commandButton style="margin-left:20px;" value="Save"
+							id="saveButton"
 							oncomplete="handleEditConditionRequest(xhr, status, args)"
 							actionListener="#{createRatesController.saveEditCondition}"
 							update=":conditionsDetailForm :editConditionForm" />
-					</f:facet>
+						<p:tooltip id="saveTip" for="saveButton"
+							value="Save the condition" />
+					</p:panel>
 				</p:panel>
-			</h:form>
-		</p:dialog>
+			</p:dialog>
+		</h:form>
 
 		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
 			<p:commandButton value="Yes" type="button"

@@ -10,6 +10,7 @@ import com.moorkensam.xlra.model.rate.Measurement;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
 import com.moorkensam.xlra.model.rate.Zone;
+import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.util.QuotationUtil;
 
 import junit.framework.Assert;
@@ -33,6 +34,9 @@ public class RateFileServiceTest extends UnitilsJUnit4 {
   private RateFileServiceImpl rateFileService;
 
   @Mock
+  private UserService userService;
+
+  @Mock
   private RateFileDao rfDao;
 
   @Mock
@@ -46,6 +50,7 @@ public class RateFileServiceTest extends UnitilsJUnit4 {
     rateFileService = new RateFileServiceImpl();
     rateFileService.setRateFileDao(rfDao);
     rateFileService.setQuotationUtil(quotationUtil);
+    rateFileService.setUserService(userService);
   }
 
   @Test
@@ -91,6 +96,8 @@ public class RateFileServiceTest extends UnitilsJUnit4 {
     rf.addZone(zone);
     rf.addZone(zone2);
     EasyMock.expect(rfDao.updateRateFile(rf)).andReturn(rf);
+    String username = "bmoork";
+    EasyMock.expect(userService.getCurrentUsername()).andReturn(username);
     EasyMock.expect(rfDao.getFullRateFile(rf.getId())).andReturn(rf);
     EasyMockUnitils.replay();
 
@@ -98,6 +105,7 @@ public class RateFileServiceTest extends UnitilsJUnit4 {
     Assert.assertNotNull(result);
     Assert.assertNotNull(result.getZones());
     Assert.assertEquals(1, result.getZones().size());
+    Assert.assertEquals(result.getLastEditedBy(), username);
   }
 
   @Test

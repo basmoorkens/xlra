@@ -2,17 +2,14 @@ package com.moorkensam.xlra.service.impl;
 
 import com.moorkensam.xlra.dao.RateFileDao;
 import com.moorkensam.xlra.model.configuration.Interval;
-import com.moorkensam.xlra.model.customer.Customer;
-import com.moorkensam.xlra.model.error.RateFileException;
-import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.rate.ZoneType;
+import com.moorkensam.xlra.service.UserService;
 
 import junit.framework.Assert;
 
-import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
@@ -31,6 +28,9 @@ public class RateFileServiceImplTest extends UnitilsJUnit4 {
 
   @InjectIntoByType
   private Mock<RateFileDao> rateFileDaoMock;
+
+  @InjectIntoByType
+  private Mock<UserService> userServiceMock;
 
   private RateFile rateFile;
 

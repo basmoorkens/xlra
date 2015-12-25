@@ -1,4 +1,4 @@
-package com.moorkensam.xlra.service.util;
+package com.moorkensam.xlra.service.util.excel;
 
 import com.moorkensam.xlra.model.ExcelUploadUtilData;
 import com.moorkensam.xlra.model.RateLineExcelImportDto;
@@ -9,6 +9,8 @@ import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.rate.ZoneType;
 import com.moorkensam.xlra.model.translation.TranslationKey;
+import com.moorkensam.xlra.service.util.ConditionFactory;
+import com.moorkensam.xlra.service.util.TranslationUtil;
 import com.moorkensam.xlra.service.util.excel.ExcelToModelMapper;
 
 import junit.framework.Assert;

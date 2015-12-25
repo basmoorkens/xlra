@@ -80,6 +80,8 @@ public class CreateRatesController {
 
   private boolean editMode = false;
 
+  private String conditionDialogHeader;
+
   /**
    * The init method for this controller.
    */
@@ -259,6 +261,7 @@ public class CreateRatesController {
   public void setupEditCondition(Condition condition) {
     this.setSelectedCondition(condition);
     editMode = true;
+    conditionDialogHeader = "Edit condition " + condition.getTranslatedKey();
     showConditionDetailDialog();
   }
 
@@ -273,6 +276,7 @@ public class CreateRatesController {
   public void setupAddCondition() {
     selectedCondition = new Condition();
     editMode = false;
+    conditionDialogHeader = "Add a new condition";
     showConditionDetailDialog();
   }
 
@@ -404,6 +408,14 @@ public class CreateRatesController {
 
   public void setCollapseRateLinesDetailGrid(boolean collapseRateLinesDetailGrid) {
     this.collapseRateLinesDetailGrid = collapseRateLinesDetailGrid;
+  }
+
+  public String getConditionDialogHeader() {
+    return conditionDialogHeader;
+  }
+
+  public void setConditionDialogHeader(String conditionDialogHeader) {
+    this.conditionDialogHeader = conditionDialogHeader;
   }
 
 }

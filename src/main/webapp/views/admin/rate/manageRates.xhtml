@@ -35,8 +35,20 @@
 			<p:panel id="basicInfoPanel" toggleable="false"
 				collapsed="#{manageRatesController.collapseZonesDetailGrid}"
 				header="Basic info">
-				<p:commandButton icon="ui-icon-document" ajax="false"
-					actionListener="#{manageRatesController.downloadRateExcel}" />
+				<p:panelGrid columns="2" columnClasses="labelColumn,valuesColumn">
+					<h:outputText value="Last edited by:" />
+					<h:outputText
+						value="#{manageRatesController.selectedRateFile.lastEditedBy}" />
+
+					<h:outputText value="Last edited on:" />
+					<h:outputText
+						value="#{manageRatesController.selectedRateFile.lastUpdatedOrCreatedDate}" />
+				</p:panelGrid>
+
+				<p:panel style="margin-top:20px;">
+					<p:commandButton value="Download as excel" ajax="false"
+						actionListener="#{manageRatesController.downloadRateExcel}" />
+				</p:panel>
 			</p:panel>
 		</h:form>
 		<h:form id="zoneDetailForm">

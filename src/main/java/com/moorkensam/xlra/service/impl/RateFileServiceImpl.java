@@ -13,6 +13,7 @@ import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.service.RateFileService;
+import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
 import com.moorkensam.xlra.service.util.QuotationUtil;
 import com.moorkensam.xlra.service.util.RateUtil;
@@ -46,6 +47,9 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
   @Inject
   private RateFileDao rateFileDao;
 
+  @Inject
+  private UserService userService;
+
   private TranslationKeyToi8nMapper translationMapper;
 
   private QuotationUtil quotationUtil;
@@ -70,6 +74,7 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
   @Override
   public void createRateFile(final RateFile rateFile) {
     logger.info("Creating ratefile for " + rateFile.getName());
+    rateFile.setLastEditedBy(userService.getCurrentUsername());
     convertStringCodesToObjects(rateFile);
     getRateFileDao().createRateFile(rateFile);
   }
@@ -84,6 +89,7 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
   @Override
   public RateFile updateRateFile(final RateFile rateFile) {
     convertStringCodesToObjects(rateFile);
+    rateFile.setLastEditedBy(userService.getCurrentUsername());
     RateFile updateRateFile = getRateFileDao().updateRateFile(rateFile);
     fillInConditionKeyTranslations(updateRateFile);
     return updateRateFile;
@@ -250,5 +256,13 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
   @Override
   public List<RateFile> getRateFilesByIdList(List<Long> ids) {
     return rateFileDao.getRateFilesById(ids);
+  }
+
+  public UserService getUserService() {
+    return userService;
+  }
+
+  public void setUserService(UserService userService) {
+    this.userService = userService;
   }
 }

@@ -11,6 +11,7 @@ import org.hibernate.annotations.BatchSize;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Cacheable;
@@ -88,6 +89,8 @@ public class RateFile extends BaseEntity {
 
   @Transient
   private List<List<RateLine>> relationalRateLines;
+
+  private String lastEditedBy;
 
   /**
    * Add a zone to the list of zones.
@@ -415,5 +418,25 @@ public class RateFile extends BaseEntity {
     }
     conditions.add(condition);
     condition.setRateFile(this);
+  }
+
+  public String getLastEditedBy() {
+    return lastEditedBy;
+  }
+
+  public void setLastEditedBy(String lastEditedBy) {
+    this.lastEditedBy = lastEditedBy;
+  }
+
+  /**
+   * Get the last update time of this ratefile. If it was never updated returns the create datetime.
+   * 
+   * @return The last updated datetime.
+   */
+  public Date getLastUpdatedOrCreatedDate() {
+    if (getLastUpdatedDateTime() == null) {
+      return getCreatedDateTime();
+    }
+    return getLastUpdatedDateTime();
   }
 }
