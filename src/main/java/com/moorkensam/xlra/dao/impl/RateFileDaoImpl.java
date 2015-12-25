@@ -82,6 +82,8 @@ public class RateFileDaoImpl extends BaseDao implements RateFileDao {
     }
     if (filter.getCustomer() != null) {
       builder.append("AND r.customer = :customer ");
+    } else {
+      builder.append("AND r.customer IS NULL ");
     }
     if (filter.getCountry() != null) {
       builder.append("AND r.country = :country ");

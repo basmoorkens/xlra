@@ -14,8 +14,7 @@
 	<ui:define name="body">
 
 		<h:form id="offertesForm">
-			<p:panel id="overviewPanel" header="Offerte overview"
-				toggleable="true">
+			<p:panel id="overviewPanel" header="Offerte overview">
 				<p:dataTable var="quotationResult"
 					value="#{offerteOverviewController.model}" paginator="true"
 					id="offerteTable" emptyMessage="No offertes to view..."
@@ -26,38 +25,46 @@
 
 					<p:column headerText="Offerte key"
 						sortBy="#{quotationResult.offerteUniqueIdentifier}"
-						filterBy="#{quotationResult.offerteUniqueIdentifier}">
+						filterBy="#{quotationResult.offerteUniqueIdentifier}"
+						filterStyle="width:100%;">
 						<h:outputText value="#{quotationResult.offerteUniqueIdentifier}" />
 					</p:column>
 
 					<p:column headerText="Customer"
 						sortBy="#{quotationResult.query.customer.name}"
-						filterBy="#{quotationResult.query.customer.name}">
+						filterBy="#{quotationResult.query.customer.name}"
+						filterStyle="width:100%;">
 						<h:outputText value="#{quotationResult.query.customer.name}" />
 					</p:column>
 
 					<p:column headerText="Date"
 						sortBy="#{quotationResult.query.quotationDate}"
-						filterBy="#{quotationResult.query.quotationDate}">
+						filterBy="#{quotationResult.query.quotationDate}"
+						filterStyle="width:100%;">
 						<h:outputText value="#{quotationResult.query.quotationDate}" />
 					</p:column>
 
 					<p:column headerText="Country"
 						sortBy="#{quotationResult.query.country.shortName}"
-						filterBy="#{quotationResult.query.country.shortName}">
+						filterBy="#{quotationResult.query.country.shortName}"
+						filterStyle="width:100%;">
 						<h:outputText value="#{quotationResult.query.country.shortName}" />
 					</p:column>
 
 					<p:column headerText="PostalCode"
 						sortBy="#{quotationResult.query.postalCode}"
-						filterBy="#{quotationResult.query.postalCode}">
+						filterBy="#{quotationResult.query.postalCode}"
+						filterStyle="width:100%;">
 						<h:outputText value="#{quotationResult.query.postalCode}" />
 					</p:column>
-					<p:column style="width:36px;text-align: center">
+					<p:column
+						style="width:50px;text-align: center; margin-left:5px;margin-right:5px;">
 						<p:commandButton
 							actionListener="#{offerteOverviewController.setupOfferteDetail(quotationResult)}"
-							icon="ui-icon-search" title="View"
+							icon="ui-icon-search" title="View" id="detailButton"
 							update=":offertesForm :offerteDetailForm">
+							<p:tooltip id="detailTip" for="detailButton"
+								value="Open the details for this offerte" />
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>
@@ -65,8 +72,8 @@
 		</h:form>
 		<h:form id="offerteDetailForm">
 			<p:dialog id="detailDialog"
-				header="Offerte #{offerteOverviewController.selectedOfferte.offerteUniqueIdentifier} details"
-				widgetVar="detailOfferteDialog" modal="true" width="70%"
+				header="Details for offerte #{offerteOverviewController.selectedOfferte.offerteUniqueIdentifier}"
+				widgetVar="detailOfferteDialog" modal="true" width="80%"
 				height="50%" dynamic="true">
 				<ui:include src="/views/user/offerteDetail.xhtml" />
 			</p:dialog>

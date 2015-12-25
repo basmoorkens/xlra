@@ -7,10 +7,10 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 	<p:growl id="msgs" />
-	<p:scrollPanel style="height:80%;">
+	<p:scrollPanel style="height:600px;">
 		<p:panel id="detailPanel">
 
-			<p:panel header="Administration">
+			<p:panel header="Administration" style="margin-top:20px;">
 				<p:panelGrid columns="2" style="width:100%;">
 					<h:outputText value="Created by: " />
 					<h:outputText
@@ -22,7 +22,7 @@
 				</p:panelGrid>
 			</p:panel>
 
-			<p:panel header="Input parameters">
+			<p:panel header="Input parameters" style="margin-top:20px;">
 				<p:panelGrid columns="2" style="width:100%;">
 					<h:outputText value="Customer: " />
 					<h:outputText
@@ -59,7 +59,7 @@
 				</p:panelGrid>
 			</p:panel>
 
-			<p:panel header="Email / PDF">
+			<p:panel header="Email / PDF" style="margin-top:20px;">
 				<p:panelGrid columns="2" style="width:100%;">
 					<h:outputText value="Recipient: " />
 					<h:outputText
@@ -93,7 +93,7 @@
 				</p:panel>
 			</p:panel>
 
-			<p:panel header="Calculation">
+			<p:panel header="Calculation" style="margin-top:20px;">
 				<p:panelGrid columns="2" style="width:100%;">
 					<h:outputText value="Base price: " />
 					<h:outputText
@@ -131,15 +131,26 @@
 			</p:panel>
 
 			<p:panel style="margin-top:20px;">
-				<p:commandButton value="Back to search"
+				<p:commandButton value="Back to search" id="backButton"
 					actionListener="#{offerteOverviewController.hideDetailDialog}"
-					ajax="true" update=":offerteDetailForm :offertesForm" />
-				<p:commandButton value="Open pdf" style="margin-left:20px;"
+					ajax="true" update=":offerteDetailForm :offertesForm"
+					style="padding-left:5px; padding-right:5px;" />
+				<p:tooltip id="backTip" for="backButton"
+					value="Close this dialog and go back to the search offerte screen" />
+				<p:commandButton value="Open pdf"
+					style="padding-left:5px; padding-right:5px; margin-left:20px;"
+					id="openPdfButton"
 					actionListener="#{offerteOverviewController.downloadPdf}"
 					onclick="this.form.target='_blank'" ajax="false" />
-				<p:commandButton value="Resend email" style="margin-left:20px;"
+				<p:tooltip id="openPdfTip" for="openPdfButton"
+					value="Open the PDF for this offerte" />
+				<p:commandButton value="Resend email"
+					style="padding-left:5px; padding-right:5px; margin-left:20px;"
+					id="resendMailButton"
 					actionListener="#{offerteOverviewController.resendEmail}"
 					ajax="true" update=":offerteDetailForm" />
+				<p:tooltip id="resendMailTip" for="resendMailButton"
+					value="Resend the offerte email to the customer" />
 			</p:panel>
 		</p:panel>
 	</p:scrollPanel>

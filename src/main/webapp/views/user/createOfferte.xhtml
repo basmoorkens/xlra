@@ -16,6 +16,10 @@
 		<h:form id="customerForm">
 			<p:panel id="customerPanel" header="Customer" toggleable="false"
 				collapsed="#{createQuotationController.collapseCustomerPanel}">
+				<p:tooltip id="addCustomerTip" for="addCustomerButton"
+					value="Create a new customer with only basic information" />
+				<p:tooltip id="nextTip1" for="nextButton1"
+					value="Go to the rates filter step" />
 				<p:panelGrid columns="3" style="width:100%;">
 					<h:outputText value="Select an existing customer: " />
 					<p:autoComplete size="60" id="customerSelector" dropdown="true"
@@ -26,15 +30,14 @@
 						itemValue="#{customer}" converter="#{customerConverter}">
 					</p:autoComplete>
 
-					<p:commandButton value="Create new customer"
+					<p:commandButton value="Create new customer" id="addCustomerButton"
 						update=":addQuickCustomerForm" immediate="true"
 						onclick="PF('addCustomerDialog').show();" />
 
 				</p:panelGrid>
 				<p:growl showDetail="true" id="messages" sticky="false" />
-				<p:panel
-					style="margin-top:20px; bottom:20px;  padding:0px;border:0px;">
-					<p:commandButton value="Next"
+				<p:panel style="margin-top:20px;">
+					<p:commandButton value="Next" id="nextButton1"
 						actionListener="#{createQuotationController.procesCustomer}"
 						update=":customerForm :filtersForm" ajax="true"
 						style="width:150px; margin-left:20px;" />
@@ -49,7 +52,7 @@
 				<p:growl showDetail="true" id="messages" sticky="true" />
 				<p:panelGrid columns="2" style="width:100%;">
 					<h:outputText value="Country: " />
-					<p:selectOneMenu style="width:100%;"
+					<p:selectOneMenu style="width:100%;" id="countrySelect"
 						converter="#{countryConverter}" required="true"
 						value="#{createQuotationController.quotationQuery.country}">
 						<f:selectItems value="#{createQuotationController.allCountries}" />
@@ -57,6 +60,7 @@
 
 					<h:outputText value="Measurement: " />
 					<p:selectOneMenu style="width:100%;" required="true"
+						id="measurementSelect"
 						value="#{createQuotationController.quotationQuery.measurement}">
 						<f:selectItems
 							value="#{createQuotationController.allMeasurements}" />
@@ -64,18 +68,20 @@
 
 					<h:outputText value="Type: " />
 					<p:selectOneMenu style="width:100%;" required="true"
+						id="typeSelect"
 						value="#{createQuotationController.quotationQuery.kindOfRate}">
 						<f:selectItems value="#{createQuotationController.allKinds}" />
 					</p:selectOneMenu>
 
 					<h:outputText value="Language: " />
 					<p:selectOneMenu style="width:100%;" required="false"
+						id="languageSelect"
 						value="#{createQuotationController.quotationQuery.language}">
 						<f:selectItems value="#{createQuotationController.allLanguages}" />
 					</p:selectOneMenu>
 
 					<h:outputText value="Transport type:" />
-					<p:selectOneMenu style="width:100%;"
+					<p:selectOneMenu style="width:100%;" id="selectTransportType"
 						value="#{createQuotationController.quotationQuery.transportType}">
 						<f:selectItems
 							value="#{createQuotationController.allTransportTypes}"
@@ -83,25 +89,45 @@
 					</p:selectOneMenu>
 
 					<h:outputText value="Quantity:" />
-					<p:inputText required="true"
+					<p:inputText required="true" id="quantitySelect"
 						requiredMessage="Quantity is required!" style="width:100%;"
 						value="#{createQuotationController.quotationQuery.quantity}" />
 
 					<h:outputText value="Postal code: " />
 					<p:inputText required="true" style="width:100%;"
-						requiredMessage="Postal code is required!"
+						requiredMessage="Postal code is required!" id="postalcodeInput"
 						value="#{createQuotationController.quotationQuery.postalCode}" />
 
 
 				</p:panelGrid>
-				<p:panel style="bottom:20px;  padding:0px;border:0px;">
+				<p:tooltip id="countryTip" for="countrySelect"
+					value="The destination country for the offerte" />
+				<p:tooltip id="measurementTip" for="measurementSelect"
+					value="The measurement of the offerte" />
+
+				<p:tooltip id="typeTip" for="typeSelect"
+					value="The type of transport for the offerte" />
+				<p:tooltip id="languageTip" for="languageSelect"
+					value="The language to use in the offerte email. If left blank it will default to the language of the customer in the system" />
+				<p:tooltip id="transportTypeTip" for="selectTransportType"
+					value="Indicate if the offerte is for export or import" />
+				<p:tooltip id="quantityTip" for="quantitySelect"
+					value="The number of the chosen measurement to make an offerte for" />
+				<p:tooltip id="postalcodeTip" for="postalcodeInput"
+					value="The postal code to ship to" />
+				<p:panel style="margin-top:20px;">
 					<p:commandButton value="Back" style="width:150px;margin-left:20px;"
 						update=":customerForm :filtersForm" immediate="true"
+						id="backButton1"
 						actionListener="#{createQuotationController.showCustomerPanel}" />
-					<p:commandButton value="Next"
+					<p:tooltip for="backButton1" id="backTip1"
+						value="Go back to the customer selection" />
+					<p:commandButton value="Next" id="nextButton2"
 						actionListener="#{createQuotationController.processRateFilters}"
 						style="width:150px; margin-left:20px;" process=":filtersForm"
 						update=":filtersForm :optionsForm" ajax="true" />
+					<p:tooltip id="nextStep2" for="nextButton2"
+						value="Go to the select options step" />
 				</p:panel>
 			</p:panel>
 		</h:form>
@@ -111,12 +137,20 @@
 				collapsed="#{createQuotationController.collapseOptionsPanel}"
 				toggleable="false">
 				<p:growl showDetail="true" id="messages" sticky="true" />
-				<p:commandButton value="Select all"
-					actionListener="#{createQuotationController.selectAllOptions}"
-					style="width:150px;" update=":optionsForm" ajax="true" />
-				<p:commandButton value="Deselect all"
-					actionListener="#{createQuotationController.deSelectAllOptions}"
-					style="width:150px;" update=":optionsForm" ajax="true" />
+				<p:panel style="margin-top:10px;margin-bottom:10px;">
+					<p:commandButton value="Select all" id="selectAllButton"
+						actionListener="#{createQuotationController.selectAllOptions}"
+						style="padding-left:5px; padding-right:5px;margin-right:20px;"
+						update=":optionsForm" ajax="true" />
+					<p:tooltip id="selectAllTip" for="selectAllButton"
+						value="Select all options" />
+					<p:commandButton value="Deselect all" id="deselectAllButton"
+						actionListener="#{createQuotationController.deSelectAllOptions}"
+						style="padding-left:5px; padding-right:5px;" update=":optionsForm"
+						ajax="true" />
+					<p:tooltip id="deselectAllTip" for="deselectAllButton"
+						value="Deselect all options" />
+				</p:panel>
 				<p:panelGrid columns="2" style="width:100%;">
 					<h:outputLabel value="Option" />
 					<h:outputLabel value="Selected" />
@@ -131,21 +165,22 @@
 					</c:forEach>
 				</p:panelGrid>
 
-				<p:panel style="bottom:20px;  padding:0px;border:0px;">
+				<p:panel style="margin-top:20px;">
 					<p:commandButton value="Back" style="width:150px;margin-left:20px;"
 						update=":filtersForm :optionsForm" immediate="true"
+						id="backButton2"
 						actionListener="#{createQuotationController.showRateFilterPanel}" />
-					<p:commandButton value="Next"
+					<p:tooltip id="backTip2" for="backButton2"
+						value="Go back to ratesfilter selection" />
+					<p:commandButton value="Next" id="nextButton3"
 						actionListener="#{createQuotationController.processOptions}"
 						style="width:150px; margin-left:20px;" process=":optionsForm"
 						update=":optionsForm :summaryForm" ajax="true" />
+					<p:tooltip id="nextTip3" for="nextButton3"
+						value="Go to summary of offerte" />
 				</p:panel>
 			</p:panel>
 		</h:form>
-
-
-
-
 
 		<h:form id="summaryForm">
 			<p:panel id="summaryPanel" header="Summary"
@@ -164,18 +199,27 @@
 				<h:outputText value="Generated email:" />
 				<p:editor height="350"
 					value="#{createQuotationController.quotationResult.emailResult.email}" />
-				<p:panel style="bottom:20px;  padding:0px;border:0px;">
-					<p:commandButton value="Back" style="width:200px;margin-left:20px;"
+				<p:panel style="margin-top:20px;">
+					<p:commandButton value="Back"
+						style="padding-left:5px; padding-right:5px; margin-right:20px;"
 						update=":summaryForm :optionsForm" immediate="true"
+						id="backButton3"
 						actionListener="#{createQuotationController.showOptionsPanel}" />
-					<p:commandButton style="width:200px; margin-left:20px"
-						value="Open pdf"
+					<p:tooltip id="backTip3" for="backButton3"
+						value="Go back to options selection" />
+					<p:commandButton
+						style="padding-left:5px; padding-right:5px; margin-right:20px"
+						value="Open pdf" id="openPdfButton"
 						actionListener="#{createQuotationController.downloadPdf}"
 						onclick="this.form.target='_blank'" ajax="false" />
+					<p:tooltip id="openPdfTip" for="openPdfButton"
+						value="Open the generated PDF" />
 					<p:commandButton value="Send offerte"
-						update=":resultForm :summaryForm"
+						update=":resultForm :summaryForm" id="nextButton4"
 						actionListener="#{createQuotationController.submitOfferte}"
-						style="width:200px; margin-left:20px;" ajax="true" />
+						style="padding-left:5px; padding-right:5px;" ajax="true" />
+					<p:tooltip for="nextButton4" id="nextTip4"
+						value="Send the offerte to the customer" />
 				</p:panel>
 			</p:panel>
 			<p:ajaxStatus onstart="showStatusDialog();"
@@ -197,11 +241,20 @@
 					<h:outputText
 					value="#{createQuotationController.quotationResult.emailResult.toAddress}" />
 					.<br />
-				<p:commandButton value="View offerte details"
-					actionListener="#{createQuotationController.goToOfferteDetail}" />
-				<p:commandButton value="Create another offerte"
-					update=":customerForm :resultForm"
-					actionListener="#{createQuotationController.resetPage}" />
+
+				<p:panel style="margin-top:20px;">
+					<p:commandButton value="View offerte details"
+						id="viewDetailsButton" style="margin-right:20px;"
+						actionListener="#{createQuotationController.goToOfferteDetail}" />
+					<p:tooltip id="viewDetailsTip" for="viewDetailsButton"
+						value="Go to the offerte overview screen and load the details of this offerte" />
+					<p:commandButton value="Create another offerte"
+						style="margin-right:20px;" update=":customerForm :resultForm"
+						id="anotherOfferteButton"
+						actionListener="#{createQuotationController.resetPage}" />
+					<p:tooltip id="anotherOfferteTip" for="anotherOfferteButton"
+						value="Reset the page and create another offerte" />
+				</p:panel>
 			</p:panel>
 		</h:form>
 
