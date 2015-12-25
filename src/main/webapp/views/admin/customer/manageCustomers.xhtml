@@ -21,32 +21,34 @@
 					currentPageReportTemplate="Customers {startRecord} - {endRecord} of {totalRecords}, Page: {currentPage}/{totalPages}"
 					paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
 					rowsPerPageTemplate="10,25,50,100" paginatorPosition="top">
-					<p:column sortBy="#{customer.name}" filterBy="#{customer.name}">
+					<p:column sortBy="#{customer.name}" filterBy="#{customer.name}"
+						filterStyle="width:100%;">
 						<f:facet name="header">Name</f:facet>
 						#{customer.name}
 					</p:column>
-					<p:column sortBy="#{customer.email}" filterBy="#{customer.email}">
+					<p:column sortBy="#{customer.email}" filterBy="#{customer.email}"
+						filterStyle="width:100%;">
 						<f:facet name="header">Email</f:facet>
 						#{customer.email}
 					</p:column>
-					<p:column sortBy="#{customer.phone}" filterBy="#{customer.phone}">
+					<p:column sortBy="#{customer.phone}" filterBy="#{customer.phone}"
+						filterStyle="width:100%;">
 						<f:facet name="header">Phone</f:facet>
 						#{customer.phone}
 					</p:column>
 					<p:column sortBy="#{customer.language}"
-						filterBy="#{customer.language})">
+						filterBy="#{customer.language})" filterStyle="width:100%;">
 						<f:facet name="header">Language</f:facet>
 						#{customer.language}
 					</p:column>
-					<p:column style="width:36px;text-align: center">
-						<p:commandButton
+					<p:column style="width:110px;text-align: center">
+						<p:commandButton id="editButton"
 							actionListener="#{customerController.setupPageForEditCustomer(customer)}"
 							icon="ui-icon-pencil" title="View" ajax="true"
-							update=":customerDetailForm">
-						</p:commandButton>
-					</p:column>
-					<p:column style="width:36px;text-align: center">
-						<p:commandButton
+							update=":customerDetailForm" />
+						<p:tooltip id="editButtonTip" for="editButton"
+							value="Edit the customer" />
+						<p:commandButton style="margin-left:5px;" id="deleteButton"
 							actionListener="#{customerController.deleteCustomer(customer)}"
 							ajax="true" title="delete" update=":customerOverviewForm"
 							icon="ui-icon-trash">
@@ -54,14 +56,18 @@
 								message="Are you sure you want to delete this customer?"
 								icon="ui-icon-alert" />
 						</p:commandButton>
+						<p:tooltip id="deleteTip" for="deleteButton"
+							value="Delete the customer" />
 					</p:column>
 				</p:dataTable>
 
 				<p:panel style="margin-top:20px;">
 					<p:commandButton value="Add new customer" title="Add new customer"
 						actionListener="#{customerController.setupPageForNewCustomer}"
-						icon="ui-icon-check" ajax="true" update=":customerDetailForm"
-						immediate="true" />
+						id="addCustomerButton" icon="ui-icon-check" ajax="true"
+						update=":customerDetailForm" immediate="true" />
+					<p:tooltip id="addTip" for="addCustomerButton"
+						value="Create a new customer" />
 				</p:panel>
 			</p:panel>
 		</h:form>
@@ -72,7 +78,7 @@
 				dynamic="true">
 				<ui:include src="/views/admin/customer/customerDetail.xhtml">
 					<ui:param name="customer"
-						value="#{customerController.selectedCustomer}"></ui:param>
+						value="#{customerController.selectedCustomer}" />
 				</ui:include>
 			</p:dialog>
 		</h:form>

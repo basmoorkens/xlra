@@ -18,7 +18,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
-import javax.mail.Message;
 
 @ManagedBean
 @ViewScoped
@@ -105,7 +104,7 @@ public class CustomerController {
    * Set up the page for a new customer.
    */
   public void setupPageForNewCustomer() {
-    detailGridTitle = "Details for new customer";
+    detailGridTitle = "New customer";
     selectedCustomer = new Customer();
     selectedCustomer.setHasOwnRateFile(true);
     showAddDialog();
@@ -126,7 +125,7 @@ public class CustomerController {
       customer = CustomerUtil.getInstance().promoteToFullCustomer(customer);
     }
     selectedCustomer = customer;
-    detailGridTitle = "Details for customer " + selectedCustomer.getName();
+    detailGridTitle = "Edit customer " + selectedCustomer.getName();
     showAddDialog();
   }
 

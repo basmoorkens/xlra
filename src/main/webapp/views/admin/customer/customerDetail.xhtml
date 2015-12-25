@@ -4,53 +4,65 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
-	<p:panel id="customerDetailPanel">
+	<p:panel id="customerDetailPanel" header="Customer info">
 		<p:growl id="message" showDetail="true" />
-		<p:panelGrid columns="2" cellpadding="0"
-			styleClass="customerCreateGrid">
+		<p:panelGrid columns="2" style="width:100%;"
+			columnClasses="labelColumn,valuesColumn">
 			<h:outputLabel for="nameField">Name</h:outputLabel>
-			<p:inputText size="50" value="#{customer.name}" id="nameField"></p:inputText>
+			<p:inputText style="width:100%;" value="#{customer.name}"
+				id="nameField"></p:inputText>
 
 			<h:outputLabel for="emailField">Email</h:outputLabel>
-			<p:inputText size="50" value="#{customer.email}" id="emailField"></p:inputText>
+			<p:inputText style="width:100%;" value="#{customer.email}"
+				id="emailField"></p:inputText>
 
 			<h:outputLabel for="phoneField">Phone</h:outputLabel>
-			<p:inputText size="50" value="#{customer.phone}" id="phoneField"></p:inputText>
+			<p:inputText style="width:100%;" value="#{customer.phone}"
+				id="phoneField"></p:inputText>
 
 			<h:outputLabel for="streetField">Street</h:outputLabel>
-			<p:inputText size="50" value="#{customer.address.street}"
+			<p:inputText style="width:100%;" value="#{customer.address.street}"
 				id="streetField"></p:inputText>
 
 			<h:outputLabel for="numberField">Number</h:outputLabel>
-			<p:inputText size="50" value="#{customer.address.number}"
+			<p:inputText style="width:100%;" value="#{customer.address.number}"
 				id="numberField"></p:inputText>
 
 			<h:outputLabel for="zipField">ZIP</h:outputLabel>
-			<p:inputText size="50" value="#{customer.address.zip}" id="zipField"></p:inputText>
+			<p:inputText style="width:100%;" value="#{customer.address.zip}"
+				id="zipField"></p:inputText>
 
 			<h:outputLabel for="cityField">City</h:outputLabel>
-			<p:inputText size="50" value="#{customer.address.city}"
+			<p:inputText style="width:100%;" value="#{customer.address.city}"
 				id="cityField"></p:inputText>
 
 			<h:outputLabel for="countryField">Country</h:outputLabel>
-			<p:inputText size="50" value="#{customer.address.country}"
+			<p:inputText style="width:100%;" value="#{customer.address.country}"
 				id="countryField"></p:inputText>
 
 			<h:outputLabel for="btwField">BTW number</h:outputLabel>
-			<p:inputText size="50" value="#{customer.btwNumber}" id="btwField"></p:inputText>
+			<p:inputText style="width:100%;" value="#{customer.btwNumber}"
+				id="btwField"></p:inputText>
 
 			<h:outputLabel for="languageField">Language</h:outputLabel>
-			<p:selectOneRadio value="#{customer.language}" id="languageField">
+
+			<p:selectOneMenu value="#{customer.language}" id="languageField"
+				style="width:100%;">
+				<f:selectItem value="#{null}" itemLabel=" " />
 				<f:selectItems value="#{customerController.allLanguages}"></f:selectItems>
-			</p:selectOneRadio>
+			</p:selectOneMenu>
 		</p:panelGrid>
 
-		<p:commandButton value="Cancel" title="Cancel" immediate="true"
-			actionListener="#{customerController.cancelDetail}" ajax="true"
-			update=":customerDetailForm" style="width:300px;" />
-		<p:commandButton value="Save customer" title="Save customer"
-			actionListener="#{customerController.createCustomerOrUpdate}"
-			style="width:300px;" icon="ui-icon-check" validateClient="true"
-			ajax="true" update=":customerDetailForm :customerOverviewForm" />
+		<p:panel style="margin-top:20px;">
+			<p:commandButton value="Cancel" title="Cancel" immediate="true"
+				actionListener="#{customerController.cancelDetail}" ajax="true"
+				update=":customerDetailForm"
+				style="padding-left:5px; padding-right:5px; margin-right:20px;" />
+			<p:commandButton value="Save customer" title="Save customer"
+				actionListener="#{customerController.createCustomerOrUpdate}"
+				style="padding-left:5px; padding-right:5px; margin-right:20px;"
+				icon="ui-icon-check" validateClient="true" ajax="true"
+				update=":customerDetailForm :customerOverviewForm" />
+		</p:panel>
 	</p:panel>
 </ui:composition>
