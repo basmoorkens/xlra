@@ -5,7 +5,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
-	<p:panel id="zonesDetailPanel" toggleable="false"
+	<p:panel id="zonesDetailPanel" toggleable="false" style="width:100%;"
 		collapsed="#{controller.collapseZonesDetailGrid}" header="Zones">
 		<p:dataTable editable="#{canEdit}" value="#{zones}" var="zone"
 			emptyMessage="No zones added yet!" id="zoneTable">

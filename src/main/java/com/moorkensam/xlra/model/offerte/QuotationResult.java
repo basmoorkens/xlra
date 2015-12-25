@@ -57,29 +57,16 @@ public class QuotationResult extends BaseEntity {
   @OneToMany(mappedBy = "offerte")
   private List<EmailHistoryRecord> emailHistory;
 
-  /**
-   * There is no guarantee that the ratefile that was used to generate this quotation result is
-   * still the same. So its just here for a future reference for reporting.
-   */
-  @ManyToOne
-  @JoinColumn(name = "ratefileid")
-  private RateFile rateFile;
-
   private String offerteUniqueIdentifier;
+
+  @Column(name = "used_ratefilename")
+  private String usedRateFileName;
 
   @Transient
   private List<OfferteOptionDto> selectableOptions;
 
   public QuotationResult() {
     this.selectableOptions = new ArrayList<OfferteOptionDto>();
-  }
-
-  public RateFile getRateFile() {
-    return rateFile;
-  }
-
-  public void setRateFile(RateFile rateFile) {
-    this.rateFile = rateFile;
   }
 
   public EmailResult getEmailResult() {
@@ -181,5 +168,13 @@ public class QuotationResult extends BaseEntity {
       return query.getCountry();
     }
     return null;
+  }
+
+  public String getUsedRateFileName() {
+    return usedRateFileName;
+  }
+
+  public void setUsedRateFileName(String usedRateFileName) {
+    this.usedRateFileName = usedRateFileName;
   }
 }

@@ -186,7 +186,12 @@
 			<p:panel id="summaryPanel" header="Summary"
 				collapsed="#{createQuotationController.collapseSummaryPanel}"
 				toggleable="false">
-				<p:panelGrid columns="2" style="margin-bottom:20px;">
+				<p:panelGrid columns="2" style="margin-bottom:20px;width:100%;"
+					columnClasses="labelColumn,valuesColumn">
+					<h:outputText value="Used ratefile: " />
+					<h:outputText
+						value="#{createQuotationController.quotationResult.usedRateFileName}" />
+
 					<h:outputText value="Receipient: " />
 					<p:inputText size="100" style="width:100%;"
 						value="#{createQuotationController.quotationResult.emailResult.toAddress}" />

@@ -32,10 +32,31 @@
 
 		<h3>Details</h3>
 		<h:form id="basicForm">
-			<p:panel id="basicInfoPanel" toggleable="false"
+			<p:panel id="basicInfoPanel" toggleable="false" style="width:100%;"
 				collapsed="#{manageRatesController.collapseZonesDetailGrid}"
 				header="Basic info">
-				<p:panelGrid columns="2" columnClasses="labelColumn,valuesColumn">
+				<p:panelGrid columns="2" columnClasses="labelColumn,valuesColumn"
+					style="width:100%;">
+					<h:outputText value="Customer:" />
+					<h:outputText
+						value="#{manageRatesController.selectedRateFile.customerNameOrBaseMessage}" />
+
+					<h:outputText value="Country:" />
+					<h:outputText
+						value="#{manageRatesController.selectedRateFile.country.englishName}" />
+
+					<h:outputText value="Measurement:" />
+					<h:outputText
+						value="#{manageRatesController.selectedRateFile.measurement.description}" />
+
+					<h:outputText value="Type of transport:" />
+					<h:outputText
+						value="#{manageRatesController.selectedRateFile.kindOfRate.description}" />
+
+					<h:outputText value="Import/export type:" />
+					<h:outputText
+						value="#{manageRatesController.selectedRateFile.transportType.description}" />
+
 					<h:outputText value="Last edited by:" />
 					<h:outputText
 						value="#{manageRatesController.selectedRateFile.lastEditedBy}" />
@@ -47,7 +68,10 @@
 
 				<p:panel style="margin-top:20px;">
 					<p:commandButton value="Download as excel" ajax="false"
+						id="exportExcelButton"
 						actionListener="#{manageRatesController.downloadRateExcel}" />
+					<p:tooltip id="exportExcelTip" for="exportExcelButton"
+						value="Export the ratefile to an excel file and download it" />
 				</p:panel>
 			</p:panel>
 		</h:form>

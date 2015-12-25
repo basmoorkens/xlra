@@ -5,13 +5,15 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
-
 	<p:growl id="msgs" />
 	<p:scrollPanel style="height:600px;">
 		<p:panel id="detailPanel">
-
 			<p:panel header="Administration" style="margin-top:20px;">
 				<p:panelGrid columns="2" style="width:100%;">
+					<h:outputText value="Used ratefile: " />
+					<h:outputText
+						value="#{offerteOverviewController.selectedOfferte.usedRateFileName}" />
+
 					<h:outputText value="Created by: " />
 					<h:outputText
 						value="#{offerteOverviewController.selectedOfferte.createdUserFullName}" />
@@ -135,8 +137,6 @@
 					actionListener="#{offerteOverviewController.hideDetailDialog}"
 					ajax="true" update=":offerteDetailForm :offertesForm"
 					style="padding-left:5px; padding-right:5px;" />
-				<p:tooltip id="backTip" for="backButton"
-					value="Close this dialog and go back to the search offerte screen" />
 				<p:commandButton value="Open pdf"
 					style="padding-left:5px; padding-right:5px; margin-left:20px;"
 					id="openPdfButton"
@@ -155,32 +155,4 @@
 		</p:panel>
 	</p:scrollPanel>
 
-	<p:ajaxStatus onstart="showStatusDialog();"
-		onsuccess="hideStatusDialog();" />
-
-	<p:dialog id="statusDialog" widgetVar="statusDialog" modal="true"
-		draggable="false" closable="false" resizable="false"
-		showHeader="false">
-		<p:graphicImage url="/resources/images/ajax-loader.gif" />
-	</p:dialog>
-
-
-
-	<script type="text/javascript">
-		var statusDlgTimer = null;
-
-		function showStatusDialog() {
-			if (statusDlgTimer === null) {
-				statusDlgTimer = setTimeout("PF('statusDialog').show()", 500);
-			}
-		}
-
-		function hideStatusDialog() {
-			if (statusDlgTimer !== null) {
-				clearTimeout(statusDlgTimer);
-				PF('statusDialog').hide();
-				statusDlgTimer = null;
-			}
-		}
-	</script>
 </ui:composition>

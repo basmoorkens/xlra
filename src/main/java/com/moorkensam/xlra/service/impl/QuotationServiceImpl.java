@@ -143,6 +143,7 @@ public class QuotationServiceImpl implements QuotationService {
               .getResultLanguage());
       offerte.setSelectableOptions(options);
       offerte.getCalculation().setBasePrice(result.getValue());
+      offerte.setUsedRateFileName(rf.getName());
     } catch (RateFileException e1) {
       logger.error(e1.getBusinessException() + e1.getMessage());
       throw e1;

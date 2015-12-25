@@ -6,6 +6,7 @@ import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.service.util.CalcUtil;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.BatchSize;
 
 import java.math.BigDecimal;
@@ -438,5 +439,17 @@ public class RateFile extends BaseEntity {
       return getCreatedDateTime();
     }
     return getLastUpdatedDateTime();
+  }
+
+  /**
+   * Gets the customer name if there is a customer and returns a fixed value otherwise.
+   * 
+   * @return the value to display on the frontend.
+   */
+  public String getCustomerNameOrBaseMessage() {
+    if (getCustomer() != null && StringUtils.isNotBlank(getCustomer().getName())) {
+      return getCustomer().getName();
+    }
+    return "Base ratefile";
   }
 }
