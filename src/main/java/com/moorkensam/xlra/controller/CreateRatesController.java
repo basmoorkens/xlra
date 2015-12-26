@@ -294,14 +294,24 @@ public class CreateRatesController {
    * Save the edited condition.
    */
   public void saveEditCondition() {
-    if (editMode) {
-      MessageUtil.addMessage("Condition updated", "Updated " + selectedCondition.getTranslatedKey()
-          + ".");
+    if (selectedCondition.getConditionKey() != null) {
+      if (editMode) {
+        MessageUtil.addMessage("Condition updated",
+            "Updated " + selectedCondition.getTranslatedKey() + ".");
+      } else {
+        addConditionToRateFile();
+      }
     } else {
-      rateFile.addCondition(selectedCondition);
-      MessageUtil.addMessage("Condition added",
-          "Added condition " + selectedCondition.getTranslatedKey());
+      showConditionDetailDialog();
+      MessageUtil.addErrorMessage("Empty condition", "You can not save an empty condition.");
     }
+
+  }
+
+  private void addConditionToRateFile() {
+    rateFile.addCondition(selectedCondition);
+    MessageUtil.addMessage("Condition added",
+        "Added condition " + selectedCondition.getTranslatedKey());
   }
 
   public List<Language> getLanguages() {

@@ -76,10 +76,10 @@
 		</p:panel>
 	</h:form>
 
-	<p:dialog id="editDialog" header="Edit condition"
-		widgetVar="editConditionDialog" modal="true" width="50%" height="50%"
-		dynamic="true">
-		<h:form id="editConditionForm">
+	<h:form id="editConditionForm">
+		<p:dialog id="editDialog" header="Edit condition"
+			widgetVar="editConditionDialog" modal="true" width="50%" height="50%"
+			dynamic="true">
 			<p:panel style="width:80%; margin:auto;">
 				<p:panelGrid columns="2" style="width:100%;margin-top:10px;">
 					<h:outputLabel value="Selected key" />
@@ -121,8 +121,8 @@
 						update=":conditionsDetailForm :editConditionForm" />
 				</f:facet>
 			</p:panel>
-		</h:form>
-	</p:dialog>
+		</p:dialog>
+	</h:form>
 
 	<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
 		<p:commandButton value="Yes" type="button"
