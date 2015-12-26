@@ -5,6 +5,7 @@ import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.rate.ZoneType;
+import com.moorkensam.xlra.service.util.ZoneUtil;
 
 import junit.framework.Assert;
 
@@ -42,6 +43,7 @@ public class RateFileDaoImplTest extends UnitilsJUnit4 {
   @Before
   public void init() {
     dao = new RateFileDaoImpl();
+    dao.setZoneUtil(new ZoneUtil());
     rateFile = new RateFile();
     List<Double> measurements = new ArrayList<Double>();
     measurements.add(100d);

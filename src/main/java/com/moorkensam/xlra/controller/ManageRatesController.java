@@ -13,6 +13,7 @@ import com.moorkensam.xlra.service.RateFileService;
 import com.moorkensam.xlra.service.util.ConditionFactory;
 import com.moorkensam.xlra.service.util.RateUtil;
 import com.moorkensam.xlra.service.util.TranslationUtil;
+import com.moorkensam.xlra.service.util.ZoneUtil;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,21 +23,19 @@ import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.validator.ValidatorException;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 
@@ -54,6 +53,8 @@ public class ManageRatesController {
 
   @Inject
   private ExcelService excelService;
+
+  private ZoneUtil zoneUtil;
 
   private TranslationUtil translationUtil;
 
@@ -75,11 +76,15 @@ public class ManageRatesController {
 
   private boolean editable;
 
+  private Zone selectedZone;
+
   private Condition selectedCondition;
 
   private List<RateFileIdNameDto> autoCompleteItems;
 
   private boolean editMode = false;
+
+  private boolean editZoneMode = false;
 
   /**
    * Logic to initialize the controller.
@@ -90,6 +95,7 @@ public class ManageRatesController {
     resetSelectedRateFile();
     translationUtil = new TranslationUtil();
     conditionFactory = new ConditionFactory();
+    zoneUtil = new ZoneUtil();
     autoCompleteItems = rateFileService.getRateFilesIdAndNamesForAutoComplete();
   }
 
@@ -139,6 +145,32 @@ public class ManageRatesController {
   }
 
   /**
+   * Setup the page to edit a zone.
+   * 
+   * @param zone The zone to edit.
+   */
+  public void setupEditZone(Zone zone) {
+    this.selectedZone = zone;
+    editZoneMode = true;
+    showZoneDetailDialog();
+  }
+
+  public void cancelEditZone() {
+    selectedZone = null;
+    hideZoneDetailDialog();
+  }
+
+  private void showZoneDetailDialog() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    context.execute("PF('editZoneDialog').show();");
+  }
+
+  private void hideZoneDetailDialog() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    context.execute("PF('editZoneDialog').hide();");
+  }
+
+  /**
    * Load a condition based on the key that was selected.
    */
   public void loadConditionBasedOnKey() {
@@ -163,10 +195,15 @@ public class ManageRatesController {
    * Save the edited condition.
    */
   public void saveEditCondition() {
-    selectedRateFile.addCondition(selectedCondition);
-    updateRateFile();
-    MessageUtil.addMessage("Condition updated", "Your changes were saved.");
-    selectedCondition = null;
+    if (selectedCondition.getConditionKey() != null) {
+      selectedRateFile.addCondition(selectedCondition);
+      updateRateFile();
+      MessageUtil.addMessage("Condition updated", "Your changes were saved.");
+      selectedCondition = null;
+    } else {
+      showConditionDetailDialog();
+      MessageUtil.addErrorMessage("Empty condition", "You can not save an empty condition.");
+    }
   }
 
   /**
@@ -194,14 +231,13 @@ public class ManageRatesController {
   }
 
   /**
-   * Triggered on zone edit event.
-   * 
-   * @param event The event that triggered this.
+   * Check if the postal codes in the zone are valid, if so save it.
    */
-  public void onZoneEdit(RowEditEvent event) {
-    Zone zone = (Zone) event.getObject();
-    MessageUtil.addMessage("Zone update", zone.getName() + " successfully updated.");
-    updateRateFile();
+  public void saveZone() {
+    if (isSelectedZoneIsValid()) {
+      MessageUtil.addMessage("Zone update", selectedZone.getName() + " successfully updated.");
+      updateRateFile();
+    }
   }
 
   public void deleteZone(Zone zone) {
@@ -344,6 +380,45 @@ public class ManageRatesController {
     }
   }
 
+  private boolean isSelectedZoneIsValid() {
+    if (selectedZone == null) {
+      return false;
+    }
+    if (selectedRateFile.isAlphaNumericalZoneRateFile()) {
+      return validateAlphanumericalPostalCodes(selectedZone.getAlphaNumericPostalCodesAsString());
+    }
+    if (selectedRateFile.isNumericalZoneRateFile()) {
+      return validateNumericalPostalCodes(selectedZone.getNumericalPostalCodesAsString());
+    }
+    return false;
+  }
+
+  private boolean validateNumericalPostalCodes(String numericalPostalCodeString) {
+    try {
+      zoneUtil.convertNumericalPostalCodeStringToList(numericalPostalCodeString);
+      return true;
+    } catch (Exception e) {
+      MessageUtil.addErrorMessage("Postal codes not valid",
+          "The given postal codes are not valid, make sure its a ','"
+              + " seperated list of numerical postcode intervals START-STOP,START-STOP,...");
+      showZoneDetailDialog();
+    }
+    return false;
+  }
+
+  private boolean validateAlphanumericalPostalCodes(String alphaNumericalPostalCodeString) {
+    try {
+      zoneUtil.convertAlphaNumericPostalCodeStringToList(alphaNumericalPostalCodeString);
+      return true;
+    } catch (Exception e) {
+      MessageUtil.addErrorMessage("Postal codes not valid",
+          "The given postal codes are not valid, make sure its a ','"
+              + " seperated list of alphanumerical postal codes.");
+      showZoneDetailDialog();
+    }
+    return false;
+  }
+
   public List<String> getColumnHeaders() {
     return columnHeaders;
   }
@@ -419,6 +494,22 @@ public class ManageRatesController {
 
   public void setEditMode(boolean editMode) {
     this.editMode = editMode;
+  }
+
+  public Zone getSelectedZone() {
+    return selectedZone;
+  }
+
+  public void setSelectedZone(Zone selectedZone) {
+    this.selectedZone = selectedZone;
+  }
+
+  public boolean isEditZoneMode() {
+    return editZoneMode;
+  }
+
+  public void setEditZoneMode(boolean editZoneMode) {
+    this.editZoneMode = editZoneMode;
   }
 
 }

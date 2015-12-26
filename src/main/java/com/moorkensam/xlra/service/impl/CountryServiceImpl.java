@@ -5,9 +5,11 @@ import com.moorkensam.xlra.dao.ZoneDao;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.service.CountryService;
+import com.moorkensam.xlra.service.util.ZoneUtil;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -26,6 +28,13 @@ public class CountryServiceImpl implements CountryService {
 
   @Inject
   private ZoneDao zoneDao;
+
+  private ZoneUtil zoneUtil;
+
+  @PostConstruct
+  public void init() {
+    setZoneUtil(new ZoneUtil());
+  }
 
   @Override
   public List<Country> getAllCountries() {
@@ -55,8 +64,10 @@ public class CountryServiceImpl implements CountryService {
   }
 
   private void fillInPersistentPostalCodes(Zone zone) {
-    zone.convertAlphaNumericPostalCodeStringToList();
-    zone.convertNumericalPostalCodeStringToList();
+    zone.setAlphaNumericalPostalCodes(getZoneUtil().convertAlphaNumericPostalCodeStringToList(zone
+        .getAlphaNumericPostalCodesAsString()));
+    zone.setNumericalPostalCodes(getZoneUtil().convertNumericalPostalCodeStringToList(zone
+        .getNumericalPostalCodesAsString()));
   }
 
   @Override
@@ -89,5 +100,13 @@ public class CountryServiceImpl implements CountryService {
   @Override
   public void deleteCountry(Country country) {
     countryDao.deleteCountry(country);
+  }
+
+  public ZoneUtil getZoneUtil() {
+    return zoneUtil;
+  }
+
+  public void setZoneUtil(ZoneUtil zoneUtil) {
+    this.zoneUtil = zoneUtil;
   }
 }

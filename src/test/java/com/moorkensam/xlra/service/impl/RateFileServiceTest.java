@@ -12,6 +12,7 @@ import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
 import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.util.QuotationUtil;
+import com.moorkensam.xlra.service.util.ZoneUtil;
 
 import junit.framework.Assert;
 
@@ -51,6 +52,7 @@ public class RateFileServiceTest extends UnitilsJUnit4 {
     rateFileService.setRateFileDao(rfDao);
     rateFileService.setQuotationUtil(quotationUtil);
     rateFileService.setUserService(userService);
+    rateFileService.setZoneUtil(new ZoneUtil());
   }
 
   @Test

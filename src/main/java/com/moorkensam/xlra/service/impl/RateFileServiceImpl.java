@@ -18,6 +18,7 @@ import com.moorkensam.xlra.service.util.LogRecordFactory;
 import com.moorkensam.xlra.service.util.QuotationUtil;
 import com.moorkensam.xlra.service.util.RateUtil;
 import com.moorkensam.xlra.service.util.TranslationKeyToi8nMapper;
+import com.moorkensam.xlra.service.util.ZoneUtil;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -56,6 +57,8 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
 
   private LogRecordFactory logRecordFactory;
 
+  private ZoneUtil zoneUtil;
+
   /**
    * Inits for the service.
    */
@@ -64,6 +67,7 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
     setLogRecordFactory(LogRecordFactory.getInstance());
     quotationUtil = QuotationUtil.getInstance();
     translationMapper = new TranslationKeyToi8nMapper();
+    zoneUtil = new ZoneUtil();
   }
 
   @Override
@@ -81,8 +85,10 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
 
   private void convertStringCodesToObjects(final RateFile rateFile) {
     for (Zone zone : rateFile.getZones()) {
-      zone.convertAlphaNumericPostalCodeStringToList();
-      zone.convertNumericalPostalCodeStringToList();
+      zone.setAlphaNumericalPostalCodes(zoneUtil.convertAlphaNumericPostalCodeStringToList(zone
+          .getAlphaNumericPostalCodesAsString()));
+      zone.setNumericalPostalCodes(zoneUtil.convertNumericalPostalCodeStringToList(zone
+          .getNumericalPostalCodesAsString()));
     }
   }
 
@@ -277,5 +283,13 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
 
   public void setUserService(UserService userService) {
     this.userService = userService;
+  }
+
+  public ZoneUtil getZoneUtil() {
+    return zoneUtil;
+  }
+
+  public void setZoneUtil(ZoneUtil zoneUtil) {
+    this.zoneUtil = zoneUtil;
   }
 }

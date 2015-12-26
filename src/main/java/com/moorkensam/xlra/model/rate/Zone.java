@@ -3,8 +3,6 @@ package com.moorkensam.xlra.model.rate;
 import com.moorkensam.xlra.model.BaseEntity;
 import com.moorkensam.xlra.model.configuration.Interval;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.Cacheable;
@@ -25,7 +23,6 @@ import javax.persistence.Transient;
 public class Zone extends BaseEntity {
 
   public Zone() {
-
   }
 
   public Zone(String name) {
@@ -95,79 +92,6 @@ public class Zone extends BaseEntity {
 
   public void setAlphaNumericPostalCodesAsString(String alphaNumericPostalCodesAsString) {
     this.alphaNumericPostalCodesAsString = alphaNumericPostalCodesAsString;
-  }
-
-  /**
-   * Convert the alphanumeric postal codes to a string list.
-   */
-  public void convertAlphaNumericPostalCodeListToString() {
-    if (alphaNumericalPostalCodes != null && !alphaNumericalPostalCodes.isEmpty()) {
-      String alphaCodes = "";
-      for (String s : alphaNumericalPostalCodes) {
-        alphaCodes += (s + ",");
-      }
-
-      alphaCodes = alphaCodes.substring(0, alphaCodes.length() - 1);
-      setAlphaNumericPostalCodesAsString(alphaCodes);
-
-    }
-  }
-
-  /**
-   * fill in the numericalpostal codes from the list.
-   */
-  public void convertNumericalPostalCodeListToString() {
-    if (numericalPostalCodes != null && !numericalPostalCodes.isEmpty()) {
-      String numericalCodes = "";
-      for (Interval interval : numericalPostalCodes) {
-        numericalCodes += interval.toIntString() + ",";
-      }
-      numericalCodes = numericalCodes.substring(0, numericalCodes.length() - 1);
-      setNumericalPostalCodesAsString(numericalCodes);
-    }
-  }
-
-  /**
-   * convert the numericalpostalcodes string to a list.
-   */
-  public void convertNumericalPostalCodeStringToList() {
-    if (numericalPostalCodesAsString != null && !numericalPostalCodesAsString.isEmpty()) {
-      List<Interval> intervals = new ArrayList<Interval>();
-      String[] numericArray = numericalPostalCodesAsString.split(",");
-      numericArray = trimSpaces(numericArray);
-      for (String s : numericArray) {
-        String[] ints = s.split("-");
-        ints = trimSpaces(ints);
-        Interval interval = new Interval(ints);
-        intervals.add(interval);
-      }
-      setNumericalPostalCodes(intervals);
-    }
-  }
-
-  /**
-   * Trim the spaces from an input array.
-   * 
-   * @param input the array.
-   * @return the trimmed array.
-   */
-  public String[] trimSpaces(String[] input) {
-    String[] result = new String[input.length];
-    for (int i = 0; i < input.length; i++) {
-      result[i] = input[i].trim();
-    }
-    return result;
-  }
-
-  /**
-   * convert the alphanumerical postalcodes string to a list.
-   */
-  public void convertAlphaNumericPostalCodeStringToList() {
-    if (alphaNumericPostalCodesAsString != null && !alphaNumericPostalCodesAsString.isEmpty()) {
-      String[] alphaArray = alphaNumericPostalCodesAsString.split(",");
-      alphaArray = trimSpaces(alphaArray);
-      setAlphaNumericalPostalCodes(Arrays.asList(alphaArray));
-    }
   }
 
   public String getName() {

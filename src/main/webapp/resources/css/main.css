@@ -60,3 +60,7 @@ body {
 .ui-row-editor {
 	display: inline;
 }
+
+.ui-growl {
+	z-index: 999999 !important;
+}

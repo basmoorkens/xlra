@@ -14,11 +14,22 @@
 	</ui:define>
 	<ui:define name="body">
 		<h:form id="createRatesForm">
-			<p:growl id="growl" sticky="true" showDetail="true" />
+			<p:growl id="growl" showDetail="true" />
 
+			<p:tooltip id="customerTip" for="customerSelector"
+				value="The customer to create a ratefile for" />
+			<p:tooltip id="selectCountryTip" for="selectCountry"
+				value="The country of the ratefile" />
+			<p:tooltip id="selectMeasurementTip" for="selectMeasurement"
+				value="The measurement of the ratefile" />
+			<p:tooltip id="selectTypeOfTransportTip" for="selectTypeOfTransport"
+				value="The type of transport of the ratefile" />
+			<p:tooltip id="selectImportExportTip" for="selectImportExport"
+				value="The import/export type of the ratefile" />
 			<p:panel header="Basic information"
 				collapsed="#{createRatesController.collapseBasicInfoGrid}">
-				<p:panelGrid columns="2" style="margin:0; width:100%">
+				<p:panelGrid columns="2" style="margin:0; width:100%"
+					columnClasses="labelColumn,valuesColumn">
 					<h:outputText value="Name: " />
 					<h:outputText value="Auto generated" />
 
@@ -28,7 +39,7 @@
 						completeMethod="#{createRatesController.completeCustomerName}"
 						var="customer" itemLabel="#{customer.name}"
 						itemValue="#{customer}" converter="#{customerConverter}"
-						required="true" requiredMessage="Customer is required">
+						required="true" requiredMessage="Select a customer">
 					</p:autoComplete>
 
 					<h:outputText value="Country: " />
@@ -36,6 +47,7 @@
 						converter="#{countryConverter}" id="selectCountry" required="true"
 						requiredMessage="Select a country"
 						value="#{createRatesController.filter.country}">
+						<f:selectItem itemValue="#{null}" itemLabel="" />
 						<f:selectItems value="#{createRatesController.countries}"
 							var="country" itemLabel="#{country.englishName}"
 							itemValue="#{country}" />
@@ -43,8 +55,9 @@
 
 					<h:outputText value="Measurement: " />
 					<p:selectOneMenu style="width:100%;" id="selectMeasurement"
-						required="true"
+						required="true" requiredMessage="Select a measurement"
 						value="#{createRatesController.filter.measurement}">
+						<f:selectItem itemValue="#{null}" itemLabel="" />
 						<f:selectItems value="#{createRatesController.measurements}"
 							var="measurement" itemLabel="#{measurement.description}"
 							itemValue="#{measurement}" />
@@ -52,14 +65,19 @@
 
 					<h:outputText value="Type of transport: " />
 					<p:selectOneMenu style="width:100%;" id="selectTypeOfTransport"
-						required="true" value="#{createRatesController.filter.rateKind}">
+						requiredMessage="Select a transport type" required="true"
+						value="#{createRatesController.filter.rateKind}">
+						<f:selectItem itemValue="#{null}" itemLabel="" />
 						<f:selectItems value="#{createRatesController.kindOfRates}"
 							var="kind" itemLabel="#{kind.description}" itemValue="#{kind}" />
 					</p:selectOneMenu>
 
 					<h:outputText value="Transport type:" />
 					<p:selectOneMenu style="width:100%;" required="true"
+						id="selectImportExport"
+						requiredMessage="Select import/export type"
 						value="#{createRatesController.filter.transportationType}">
+						<f:selectItem itemValue="#{null}" itemLabel="" />
 						<f:selectItems value="#{createRatesController.allTransportTypes}"
 							var="transportationType" itemValue="#{transportationType}"
 							itemDescription="#{transportationType.description}" />
@@ -272,12 +290,17 @@
 				<p:panel style="margin-top:10px;padding:0px;border:0px;">
 					<p:commandButton value="Back"
 						actionListener="#{createRatesController.goToConditionsEditor}"
+						id="backToConditionsButton"
 						update=":createRatesForm :rateLinesDetailForm :conditionsDetailForm :summaryForm"
 						style="width:150px; margin-left:20px;" />
-					<p:commandButton value="Create rates"
+					<p:tooltip id="backToConditionsTip" for="backToConditionsButton"
+						value="Go back to conditions screen" />
+					<p:commandButton value="Create rates" id="createRatesButton"
 						action="#{createRatesController.saveNewRateFile}"
 						update=":summaryForm:message"
 						style="width:250px; margin-left:20px;" />
+					<p:tooltip id="createRatesTip" for="createRatesButton"
+						value="Create and save the ratefile" />
 				</p:panel>
 			</p:panel>
 			<p:ajaxStatus onstart="showStatusDialog();"

@@ -15,7 +15,8 @@
 		<h:form id="ratesForm">
 			<h3>Search options</h3>
 			<p:growl id="message" showDetail="true" />
-			<p:panelGrid columns="3" style="width:100%">
+			<p:panelGrid columns="2" style="width:100%"
+				columnClasses="labelColumn,valuesColumn">
 				<p:outputLabel value="Select Rates to display:" for="rateSelector" />
 
 				<p:autoComplete size="90" id="rateSelector" dropdown="true"
@@ -75,8 +76,6 @@
 				</p:panel>
 			</p:panel>
 		</h:form>
-		<h:form id="zoneDetailForm">
-			<p:growl id="message" showDetail="true" />
 			<ui:include src="/views/user/zoneDetail.xhtml">
 				<ui:param name="zones"
 					value="#{manageRatesController.selectedRateFile.zones}" />
@@ -84,7 +83,6 @@
 				<ui:param name="controllerName" value="manageRatesController" />
 				<ui:param name="canEdit" value="#{manageRatesController.canEdit}"></ui:param>
 			</ui:include>
-		</h:form>
 		<h:form id="rateLinesDetailForm" prependId="false">
 			<p:growl id="message" showDetail="true" />
 			<ui:include src="/views/user/rateLinesDetail.xhtml">

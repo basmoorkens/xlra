@@ -6,88 +6,95 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 	<p:panel id="summaryPanel">
-		<h3>Basic information</h3>
-		<p:panelGrid columns="2" style="width:100%;">
-			<h:outputText value="Name:" />
-			<h:outputText value="#{createRatesController.rateFile.name}" />
+		<p:panel header="Basic information">
+			<p:panelGrid columns="2" style="width:100%;"
+				columnClasses="labelColumn,valuesColumn">
+				<h:outputText value="Name:" />
+				<h:outputText value="#{createRatesController.rateFile.name}" />
 
-			<h:outputText value="Customer: " />
-			<h:outputText value="#{createRatesController.rateFile.customer.name}" />
+				<h:outputText value="Customer: " />
+				<h:outputText
+					value="#{createRatesController.rateFile.customer.name}" />
 
-			<h:outputText value="Country: " />
-			<h:outputText
-				value="#{createRatesController.rateFile.country.shortName}" />
+				<h:outputText value="Country: " />
+				<h:outputText
+					value="#{createRatesController.rateFile.country.shortName}" />
 
-			<h:outputText value="Measurement: " />
-			<h:outputText
-				value="#{createRatesController.rateFile.measurement.description}" />
+				<h:outputText value="Measurement: " />
+				<h:outputText
+					value="#{createRatesController.rateFile.measurement.description}" />
 
-			<h:outputText value="Type of transport: " />
-			<h:outputText
-				value="#{createRatesController.rateFile.kindOfRate.description}" />
+				<h:outputText value="Type of transport: " />
+				<h:outputText
+					value="#{createRatesController.rateFile.kindOfRate.description}" />
 
-			<h:outputText value="Transport type:" />
-			<h:outputText value="#{createRatesController.rateFile.transportType}" />
-		</p:panelGrid>
+				<h:outputText value="Transport type:" />
+				<h:outputText
+					value="#{createRatesController.rateFile.transportType}" />
+			</p:panelGrid>
+		</p:panel>
 
-		<h3>Rates</h3>
-		<p:dataTable
-			value="#{createRatesController.rateFile.relationalRateLines}"
-			var="rateLine" emptyMessage="No rate lines found."
-			id="rateLineSummaryTable" rows="50" editable="false">
+		<p:panel header="Rates">
+			<p:dataTable
+				value="#{createRatesController.rateFile.relationalRateLines}"
+				var="rateLine" emptyMessage="No rate lines found."
+				id="rateLineSummaryTable" rows="50" editable="false">
 
 
-			<f:facet name="header">
-				<h:outputText value="Zone" />
-			</f:facet>
-			<c:forEach items="#{createRatesController.rateFile.columns}"
-				var="column" varStatus="colLoopStatus">
-				<p:column rendered="#{colLoopStatus.index==0}">
-					<f:facet name="header">
+				<f:facet name="header">
+					<h:outputText value="Zone" />
+				</f:facet>
+				<c:forEach items="#{createRatesController.rateFile.columns}"
+					var="column" varStatus="colLoopStatus">
+					<p:column rendered="#{colLoopStatus.index==0}">
+						<f:facet name="header">
+							<h:outputText
+								value="#{createRatesController.rateFile.measurement.description}" />
+						</f:facet>
+						<h:outputText value="#{rateLine[colLoopStatus.index].measurement}" />
+					</p:column>
+					<p:column headerText="#{column}">
+						<h:outputText value="#{rateLine[colLoopStatus.index].value}" />
+					</p:column>
+				</c:forEach>
+			</p:dataTable>
+		</p:panel>
+
+		<p:panel header="General conditions">
+			<p:dataTable editable="false"
+				value="#{createRatesController.rateFile.conditions}" var="condition"
+				emptyMessage="No conditions found." id="conditionSummaryTable">
+				<p:column headerText="Key" width="15%">
+					<h:outputText value="#{condition.translatedKey}" />
+				</p:column>
+				<p:column headerText="Condition type" width="15%">
+					<h:outputText value="#{condition.conditionType}" />
+				</p:column>
+				<p:column headerText="Value">
+					<p:outputPanel rendered="#{condition.calculationCondition}">
 						<h:outputText
-							value="#{createRatesController.rateFile.measurement.description}" />
-					</f:facet>
-					<h:outputText value="#{rateLine[colLoopStatus.index].measurement}" />
+							value="#{condition.value} #{condition.calculationValueType.suffix}" />
+					</p:outputPanel>
+					<p:outputPanel rendered="#{!condition.calculationCondition}">
+						<h:outputText
+							value="EN: #{condition.englishTranslation.translation}" />
+						<br />
+						<h:outputText
+							value="NL: #{condition.dutchTranslation.translation}" />
+						<br />
+						<h:outputText
+							value="FR: #{condition.frenchTranslation.translation}" />
+						<br />
+						<h:outputText
+							value="DE: #{condition.germanTranslation.translation}" />
+						<br />
+					</p:outputPanel>
 				</p:column>
-				<p:column headerText="#{column}">
-					<h:outputText value="#{rateLine[colLoopStatus.index].value}" />
+				<p:column headerText="Standard option" style="width:128px;">
+					<p:selectBooleanCheckbox value="#{condition.standardSelected}"
+						disabled="true" />
 				</p:column>
-			</c:forEach>
-		</p:dataTable>
-
-		<h3>General conditions</h3>
-		<p:dataTable editable="false"
-			value="#{createRatesController.rateFile.conditions}" var="condition"
-			emptyMessage="No conditions found." id="conditionSummaryTable">
-			<p:column headerText="Key" width="15%">
-				<h:outputText value="#{condition.translatedKey}" />
-			</p:column>
-			<p:column headerText="Condition type" width="15%">
-				<h:outputText value="#{condition.conditionType}" />
-			</p:column>
-			<p:column headerText="Value">
-				<p:outputPanel rendered="#{condition.calculationCondition}">
-					<h:outputText
-						value="#{condition.value} #{condition.calculationValueType.suffix}" />
-				</p:outputPanel>
-				<p:outputPanel rendered="#{!condition.calculationCondition}">
-					<h:outputText
-						value="EN: #{condition.englishTranslation.translation}" />
-					<br />
-					<h:outputText value="NL: #{condition.dutchTranslation.translation}" />
-					<br />
-					<h:outputText
-						value="FR: #{condition.frenchTranslation.translation}" />
-					<br />
-					<h:outputText
-						value="DE: #{condition.germanTranslation.translation}" />
-					<br />
-				</p:outputPanel>
-			</p:column>
-			<p:column headerText="Standard option" style="width:128px;">
-				<p:selectBooleanCheckbox value="#{condition.standardSelected}"
-					disabled="true" />
-			</p:column>
-		</p:dataTable>
+			</p:dataTable>
+		</p:panel>
 	</p:panel>
 </ui:composition>

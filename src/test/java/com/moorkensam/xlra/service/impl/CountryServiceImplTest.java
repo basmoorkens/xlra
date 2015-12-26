@@ -4,6 +4,7 @@ import com.moorkensam.xlra.dao.CountryDao;
 import com.moorkensam.xlra.dao.ZoneDao;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Zone;
+import com.moorkensam.xlra.service.util.ZoneUtil;
 
 import junit.framework.Assert;
 
@@ -38,6 +39,7 @@ public class CountryServiceImplTest extends UnitilsJUnit4 {
     service = new CountryServiceImpl();
     service.setCountryDao(countryDao);
     service.setZoneDao(zoneDao);
+    service.setZoneUtil(new ZoneUtil());
   }
 
   @Test

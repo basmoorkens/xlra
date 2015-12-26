@@ -9,6 +9,7 @@ import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.rate.ZoneType;
+import com.moorkensam.xlra.service.util.ZoneUtil;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,8 +24,12 @@ public class RateFileDaoImpl extends BaseDao implements RateFileDao {
 
   private static final Logger logger = LogManager.getLogger();
 
+  private ZoneUtil zoneUtil;
+
   @PostConstruct
-  public void init() {}
+  public void init() {
+    zoneUtil = new ZoneUtil();
+  }
 
   @SuppressWarnings("unchecked")
   @Override
@@ -163,9 +168,11 @@ public class RateFileDaoImpl extends BaseDao implements RateFileDao {
     }
     for (Zone z : rateFile.getZones()) {
       if (z.getZoneType() == ZoneType.ALPHANUMERIC_LIST) {
-        z.convertAlphaNumericPostalCodeListToString();
+        z.setAlphaNumericPostalCodesAsString(zoneUtil.convertAlphaNumericPostalCodeListToString(z
+            .getAlphaNumericalPostalCodes()));
       } else {
-        z.convertNumericalPostalCodeListToString();
+        z.setNumericalPostalCodesAsString(zoneUtil.convertNumericalPostalCodeListToString(z
+            .getNumericalPostalCodes()));
       }
     }
     rateFile.fillUpRelationalProperties();
@@ -186,5 +193,13 @@ public class RateFileDaoImpl extends BaseDao implements RateFileDao {
     query.setParameter("ids", ids);
     List<RateFile> resultList = (List<RateFile>) query.getResultList();
     return resultList;
+  }
+
+  public ZoneUtil getZoneUtil() {
+    return zoneUtil;
+  }
+
+  public void setZoneUtil(ZoneUtil zoneUtil) {
+    this.zoneUtil = zoneUtil;
   }
 }
