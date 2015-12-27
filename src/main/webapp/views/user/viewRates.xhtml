@@ -9,44 +9,40 @@
 		<h:outputText value="XLRA - Rate management" />
 	</ui:define>
 	<ui:define name="pageTitle">
-		<h:outputText value="Rate management" />
+		<h:outputText value="View rates" />
 	</ui:define>
 	<ui:define name="body">
 		<h:form id="ratesForm">
 			<h3>Search options</h3>
 			<p:growl id="message" showDetail="true" />
-			<p:panelGrid columns="3" style="width:100%">
+			<p:panelGrid columns="2" style="width:100%"
+				columnClasses="labelColumn,valuesColumn">
 				<p:outputLabel value="Select Rates to display:" for="rateSelector" />
 
 				<p:autoComplete size="90" id="rateSelector" dropdown="true"
 					value="#{manageRatesController.selectedRateFile}"
 					completeMethod="#{manageRatesController.completeRateName}"
-					var="rateFile" itemLabel="#{rateFile.name}" itemValue="#{rateFile}"
-					converter="#{rateFileConverter}">
+					queryDelay="1000" var="rateFile" itemLabel="#{rateFile.name}"
+					itemValue="#{rateFile}" converter="#{rateFileConverter}">
 					<p:ajax event="itemSelect"
-						update=":conditionsDetailForm :rateLinesDetailForm :zoneDetailForm"
+						update=":basicForm :conditionsDetailForm :rateLinesDetailForm :zoneDetailForm"
 						listener="#{manageRatesController.fetchDetailsOfRatefile}" />
 				</p:autoComplete>
-
-				<p:commandButton rendered="#{manageRatesController.canEdit}"
-					value="Add new rates" title="Add new rates" icon="ui-icon-check"
-					immediate="true"
-					action="/views/rate/admin/createRateFile.xhtml?faces-redirect=true"
-					ajax="false" />
 			</p:panelGrid>
 		</h:form>
 
 		<h3>Details</h3>
-		<h:form id="zoneDetailForm">
-			<p:growl id="message" showDetail="true" />
-			<ui:include src="/views/user/zoneDetail.xhtml">
-				<ui:param name="zones"
-					value="#{manageRatesController.selectedRateFile.zones}" />
-				<ui:param name="controller" value="#{manageRatesController}" />
-				<ui:param name="controllerName" value="manageRatesController" />
-				<ui:param name="canEdit" value="false"></ui:param>
-			</ui:include>
-		</h:form>
+		<ui:include src="/views/user/rateBasicInfo.xhtml">
+			<ui:param name="rateFile"
+				value="#{manageRatesController.selectedRateFile}" />
+		</ui:include>
+		<ui:include src="/views/user/zoneDetail.xhtml">
+			<ui:param name="zones"
+				value="#{manageRatesController.selectedRateFile.zones}" />
+			<ui:param name="controller" value="#{manageRatesController}" />
+			<ui:param name="controllerName" value="manageRatesController" />
+			<ui:param name="canEdit" value="false"></ui:param>
+		</ui:include>
 		<h:form id="rateLinesDetailForm">
 			<p:growl id="message" showDetail="true" />
 			<ui:include src="/views/user/rateLinesDetail.xhtml">
@@ -58,16 +54,13 @@
 				<ui:param name="sticky" value="false"></ui:param>
 			</ui:include>
 		</h:form>
-		<h:form id="conditionsDetailForm">
-			<p:growl id="message" showDetail="true" />
-			<ui:include src="/views/user/conditionsDetail.xhtml">
-				<ui:param name="conditions"
-					value="#{manageRatesController.selectedRateFile.conditions}" />
-				<ui:param name="controller" value="#{manageRatesController}" />
-				<ui:param name="controllerName" value="manageRatesController" />
-				<ui:param name="canEdit" value="false"></ui:param>
-			</ui:include>
-		</h:form>
+		<ui:include src="/views/user/conditionsDetail.xhtml">
+			<ui:param name="conditions"
+				value="#{manageRatesController.selectedRateFile.conditions}" />
+			<ui:param name="controller" value="#{manageRatesController}" />
+			<ui:param name="controllerName" value="manageRatesController" />
+			<ui:param name="canEdit" value="false"></ui:param>
+		</ui:include>
 	</ui:define>
 </ui:composition>
 </html>

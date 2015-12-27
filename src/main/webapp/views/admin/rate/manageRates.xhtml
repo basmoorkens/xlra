@@ -32,57 +32,18 @@
 		</h:form>
 
 		<h3>Details</h3>
-		<h:form id="basicForm">
-			<p:panel id="basicInfoPanel" toggleable="false" style="width:100%;"
-				collapsed="#{manageRatesController.collapseZonesDetailGrid}"
-				header="Basic info">
-				<p:panelGrid columns="2" columnClasses="labelColumn,valuesColumn"
-					style="width:100%;">
-					<h:outputText value="Customer:" />
-					<h:outputText
-						value="#{manageRatesController.selectedRateFile.customerNameOrBaseMessage}" />
+		<ui:include src="/views/user/rateBasicInfo.xhtml">
+			<ui:param name="rateFile"
+				value="#{manageRatesController.selectedRateFile}" />
+		</ui:include>
 
-					<h:outputText value="Country:" />
-					<h:outputText
-						value="#{manageRatesController.selectedRateFile.country.englishName}" />
-
-					<h:outputText value="Measurement:" />
-					<h:outputText
-						value="#{manageRatesController.selectedRateFile.measurement.description}" />
-
-					<h:outputText value="Type of transport:" />
-					<h:outputText
-						value="#{manageRatesController.selectedRateFile.kindOfRate.description}" />
-
-					<h:outputText value="Import/export type:" />
-					<h:outputText
-						value="#{manageRatesController.selectedRateFile.transportType.description}" />
-
-					<h:outputText value="Last edited by:" />
-					<h:outputText
-						value="#{manageRatesController.selectedRateFile.lastEditedBy}" />
-
-					<h:outputText value="Last edited on:" />
-					<h:outputText
-						value="#{manageRatesController.selectedRateFile.lastUpdatedOrCreatedDate}" />
-				</p:panelGrid>
-
-				<p:panel style="margin-top:20px;">
-					<p:commandButton value="Download as excel" ajax="false"
-						id="exportExcelButton"
-						actionListener="#{manageRatesController.downloadRateExcel}" />
-					<p:tooltip id="exportExcelTip" for="exportExcelButton"
-						value="Export the ratefile to an excel file and download it" />
-				</p:panel>
-			</p:panel>
-		</h:form>
-			<ui:include src="/views/user/zoneDetail.xhtml">
-				<ui:param name="zones"
-					value="#{manageRatesController.selectedRateFile.zones}" />
-				<ui:param name="controller" value="#{manageRatesController}" />
-				<ui:param name="controllerName" value="manageRatesController" />
-				<ui:param name="canEdit" value="#{manageRatesController.canEdit}"></ui:param>
-			</ui:include>
+		<ui:include src="/views/user/zoneDetail.xhtml">
+			<ui:param name="zones"
+				value="#{manageRatesController.selectedRateFile.zones}" />
+			<ui:param name="controller" value="#{manageRatesController}" />
+			<ui:param name="controllerName" value="manageRatesController" />
+			<ui:param name="canEdit" value="#{manageRatesController.canEdit}"></ui:param>
+		</ui:include>
 		<h:form id="rateLinesDetailForm" prependId="false">
 			<p:growl id="message" showDetail="true" />
 			<ui:include src="/views/user/rateLinesDetail.xhtml">

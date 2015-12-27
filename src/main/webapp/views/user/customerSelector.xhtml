@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<h:form id="customerForm">
+		<p:panel id="customerPanel" header="Customer" toggleable="false"
+			collapsed="#{createQuotationController.collapseCustomerPanel}">
+			<p:tooltip id="addCustomerTip" for="addCustomerButton"
+				value="Create a new customer with only basic information" />
+			<p:tooltip id="nextTip1" for="nextButton1"
+				value="Go to the rates filter step" />
+			<p:panelGrid columns="3" style="width:100%;">
+				<h:outputText value="Select an existing customer: " />
+				<p:autoComplete size="60" id="customerSelector" dropdown="true"
+					value="#{createQuotationController.quotationQuery.customer}"
+					completeMethod="#{createQuotationController.completeCustomerName}"
+					var="customer" itemLabel="#{customer.name}" required="true"
+					requiredMessage="Please select a customer/create a new one"
+					itemValue="#{customer}" converter="#{customerConverter}">
+				</p:autoComplete>
+
+				<p:commandButton rendered="#{canEdit}" value="Create new customer" id="addCustomerButton"
+					update=":addQuickCustomerForm" immediate="true"
+					onclick="PF('addCustomerDialog').show();" />
+
+			</p:panelGrid>
+			<p:growl showDetail="true" id="messages" sticky="false" />
+			<p:panel style="margin-top:20px;">
+				<p:commandButton value="Next" id="nextButton1"
+					actionListener="#{createQuotationController.procesCustomer}"
+					update=":customerForm :filtersForm" ajax="true"
+					style="width:150px; margin-left:20px;" />
+			</p:panel>
+		</p:panel>
+	</h:form>
+</ui:composition>

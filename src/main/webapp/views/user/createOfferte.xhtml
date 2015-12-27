@@ -13,37 +13,9 @@
 		<h:outputText value="Create offerte" />
 	</ui:define>
 	<ui:define name="body">
-		<h:form id="customerForm">
-			<p:panel id="customerPanel" header="Customer" toggleable="false"
-				collapsed="#{createQuotationController.collapseCustomerPanel}">
-				<p:tooltip id="addCustomerTip" for="addCustomerButton"
-					value="Create a new customer with only basic information" />
-				<p:tooltip id="nextTip1" for="nextButton1"
-					value="Go to the rates filter step" />
-				<p:panelGrid columns="3" style="width:100%;">
-					<h:outputText value="Select an existing customer: " />
-					<p:autoComplete size="60" id="customerSelector" dropdown="true"
-						value="#{createQuotationController.quotationQuery.customer}"
-						completeMethod="#{createQuotationController.completeCustomerName}"
-						var="customer" itemLabel="#{customer.name}" required="true"
-						requiredMessage="Please select a customer/create a new one"
-						itemValue="#{customer}" converter="#{customerConverter}">
-					</p:autoComplete>
-
-					<p:commandButton value="Create new customer" id="addCustomerButton"
-						update=":addQuickCustomerForm" immediate="true"
-						onclick="PF('addCustomerDialog').show();" />
-
-				</p:panelGrid>
-				<p:growl showDetail="true" id="messages" sticky="false" />
-				<p:panel style="margin-top:20px;">
-					<p:commandButton value="Next" id="nextButton1"
-						actionListener="#{createQuotationController.procesCustomer}"
-						update=":customerForm :filtersForm" ajax="true"
-						style="width:150px; margin-left:20px;" />
-				</p:panel>
-			</p:panel>
-		</h:form>
+		<ui:include src="/views/user/customerSelector.xhtml">
+			<ui:param name="canEdit" value="true" />
+		</ui:include>
 
 		<h:form id="filtersForm">
 			<p:panel id="filterPanel" header="Rates filter"

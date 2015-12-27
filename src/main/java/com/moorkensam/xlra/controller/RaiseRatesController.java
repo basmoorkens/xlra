@@ -37,10 +37,15 @@ public class RaiseRatesController {
 
   private List<RaiseRatesRecord> logRecords;
 
+  private boolean collapseRaiseRatesGrid;
+
+  private boolean collapseSummaryGrid;
+
   @PostConstruct
   public void initializeController() {
     resetState();
     rateFiles.setTarget(selectedRateFiles);
+    showRaiseRatesPanel();
   }
 
   private void resetState() {
@@ -57,6 +62,16 @@ public class RaiseRatesController {
 
   public String onFlowProcess(FlowEvent event) {
     return event.getNewStep();
+  }
+
+  public void showSummaryPanel() {
+    collapseRaiseRatesGrid = true;
+    collapseSummaryGrid = false;
+  }
+
+  public void showRaiseRatesPanel() {
+    collapseRaiseRatesGrid = false;
+    collapseSummaryGrid = true;
   }
 
   public void raiseRates() {
@@ -111,5 +126,21 @@ public class RaiseRatesController {
 
   public void setLogRecords(List<RaiseRatesRecord> logRecords) {
     this.logRecords = logRecords;
+  }
+
+  public boolean isCollapseSummaryGrid() {
+    return collapseSummaryGrid;
+  }
+
+  public void setCollapseSummaryGrid(boolean collapseSummaryGrid) {
+    this.collapseSummaryGrid = collapseSummaryGrid;
+  }
+
+  public boolean isCollapseRaiseRatesGrid() {
+    return collapseRaiseRatesGrid;
+  }
+
+  public void setCollapseRaiseRatesGrid(boolean collapseRaiseRatesGrid) {
+    this.collapseRaiseRatesGrid = collapseRaiseRatesGrid;
   }
 }

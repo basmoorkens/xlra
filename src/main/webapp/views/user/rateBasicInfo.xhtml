@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<h:form id="basicForm">
+		<p:panel id="basicInfoPanel" toggleable="false" style="width:100%;"
+			collapsed="#{manageRatesController.collapseZonesDetailGrid}"
+			header="Basic info">
+			<p:panelGrid columns="2" columnClasses="labelColumn,valuesColumn"
+				style="width:100%;">
+				<h:outputText value="Customer:" />
+				<h:outputText
+					value="#{rateFile.customerNameOrBaseMessage}" />
+
+				<h:outputText value="Country:" />
+				<h:outputText
+					value="#{rateFile.country.englishName}" />
+
+				<h:outputText value="Measurement:" />
+				<h:outputText
+					value="#{rateFile.measurement.description}" />
+
+				<h:outputText value="Type of transport:" />
+				<h:outputText
+					value="#{rateFile.kindOfRate.description}" />
+
+				<h:outputText value="Import/export type:" />
+				<h:outputText
+					value="#{rateFile.transportType.description}" />
+
+				<h:outputText value="Last edited by:" />
+				<h:outputText
+					value="#{rateFile.lastEditedBy}" />
+
+				<h:outputText value="Last edited on:" />
+				<h:outputText
+					value="#{rateFile.lastUpdatedOrCreatedDate}" />
+			</p:panelGrid>
+
+			<p:panel style="margin-top:20px;">
+				<p:commandButton value="Download as excel" ajax="false"
+					id="exportExcelButton"
+					actionListener="#{manageRatesController.downloadRateExcel}" />
+				<p:tooltip id="exportExcelTip" for="exportExcelButton"
+					value="Export the ratefile to an excel file and download it" />
+			</p:panel>
+		</p:panel>
+	</h:form>
+</ui:composition>
