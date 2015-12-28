@@ -13,10 +13,8 @@
 		<h:outputText value="Raise rates" />
 	</ui:define>
 	<ui:define name="body">
-
 		<h:form id="raiseHistoryForm">
-			<p:panel title="Raise history" header="Raise history"
-				style="margin-top:50px;">
+			<p:panel title="Raise history" header="Raise history">
 				<p:dataTable var="logRecord"
 					value="#{raiseRatesController.logRecords}">
 					<p:column headerText="Type:">
@@ -24,7 +22,7 @@
 					</p:column>
 					<p:column headerText="Date:">
 						<h:outputText value="#{logRecord.createdDateTime}">
-							<f:convertDateTime type="datetime" pattern="dd-mm-YYYY HH:mm:ss" />
+							<f:convertDateTime type="both" pattern="dd-mm-YYYY HH:mm:ss" />
 						</h:outputText>
 					</p:column>
 					<p:column headerText="Percentage">
@@ -38,82 +36,84 @@
 				</p:dataTable>
 
 				<p:panel style="margin-top:20px;">
-					<p:commandButton value="Undo latest raise" immediate="true"
-						actionListener="#{raiseRatesController.undoLatestRaiseRates}">
-						<p:confirm header="Confirmation"
-							message="Are you sure you want to undo the last raise of rates?"
-							icon="ui-icon-alert" />
-					</p:commandButton>
+					<p:commandButton value="Raise rates" immediate="true"
+						update=":raiseRatesForm" ajax="true"
+						actionListener="#{raiseRatesController.showAddDialog}" />
 				</p:panel>
 			</p:panel>
 		</h:form>
 
 		<h:form id="raiseRatesForm">
-			<p:growl id="msgs" showDetail="true" />
-			<p:panel header="Raise rates" style="margin-top:20px;"
-				collapsed="#{raiseRatesController.collapseRaiseRatesGrid}">
-				<p:panelGrid columns="2" style="width:100%;"
-					columnClasses="labelColumn,valuesColumn">
-					<h:outputText value="Select ratefiles to raise" />
-					<p:pickList id="rateFilePickList"
-						value="#{raiseRatesController.rateFiles}" var="rateFile"
-						effect="bounce" itemValue="#{rateFile}"
-						itemLabel="#{rateFile.name}" showSourceControls="false"
-						showTargetControls="false" showCheckbox="true"
-						showSourceFilter="true" showTargetFilter="true"
-						filterMatchMode="contains" converter="#{rateFileSimpleConverter}"
-						style="width:100%; !important">
+			<p:dialog id="raiseDialog" header="Raise rates"
+				widgetVar="raiseRatesDialog" modal="true" width="70%" height="50%"
+				dynamic="true">
+				<p:growl id="msgs" showDetail="true" />
+				<p:panel header="Raise info">
+					<p:panelGrid columns="2" style="width:100%;"
+						columnClasses="labelColumn,valuesColumn">
+						<h:outputText value="Select ratefiles to raise" />
+						<p:pickList id="rateFilePickList"
+							value="#{raiseRatesController.rateFiles}" var="rateFile"
+							effect="bounce" itemValue="#{rateFile}"
+							itemLabel="#{rateFile.name}" showSourceControls="false"
+							showTargetControls="false" showCheckbox="true"
+							showSourceFilter="true" showTargetFilter="true"
+							filterMatchMode="contains" converter="#{rateFileSimpleConverter}"
+							style="width:100%; !important">
 
-						<f:facet name="sourceCaption">All rate files</f:facet>
-						<f:facet name="targetCaption">Selected rate files</f:facet>
+							<f:facet name="sourceCaption">All rate files</f:facet>
+							<f:facet name="targetCaption">Selected rate files</f:facet>
 
-						<p:column style="width:90%;">
-							<h:outputText value="#{rateFile.name}" />
-						</p:column>
-					</p:pickList>
+							<p:column style="width:90%;">
+								<h:outputText value="#{rateFile.name}" />
+							</p:column>
+						</p:pickList>
 
-					<h:outputText value="Raise percentage " />
-					<p:inputText value="#{raiseRatesController.percentage}"
-						style="width:100%;">
-						<f:convertNumber pattern="#00.00" />
-					</p:inputText>
-				</p:panelGrid>
+						<h:outputText value="Raise percentage " />
+						<p:inputText value="#{raiseRatesController.percentage}"
+							style="width:100%;">
+							<f:convertNumber pattern="#00.00" />
+						</p:inputText>
+					</p:panelGrid>
 
-				<p:panel style="margin-top:20px;">
-					<p:commandButton value="Raise rates"
-						style="width:150px; margin-left:20px;"
-						actionListener="#{raiseRatesController.raiseRates}"
-						update=":raiseRatesForm :raiseHistoryForm" ajax="true" />
+					<p:panel style="margin-top:20px;">
+						<p:commandButton value="Raise rates"
+							style="width:150px; margin-left:20px;"
+							actionListener="#{raiseRatesController.raiseRates}"
+							update=":raiseRatesForm :raiseHistoryForm" ajax="true" />
+					</p:panel>
 				</p:panel>
-			</p:panel>
+			</p:dialog>
+
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				<p:commandButton value="Yes" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+			<p:ajaxStatus onstart="showStatusDialog();"
+				onsuccess="hideStatusDialog();" />
+
+			<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+				closable="false" resizable="false" showHeader="false">
+				<p:graphicImage url="/resources/images/ajax-loader.gif" />
+			</p:dialog>
 		</h:form>
 
-		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-			<p:commandButton value="Yes" type="button"
-				styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-			<p:commandButton value="No" type="button"
-				styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-		</p:confirmDialog>
-		<p:ajaxStatus onstart="showStatusDialog();"
-			onsuccess="hideStatusDialog();" />
-
-		<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
-			closable="false" resizable="false" showHeader="false">
-			<p:graphicImage url="/resources/images/ajax-loader.gif" />
-		</p:dialog>
 		<script type="text/javascript">
 			var statusDlgTimer = null;
 
 			function showStatusDialog() {
 				if (statusDlgTimer === null) {
-					statusDlgTimer = setTimeout("statusDialog.show()", 300);
+					statusDlgTimer = setTimeout("PF('statusDialog').show()",
+							500);
 				}
 			}
 
 			function hideStatusDialog() {
 				if (statusDlgTimer !== null) {
 					clearTimeout(statusDlgTimer);
-					statusDialog.hide();
+					PF('statusDialog').hide();
 					statusDlgTimer = null;
 				}
 			}

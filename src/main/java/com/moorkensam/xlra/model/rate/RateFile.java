@@ -310,9 +310,13 @@ public class RateFile extends BaseEntity {
             }
           } else {
             for (Interval interval : rl.getZone().getNumericalPostalCodes()) {
-              int postalCodeAsInt = Integer.parseInt(postalCode);
-              if (postalCodeAsInt >= interval.getStart() && postalCodeAsInt <= interval.getEnd()) {
-                return rl;
+              try {
+                int postalCodeAsInt = Integer.parseInt(postalCode);
+                if (postalCodeAsInt >= interval.getStart() && postalCodeAsInt <= interval.getEnd()) {
+                  return rl;
+                }
+              } catch (NumberFormatException exc) {
+                throw new RateFileException(postalCode + " is not a valid numerical postalcode!");
               }
             }
           }

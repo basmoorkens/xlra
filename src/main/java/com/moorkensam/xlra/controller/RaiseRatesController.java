@@ -6,6 +6,7 @@ import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.service.RaiseRateFileService;
 import com.moorkensam.xlra.service.RateFileService;
 
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
 import org.primefaces.model.DualListModel;
 
@@ -37,15 +38,14 @@ public class RaiseRatesController {
 
   private List<RaiseRatesRecord> logRecords;
 
-  private boolean collapseRaiseRatesGrid;
 
-  private boolean collapseSummaryGrid;
-
+  /**
+   * Inits the controller.
+   */
   @PostConstruct
   public void initializeController() {
     resetState();
     rateFiles.setTarget(selectedRateFiles);
-    showRaiseRatesPanel();
   }
 
   private void resetState() {
@@ -56,6 +56,16 @@ public class RaiseRatesController {
     refreshLogs();
   }
 
+  private void hideAddDialog() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    context.execute("PF('raiseRatesDialog').hide();");
+  }
+
+  public void showAddDialog() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    context.execute("PF('raiseRatesDialog').show();");
+  }
+
   private void refreshLogs() {
     logRecords = raiseRatesService.getRaiseRatesLogRecordsThatAreNotUndone();
   }
@@ -64,18 +74,13 @@ public class RaiseRatesController {
     return event.getNewStep();
   }
 
-  public void showSummaryPanel() {
-    collapseRaiseRatesGrid = true;
-    collapseSummaryGrid = false;
-  }
-
-  public void showRaiseRatesPanel() {
-    collapseRaiseRatesGrid = false;
-    collapseSummaryGrid = true;
-  }
-
+  /**
+   * Raise the selected ratefiles by the given percentage.
+   */
   public void raiseRates() {
     raiseRatesService.raiseRateFileRateLinesWithPercentage(rateFiles.getTarget(), percentage);
+    hideAddDialog();
+    refreshLogs();
     MessageUtil.addMessage("Rates raised", "Succesfully raised rates for");
   }
 
@@ -126,21 +131,5 @@ public class RaiseRatesController {
 
   public void setLogRecords(List<RaiseRatesRecord> logRecords) {
     this.logRecords = logRecords;
-  }
-
-  public boolean isCollapseSummaryGrid() {
-    return collapseSummaryGrid;
-  }
-
-  public void setCollapseSummaryGrid(boolean collapseSummaryGrid) {
-    this.collapseSummaryGrid = collapseSummaryGrid;
-  }
-
-  public boolean isCollapseRaiseRatesGrid() {
-    return collapseRaiseRatesGrid;
-  }
-
-  public void setCollapseRaiseRatesGrid(boolean collapseRaiseRatesGrid) {
-    this.collapseRaiseRatesGrid = collapseRaiseRatesGrid;
   }
 }

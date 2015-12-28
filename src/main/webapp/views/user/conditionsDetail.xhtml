@@ -98,28 +98,29 @@
 
 					<h:outputLabel value="New value:"
 						rendered="#{controller.selectedCondition.calculationCondition}" />
-					<p:inputText size="50"
+					<p:inputText style="width:100%;"
 						value="#{controller.selectedCondition.value}"
 						rendered="#{controller.selectedCondition.calculationCondition}" />
 
 					<c:forEach items="#{controller.selectedCondition.translations}"
 						var="translation">
 						<h:outputText value="#{translation.language}" />
-						<p:inputText size="50" value="#{translation.translation}" />
+						<p:inputText style="width:100%;"
+							value="#{translation.translation}" />
 					</c:forEach>
 
 					<h:outputLabel value="Standard selected:" />
 					<p:selectBooleanCheckbox
 						value="#{controller.selectedCondition.standardSelected}" />
 				</p:panelGrid>
-				<f:facet name="footer">
+				<p:panel style="margin-top:20px;">
 					<p:commandButton value="Cancel"
 						onclick="PF('editConditionDialog').hide();" />
 					<p:commandButton style="margin-left:20px;" value="Save"
 						oncomplete="handleEditConditionRequest(xhr, status, args)"
 						actionListener="#{controller.saveEditCondition}"
 						update=":conditionsDetailForm :editConditionForm" />
-				</f:facet>
+				</p:panel>
 			</p:panel>
 		</p:dialog>
 	</h:form>
