@@ -32,6 +32,9 @@ public class ExcelServiceImpl implements ExcelService {
 
   private RateFileToExcelMapper inverseMapper;
 
+  /**
+   * Initializes the class with some helper classes.
+   */
   @PostConstruct
   public void init() {
     this.mapper = new ExcelToModelMapper();

@@ -12,8 +12,10 @@ import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RateFileToExcelMapper {
@@ -27,19 +29,51 @@ public class RateFileToExcelMapper {
    * @return The generated workbook.
    */
   public XSSFWorkbook map(RateFile rateFile) {
+    List<Integer> headerRows = new ArrayList<Integer>();
     logger.info("Parsing XSSF workbook from ratefile " + rateFile.getName());
     XSSFWorkbook workBook = new XSSFWorkbook();
     generateSheetName(rateFile);
     Sheet sheet = workBook.createSheet(generateSheetName(rateFile));
     int lastUsedRow = 0;
+
+    headerRows.add(lastUsedRow);
     lastUsedRow = createHeaders(rateFile, sheet, lastUsedRow);
+
+    headerRows.add(lastUsedRow);
     lastUsedRow = createZoneInfo(rateFile, sheet, lastUsedRow);
     lastUsedRow++;// 1 empty row
+
+    lastUsedRow = createRatesTitle(headerRows, sheet, lastUsedRow);
     lastUsedRow = createRateLineInfo(rateFile, sheet, lastUsedRow);
     lastUsedRow++;// 1 empty row
 
+    headerRows.add(lastUsedRow);
     lastUsedRow = createConditionsInfo(rateFile, sheet, lastUsedRow);
+
+    int maxColumns = rateFile.getColumns().size() + 1;
+    mergeHeaderRowCells(maxColumns, headerRows, sheet);
+    autoSizeColumns(sheet, maxColumns);
     return workBook;
+  }
+
+  private void autoSizeColumns(Sheet sheet, int maxColumns) {
+    for (int x = 0; x < maxColumns; x++) {
+      sheet.autoSizeColumn(x);
+    }
+  }
+
+  private void mergeHeaderRowCells(int maxColumns, List<Integer> headerRows, Sheet sheet) {
+    for (int row : headerRows) {
+      sheet.addMergedRegion(new CellRangeAddress(row, row, 0, maxColumns));
+    }
+  }
+
+  private int createRatesTitle(List<Integer> headerRows, Sheet sheet, int lastUsedRow) {
+    headerRows.add(lastUsedRow);
+    Row ratesHeader = sheet.createRow(lastUsedRow++);
+    Cell ratesTitleCell = ratesHeader.createCell(0);
+    ratesTitleCell.setCellValue("Rates");
+    return lastUsedRow;
   }
 
   private int createConditionsInfo(RateFile rateFile, Sheet sheet, int lastUsedRow) {
