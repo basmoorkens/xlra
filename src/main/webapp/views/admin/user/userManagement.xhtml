@@ -31,8 +31,7 @@
 					</p:column>
 					<p:column style="width:200px;">
 						<p:commandButton style="margin-top:5px;margin-bottom:5px;"
-							icon="ui-icon-pencil" update=":usersForm :addUserForm"
-							id="editButton"
+							icon="ui-icon-pencil" update=":addUserForm" id="editButton"
 							actionListener="#{manageUsersController.selectUserForEdit(user)}" />
 						<p:tooltip id="editTip" for="editButton" value="Edit user" />
 						<p:commandButton icon="ui-icon-locked"
@@ -59,7 +58,7 @@
 				<p:panel>
 					<p:commandButton
 						actionListener="#{manageUsersController.setupNewUser}"
-						update=":usersForm :addUserForm" immediate="true" ajax="false"
+						update=":addUserForm" immediate="true" ajax="true"
 						value="Create new user" id="gotoCreateButton" />
 					<p:tooltip id="goToCreateTip" for="gotoCreateButton"
 						value="Create a new user" />
@@ -94,13 +93,14 @@
 						<p:inputText style="width:100%;"
 							value="#{manageUsersController.selectedUser.userName}"
 							required="true" requiredMessage="Username is required"
-							id="userNameInput" />
+							id="userNameInput" disabled="#{manageUsersController.editMode}" />
 
 						<h:outputText value="Email:" />
 						<p:inputText value="#{manageUsersController.selectedUser.email}"
 							required="true" requiredMessage="Email is required"
 							validatorMessage="Please enter a valid email adres"
-							style="width:100%;" id="emailInput">
+							style="width:100%;" id="emailInput"
+							disabled="#{manageUsersController.editMode}">
 							<f:validateRegex
 								pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
 						</p:inputText>

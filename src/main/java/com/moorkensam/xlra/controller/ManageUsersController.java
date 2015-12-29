@@ -37,6 +37,8 @@ public class ManageUsersController {
 
   private DualListModel<Role> roles;
 
+  private boolean editMode;
+
   /**
    * Initializes the controller.
    */
@@ -113,6 +115,7 @@ public class ManageUsersController {
     selectedUser = new User();
     selectUserForEdit(selectedUser);
     RequestContext context = RequestContext.getCurrentInstance();
+    editMode = false;
     context.execute("PF('addUserDialog').show();");
   }
 
@@ -129,6 +132,7 @@ public class ManageUsersController {
     roles.setTarget(user.getRoles());
     roles.setSource(getSourceRoles(user));
     RequestContext context = RequestContext.getCurrentInstance();
+    editMode = true;
     context.execute("PF('addUserDialog').show();");
   }
 
@@ -233,6 +237,14 @@ public class ManageUsersController {
 
   public boolean getCanResetPassword() {
     return selectedUser != null && selectedUser.getId() > 0;
+  }
+
+  public boolean isEditMode() {
+    return editMode;
+  }
+
+  public void setEditMode(boolean editMode) {
+    this.editMode = editMode;
   }
 
 }
