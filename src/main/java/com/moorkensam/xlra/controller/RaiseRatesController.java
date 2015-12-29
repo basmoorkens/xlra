@@ -56,6 +56,15 @@ public class RaiseRatesController {
     refreshLogs();
   }
 
+  /**
+   * cancel the creation of a raise rate files.
+   */
+  public void cancel() {
+    percentage = 0d;
+    resetState();
+    hideAddDialog();
+  }
+
   private void hideAddDialog() {
     RequestContext context = RequestContext.getCurrentInstance();
     context.execute("PF('raiseRatesDialog').hide();");

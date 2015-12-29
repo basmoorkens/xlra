@@ -37,8 +37,10 @@
 
 				<p:panel style="margin-top:20px;">
 					<p:commandButton value="Raise rates" immediate="true"
-						update=":raiseRatesForm" ajax="true"
+						update=":raiseRatesForm" ajax="true" id="raiseRatesButton"
 						actionListener="#{raiseRatesController.showAddDialog}" />
+					<p:tooltip id="raiseRatesTip" for="raiseRatesButton"
+						value="Create a raise of ratefiles" />
 				</p:panel>
 			</p:panel>
 		</h:form>
@@ -77,8 +79,12 @@
 					</p:panelGrid>
 
 					<p:panel style="margin-top:20px;">
-						<p:commandButton value="Raise rates"
-							style="width:150px; margin-left:20px;"
+						<p:commandButton value="cancel"
+							actionListener="#{raiseRatesController.cancel}"
+							style="padding-left:10px; padding-right:10px; margin-right:10px;"
+							update=":raiseRatesForm :raiseHistoryForm" ajax="true" />
+						<p:commandButton value="raise rates"
+							style="padding-left:10px; padding-right:10px; margin-left:10px;"
 							actionListener="#{raiseRatesController.raiseRates}"
 							update=":raiseRatesForm :raiseHistoryForm" ajax="true" />
 					</p:panel>
