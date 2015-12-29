@@ -65,7 +65,7 @@ public class RateFileServiceTest extends UnitilsJUnit4 {
     EasyMock.expect(rfDao.getFullRateFileForFilter(filter)).andReturn(rf);
     EasyMockUnitils.replay();
 
-    RateFile result = rateFileService.getRateFileForQuery(query);
+    rateFileService.getRateFileForQuery(query);
   }
 
   @Test
@@ -82,7 +82,7 @@ public class RateFileServiceTest extends UnitilsJUnit4 {
     EasyMock.expect(rfDao.getFullRateFileForFilter(backupFilter)).andReturn(rf);
     EasyMockUnitils.replay();
 
-    RateFile result = rateFileService.getRateFileForQuery(query);
+    rateFileService.getRateFileForQuery(query);
   }
 
   @Test
@@ -147,7 +147,7 @@ public class RateFileServiceTest extends UnitilsJUnit4 {
     filter.setCustomer(customer);
     EasyMock.expect(rfDao.getFullRateFileForFilter(filter)).andReturn(rf1);
     EasyMockUnitils.replay();
-    RateFile rs = rateFileService.generateCustomerRateFileForFilterAndCustomer(filter);
+    rateFileService.generateCustomerRateFileForFilterAndCustomer(filter);
   }
 
   @Test

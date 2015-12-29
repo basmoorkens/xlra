@@ -148,7 +148,7 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
   public RateFile generateCustomerRateFileForFilterAndCustomer(RateFileSearchFilter filter)
       throws RateFileException {
     try {
-      RateFile alreadyExistingFileForCustomer = rateFileDao.getFullRateFileForFilter(filter);
+      rateFileDao.getFullRateFileForFilter(filter);
       throw new RateFileException("A ratefile already exists for this customer and these options.");
     } catch (NoResultException e) {
       try {

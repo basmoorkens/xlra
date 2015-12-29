@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.service;
 
+import com.moorkensam.xlra.model.error.UserException;
 import com.moorkensam.xlra.model.security.User;
 
 import java.util.List;
@@ -10,7 +11,7 @@ public interface UserService {
 
   public List<User> getAllUsers();
 
-  public void createUser(User user);
+  public void createUser(User user) throws UserException;
 
   public User updateUser(User user, boolean updatePw);
 

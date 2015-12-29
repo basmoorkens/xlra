@@ -16,7 +16,7 @@ import javax.persistence.Query;
 
 public class UserDaoImpl extends BaseDao implements UserDao {
 
-  private final static Logger logger = LogManager.getLogger();
+  private static final Logger logger = LogManager.getLogger();
 
   @SuppressWarnings("unchecked")
   @Override

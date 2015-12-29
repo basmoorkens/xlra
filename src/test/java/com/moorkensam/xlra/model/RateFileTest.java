@@ -98,7 +98,7 @@ public class RateFileTest extends UnitilsJUnit4 {
     rateFile.getZones().get(0)
         .setAlphaNumericalPostalCodes(Arrays.asList("CX1", "CX2", "CX4", "AA2", "AA1", "CX3A"));
     rateFile.getZones().get(1).setAlphaNumericalPostalCodes(Arrays.asList("AA3", "AA4"));
-    RateLine result = rateFile.getRateLineForQuantityAndPostalCode(6, "CX3");
+    rateFile.getRateLineForQuantityAndPostalCode(6, "CX3");
   }
 
   @Test

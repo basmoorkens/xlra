@@ -1,6 +1,7 @@
 package com.moorkensam.xlra.controller;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
+import com.moorkensam.xlra.model.error.UserException;
 import com.moorkensam.xlra.model.security.Role;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.RolePermissionService;
@@ -152,21 +153,42 @@ public class ManageUsersController {
     context.execute("PF('addUserDialog').hide();");
   }
 
+  private void showAddDialog() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    context.execute("PF('addUserDialog').show();");
+  }
+
   /**
    * Creates or updates a user.
    */
   public void createOrUpdateUser() {
     selectedUser.setRoles(roles.getTarget());
     if (selectedUser.getId() == 0) {
+      createUser();
+    } else {
+      updateUser();
+    }
+  }
+
+  private void createUser() {
+    try {
       userService.createUser(selectedUser);
       MessageUtil.addMessage("User created", "The user " + selectedUser.getUserName()
           + " was successfully created.");
-    } else {
-      MessageUtil.addMessage("User updated", "The user " + selectedUser.getUserName()
-          + " was successfully updated.");
-      userService.updateUser(selectedUser, false);
+      refreshUsers();
+      hideAddDialog();
+    } catch (UserException e) {
+      showAddDialog();
+      MessageUtil.addErrorMessage("Error creating user", e.getBusinessException());
     }
+  }
+
+  private void updateUser() {
+    MessageUtil.addMessage("User updated", "The user " + selectedUser.getUserName()
+        + " was successfully updated.");
+    userService.updateUser(selectedUser, false);
     refreshUsers();
+    hideAddDialog();
   }
 
   public List<User> getUsers() {

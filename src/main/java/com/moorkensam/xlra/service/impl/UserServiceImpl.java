@@ -3,6 +3,7 @@ package com.moorkensam.xlra.service.impl;
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.dao.LogDao;
 import com.moorkensam.xlra.dao.UserDao;
+import com.moorkensam.xlra.model.error.UserException;
 import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.model.log.LogType;
 import com.moorkensam.xlra.model.security.User;
@@ -26,11 +27,12 @@ import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
+import javax.persistence.NoResultException;
 
 @Stateless
 public class UserServiceImpl implements UserService {
 
-  private final static Logger logger = LogManager.getLogger();
+  private static final Logger logger = LogManager.getLogger();
 
   @Inject
   private UserDao userDao;
@@ -62,7 +64,8 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public void createUser(User user) {
+  public void createUser(User user) throws UserException {
+    validateUserIsUnique(user);
     LogRecord record = logRecordFactory.createUserRecord(user, LogType.USER_CREATED);
     getLogDao().createLogRecord(record);
 
@@ -72,6 +75,33 @@ public class UserServiceImpl implements UserService {
     user.setUserStatus(UserStatus.FIRST_TIME_LOGIN);
     getUserDao().createUser(user);
     sendUserCreatedEmail(user);
+  }
+
+  private void validateUserIsUnique(User user) throws UserException {
+    validateUserEmail(user);
+    validateUserUsername(user);
+  }
+
+  private void validateUserUsername(User user) throws UserException {
+    try {
+      userDao.getUserByUserName(user.getUserName());
+      throw new UserException("A user with this username already exists");
+    } catch (NoResultException nre) {
+      if (logger.isDebugEnabled()) {
+        logger.debug("User with username " + user.getUserName() + " was not found");
+      }
+    }
+  }
+
+  private void validateUserEmail(User user) throws UserException {
+    try {
+      userDao.getUserByEmail(user.getEmail());
+      throw new UserException("A user with this email adres already exists");
+    } catch (NoResultException nre) {
+      if (logger.isDebugEnabled()) {
+        logger.debug("User with username " + user.getUserName() + " was not found");
+      }
+    }
   }
 
   protected void sendUserCreatedEmail(User user) {

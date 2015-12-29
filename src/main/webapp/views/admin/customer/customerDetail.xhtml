@@ -14,7 +14,10 @@
 
 			<h:outputLabel for="emailField">Email</h:outputLabel>
 			<p:inputText style="width:100%;" value="#{customer.email}"
-				id="emailField"></p:inputText>
+				id="emailField">
+				<f:validateRegex
+					pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+			</p:inputText>
 
 			<h:outputLabel for="phoneField">Phone</h:outputLabel>
 			<p:inputText style="width:100%;" value="#{customer.phone}"
@@ -62,7 +65,8 @@
 				actionListener="#{customerController.createCustomerOrUpdate}"
 				style="padding-left:5px; padding-right:5px; margin-right:20px;"
 				icon="ui-icon-check" validateClient="true" ajax="true"
-				update=":customerDetailForm :customerOverviewForm" />
+				update=":customerDetailForm :customerOverviewForm"
+				oncomplete="handleAddCustomerRequest(xhr, status, args)" />
 		</p:panel>
 	</p:panel>
 </ui:composition>

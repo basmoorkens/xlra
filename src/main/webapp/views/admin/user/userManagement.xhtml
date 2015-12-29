@@ -75,7 +75,8 @@
 		</h:form>
 
 		<p:dialog header="Create new user" widgetVar="addUserDialog"
-			modal="true" height="650px" style="width:80% !important;" dynamic="true">
+			modal="true" height="650px" style="width:80% !important;"
+			dynamic="true">
 			<h:form id="addUserForm">
 				<p:growl showDetail="true" id="messages" sticky="false" />
 				<p:tooltip for="userNameInput" id="idUserNameInput"
@@ -89,34 +90,42 @@
 				<p:panel header="User information">
 					<p:panelGrid columns="2" columnClasses="labelColumn,valuesColumn"
 						style="width:100%;">
-						<h:outputText value="UserName: " />
+						<h:outputText value="Username: " />
 						<p:inputText style="width:100%;"
 							value="#{manageUsersController.selectedUser.userName}"
+							required="true" requiredMessage="Username is required"
 							id="userNameInput" />
 
 						<h:outputText value="Email:" />
 						<p:inputText value="#{manageUsersController.selectedUser.email}"
-							style="width:100%;" id="emailInput" />
+							required="true" requiredMessage="Email is required"
+							validatorMessage="Please enter a valid email adres"
+							style="width:100%;" id="emailInput">
+							<f:validateRegex
+								pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+						</p:inputText>
 
 						<h:outputText value="First name:" />
-						<p:inputText style="width:100%;"
+						<p:inputText style="width:100%;" required="true"
+							requiredMessage="First name is required"
 							value="#{manageUsersController.selectedUser.firstName}" />
 
 						<h:outputText value="Name:" />
 						<p:inputText value="#{manageUsersController.selectedUser.name}"
+							required="true" requiredMessage="Name is required"
 							style="width:100%;" />
 
 						<h:outputText value="Roles: " />
-						<p:pickList id="rolesPicklist"
-							value="#{manageUsersController.roles}" var="role" effect="bounce"
+						<p:pickList id="rolesPicklist" required="true"
+							value="#{manageUsersController.roles}" var="role"
+							requiredMessage="Roles are required for a user"
 							itemValue="#{role}" itemLabel="#{role.name}"
-							converter="#{roleConverter}" style="width:100%;"
-							responsive="true">
+							converter="#{roleConverter}" responsive="true">
 
 							<f:facet name="sourceCaption">All available roles</f:facet>
 							<f:facet name="targetCaption">Selected roles</f:facet>
 
-							<p:column style="width:90%;">
+							<p:column style="width:80%;">
 								<h:outputText value="#{role.name}" />
 							</p:column>
 						</p:pickList>
@@ -174,8 +183,6 @@
 					PF('addUserDialog').jq.effect("shake", {
 						times : 5
 					}, 100);
-				} else {
-					PF('addUserDialog').hide();
 				}
 			}
 		</script>

@@ -89,6 +89,16 @@
 			<p:commandButton value="No" type="button" immediate="true"
 				styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
 		</p:confirmDialog>
+
+		<script type="text/javascript">
+			function handleAddCustomerRequest(xhr, status, args) {
+				if (args.validationFailed) {
+					PF('addCustomerDialog').show();
+				} else {
+					PF('addCustomerDialog').hide();
+				}
+			}
+		</script>
 	</ui:define>
 </ui:composition>
 </html>
