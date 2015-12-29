@@ -24,8 +24,10 @@ import org.unitils.easymock.EasyMockUnitils;
 import org.unitils.easymock.annotation.Mock;
 import org.unitils.inject.annotation.TestedObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.persistence.NoResultException;
 
@@ -53,6 +55,45 @@ public class RateFileServiceTest extends UnitilsJUnit4 {
     rateFileService.setQuotationUtil(quotationUtil);
     rateFileService.setUserService(userService);
     rateFileService.setZoneUtil(new ZoneUtil());
+  }
+
+  @Test
+  public void testInitService() {
+    RateFileServiceImpl testImpl = new RateFileServiceImpl();
+    testImpl.init();
+    Assert.assertNotNull(testImpl.getQuotationUtil());
+    Assert.assertNotNull(testImpl.getLogRecordFactory());
+    Assert.assertNotNull(testImpl.getTranslationMapper());
+    Assert.assertNotNull(testImpl.getZoneUtil());
+  }
+
+  @Test
+  public void testGEtAllRateFiles() {
+    EasyMock.expect(rfDao.getAllRateFiles()).andReturn(new ArrayList<RateFile>());
+
+    EasyMockUnitils.replay();
+    List<RateFile> rfs = rateFileService.getAllRateFiles();
+    Assert.assertNotNull(rfs);
+  }
+
+  @Test
+  public void testGetRateFilesForFilter() {
+    RateFileSearchFilter filter = new RateFileSearchFilter();
+    EasyMock.expect(rfDao.getRateFilesForFilter(filter)).andReturn(new ArrayList<RateFile>());
+    EasyMockUnitils.replay();
+    rateFileService.getRateFilesForFilter(filter);
+  }
+
+  @Test
+  public void testCreateRateFile() {
+    RateFile rf = new RateFile();
+    rf.setLastEditedBy("admin");
+    rf.setZones(new ArrayList<Zone>());
+    EasyMock.expect(userService.getCurrentUsername()).andReturn("bmoork");
+    rfDao.createRateFile(rf);
+    EasyMock.expectLastCall();
+    EasyMockUnitils.replay();
+    rateFileService.createRateFile(rf);
   }
 
   @Test
