@@ -1,3 +1,7 @@
+CREATE DATABASE xlra;
+
+use xlra;
+
 -- phpMyAdmin SQL Dump
 -- version 3.5.1
 -- http://www.phpmyadmin.net
@@ -65,7 +69,7 @@ CREATE TABLE IF NOT EXISTS conditions (
   calculation_value_type varchar(255) DEFAULT NULL,
   PRIMARY KEY (id),
   KEY FK_i2piwrp3nji49ekj8kgb65ifo (rateFileId)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=63 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -84,7 +88,7 @@ CREATE TABLE IF NOT EXISTS configuration (
   currentChfValue decimal(19,2) DEFAULT NULL,
   currentDieselPrice decimal(19,2) DEFAULT NULL,
   PRIMARY KEY (id)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -102,7 +106,7 @@ CREATE TABLE IF NOT EXISTS country (
   shortName varchar(255) DEFAULT NULL,
   zoneType varchar(255) DEFAULT NULL,
   PRIMARY KEY (id)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -135,7 +139,7 @@ CREATE TABLE IF NOT EXISTS currencyrate (
   surchargePercentage double NOT NULL,
   currencyType varchar(255) NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -162,7 +166,7 @@ CREATE TABLE IF NOT EXISTS customer (
   `name` varchar(100) NOT NULL,
   phone varchar(100) NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -181,7 +185,7 @@ CREATE TABLE IF NOT EXISTS dieselrate (
   `start` double DEFAULT NULL,
   surchargePercentage double NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -202,7 +206,7 @@ CREATE TABLE IF NOT EXISTS emailhistoryrecord (
   offerte_id bigint(20) DEFAULT NULL,
   PRIMARY KEY (id),
   KEY FK_6qlbshb6co5bjuwi4bwpio2mp (offerte_id)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -242,7 +246,7 @@ CREATE TABLE IF NOT EXISTS mailtemplate (
   xlraConfigurationId bigint(20) DEFAULT NULL,
   PRIMARY KEY (id),
   KEY FK_icnt9kow3d4ywygsy9okowf2l (xlraConfigurationId)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -273,7 +277,7 @@ CREATE TABLE IF NOT EXISTS permissions (
   permission_description varchar(255) DEFAULT NULL,
   permission_key varchar(255) DEFAULT NULL,
   PRIMARY KEY (id)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=24 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -298,7 +302,7 @@ CREATE TABLE IF NOT EXISTS pricecalculation (
   importFormalities decimal(19,2) DEFAULT NULL,
   resultingPriceSurcharge decimal(19,2) DEFAULT NULL,
   PRIMARY KEY (id)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -328,7 +332,7 @@ CREATE TABLE IF NOT EXISTS quotationquery (
   PRIMARY KEY (id),
   KEY FK_7x73x5hnl9mdjuvbolvjon6pq (countryId),
   KEY FK_74jhgeinbnqu1r03ewedxv7by (customer_id)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -357,7 +361,7 @@ CREATE TABLE IF NOT EXISTS quotationresult (
   KEY FK_r87gribu44m3p0bbgjnlf0u2a (calculation_id),
   KEY FK_92ei8ycf4hhheqmj1vsb6nx5c (quotation_query_id),
   KEY FK_spqnsq94ke145pvtyfh68jedq (ratefileid)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -416,7 +420,7 @@ CREATE TABLE IF NOT EXISTS ratefile (
   PRIMARY KEY (id),
   KEY FK_qlw6kytevp1w9jryldke0f1rt (countryId),
   KEY FK_kayr33osml61pvo7kw5psoxkh (customerId)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -438,7 +442,7 @@ CREATE TABLE IF NOT EXISTS rateline (
   PRIMARY KEY (id),
   KEY FK_rx3kqcqn1r6m3ljtiosk87xbm (rateFileId),
   KEY FK_ke6qo0psrrsu7xm48cdekju3t (zoneId)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=681 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -458,7 +462,7 @@ CREATE TABLE IF NOT EXISTS ratelogrecord (
   userName varchar(255) DEFAULT NULL,
   rate decimal(19,2) DEFAULT NULL,
   PRIMARY KEY (id)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -476,7 +480,7 @@ CREATE TABLE IF NOT EXISTS role (
   role_description varchar(255) DEFAULT NULL,
   role_name varchar(255) DEFAULT NULL,
   PRIMARY KEY (id)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -531,7 +535,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   PRIMARY KEY (id),
   UNIQUE KEY UK_ob8kqyqqgmefl0aco34akdtpe (email),
   UNIQUE KEY UK_4bakctviobmdk6ddh2nwg08c2 (userName)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -604,7 +608,7 @@ CREATE TABLE IF NOT EXISTS zone (
   PRIMARY KEY (id),
   KEY FK_aoo0ygicevhtlrileo2bfw1yg (countryId),
   KEY FK_ck1wceun2fk0n5ejvumx5lm9y (rateFileId)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=39 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
 -- Constraints for dumped tables
