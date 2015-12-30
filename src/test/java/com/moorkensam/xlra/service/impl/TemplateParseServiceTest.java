@@ -50,8 +50,10 @@ public class TemplateParseServiceTest extends UnitilsJUnit4 {
     User user = new User();
     user.setFirstName("bas");
     user.setName("moorkens");
+    user.setUserName("bmoork");
     String generatedMail = templateEngine.parseUserCreatedTemplate(user);
     Assert.assertTrue(generatedMail.contains("bas moorkens"));
+    Assert.assertTrue(generatedMail.contains("bmoork"));
   }
 
   @Test

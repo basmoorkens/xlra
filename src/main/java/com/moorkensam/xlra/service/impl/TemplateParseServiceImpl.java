@@ -282,6 +282,7 @@ public class TemplateParseServiceImpl implements TemplateParseService {
   private Map<String, Object> createUserTemplateParams(User user) {
     Map<String, Object> dataModel = new HashMap<String, Object>();
     dataModel.put("fullName", user.getFirstName() + " " + user.getName());
+    dataModel.put("userName", user.getUserName());
     dataModel.put("applicationUrl",
         getConfigLoader().getProperty(ConfigurationLoader.APPLICATION_PASSWORD_SETUP_URL)
             + "?token=" + user.getTokenInfo().getVerificationToken() + "&email=" + user.getEmail());

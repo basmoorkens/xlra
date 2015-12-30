@@ -14,7 +14,6 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-// TODO Implement diesel and chf 4 ciphers after.
 /**
  * This service is used to get email templates to the front end and the main application
  * cofiguration.

@@ -53,7 +53,10 @@ public class PdfServiceImpl implements PdfService {
   @Override
   public void generateTransientOffertePdf(QuotationResult offerte, Language language)
       throws FileNotFoundException, DocumentException, TemplatingException {
-    Document document = new Document();
+    if(logger.isDebugEnabled()) {
+    	logger.debug("Generating pdf result for " + offerte.getOfferteUniqueIdentifier());
+    }
+	Document document = new Document();
     String fullPdfFileName =
         fileService.getTemporaryFilePathForPdf(offerte.getOfferteUniqueIdentifier());
 
@@ -67,6 +70,7 @@ public class PdfServiceImpl implements PdfService {
 
     XMLParser parser = new XMLParser(new XMLWorker(pipeline, true));
     String pdfBody = templateParseService.parseOffertePdf(offerte, language);
+    logger.info("Generated pdf " + fullPdfFileName + " for offerte " + offerte.getOfferteUniqueIdentifier());
     try {
       parser.parse(new StringReader(pdfBody));
       document.close();

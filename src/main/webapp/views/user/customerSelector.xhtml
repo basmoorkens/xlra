@@ -23,9 +23,9 @@
 					itemValue="#{customer}" converter="#{customerConverter}">
 				</p:autoComplete>
 
-				<p:commandButton rendered="#{canEdit}" value="Create new customer" id="addCustomerButton"
-					update=":addQuickCustomerForm" immediate="true"
-					onclick="PF('addCustomerDialog').show();" />
+				<p:commandButton rendered="#{canEdit}" value="Create new customer"
+					id="addCustomerButton" update=":addQuickCustomerForm"
+					immediate="true" onclick="PF('addCustomerDialog').show();" />
 
 			</p:panelGrid>
 			<p:growl showDetail="true" id="messages" sticky="false" />
@@ -36,5 +36,67 @@
 					style="width:150px; margin-left:20px;" />
 			</p:panel>
 		</p:panel>
+
+		<p:dialog header="Add customer" widgetVar="addCustomerDialog"
+			modal="true" height="480px" width="900px" dynamic="true">
+			<p:growl showDetail="true" id="messages" sticky="false" />
+			<h:form id="addQuickCustomerForm">
+				<p:panel header="Add customer" style="margin-top:50px;">
+					<p:panelGrid columns="2" style="width:100%;">
+						<h:outputLabel for="nameField">Name</h:outputLabel>
+						<p:inputText size="50" style="width:100%;" required="true"
+							requiredMessage="A customer name is required"
+							value="#{createQuotationController.customerToAdd.name}"
+							id="nameField"></p:inputText>
+
+						<h:outputLabel for="emailField">Email</h:outputLabel>
+						<p:inputText size="50" style="width:100%;"
+							value="#{createQuotationController.customerToAdd.email}"
+							id="emailField" required="true"
+							requiredMessage="A customer email is required"
+							validatorMessage="Please enter a valid email adres">
+
+							<f:validateRegex
+								pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+
+						</p:inputText>
+
+						<h:outputLabel for="phoneField">Phone</h:outputLabel>
+						<p:inputText size="50" style="width:100%;"
+							value="#{createQuotationController.customerToAdd.phone}"
+							required="true"
+							requiredMessage="A customer phone number is required"
+							id="phoneField" />
+
+						<h:outputLabel for="languageField">Language</h:outputLabel>
+						<p:selectOneRadio
+							value="#{createQuotationController.customerToAdd.language}"
+							required="true" requiredMessage="Customer language is required"
+							id="languageField">
+							<f:selectItems value="#{createQuotationController.allLanguages}"></f:selectItems>
+						</p:selectOneRadio>
+					</p:panelGrid>
+					<p:panel style="margin-top:20px;">
+						<p:commandButton value="Save customer"
+							update=":customerForm :addQuickCustomerForm"
+							actionListener="#{createQuotationController.createCustomer}"
+							ajax="true"
+							oncomplete="handleAddCustomerRequest(xhr, status, args)" />
+					</p:panel>
+				</p:panel>
+			</h:form>
+		</p:dialog>
+
+		<script type="text/javascript">
+			function handleAddCustomerRequest(xhr, status, args) {
+				if (args.validationFailed) {
+					PF('addCustomerDialog').jq.effect("shake", {
+						times : 5
+					}, 100);
+				} else {
+					PF('addCustomerDialog').hide();
+				}
+			}
+		</script>
 	</h:form>
 </ui:composition>
