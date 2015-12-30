@@ -2,14 +2,6 @@ CREATE DATABASE xlra;
 
 use xlra;
 
--- phpMyAdmin SQL Dump
--- version 3.5.1
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Generation Time: Dec 14, 2015 at 07:27 PM
--- Server version: 5.5.24-log
--- PHP Version: 5.3.13
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -356,11 +348,10 @@ CREATE TABLE IF NOT EXISTS quotationresult (
   pdf_file_name varchar(255) DEFAULT NULL,
   calculation_id bigint(20) DEFAULT NULL,
   quotation_query_id bigint(20) DEFAULT NULL,
-  ratefileid bigint(20) DEFAULT NULL,
+  used_ratefilename varchar(255) DEFAULT NULL,
   PRIMARY KEY (id),
   KEY FK_r87gribu44m3p0bbgjnlf0u2a (calculation_id),
-  KEY FK_92ei8ycf4hhheqmj1vsb6nx5c (quotation_query_id),
-  KEY FK_spqnsq94ke145pvtyfh68jedq (ratefileid)
+  KEY FK_92ei8ycf4hhheqmj1vsb6nx5c (quotation_query_id)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -412,6 +403,7 @@ CREATE TABLE IF NOT EXISTS ratefile (
   lastUpdatedDateTime datetime DEFAULT NULL,
   version bigint(20) NOT NULL,
   kindOfRate varchar(255) DEFAULT NULL,
+  lastEditedBy varchar(255) DEFAULT NULL,
   measurement varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   transportType varchar(255) DEFAULT NULL,
@@ -668,8 +660,7 @@ ALTER TABLE `quotationquery`
 --
 ALTER TABLE `quotationresult`
   ADD CONSTRAINT FK_92ei8ycf4hhheqmj1vsb6nx5c FOREIGN KEY (quotation_query_id) REFERENCES quotationquery (id),
-  ADD CONSTRAINT FK_r87gribu44m3p0bbgjnlf0u2a FOREIGN KEY (calculation_id) REFERENCES pricecalculation (id),
-  ADD CONSTRAINT FK_spqnsq94ke145pvtyfh68jedq FOREIGN KEY (ratefileid) REFERENCES ratefile (id);
+  ADD CONSTRAINT FK_r87gribu44m3p0bbgjnlf0u2a FOREIGN KEY (calculation_id) REFERENCES pricecalculation (id);
 
 --
 -- Constraints for table `raiseratesratefilerecords`

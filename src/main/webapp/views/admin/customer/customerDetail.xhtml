@@ -14,7 +14,7 @@
 
 			<h:outputLabel for="emailField">Email</h:outputLabel>
 			<p:inputText style="width:100%;" value="#{customer.email}"
-				id="emailField">
+				validatorMessage="Pleas enter a valid email address" id="emailField">
 				<f:validateRegex
 					pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
 			</p:inputText>
