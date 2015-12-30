@@ -106,7 +106,8 @@ public class UserServiceImpl implements UserService {
 
   protected void sendUserCreatedEmail(User user) {
     try {
-      logger.info("Sending account created email to " + user.getUserName() + " - " + user.getEmail());
+      logger.info("Sending account created email to " + user.getUserName() + " - "
+          + user.getEmail());
       getEmailService().sendUserCreatedEmail(user);
     } catch (MessagingException e) {
       MessageUtil.addErrorMessage("Failed to send email",
@@ -160,7 +161,8 @@ public class UserServiceImpl implements UserService {
   @Override
   public void resetUserPassword(User user) throws MessagingException {
     try {
-      logger.info("Sending reset password email to " + user.getUserName() + " - " + user.getEmail());
+      logger
+          .info("Sending reset password email to " + user.getUserName() + " - " + user.getEmail());
       emailService.sendResetPasswordEmail(user);
       user.setUserStatus(UserStatus.PASSWORD_RESET);
       userDao.updateUser(user);
@@ -187,7 +189,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public void setPasswordAndActivateUser(User user, String password) {
-	logger.info("User " + user.getUserName() + " is now activated");
+    logger.info("User " + user.getUserName() + " is now activated");
     LogRecord record = logRecordFactory.createUserRecord(user, LogType.USER_ACTIVATED);
     getLogDao().createLogRecord(record);
     user.setPassword(makePasswordHash(password));

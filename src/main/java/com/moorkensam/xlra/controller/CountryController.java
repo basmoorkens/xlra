@@ -3,7 +3,9 @@ package com.moorkensam.xlra.controller;
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.service.CountryService;
+import com.moorkensam.xlra.service.util.CustomerUtil;
 
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.RowEditEvent;
 
 import java.util.List;
@@ -24,6 +26,8 @@ public class CountryController {
 
   private Country selectedCountry;
 
+  private String detailGridTitle;
+
   @PostConstruct
   public void init() {
     refreshCountries();
@@ -34,15 +38,14 @@ public class CountryController {
   }
 
   /**
-   * Executed when a country is edited.
-   * 
-   * @param event The event that triggered the update.
+   * Saves the country that was edited.
    */
-  public void onCountryRowEdit(RowEditEvent event) {
-    Country country = (Country) event.getObject();
-    MessageUtil.addMessage("Country updated", "Country " + country.getShortName()
+  public void saveEditedCountry() {
+    selectedCountry = countryService.updateCountry(selectedCountry);
+    MessageUtil.addMessage("Country updated", "Country " + selectedCountry.getEnglishName()
         + " was successfully");
-    country = countryService.updateCountry(country);
+    refreshCountries();
+    hideAddDialog();
   }
 
   /**
@@ -56,6 +59,33 @@ public class CountryController {
     MessageUtil.addMessage("Country deleted",
         "Successfully deleted the country " + country.getEnglishName());
   }
+
+  public void cancel() {
+    selectedCountry = null;
+    hideAddDialog();
+  }
+
+  /**
+   * Setup the page to edit a country.
+   * 
+   * @param country The country to edit.
+   */
+  public void setupPageForEdit(Country country) {
+    selectedCountry = country;
+    detailGridTitle = "Edit country " + country.getEnglishName();
+    showAddDialog();
+  }
+
+  private void hideAddDialog() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    context.execute("PF('editCountryDialog').hide();");
+  }
+
+  private void showAddDialog() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    context.execute("PF('editCountryDialog').show();");
+  }
+
 
   public Country getSelectedCountry() {
     return selectedCountry;
@@ -79,5 +109,13 @@ public class CountryController {
 
   public void setCountryService(CountryService countryService) {
     this.countryService = countryService;
+  }
+
+  public String getDetailGridTitle() {
+    return detailGridTitle;
+  }
+
+  public void setDetailGridTitle(String detailGridTitle) {
+    this.detailGridTitle = detailGridTitle;
   }
 }
