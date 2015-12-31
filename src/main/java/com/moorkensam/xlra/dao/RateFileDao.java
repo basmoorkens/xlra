@@ -5,7 +5,10 @@ import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
 import com.moorkensam.xlra.model.rate.RateLine;
 
+import org.primefaces.model.SortOrder;
+
 import java.util.List;
+import java.util.Map;
 
 public interface RateFileDao {
 
@@ -30,4 +33,9 @@ public interface RateFileDao {
   List<RateFileIdNameDto> getRateFilesIdAndNamesForAutoComplete();
 
   List<RateFile> getRateFilesById(List<Long> ids);
+
+  List<RateFile> getLazyRateFiles(int first, int pageSize, String sortField, SortOrder sortOrder,
+      Map<String, Object> filters);
+
+  public int countRateFiles();
 }

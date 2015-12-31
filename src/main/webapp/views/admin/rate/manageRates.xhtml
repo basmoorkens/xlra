@@ -15,20 +15,43 @@
 		<h:form id="ratesForm">
 			<h3>Search options</h3>
 			<p:growl id="message" showDetail="true" />
-			<p:panelGrid columns="2" style="width:100%"
-				columnClasses="labelColumn,valuesColumn">
-				<p:outputLabel value="Select Rates to display:" for="rateSelector" />
 
-				<p:autoComplete size="90" id="rateSelector" dropdown="true"
-					value="#{manageRatesController.selectedRateFile}"
-					completeMethod="#{manageRatesController.completeRateName}"
-					queryDelay="1000" var="rateFile" itemLabel="#{rateFile.name}"
-					itemValue="#{rateFile}" converter="#{rateFileConverter}">
-					<p:ajax event="itemSelect"
-						update=":basicForm :conditionsDetailForm :rateLinesDetailForm :zoneDetailForm"
-						listener="#{manageRatesController.fetchDetailsOfRatefile}" />
-				</p:autoComplete>
-			</p:panelGrid>
+			<p:panel id="ratesOverviewPanel" header="Ratefile overview">
+				<p:dataTable value="#{manageRatesController.model}" var="rateFile"
+					emptyMessage="No ratefiles found." lazy="true" paginator="true"
+					id="rateFileTable" rows="10" sortMode="single"
+					currentPageReportTemplate="Ratefiles {startRecord} - {endRecord} of {totalRecords}, Page: {currentPage}/{totalPages}"
+					paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+					rowsPerPageTemplate="10,25,50,100" paginatorPosition="top">
+
+					<p:column sortBy="#{rateFile.name}" filterBy="#{rateFile.name}"
+						filterStyle="width:100%;">
+						<f:facet name="header">Name</f:facet>
+						#{rateFile.name}
+					</p:column>
+
+					<p:column sortBy="#{rateFile.customer.name}"
+						filterBy="#{rateFile.customer.name}" filterStyle="width:100%;">
+						<f:facet name="header">Customer</f:facet>
+						#{rateFile.customer.name}
+					</p:column>
+
+					<p:column sortBy="#{rateFile.country.shortName}"
+						filterBy="#{rateFile.country.shortName}" filterStyle="width:100%;">
+						<f:facet name="header">Country</f:facet>
+						#{rateFile.country.shortName}
+					</p:column>
+					<p:column style="width:50px;text-align: center">
+						<p:commandButton id="editButton"
+							actionListener="#{manageRatesController.fetchDetailsOfRatefile(rateFile)}"
+							icon="ui-icon-pencil" title="View" ajax="true"
+							update=":basicForm :zoneDetailForm :rateLinesDetailForm :conditionsDetailForm" />
+						<p:tooltip id="editButtonTip" for="editButton"
+							value="Load the ratefile to edit" />
+					</p:column>
+
+				</p:dataTable>
+			</p:panel>
 		</h:form>
 
 		<h3>Details</h3>

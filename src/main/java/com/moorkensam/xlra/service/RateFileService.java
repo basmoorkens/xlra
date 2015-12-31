@@ -9,7 +9,10 @@ import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
 import com.moorkensam.xlra.model.rate.Zone;
 
+import org.primefaces.model.SortOrder;
+
 import java.util.List;
+import java.util.Map;
 
 public interface RateFileService {
 
@@ -93,4 +96,19 @@ public interface RateFileService {
   List<RateFileIdNameDto> getRateFilesIdAndNamesForAutoComplete();
 
   List<RateFile> getRateFilesByIdList(List<Long> ids);
+
+  /**
+   * This method fetches ratefiles in pages and uses sorting and filtering.
+   * 
+   * @param first The first result.
+   * @param pageSize The number of results a.k.a the page.
+   * @param sortField The field to use to sort.
+   * @param sortOrder The sort order.
+   * @param filters The filters that should be applied.
+   * @return The list of ratefiles.
+   */
+  List<RateFile> getLazyRateFiles(int first, int pageSize, String sortField, SortOrder sortOrder,
+      Map<String, Object> filters);
+
+  public int countRateFiles();
 }

@@ -48,7 +48,7 @@ public class JpaUtil {
   public static void fillInParameters(Map<String, Object> filters, Query query) {
     if (filters != null) {
       for (String key : filters.keySet()) {
-        query.setParameter(key, "%" + filters.get(key) + "%");
+        query.setParameter(key.replace(".", ""), "%" + filters.get(key) + "%");
       }
     }
   }

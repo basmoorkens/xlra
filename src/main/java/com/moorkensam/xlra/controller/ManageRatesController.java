@@ -3,6 +3,7 @@ package com.moorkensam.xlra.controller;
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.dto.RateFileIdNameDto;
 import com.moorkensam.xlra.model.configuration.Language;
+import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
@@ -22,12 +23,15 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -86,6 +90,8 @@ public class ManageRatesController {
 
   private boolean editZoneMode = false;
 
+  private LazyDataModel<RateFile> model;
+
   /**
    * Logic to initialize the controller.
    */
@@ -97,6 +103,23 @@ public class ManageRatesController {
     conditionFactory = new ConditionFactory();
     zoneUtil = new ZoneUtil();
     autoCompleteItems = rateFileService.getRateFilesIdAndNamesForAutoComplete();
+    initModel();
+  }
+
+  private void initModel() {
+    model = new LazyDataModel<RateFile>() {
+
+      private static final long serialVersionUID = -7346727256149263406L;
+
+      @Override
+      public List<RateFile> load(int first, int pageSize, String sortField, SortOrder sortOrder,
+          Map<String, Object> filters) {
+        List<RateFile> lazyRateFiles =
+            rateFileService.getLazyRateFiles(first, pageSize, sortField, sortOrder, filters);
+        model.setRowCount(rateFileService.countRateFiles());
+        return lazyRateFiles;
+      }
+    };
   }
 
   private void resetSelectedRateFile() {
@@ -258,12 +281,12 @@ public class ManageRatesController {
   }
 
   /**
-   * Fetches the details of the selected ratefile.
+   * Fetch the details of the selected ratefile.
    * 
-   * @param event The triggering event.
+   * @param rateFileToLoad The ratefile to full load.
    */
-  public void fetchDetailsOfRatefile(SelectEvent event) {
-    selectedRateFile = rateFileService.getFullRateFile(((RateFile) event.getObject()).getId());
+  public void fetchDetailsOfRatefile(RateFile rateFileToLoad) {
+    selectedRateFile = rateFileService.getFullRateFile(rateFileToLoad.getId());
     collapseConditionsDetailGrid = false;
     collapseRateLinesDetailGrid = false;
     collapseZonesDetailGrid = false;
@@ -510,6 +533,14 @@ public class ManageRatesController {
 
   public void setEditZoneMode(boolean editZoneMode) {
     this.editZoneMode = editZoneMode;
+  }
+
+  public LazyDataModel<RateFile> getModel() {
+    return model;
+  }
+
+  public void setModel(LazyDataModel<RateFile> model) {
+    this.model = model;
   }
 
 }

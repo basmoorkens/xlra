@@ -22,9 +22,11 @@ import com.moorkensam.xlra.service.util.ZoneUtil;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.primefaces.model.SortOrder;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -295,5 +297,16 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
 
   public void setZoneUtil(ZoneUtil zoneUtil) {
     this.zoneUtil = zoneUtil;
+  }
+
+  @Override
+  public List<RateFile> getLazyRateFiles(int first, int pageSize, String sortField,
+      SortOrder sortOrder, Map<String, Object> filters) {
+    return rateFileDao.getLazyRateFiles(first, pageSize, sortField, sortOrder, filters);
+  }
+
+  @Override
+  public int countRateFiles() {
+    return rateFileDao.countRateFiles();
   }
 }

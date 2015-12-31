@@ -43,7 +43,8 @@ import javax.persistence.Transient;
         query = "SELECT new com.moorkensam.xlra.dto.RateFileIdNameDto(r.id, r.name) "
             + "FROM RateFile r"),
     @NamedQuery(name = "RateFile.findByIds",
-        query = "SELECT r FROM RateFile r where r.id in (:ids)")})
+        query = "SELECT r FROM RateFile r where r.id in (:ids)"),
+    @NamedQuery(name = "RateFile.countRateFiles", query = "SELECT count(r.id) FROM RateFile r")})
 public class RateFile extends BaseEntity {
 
   private static final long serialVersionUID = 830015468011487605L;

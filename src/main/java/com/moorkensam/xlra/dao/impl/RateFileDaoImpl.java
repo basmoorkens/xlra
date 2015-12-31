@@ -3,20 +3,25 @@ package com.moorkensam.xlra.dao.impl;
 import com.moorkensam.xlra.dao.BaseDao;
 import com.moorkensam.xlra.dao.RateFileDao;
 import com.moorkensam.xlra.dto.RateFileIdNameDto;
+import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.rate.ZoneType;
+import com.moorkensam.xlra.service.util.JpaUtil;
 import com.moorkensam.xlra.service.util.ZoneUtil;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.primefaces.model.SortOrder;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.Query;
@@ -205,5 +210,39 @@ public class RateFileDaoImpl extends BaseDao implements RateFileDao {
 
   public void setZoneUtil(ZoneUtil zoneUtil) {
     this.zoneUtil = zoneUtil;
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public List<RateFile> getLazyRateFiles(int first, int pageSize, String sortField,
+      SortOrder sortOrder, Map<String, Object> filters) {
+    String queryString = buildLazyLoadQuery(sortField, sortOrder, filters);
+    Query query = getEntityManager().createQuery(queryString);
+    JpaUtil.applyPagination(first, pageSize, query);
+    JpaUtil.fillInParameters(filters, query);
+    return (List<RateFile>) query.getResultList();
+  }
+
+  private String buildLazyLoadQuery(String sortField, SortOrder sortOrder,
+      Map<String, Object> filters) {
+    StringBuilder builder = new StringBuilder();
+    builder.append("SELECT r FROM RateFile r WHERE 1 = 1 ");
+    if (filters != null) {
+      for (String key : filters.keySet()) {
+        builder.append("AND r." + key + " LIKE :" + key.replace(".", "") + " ");
+      }
+    }
+    if (StringUtils.isNotBlank(sortField)) {
+      builder.append("ORDER BY r." + sortField + " "
+          + JpaUtil.convertSortOrderToJpaSortOrder(sortOrder));
+    }
+    return builder.toString();
+  }
+
+  @Override
+  public int countRateFiles() {
+    Query query = getEntityManager().createNamedQuery("RateFile.countRateFiles");
+    Long result = (Long) query.getSingleResult();
+    return Integer.parseInt(result + "");
   }
 }
