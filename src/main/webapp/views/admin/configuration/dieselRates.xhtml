@@ -104,7 +104,8 @@
 						<p:commandButton value="Save diesel rate"
 							style="padding-left:20px;padding-right:20px;"
 							actionListener="#{dieselRateController.saveNewDieselRate}"
-							update=":dieselPriceForm :addDieselRateForm" />
+							update=":dieselPriceForm :addDieselRateForm"
+							oncomplete="handleAddDieselRequest(xhr, status, args)" />
 					</p:panel>
 				</p:panel>
 				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
@@ -115,6 +116,15 @@
 				</p:confirmDialog>
 			</p:dialog>
 		</h:form>
+		<script type="text/javascript">
+			function handleAddDieselRequest(xhr, status, args) {
+				if (args.validationFailed) {
+					PF('addDieselDialog').show();
+				} else {
+					PF('addDieselDialog').hide();
+				}
+			}
+		</script>
 	</ui:define>
 </ui:composition>
 </html>

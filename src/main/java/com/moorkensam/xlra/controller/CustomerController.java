@@ -106,7 +106,7 @@ public class CustomerController {
   public void setupPageForNewCustomer() {
     detailGridTitle = "New customer";
     selectedCustomer = new Customer();
-    selectedCustomer.setHasOwnRateFile(true);
+    selectedCustomer.setHasOwnRateFile(false);
     showAddDialog();
   }
 

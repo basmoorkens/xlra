@@ -1,6 +1,7 @@
 package com.moorkensam.xlra.model.security;
 
 import com.moorkensam.xlra.model.BaseEntity;
+import com.moorkensam.xlra.model.Person;
 
 import org.hibernate.annotations.BatchSize;
 
@@ -28,14 +29,13 @@ import javax.validation.constraints.NotNull;
 @NamedQueries({
     @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
     @NamedQuery(name = "User.findById", query = "SELECT u FROM User u where u.id = :id"),
-    @NamedQuery(
-        name = "User.findByEmailAndToken",
-        query = "SELECT u FROM User u WHERE u.email = :email and u.tokenInfo.verificationToken = :token"
-            + " and u.userStatus = :userStatus"),
+    @NamedQuery(name = "User.findByEmailAndToken",
+        query = "SELECT u FROM User u WHERE u.email = :email "
+            + "and u.tokenInfo.verificationToken = :token" + " and u.userStatus = :userStatus"),
     @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u where u.email = :email"),
     @NamedQuery(name = "User.findByUserName",
         query = "SELECT u FROM User u WHERE u.userName = :userName")})
-public class User extends BaseEntity {
+public class User extends BaseEntity implements Person {
 
   private static final long serialVersionUID = -8058602514887367935L;
 

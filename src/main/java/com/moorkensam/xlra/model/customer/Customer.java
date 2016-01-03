@@ -3,16 +3,22 @@ package com.moorkensam.xlra.model.customer;
 import com.moorkensam.xlra.model.BaseEntity;
 import com.moorkensam.xlra.model.configuration.Language;
 
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import java.util.List;
+
 import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -59,6 +65,11 @@ public class Customer extends BaseEntity {
   private String btwNumber;
 
   private boolean hasOwnRateFile;
+
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer", cascade = CascadeType.ALL,
+      orphanRemoval = true)
+  @BatchSize(size = 5)
+  private List<CustomerContact> contacts;
 
   public Language getLanguage() {
     return language;
@@ -114,6 +125,14 @@ public class Customer extends BaseEntity {
 
   public void setHasOwnRateFile(boolean hasOwnRateFile) {
     this.hasOwnRateFile = hasOwnRateFile;
+  }
+
+  public List<CustomerContact> getContacts() {
+    return contacts;
+  }
+
+  public void setContacts(List<CustomerContact> contacts) {
+    this.contacts = contacts;
   }
 
 }

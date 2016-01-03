@@ -42,6 +42,17 @@
 						required="true" requiredMessage="Select a customer">
 					</p:autoComplete>
 
+					<h:outputText value="Transport type:" />
+					<p:selectOneMenu style="width:100%;" required="true"
+						id="selectImportExport"
+						requiredMessage="Select import/export type"
+						value="#{createRatesController.filter.transportationType}">
+						<f:selectItem itemValue="#{null}" itemLabel="" />
+						<f:selectItems value="#{createRatesController.allTransportTypes}"
+							var="transportationType" itemValue="#{transportationType}"
+							itemDescription="#{transportationType.description}" />
+					</p:selectOneMenu>
+
 					<h:outputText value="Country: " />
 					<p:selectOneMenu style="width:100%;"
 						converter="#{countryConverter}" id="selectCountry" required="true"
@@ -70,17 +81,6 @@
 						<f:selectItem itemValue="#{null}" itemLabel="" />
 						<f:selectItems value="#{createRatesController.kindOfRates}"
 							var="kind" itemLabel="#{kind.description}" itemValue="#{kind}" />
-					</p:selectOneMenu>
-
-					<h:outputText value="Transport type:" />
-					<p:selectOneMenu style="width:100%;" required="true"
-						id="selectImportExport"
-						requiredMessage="Select import/export type"
-						value="#{createRatesController.filter.transportationType}">
-						<f:selectItem itemValue="#{null}" itemLabel="" />
-						<f:selectItems value="#{createRatesController.allTransportTypes}"
-							var="transportationType" itemValue="#{transportationType}"
-							itemDescription="#{transportationType.description}" />
 					</p:selectOneMenu>
 				</p:panelGrid>
 

@@ -21,6 +21,13 @@
 						required="true" requiredMessage="Name is required"
 						style="width:80%" />
 
+					<h:outputText value="Transport type:" />
+					<p:selectOneRadio
+						value="#{excelUploadController.ratefile.transportType}">
+						<f:selectItems value="#{excelUploadController.allTransportTypes}"
+							itemDescription="description" />
+					</p:selectOneRadio>
+
 					<h:outputText value="Country:" />
 					<p:selectOneRadio converter="#{countryConverter}"
 						value="#{excelUploadController.ratefile.country}">
@@ -38,14 +45,6 @@
 						value="#{excelUploadController.ratefile.kindOfRate}">
 						<f:selectItems value="#{excelUploadController.kindOfRates}" />
 					</p:selectOneRadio>
-
-					<h:outputText value="Transport type:" />
-					<p:selectOneRadio
-						value="#{excelUploadController.ratefile.transportType}">
-						<f:selectItems value="#{excelUploadController.allTransportTypes}"
-							itemDescription="description" />
-					</p:selectOneRadio>
-
 				</p:panelGrid>
 			</p:panel>
 			<p:commandButton value="Save basic info" ajax="false"

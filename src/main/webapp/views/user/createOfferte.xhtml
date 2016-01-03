@@ -23,6 +23,14 @@
 				toggleable="false">
 				<p:growl showDetail="true" id="messages" sticky="true" />
 				<p:panelGrid columns="2" style="width:100%;">
+					<h:outputText value="Transport type:" />
+					<p:selectOneMenu style="width:100%;" id="selectTransportType"
+						value="#{createQuotationController.quotationQuery.transportType}">
+						<f:selectItems
+							value="#{createQuotationController.allTransportTypes}"
+							itemDescription="description" />
+					</p:selectOneMenu>
+
 					<h:outputText value="Country: " />
 					<p:selectOneMenu style="width:100%;" id="countrySelect"
 						converter="#{countryConverter}" required="true"
@@ -50,14 +58,6 @@
 						id="languageSelect"
 						value="#{createQuotationController.quotationQuery.language}">
 						<f:selectItems value="#{createQuotationController.allLanguages}" />
-					</p:selectOneMenu>
-
-					<h:outputText value="Transport type:" />
-					<p:selectOneMenu style="width:100%;" id="selectTransportType"
-						value="#{createQuotationController.quotationQuery.transportType}">
-						<f:selectItems
-							value="#{createQuotationController.allTransportTypes}"
-							itemDescription="description" />
 					</p:selectOneMenu>
 
 					<h:outputText value="Quantity:" />

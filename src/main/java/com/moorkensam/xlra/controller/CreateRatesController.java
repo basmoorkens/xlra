@@ -246,9 +246,18 @@ public class CreateRatesController {
    * @return The page to redirect to.
    */
   public String saveNewRateFile() {
+    markCustomerRateFile();
     rateFileService.createRateFile(rateFile);
     MessageUtil.addMessage("Rates created", "Succesfully created rates for " + rateFile.getName());
     return "views/rate/admin/manageRates.xhtml";
+  }
+
+  private void markCustomerRateFile() {
+    Customer customer = rateFile.getCustomer();
+    if (!customer.isHasOwnRateFile()) {
+      customer.setHasOwnRateFile(true);
+      customerService.updateCustomer(customer);
+    }
   }
 
   /**

@@ -105,7 +105,8 @@
 						<p:commandButton value="Save"
 							style="padding-left:20px;padding-right:20px;margin-left:20px;"
 							actionListener="#{chfController.saveNewCurrencyRate}"
-							update=":chfRatesForm :addChfRateForm" id="chfRateSaveButton" />
+							update=":chfRatesForm :addChfRateForm" id="chfRateSaveButton"
+							oncomplete="handleAddChfRequest(xhr, status, args)" />
 					</p:panel>
 				</p:panel>
 			</p:dialog>
@@ -117,6 +118,15 @@
 					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
 			</p:confirmDialog>
 		</h:form>
+		<script type="text/javascript">
+			function handleAddChfRequest(xhr, status, args) {
+				if (args.validationFailed) {
+					PF('addChfDialog').show();
+				} else {
+					PF('addChfDialog').hide();
+				}
+			}
+		</script>
 	</ui:define>
 </ui:composition>
 </html>
