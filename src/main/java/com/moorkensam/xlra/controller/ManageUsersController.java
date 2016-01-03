@@ -11,6 +11,7 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.model.DualListModel;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -29,6 +30,9 @@ public class ManageUsersController {
   @Inject
   private RolePermissionService permissionService;
 
+  @Inject
+  private UserSessionController userSessionController;
+
   private List<User> users;
 
   private List<Role> allRoles;
@@ -46,7 +50,25 @@ public class ManageUsersController {
   public void initialize() {
     roles = new DualListModel<Role>();
     refreshUsers();
-    setAllRoles(permissionService.getAllRoles());
+    fillInAvailableRoles();
+  }
+
+  private void fillInAvailableRoles() {
+    List<Role> allRoles = permissionService.getAllRoles();
+    if (!userSessionController.isSysAdmin()) {
+      removeSysAdminRole(allRoles);
+    }
+    setAllRoles(allRoles);
+  }
+
+  private void removeSysAdminRole(List<Role> allRoles) {
+    Iterator<Role> roleIterator = allRoles.iterator();
+    while (roleIterator.hasNext()) {
+      Role next = roleIterator.next();
+      if (next.getName().equalsIgnoreCase("sysadmin")) {
+        roleIterator.remove();
+      }
+    }
   }
 
   private void refreshUsers() {
@@ -245,6 +267,14 @@ public class ManageUsersController {
 
   public void setEditMode(boolean editMode) {
     this.editMode = editMode;
+  }
+
+  public UserSessionController getUserSessionController() {
+    return userSessionController;
+  }
+
+  public void setUserSessionController(UserSessionController userSessionController) {
+    this.userSessionController = userSessionController;
   }
 
 }

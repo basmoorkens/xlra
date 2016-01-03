@@ -40,6 +40,19 @@
 	 	<servlet-name>Faces Servlet</servlet-name>
 	 </filter-mapping>
 	 
+	 <security-constraint>
+	    <display-name>sysadmin-pages</display-name>
+	    <web-resource-collection>
+	        <web-resource-name>protected-pages</web-resource-name>
+	        <url-pattern>/views/sysadmin/*</url-pattern>
+	    </web-resource-collection>
+	    <auth-constraint>
+	    	<role-name>SysAdmin</role-name>
+	    </auth-constraint>
+	    <user-data-constraint>
+	        <transport-guarantee>NONE</transport-guarantee>
+	    </user-data-constraint>
+	</security-constraint>
 	 
 	 <security-constraint>
 	    <display-name>admin-pages</display-name>
@@ -48,21 +61,8 @@
 	        <url-pattern>/views/admin/*</url-pattern>
 	    </web-resource-collection>
 	    <auth-constraint>
+	    	<role-name>SysAdmin</role-name>
 	        <role-name>Admin</role-name>
-	    </auth-constraint>
-	    <user-data-constraint>
-	        <transport-guarantee>NONE</transport-guarantee>
-	    </user-data-constraint>
-	</security-constraint>
-	<security-constraint>
-	    <display-name>user-pages</display-name>
-	    <web-resource-collection>
-	        <web-resource-name>protected-pages</web-resource-name>
-	        <url-pattern>/views/user/*</url-pattern>
-	    </web-resource-collection>
-	    <auth-constraint>
-	        <role-name>Admin</role-name>
-	        <role-name>User</role-name>
 	    </auth-constraint>
 	    <user-data-constraint>
 	        <transport-guarantee>NONE</transport-guarantee>
@@ -77,6 +77,7 @@
 	        <url-pattern>/views/protected/*</url-pattern>
 	    </web-resource-collection>
 	    <auth-constraint>
+	    	<role-name>SysAdmin</role-name>
 	        <role-name>Admin</role-name>
 	        <role-name>User</role-name>
 	    </auth-constraint>
@@ -84,6 +85,7 @@
 	        <transport-guarantee>NONE</transport-guarantee>
 	    </user-data-constraint>
 	</security-constraint>
+	
 	 <login-config>
 	    <auth-method>FORM</auth-method>
 	    <realm-name>jdbc-security-domain</realm-name>

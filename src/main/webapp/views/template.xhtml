@@ -94,11 +94,11 @@
 				<p:menuitem
 					rendered="#{userSessionController.hasPermission('ROLE_EDIT')}"
 					value="Role management"
-					url="/views/admin/user/RoleManagement.xhtml" />
+					url="/views/sysadmin/user/RoleManagement.xhtml" />
 				<p:menuitem
 					rendered="#{userSessionController.hasPermission('PERMISSION_EDIT')}"
 					value="Permission management"
-					url="/views/admin/user/PermissionManagement.xhtml" />
+					url="/views/sysadmin/user/PermissionManagement.xhtml" />
 			</p:submenu>
 			<f:facet name="options">
 				<h:outputText styleClass="wb"

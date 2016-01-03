@@ -5,7 +5,9 @@ import com.moorkensam.xlra.model.BaseEntity;
 import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -136,12 +138,14 @@ public class User extends BaseEntity {
   /**
    * get all the permissions from this user.
    * 
-   * @return the list of permisisons.
+   * @return the set of permisisons.
    */
-  public List<Permission> getAllPermissions() {
-    List<Permission> permissions = new ArrayList<Permission>();
+  public Set<Permission> getAllPermissions() {
+    Set<Permission> permissions = new HashSet<Permission>();
     for (Role r : roles) {
-      permissions.addAll(r.getPermissions());
+      for (Permission p : r.getPermissions()) {
+        permissions.add(p);
+      }
     }
     return permissions;
   }

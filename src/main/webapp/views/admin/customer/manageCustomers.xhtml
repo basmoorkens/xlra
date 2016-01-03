@@ -41,6 +41,13 @@
 						<f:facet name="header">Language</f:facet>
 						#{customer.language}
 					</p:column>
+					<p:column>
+						<f:facet name="header">Has own ratefile</f:facet>
+						<p:selectBooleanButton offLabel="Standard ratefile"
+							disabled="true" onLabel="Own ratefile"
+							value="#{customer.hasOwnRateFile}" onIcon="ui-icon-check"
+							offIcon="ui-icon-close" />
+					</p:column>
 					<p:column style="width:110px;text-align: center">
 						<p:commandButton id="editButton"
 							actionListener="#{customerController.setupPageForEditCustomer(customer)}"

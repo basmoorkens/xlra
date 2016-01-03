@@ -33,6 +33,11 @@ public class Permission extends BaseEntity {
   }
 
   @Override
+  public String toString() {
+    return this.getKey();
+  }
+
+  @Override
   public boolean equals(Object obj) {
     if (obj == null) {
       return false;

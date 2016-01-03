@@ -20,7 +20,7 @@ import javax.inject.Inject;
 @SessionScoped
 public class UserSessionController {
 
-  private final static Logger logger = LogManager.getLogger();
+  private static final Logger logger = LogManager.getLogger();
 
   @Inject
   private UserService userService;
@@ -92,11 +92,19 @@ public class UserSessionController {
    * @return True if the user is an admin, false otherwise.
    */
   public boolean isAdmin() {
+    return userIsA("admin");
+  }
+
+  private boolean userIsA(String roleString) {
     for (Role role : loggedInUser.getRoles()) {
-      if (role.getName().equalsIgnoreCase("admin")) {
+      if (role.getName().equalsIgnoreCase(roleString)) {
         return true;
       }
     }
     return false;
+  }
+
+  public boolean isSysAdmin() {
+    return userIsA("sysadmin");
   }
 }
