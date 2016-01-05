@@ -23,14 +23,11 @@ public class CustomerUtil {
    * promote a 'base' customer to a full customer.
    * 
    * @param customer the customer to promote.
-   * @return the promoted customer.
    */
-  public Customer promoteToFullCustomer(Customer customer) {
-    customer.setHasOwnRateFile(true);
+  public void promoteToFullCustomer(Customer customer) {
     if (customer.getAddress() == null) {
       customer.setAddress(new Address());
     }
-    return customer;
   }
 
   private CustomerUtil() {

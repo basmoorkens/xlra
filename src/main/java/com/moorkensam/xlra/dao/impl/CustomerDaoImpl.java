@@ -39,8 +39,14 @@ public class CustomerDaoImpl extends BaseDao implements CustomerDao {
 
   @Override
   public Customer getCustomerById(long id) {
-    return getEntityManager().find(Customer.class, id);
+    Customer customer = getEntityManager().find(Customer.class, id);
+    lazyLoadCustomer(customer);
+    return customer;
 
+  }
+
+  private void lazyLoadCustomer(Customer customer) {
+    customer.getContacts().size();
   }
 
   @SuppressWarnings("unchecked")

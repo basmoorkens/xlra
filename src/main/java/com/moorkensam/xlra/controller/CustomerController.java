@@ -3,6 +3,8 @@ package com.moorkensam.xlra.controller;
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Customer;
+import com.moorkensam.xlra.model.customer.CustomerContact;
+import com.moorkensam.xlra.model.customer.Department;
 import com.moorkensam.xlra.service.CustomerService;
 import com.moorkensam.xlra.service.util.CustomerUtil;
 
@@ -28,9 +30,15 @@ public class CustomerController {
 
   private Customer selectedCustomer;
 
+  private CustomerContact selectedContact;
+
   private String detailGridTitle;
 
   private LazyDataModel<Customer> model;
+
+  private String contactHeader;
+
+  private String saveContactButtonTitle;
 
   @PostConstruct
   public void initializeController() {
@@ -59,16 +67,20 @@ public class CustomerController {
    * Create or update the selected customer in the backend.
    */
   public void createCustomerOrUpdate() {
+    doCreateOrUpdate();
+    reInitializePage();
+  }
+
+  private void doCreateOrUpdate() {
     if (selectedCustomer.getId() == 0) {
       customerService.createCustomer(selectedCustomer);
       MessageUtil.addMessage("Customer added", "Customer " + selectedCustomer.getName()
           + " was successfully added.");
     } else {
-      customerService.updateCustomer(selectedCustomer);
+      selectedCustomer = customerService.updateCustomer(selectedCustomer);
       MessageUtil.addMessage("Customer updated", "Customer " + selectedCustomer.getName()
           + " was successfully updated.");
     }
-    reInitializePage();
   }
 
   /**
@@ -88,6 +100,16 @@ public class CustomerController {
   private void showAddDialog() {
     RequestContext context = RequestContext.getCurrentInstance();
     context.execute("PF('addCustomerDialog').show();");
+  }
+
+  private void hideAddContactDialog() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    context.execute("PF('addContactDialog').hide();");
+  }
+
+  private void showAddContactDialog() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    context.execute("PF('addContactDialog').show();");
   }
 
   private void reInitializePage() {
@@ -116,17 +138,87 @@ public class CustomerController {
   }
 
   /**
+   * Sets up the page to add a new customer contact.
+   */
+  public void setupPageForNewContact() {
+    selectedContact = new CustomerContact();
+    contactHeader = "Add contact for " + selectedCustomer.getName();
+    saveContactButtonTitle = "Add contact to customer";
+    showAddContactDialog();
+  }
+
+  /**
+   * Sets up the page to edit a customer contact.
+   * 
+   * @param customerContact The customer contact to load for edit.
+   */
+  public void setupPageForEditContact(CustomerContact customerContact) {
+    selectedContact = customerContact;
+    contactHeader =
+        "Edit contact " + selectedContact.getEmail() + " from customer "
+            + selectedCustomer.getName();
+    saveContactButtonTitle = "Update contact";
+    showAddContactDialog();
+  }
+
+  /**
+   * Delete the contact. Just cuts the coupling and saves the customer and cascades the delete.
+   * 
+   * @param contact the contact to delete.
+   */
+  public void deleteCustomerContact(CustomerContact contact) {
+    selectedCustomer.deleteContact(contact);
+    contact.setCustomer(null);
+    if (selectedCustomer.getId() > 0) {
+      doCreateOrUpdate();
+    }
+    showAddDialog();
+  }
+
+  /**
+   * Cancel the create/update of a contact.
+   */
+  public void cancelAddContact() {
+    selectedContact = null;
+    hideAddContactDialog();
+    showAddDialog();
+  }
+
+  /**
+   * Adds the selected contact to the customer contacts of the selected customer.
+   */
+  public void addContactToCustomer() {
+    if (selectedContact.getId() <= 0) {
+      linkContactAndCustomer();
+    }
+    if (selectedCustomer.getId() > 0) {
+      doCreateOrUpdate();
+    }
+    hideAddContactDialog();
+    selectedContact = null;
+    showAddDialog();
+  }
+
+  private void linkContactAndCustomer() {
+    selectedContact.setCustomer(selectedCustomer);
+    selectedCustomer.addContact(selectedContact);
+  }
+
+  /**
    * Set up the page to edit a customer.
    * 
    * @param customer The customer to edit.
    */
   public void setupPageForEditCustomer(Customer customer) {
-    if (!customer.isHasOwnRateFile()) {
-      customer = CustomerUtil.getInstance().promoteToFullCustomer(customer);
-    }
-    selectedCustomer = customer;
+    loadInCustomer(customer);
     detailGridTitle = "Edit customer " + selectedCustomer.getName();
     showAddDialog();
+  }
+
+  private void loadInCustomer(Customer customer) {
+    customer = customerService.getCustomerById(customer.getId());
+    CustomerUtil.getInstance().promoteToFullCustomer(customer);
+    selectedCustomer = customer;
   }
 
   public String getDetailGridTitle() {
@@ -151,6 +243,34 @@ public class CustomerController {
 
   public void setModel(LazyDataModel<Customer> model) {
     this.model = model;
+  }
+
+  public CustomerContact getSelectedContact() {
+    return selectedContact;
+  }
+
+  public void setSelectedContact(CustomerContact selectedContact) {
+    this.selectedContact = selectedContact;
+  }
+
+  public List<Department> getAllDepartments() {
+    return Arrays.asList(Department.values());
+  }
+
+  public String getContactHeader() {
+    return contactHeader;
+  }
+
+  public void setContactHeader(String contactHeader) {
+    this.contactHeader = contactHeader;
+  }
+
+  public String getSaveContactButtonTitle() {
+    return saveContactButtonTitle;
+  }
+
+  public void setSaveContactButtonTitle(String saveContactButtonTitle) {
+    this.saveContactButtonTitle = saveContactButtonTitle;
   }
 
 }

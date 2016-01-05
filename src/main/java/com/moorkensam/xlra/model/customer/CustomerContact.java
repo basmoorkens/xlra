@@ -74,4 +74,25 @@ public class CustomerContact extends BaseEntity implements Person {
   public void setDepartment(Department department) {
     this.department = department;
   }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof CustomerContact)) {
+      return false;
+    }
+    CustomerContact other = (CustomerContact) obj;
+    if (other.getId() > 0 && id > 0 && other.getId() != id) {
+      return false;
+    }
+    if (other.getEmail() != null && email != null) {
+      if (!other.getEmail().equals(email)) {
+        return false;
+      }
+    } else if (other.getEmail() == null && email == null) {
+      // ok
+    } else {
+      return false;
+    }
+    return true;
+  }
 }

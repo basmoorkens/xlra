@@ -13,7 +13,7 @@ public interface CustomerService {
 
   public Customer createCustomer(Customer customer);
 
-  public void updateCustomer(Customer customer);
+  public Customer updateCustomer(Customer customer);
 
   public List<Customer> getAllFullCustomers();
 

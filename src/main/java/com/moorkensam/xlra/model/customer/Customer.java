@@ -7,6 +7,8 @@ import org.hibernate.annotations.BatchSize;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.Cacheable;
@@ -133,6 +135,35 @@ public class Customer extends BaseEntity {
 
   public void setContacts(List<CustomerContact> contacts) {
     this.contacts = contacts;
+  }
+
+  /**
+   * Add a contact to the customer.
+   * 
+   * @param contact the contact to add.
+   */
+  public void addContact(CustomerContact contact) {
+    if (contacts == null) {
+      contacts = new ArrayList<CustomerContact>();
+    }
+    contacts.add(contact);
+  }
+
+  /**
+   * Delete the contact from the contacts list.
+   * 
+   * @param contact The contact to delete.
+   */
+  public void deleteContact(CustomerContact contact) {
+    if (contacts != null && !contacts.isEmpty()) {
+      Iterator<CustomerContact> iterator = contacts.iterator();
+      while (iterator.hasNext()) {
+        CustomerContact cc = iterator.next();
+        if (cc.equals(contact)) {
+          iterator.remove();
+        }
+      }
+    }
   }
 
 }

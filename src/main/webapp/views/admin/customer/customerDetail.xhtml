@@ -4,69 +4,128 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
-	<p:panel id="customerDetailPanel" header="Customer info">
-		<p:growl id="message" showDetail="true" />
-		<p:panelGrid columns="2" style="width:100%;"
-			columnClasses="labelColumn,valuesColumn">
-			<h:outputLabel for="nameField">Name</h:outputLabel>
-			<p:inputText style="width:100%;" value="#{customer.name}"
-				id="nameField"></p:inputText>
+	<p:scrollPanel style="height:600px;" mode="native">
+		<p:panel id="customerDetailPanel" header="Customer info">
+			<p:growl id="message" showDetail="true" />
+			<p:panelGrid columns="2" style="width:100%;"
+				columnClasses="labelColumn,valuesColumn">
+				<h:outputLabel for="nameField">Name</h:outputLabel>
+				<p:inputText style="width:100%;" value="#{customer.name}"
+					id="nameField"></p:inputText>
 
-			<h:outputLabel for="emailField">Email</h:outputLabel>
-			<p:inputText style="width:100%;" value="#{customer.email}"
-				validatorMessage="Pleas enter a valid email address" id="emailField">
-				<f:validateRegex
-					pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
-			</p:inputText>
+				<h:outputLabel for="emailField">Email</h:outputLabel>
+				<p:inputText style="width:100%;" value="#{customer.email}"
+					validatorMessage="Pleas enter a valid email address"
+					id="emailField">
+					<f:validateRegex
+						pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+				</p:inputText>
 
-			<h:outputLabel for="phoneField">Phone</h:outputLabel>
-			<p:inputText style="width:100%;" value="#{customer.phone}"
-				id="phoneField"></p:inputText>
+				<h:outputLabel for="phoneField">Phone</h:outputLabel>
+				<p:inputText style="width:100%;" value="#{customer.phone}"
+					id="phoneField"></p:inputText>
 
-			<h:outputLabel for="streetField">Street</h:outputLabel>
-			<p:inputText style="width:100%;" value="#{customer.address.street}"
-				id="streetField"></p:inputText>
+				<h:outputLabel for="streetField">Street</h:outputLabel>
+				<p:inputText style="width:100%;" value="#{customer.address.street}"
+					id="streetField"></p:inputText>
 
-			<h:outputLabel for="numberField">Number</h:outputLabel>
-			<p:inputText style="width:100%;" value="#{customer.address.number}"
-				id="numberField"></p:inputText>
+				<h:outputLabel for="numberField">Number</h:outputLabel>
+				<p:inputText style="width:100%;" value="#{customer.address.number}"
+					id="numberField"></p:inputText>
 
-			<h:outputLabel for="zipField">ZIP</h:outputLabel>
-			<p:inputText style="width:100%;" value="#{customer.address.zip}"
-				id="zipField"></p:inputText>
+				<h:outputLabel for="zipField">ZIP</h:outputLabel>
+				<p:inputText style="width:100%;" value="#{customer.address.zip}"
+					id="zipField"></p:inputText>
 
-			<h:outputLabel for="cityField">City</h:outputLabel>
-			<p:inputText style="width:100%;" value="#{customer.address.city}"
-				id="cityField"></p:inputText>
+				<h:outputLabel for="cityField">City</h:outputLabel>
+				<p:inputText style="width:100%;" value="#{customer.address.city}"
+					id="cityField"></p:inputText>
 
-			<h:outputLabel for="countryField">Country</h:outputLabel>
-			<p:inputText style="width:100%;" value="#{customer.address.country}"
-				id="countryField"></p:inputText>
+				<h:outputLabel for="countryField">Country</h:outputLabel>
+				<p:inputText style="width:100%;" value="#{customer.address.country}"
+					id="countryField"></p:inputText>
 
-			<h:outputLabel for="btwField">BTW number</h:outputLabel>
-			<p:inputText style="width:100%;" value="#{customer.btwNumber}"
-				id="btwField"></p:inputText>
+				<h:outputLabel for="btwField">BTW number</h:outputLabel>
+				<p:inputText style="width:100%;" value="#{customer.btwNumber}"
+					id="btwField"></p:inputText>
 
-			<h:outputLabel for="languageField">Language</h:outputLabel>
+				<h:outputLabel for="languageField">Language</h:outputLabel>
 
-			<p:selectOneMenu value="#{customer.language}" id="languageField"
-				style="width:100%;">
-				<f:selectItem value="#{null}" itemLabel=" " />
-				<f:selectItems value="#{customerController.allLanguages}"></f:selectItems>
-			</p:selectOneMenu>
-		</p:panelGrid>
+				<p:selectOneMenu value="#{customer.language}" id="languageField"
+					style="width:100%;">
+					<f:selectItem value="#{null}" itemLabel=" " />
+					<f:selectItems value="#{customerController.allLanguages}"></f:selectItems>
+				</p:selectOneMenu>
+			</p:panelGrid>
 
-		<p:panel style="margin-top:20px;">
-			<p:commandButton value="Cancel" title="Cancel" immediate="true"
-				actionListener="#{customerController.cancelDetail}" ajax="true"
-				update=":customerDetailForm"
-				style="padding-left:5px; padding-right:5px; margin-right:20px;" />
-			<p:commandButton value="Save customer" title="Save customer"
-				actionListener="#{customerController.createCustomerOrUpdate}"
-				style="padding-left:5px; padding-right:5px; margin-right:20px;"
-				icon="ui-icon-check" validateClient="true" ajax="true"
-				update=":customerDetailForm :customerOverviewForm"
-				oncomplete="handleAddCustomerRequest(xhr, status, args)" />
+			<p:dataTable value="#{customer.contacts}" var="contact"
+				style="margin-top:10px;" emptyMessage="No contacts found."
+				id="customerTable" rows="10">
+				<f:facet name="header">
+					Customer contacts
+				</f:facet>
+				<p:column>
+					<f:facet name="header">
+						Department
+					</f:facet>
+					#{contact.department}
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						Email
+					</f:facet>
+					#{contact.email}
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						First name
+					</f:facet>
+					#{contact.firstName}
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						Name
+					</f:facet>
+					#{contact.name}
+				</p:column>
+				<p:column style="width:110px;text-align: center">
+					<p:commandButton id="editContactButton"
+						actionListener="#{customerController.setupPageForEditContact(contact)}"
+						icon="ui-icon-pencil" title="View" ajax="true"
+						update=":customerDetailForm :customerContactForm" />
+					<p:tooltip id="editContactButtonTip" for="editContactButton"
+						value="Edit the contact" />
+					<p:commandButton style="margin-left:5px;" id="deleteContactButton"
+						actionListener="#{customerController.deleteCustomerContact(contact)}"
+						ajax="true" title="delete"
+						update=":customerDetailForm :customerContactForm"
+						icon="ui-icon-trash">
+						<p:confirm header="Confirm delete"
+							message="Are you sure you want to delete this contact? This can not be undone!"
+							icon="ui-icon-alert" />
+					</p:commandButton>
+					<p:tooltip id="deleteContactTip" for="deleteContactButton"
+						value="Delete the contact" />
+				</p:column>
+			</p:dataTable>
+
+
+			<p:panel style="margin-top:20px;">
+				<p:commandButton value="Cancel" title="Cancel" immediate="true"
+					actionListener="#{customerController.cancelDetail}" ajax="true"
+					update=":customerDetailForm"
+					style="padding-left:5px; padding-right:5px; margin-right:20px;" />
+				<p:commandButton value="Add new contact" ajax="true"
+					update=":customerDetailForm :customerContactForm" immediate="true"
+					actionListener="#{customerController.setupPageForNewContact}"
+					style="padding-left:10px;padding-right:10px;margin-right:20px;" />
+				<p:commandButton value="Save customer" title="Save customer"
+					actionListener="#{customerController.createCustomerOrUpdate}"
+					style="padding-left:5px; padding-right:5px; margin-right:20px;"
+					icon="ui-icon-check" validateClient="true" ajax="true"
+					update=":customerDetailForm :customerOverviewForm"
+					oncomplete="handleAddCustomerRequest(xhr, status, args)" />
+			</p:panel>
 		</p:panel>
-	</p:panel>
+	</p:scrollPanel>
 </ui:composition>
