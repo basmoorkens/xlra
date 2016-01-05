@@ -76,7 +76,7 @@ public class EmailServiceImpl implements EmailService {
 
   @Override
   public void sendOfferteMail(QuotationResult result) throws MessagingException {
-    logger.info("Sending offerte mail to " + result.getEmailResult().getToAddress()
+    logger.info("Sending offerte mail to " + result.getEmailResult().getRecipientsAsString()
         + " with subject " + result.getEmailResult().getSubject() + " for content look up result "
         + result.getId());
     EmailSentStatus status = EmailSentStatus.SENT;
@@ -110,7 +110,7 @@ public class EmailServiceImpl implements EmailService {
     Message message = new MimeMessage(getMailSession());
     message.setFrom(new InternetAddress(fromAddress));
     message.setRecipients(Message.RecipientType.TO,
-        InternetAddress.parse(result.getEmailResult().getToAddress()));
+        InternetAddress.parse(result.getEmailResult().getRecipientsAsString()));
     message.setSubject(result.getEmailResult().getSubject());
 
     MimeBodyPart messageBody = new MimeBodyPart();

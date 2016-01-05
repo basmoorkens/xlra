@@ -87,6 +87,6 @@ public class MailTemplateServiceImplTest extends UnitilsJUnit4 {
     EmailResult dto = mailTemplateService.initializeOfferteEmail(result);
     Assert.assertNotNull(dto);
     Assert.assertEquals("SUBJECT", dto.getSubject());
-    Assert.assertEquals("test@test.com", dto.getToAddress());
+    Assert.assertTrue(dto.getRecipientsAsString().contains("test@test.com"));
   }
 }

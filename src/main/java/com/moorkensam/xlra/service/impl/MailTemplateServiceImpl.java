@@ -80,7 +80,7 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 
   private void fillInEmailResult(QuotationResult result, EmailResult dto, MailTemplate template,
       String emailMessage) {
-    dto.setToAddress(result.getQuery().getCustomer().getEmail());
+    dto.addRecipient(result.getQuery().getCustomer().getEmail());
     dto.setSubject(template.getSubject());
     dto.setEmail(emailMessage);
   }

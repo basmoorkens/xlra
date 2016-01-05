@@ -88,7 +88,7 @@ public class EmailServiceImplTest extends UnitilsJUnit4 {
     EmailResult emailResult = new EmailResult();
     emailResult.setEmail("test email");
     emailResult.setSubject("test");
-    emailResult.setToAddress("test@test.com");
+    emailResult.addRecipient("test@test.com");
     QuotationResult offerte = new QuotationResult();
     offerte.setOfferteUniqueIdentifier("uq123");
     offerte.setEmailResult(emailResult);

@@ -298,7 +298,7 @@ public class CreateQuotationController {
     try {
       quotationService.submitQuotationResult(quotationResult);
       MessageUtil.addMessage("Offerte successfully send", "The offerte was successfully send to "
-          + quotationResult.getEmailResult().getToAddress());
+          + quotationResult.getEmailResult().getRecipientsAsString());
       showResultPanel();
     } catch (RateFileException re2) {
       showRateFileError(re2);
