@@ -119,7 +119,7 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
   public void init() {
     query = new QuotationQuery();
     query.setCustomer(new Customer());
-    query.getCustomer().setEmail("test@test.com");
+    query.getCustomer().getStandardContact().setEmail("test@test.com");
     Country country = new Country();
     country.setShortName("BE");
     query.setCountry(country);

@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<h:form id="optionsForm">
+		<p:panel id="optionsPanel" header="Options"
+			collapsed="#{createQuotationController.collapseOptionsPanel}"
+			toggleable="false">
+			<p:growl showDetail="true" id="messages" sticky="true" />
+			<p:panel style="margin-top:10px;margin-bottom:10px;">
+				<p:commandButton value="Select all" id="selectAllButton"
+					actionListener="#{createQuotationController.selectAllOptions}"
+					styleClass="navButton" update=":optionsForm" ajax="true" />
+				<p:tooltip id="selectAllTip" for="selectAllButton"
+					value="Select all options" />
+				<p:commandButton value="Deselect all" id="deselectAllButton"
+					actionListener="#{createQuotationController.deSelectAllOptions}"
+					styleClass="navButton" update=":optionsForm" ajax="true" />
+				<p:tooltip id="deselectAllTip" for="deselectAllButton"
+					value="Deselect all options" />
+			</p:panel>
+			<p:panelGrid columns="2" style="width:100%;">
+				<h:outputLabel value="Option" />
+				<h:outputLabel value="Selected" />
+
+				<c:forEach
+					items="#{createQuotationController.quotationResult.selectableOptions}"
+					var="option">
+					<c:if test="${option.showToCustomer}">
+						<h:outputLabel value="#{option.translatedKey}" />
+						<p:selectBooleanCheckbox value="#{option.selected}" />
+					</c:if>
+				</c:forEach>
+			</p:panelGrid>
+
+			<p:panel style="margin-top:20px;">
+				<p:commandButton value="Back" styleClass="navButton"
+					update=":filtersForm :optionsForm" immediate="true"
+					id="backButton2"
+					actionListener="#{createQuotationController.showRateFilterPanel}" />
+				<p:tooltip id="backTip2" for="backButton2"
+					value="Go back to ratesfilter selection" />
+				<p:commandButton value="Next" id="nextButton3"
+					actionListener="#{createQuotationController.processOptions}"
+					styleClass="navButton" process=":optionsForm"
+					update=":optionsForm :summaryForm" ajax="true" />
+				<p:tooltip id="nextTip3" for="nextButton3"
+					value="Go to summary of offerte" />
+			</p:panel>
+		</p:panel>
+	</h:form>
+</ui:composition>

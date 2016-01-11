@@ -11,7 +11,7 @@ public interface CustomerDao {
 
   public Customer getCustomerById(long id);
 
-  public Customer createCustomer(Customer customer);
+  public void createCustomer(Customer customer);
 
   public Customer updateCustomer(Customer customer);
 
@@ -25,4 +25,6 @@ public interface CustomerDao {
       SortOrder sortOrder, Map<String, Object> filters);
 
   public int countCustomers();
+
+  public Customer getCustomerByName(String name);
 }

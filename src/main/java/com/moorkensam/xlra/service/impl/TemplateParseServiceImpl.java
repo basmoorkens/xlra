@@ -40,7 +40,7 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 
   private static final String TEMPLATES_USER_RESET_FTL = "templates/password_reset.ftl";
 
-  private final static Logger logger = LogManager.getLogger();
+  private static final Logger logger = LogManager.getLogger();
 
   private StringTemplateLoader stringTemplateLoader;
 

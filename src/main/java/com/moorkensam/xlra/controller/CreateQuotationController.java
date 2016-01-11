@@ -4,6 +4,7 @@ import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.RateFileException;
+import com.moorkensam.xlra.model.error.XlraValidationException;
 import com.moorkensam.xlra.model.offerte.OfferteOptionDto;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
@@ -137,11 +138,16 @@ public class CreateQuotationController {
    * Create a customer on the backend.
    */
   public void createCustomer() {
-    getQuotationQuery().setCustomer(customerService.createCustomer(customerToAdd));
-    MessageUtil.addMessage("Customer created", "Created customer " + customerToAdd.getName());
-    refreshCustomers();
-    renderAddCustomerGrid = false;
-    customerToAdd = new Customer();
+    try {
+      getQuotationQuery()
+          .setCustomer(customerService.createCustomerAndReturnManaged(customerToAdd));
+      MessageUtil.addMessage("Customer created", "Created customer " + customerToAdd.getName());
+      refreshCustomers();
+      renderAddCustomerGrid = false;
+      customerToAdd = new Customer();
+    } catch (XlraValidationException exc) {
+      MessageUtil.addErrorMessage("Invalid customer data", exc.getBusinessException());
+    }
   }
 
   public List<Language> getAllLanguages() {

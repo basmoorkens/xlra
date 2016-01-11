@@ -130,6 +130,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public void deleteUser(User user) {
+    logger.info("Deleting user " + user.getUserName());
     User toDelete = getUserDao().getUserbyId(user.getId());
     getUserDao().deleteUser(toDelete);
   }

@@ -2,6 +2,7 @@ package com.moorkensam.xlra.service.impl;
 
 import com.moorkensam.xlra.dao.CustomerDao;
 import com.moorkensam.xlra.model.customer.Customer;
+import com.moorkensam.xlra.model.error.XlraValidationException;
 import com.moorkensam.xlra.service.CustomerService;
 
 import org.apache.logging.log4j.LogManager;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.NoResultException;
 
 /**
  * Service to fetch and update customers.
@@ -29,9 +31,22 @@ public class CustomerServiceImpl implements CustomerService {
   private static final Logger logger = LogManager.getLogger();
 
   @Override
-  public Customer createCustomer(Customer customer) {
+  public void createCustomer(Customer customer) throws XlraValidationException {
     logger.info("Creating new customer with name " + customer.getName());
-    return getCustomerDao().createCustomer(customer);
+    validateCustomer(customer);
+    getCustomerDao().createCustomer(customer);
+  }
+
+  private void validateCustomer(Customer customer) throws XlraValidationException {
+    try {
+      customerDao.getCustomerByName(customer.getName());
+      logger.info("Validate customer failed, customer with name " + customer.getName()
+          + " already exists.");
+      throw new XlraValidationException("Customer with name " + customer.getName()
+          + " already exists.");
+    } catch (NoResultException nre) {
+      // nothing needed here
+    }
   }
 
   @Override
@@ -80,6 +95,12 @@ public class CustomerServiceImpl implements CustomerService {
   @Override
   public int countCustomers() {
     return customerDao.countCustomers();
+  }
+
+  @Override
+  public Customer createCustomerAndReturnManaged(Customer customer) throws XlraValidationException {
+    createCustomer(customer);
+    return customerDao.getCustomerByName(customer.getName());
   }
 
 }

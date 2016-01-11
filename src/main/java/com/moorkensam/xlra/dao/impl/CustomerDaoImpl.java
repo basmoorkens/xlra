@@ -16,8 +16,8 @@ import javax.persistence.Query;
 
 public class CustomerDaoImpl extends BaseDao implements CustomerDao {
 
-  public Customer createCustomer(Customer customer) {
-    return getEntityManager().merge(customer);
+  public void createCustomer(Customer customer) {
+    getEntityManager().persist(customer);
   }
 
   public Customer updateCustomer(Customer customer) {
@@ -64,7 +64,11 @@ public class CustomerDaoImpl extends BaseDao implements CustomerDao {
     Query query = getEntityManager().createQuery(queryString);
     JpaUtil.applyPagination(first, pageSize, query);
     JpaUtil.fillInParameters(filters, query);
-    return (List<Customer>) query.getResultList();
+    List<Customer> resultCustomers = (List<Customer>) query.getResultList();
+    for (Customer customer : resultCustomers) {
+      lazyLoadCustomer(customer);
+    }
+    return resultCustomers;
   }
 
   /*
@@ -92,6 +96,13 @@ public class CustomerDaoImpl extends BaseDao implements CustomerDao {
     Query query = getEntityManager().createNamedQuery("Customer.countCustomers");
     Long result = (Long) query.getSingleResult();
     return Integer.parseInt(result + "");
+  }
+
+  @Override
+  public Customer getCustomerByName(String name) {
+    Query query = getEntityManager().createNamedQuery("Customer.findByName");
+    query.setParameter("name", name);
+    return (Customer) query.getSingleResult();
   }
 
 }

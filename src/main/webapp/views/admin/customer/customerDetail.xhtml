@@ -14,7 +14,8 @@
 					id="nameField"></p:inputText>
 
 				<h:outputLabel for="emailField">Email</h:outputLabel>
-				<p:inputText style="width:100%;" value="#{customer.email}"
+				<p:inputText style="width:100%;"
+					value="#{customer.standardContact.email}"
 					validatorMessage="Pleas enter a valid email address"
 					id="emailField">
 					<f:validateRegex
@@ -58,7 +59,7 @@
 				</p:selectOneMenu>
 			</p:panelGrid>
 
-			<p:dataTable value="#{customer.contacts}" var="contact"
+			<p:dataTable value="#{customer.displayContacts}" var="contact"
 				style="margin-top:10px;" emptyMessage="No contacts found."
 				id="customerTable" rows="10">
 				<f:facet name="header">

@@ -38,6 +38,9 @@ public class UserServiceImplTest extends UnitilsJUnit4 {
   @Mock
   private EmailService emailService;
 
+  @Mock
+  private User userMock;
+
   private static final String xlraHash =
       "c05e198412a3608e7a626e473180472d170f0f9c95c158eb0a43583e286799f3";
 

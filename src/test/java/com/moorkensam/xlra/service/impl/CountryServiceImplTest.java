@@ -79,4 +79,20 @@ public class CountryServiceImplTest extends UnitilsJUnit4 {
 
   }
 
+  @Test
+  public void testUpdateZone() {
+    Zone zone = new Zone();
+    zoneDao.updateZone(zone);
+    EasyMock.expectLastCall();
+    EasyMockUnitils.replay();
+    service.updateZone(zone);
+  }
+
+  @Test
+  public void testCountryServiceInit() {
+    CountryServiceImpl impl = new CountryServiceImpl();
+    impl.init();
+    Assert.assertNotNull(impl.getZoneUtil());
+  }
+
 }

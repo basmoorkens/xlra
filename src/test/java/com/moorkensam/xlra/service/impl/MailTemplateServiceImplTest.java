@@ -14,6 +14,7 @@ import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.EmailService;
+import com.moorkensam.xlra.service.MailTemplateService;
 
 import junit.framework.Assert;
 
@@ -54,7 +55,7 @@ public class MailTemplateServiceImplTest extends UnitilsJUnit4 {
   public void init() {
     query = new QuotationQuery();
     query.setCustomer(new Customer());
-    query.getCustomer().setEmail("test@test.com");
+    query.getCustomer().getStandardContact().setEmail("test@test.com");
     query.setCountry(new Country());
     priceDto = new PriceCalculation();
     priceDto.setAppliedOperations(new ArrayList<TranslationKey>());
@@ -88,5 +89,12 @@ public class MailTemplateServiceImplTest extends UnitilsJUnit4 {
     Assert.assertNotNull(dto);
     Assert.assertEquals("SUBJECT", dto.getSubject());
     Assert.assertTrue(dto.getRecipientsAsString().contains("test@test.com"));
+  }
+
+  @Test
+  public void testInitService() {
+    MailTemplateServiceImpl mailTemplateService2 = new MailTemplateServiceImpl();
+    mailTemplateService2.init();
+    Assert.assertNotNull(mailTemplateService2.getTemplateParseService());
   }
 }

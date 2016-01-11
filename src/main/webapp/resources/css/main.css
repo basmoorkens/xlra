@@ -64,3 +64,9 @@ body {
 .ui-picklist .ui-picklist-list {
 	width: 12em !important;
 }
+
+.navButton {
+	padding-left: 10px;
+	padding-right: 10px;
+	margin-right: 20px;
+}

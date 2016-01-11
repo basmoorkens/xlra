@@ -5,6 +5,7 @@ import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.customer.CustomerContact;
 import com.moorkensam.xlra.model.customer.Department;
+import com.moorkensam.xlra.model.error.XlraValidationException;
 import com.moorkensam.xlra.service.CustomerService;
 import com.moorkensam.xlra.service.util.CustomerUtil;
 
@@ -73,9 +74,13 @@ public class CustomerController {
 
   private void doCreateOrUpdate() {
     if (selectedCustomer.getId() == 0) {
-      customerService.createCustomer(selectedCustomer);
-      MessageUtil.addMessage("Customer added", "Customer " + selectedCustomer.getName()
-          + " was successfully added.");
+      try {
+        customerService.createCustomer(selectedCustomer);
+        MessageUtil.addMessage("Customer added", "Customer " + selectedCustomer.getName()
+            + " was successfully added.");
+      } catch (XlraValidationException e) {
+        MessageUtil.addErrorMessage("Invalid customer data", e.getBusinessException());
+      }
     } else {
       selectedCustomer = customerService.updateCustomer(selectedCustomer);
       MessageUtil.addMessage("Customer updated", "Customer " + selectedCustomer.getName()

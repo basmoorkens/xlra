@@ -26,7 +26,6 @@ public class CustomerUtilTest extends UnitilsJUnit4 {
     customer = new Customer();
     customerUtil.promoteToFullCustomer(customer);
 
-    Assert.assertTrue(customer.isHasOwnRateFile());
     Assert.assertNotNull(customer.getAddress());
   }
 
@@ -36,7 +35,6 @@ public class CustomerUtilTest extends UnitilsJUnit4 {
     customer.setAddress(null);
     customerUtil.promoteToFullCustomer(customer);
 
-    Assert.assertTrue(customer.isHasOwnRateFile());
     Assert.assertNotNull(customer.getAddress());
   }
 }

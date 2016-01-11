@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<h:form id="resultForm">
+		<p:panel id="resultPanel" header="Result"
+			collapsed="#{createQuotationController.collapseResultPanel}"
+			toggleable="false">
+					The offerte was successfully created and sent to
+					<h:outputText
+				value="#{createQuotationController.quotationResult.emailResult.recipientsAsString}" />
+					.<br />
+
+			<p:panel style="margin-top:20px;">
+				<p:commandButton value="View offerte details" id="viewDetailsButton"
+					styleClass="navButton"
+					actionListener="#{createQuotationController.goToOfferteDetail}" />
+				<p:tooltip id="viewDetailsTip" for="viewDetailsButton"
+					value="Go to the offerte overview screen and load the details of this offerte" />
+				<p:commandButton value="Create another offerte"
+					styleClass="navButton" update=":customerForm :resultForm"
+					id="anotherOfferteButton"
+					actionListener="#{createQuotationController.resetPage}" />
+				<p:tooltip id="anotherOfferteTip" for="anotherOfferteButton"
+					value="Reset the page and create another offerte" />
+			</p:panel>
+		</p:panel>
+	</h:form>
+</ui:composition>

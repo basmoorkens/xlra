@@ -26,10 +26,11 @@
 						<f:facet name="header">Name</f:facet>
 						#{customer.name}
 					</p:column>
-					<p:column sortBy="#{customer.email}" filterBy="#{customer.email}"
+					<p:column sortBy="#{customer.standardContact.email}"
+						filterBy="#{customer.standardContact.email}"
 						filterStyle="width:100%;">
-						<f:facet name="header">Email</f:facet>
-						#{customer.email}
+						<f:facet name="header">Standard email</f:facet>
+						#{customer.standardContact.email}
 					</p:column>
 					<p:column sortBy="#{customer.phone}" filterBy="#{customer.phone}"
 						filterStyle="width:100%;">

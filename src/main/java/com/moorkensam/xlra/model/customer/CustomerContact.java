@@ -16,6 +16,13 @@ public class CustomerContact extends BaseEntity implements Person {
 
   private static final long serialVersionUID = -1943038849182892475L;
 
+  /**
+   * Standard constructor.
+   */
+  public CustomerContact() {
+    display = true;
+  }
+
   @ManyToOne
   @JoinColumn(name = "customer_id")
   private Customer customer;
@@ -28,6 +35,8 @@ public class CustomerContact extends BaseEntity implements Person {
   private String name;
 
   private String email;
+
+  private boolean display;
 
   @Override
   public String getFirstName() {
@@ -94,5 +103,13 @@ public class CustomerContact extends BaseEntity implements Person {
       return false;
     }
     return true;
+  }
+
+  public boolean isDisplay() {
+    return display;
+  }
+
+  public void setDisplay(boolean display) {
+    this.display = display;
   }
 }

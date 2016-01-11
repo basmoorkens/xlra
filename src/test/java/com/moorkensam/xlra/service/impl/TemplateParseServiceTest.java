@@ -120,4 +120,14 @@ public class TemplateParseServiceTest extends UnitilsJUnit4 {
     Assert.assertTrue(result.contains("test"));
   }
 
+  @Test
+  public void testParseUserResetPasswordEmail() throws TemplatingException {
+    User user = new User();
+    user.setFirstName("bas");
+    user.setName("mo");
+    user.setUserName("bmo");
+    String result = templateEngine.parseUserResetPasswordEmail(user);
+    Assert.assertTrue(result.contains("bas mo"));
+  }
+
 }

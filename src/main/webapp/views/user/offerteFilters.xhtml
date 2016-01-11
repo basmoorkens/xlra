@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<h:form id="filtersForm">
+		<p:panel id="filterPanel" header="Rates filter"
+			collapsed="#{createQuotationController.collapseFiltersPanel}"
+			toggleable="false">
+			<p:growl showDetail="true" id="messages" sticky="true" />
+			<p:panelGrid columns="2" style="width:100%;">
+				<h:outputText value="Transport type:" />
+				<p:selectOneMenu style="width:100%;" id="selectTransportType"
+					value="#{createQuotationController.quotationQuery.transportType}">
+					<f:selectItems
+						value="#{createQuotationController.allTransportTypes}"
+						itemDescription="description" />
+				</p:selectOneMenu>
+
+				<h:outputText value="Country: " />
+				<p:selectOneMenu style="width:100%;" id="countrySelect"
+					converter="#{countryConverter}" required="true"
+					value="#{createQuotationController.quotationQuery.country}">
+					<f:selectItems value="#{createQuotationController.allCountries}" />
+				</p:selectOneMenu>
+
+				<h:outputText value="Measurement: " />
+				<p:selectOneMenu style="width:100%;" required="true"
+					id="measurementSelect"
+					value="#{createQuotationController.quotationQuery.measurement}">
+					<f:selectItems value="#{createQuotationController.allMeasurements}" />
+				</p:selectOneMenu>
+
+				<h:outputText value="Type: " />
+				<p:selectOneMenu style="width:100%;" required="true" id="typeSelect"
+					value="#{createQuotationController.quotationQuery.kindOfRate}">
+					<f:selectItems value="#{createQuotationController.allKinds}" />
+				</p:selectOneMenu>
+
+				<h:outputText value="Language: " />
+				<p:selectOneMenu style="width:100%;" required="false"
+					id="languageSelect"
+					value="#{createQuotationController.quotationQuery.language}">
+					<f:selectItems value="#{createQuotationController.allLanguages}" />
+				</p:selectOneMenu>
+
+				<h:outputText value="Quantity:" />
+				<p:inputText required="true" id="quantitySelect"
+					requiredMessage="Quantity is required!" style="width:100%;"
+					value="#{createQuotationController.quotationQuery.quantity}" />
+
+				<h:outputText value="Postal code: " />
+				<p:inputText required="true" style="width:100%;"
+					requiredMessage="Postal code is required!" id="postalcodeInput"
+					value="#{createQuotationController.quotationQuery.postalCode}" />
+
+
+			</p:panelGrid>
+			<p:tooltip id="countryTip" for="countrySelect"
+				value="The destination country for the offerte" />
+			<p:tooltip id="measurementTip" for="measurementSelect"
+				value="The measurement of the offerte" />
+
+			<p:tooltip id="typeTip" for="typeSelect"
+				value="The type of transport for the offerte" />
+			<p:tooltip id="languageTip" for="languageSelect"
+				value="The language to use in the offerte email. If left blank it will default to the language of the customer in the system" />
+			<p:tooltip id="transportTypeTip" for="selectTransportType"
+				value="Indicate if the offerte is for export or import" />
+			<p:tooltip id="quantityTip" for="quantitySelect"
+				value="The number of the chosen measurement to make an offerte for" />
+			<p:tooltip id="postalcodeTip" for="postalcodeInput"
+				value="The postal code to ship to" />
+			<p:panel style="margin-top:20px;">
+				<p:commandButton value="Back" update=":customerForm :filtersForm"
+					immediate="true" id="backButton1" styleClass="navButton"
+					actionListener="#{createQuotationController.showCustomerPanel}" />
+				<p:tooltip for="backButton1" id="backTip1"
+					value="Go back to the customer selection" />
+				<p:commandButton value="Next" id="nextButton2"
+					actionListener="#{createQuotationController.processRateFilters}"
+					styleClass="navButton" process=":filtersForm"
+					update=":filtersForm :optionsForm" ajax="true" />
+				<p:tooltip id="nextStep2" for="nextButton2"
+					value="Go to the select options step" />
+			</p:panel>
+		</p:panel>
+	</h:form>
+</ui:composition>

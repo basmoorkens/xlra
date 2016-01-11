@@ -7,6 +7,7 @@ import org.hibernate.annotations.BatchSize;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -24,6 +25,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+/**
+ * When a customer is created an empty address and a base customercontact are made.
+ * 
+ * @author bas
+ *
+ */
 @Entity
 @Cacheable
 @Table(name = "customer")
@@ -32,24 +39,37 @@ import javax.validation.constraints.NotNull;
         query = "SELECT b FROM Customer b where b.deleted = false"),
     @NamedQuery(name = "Customer.findAllFullCustomers",
         query = "SELECT c FROM Customer c where c.deleted = false AND c.hasOwnRateFile = true"),
-    @NamedQuery(name = "Customer.countCustomers", query = "SELECT count(c.id) FROM Customer c")})
+    @NamedQuery(name = "Customer.countCustomers", query = "SELECT count(c.id) FROM Customer c"),
+    @NamedQuery(name = "Customer.findByName",
+        query = "SELECT c FROM Customer c WHERE c.name = :name")})
 public class Customer extends BaseEntity {
 
   private static final long serialVersionUID = 1L;
 
+  /**
+   * Inits the customer with an empty address and a standard contact.
+   */
   public Customer() {
     this.address = new Address();
+    CustomerContact standardContact = createStandardCustomerContact();
+    addContact(standardContact);
+  }
+
+  private CustomerContact createStandardCustomerContact() {
+    if (getStandardContact() == null) {
+      CustomerContact standardContact = new CustomerContact();
+      standardContact.setDepartment(Department.STANDARD);
+      standardContact.setDisplay(false);
+      standardContact.setCustomer(this);
+      return standardContact;
+    }
+    return null;
   }
 
   @Length(max = 100)
   @NotNull
   @NotEmpty(message = "Name may not be empty")
   protected String name;
-
-  @Length(max = 100)
-  @NotNull
-  @NotEmpty(message = "Email may not be empty")
-  protected String email;
 
   @Length(max = 100)
   @NotNull
@@ -79,14 +99,6 @@ public class Customer extends BaseEntity {
 
   public void setLanguage(Language language) {
     this.language = language;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
   }
 
   public String getName() {
@@ -138,6 +150,22 @@ public class Customer extends BaseEntity {
   }
 
   /**
+   * Gets the customer contacts to display.
+   * 
+   * @return the list to display.
+   */
+  @Transient
+  public List<CustomerContact> getDisplayContacts() {
+    List<CustomerContact> displayContacts = new ArrayList<CustomerContact>();
+    for (CustomerContact customerContact : contacts) {
+      if (customerContact.isDisplay()) {
+        displayContacts.add(customerContact);
+      }
+    }
+    return displayContacts;
+  }
+
+  /**
    * Add a contact to the customer.
    * 
    * @param contact the contact to add.
@@ -164,6 +192,23 @@ public class Customer extends BaseEntity {
         }
       }
     }
+  }
+
+  /**
+   * Fetches the standard contact for the customer. There should only be one contact with the
+   * department STANDARD.
+   * 
+   * @return The contact.
+   */
+  public CustomerContact getStandardContact() {
+    if (contacts != null) {
+      for (CustomerContact cc : contacts) {
+        if (Department.STANDARD.equals(cc.getDepartment())) {
+          return cc;
+        }
+      }
+    }
+    return null;
   }
 
 }

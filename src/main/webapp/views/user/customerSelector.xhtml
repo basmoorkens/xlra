@@ -33,7 +33,7 @@
 				<p:commandButton value="Next" id="nextButton1"
 					actionListener="#{createQuotationController.procesCustomer}"
 					update=":customerForm :filtersForm" ajax="true"
-					style="width:150px; margin-left:20px;" />
+					styleClass="navButton" />
 			</p:panel>
 		</p:panel>
 	</h:form>
@@ -78,7 +78,7 @@
 					</p:selectOneRadio>
 				</p:panelGrid>
 				<p:panel style="margin-top:20px;">
-					<p:commandButton value="Save customer"
+					<p:commandButton value="Save customer" styleClass="navButton"
 						update=":customerForm :addQuickCustomerForm"
 						actionListener="#{createQuotationController.createCustomer}"
 						ajax="true"

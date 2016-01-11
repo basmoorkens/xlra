@@ -1,6 +1,7 @@
 package com.moorkensam.xlra.service;
 
 import com.moorkensam.xlra.model.customer.Customer;
+import com.moorkensam.xlra.model.error.XlraValidationException;
 
 import org.primefaces.model.SortOrder;
 
@@ -11,7 +12,7 @@ public interface CustomerService {
 
   public Customer getCustomerById(long id);
 
-  public Customer createCustomer(Customer customer);
+  public void createCustomer(Customer customer) throws XlraValidationException;
 
   public Customer updateCustomer(Customer customer);
 
@@ -22,6 +23,8 @@ public interface CustomerService {
   public List<Customer> getAllCustomers();
 
   public int countCustomers();
+
+  public Customer createCustomerAndReturnManaged(Customer customer) throws XlraValidationException;
 
   public List<Customer> getLazyCustomers(int first, int pageSize, String sortField,
       SortOrder sortOrder, Map<String, Object> filters);

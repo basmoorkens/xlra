@@ -2,6 +2,7 @@ package com.moorkensam.xlra.service.impl;
 
 import com.moorkensam.xlra.dao.CustomerDao;
 import com.moorkensam.xlra.model.customer.Customer;
+import com.moorkensam.xlra.model.error.XlraValidationException;
 
 import org.easymock.EasyMock;
 import org.junit.Before;
@@ -12,6 +13,8 @@ import org.unitils.easymock.annotation.Mock;
 import org.unitils.inject.annotation.TestedObject;
 
 import java.util.Arrays;
+
+import javax.persistence.NoResultException;
 
 public class CustomerServiceImplTest extends UnitilsJUnit4 {
 
@@ -49,9 +52,22 @@ public class CustomerServiceImplTest extends UnitilsJUnit4 {
   }
 
   @Test
-  public void testCreateCustomer() {
+  public void testCreateCustomer() throws XlraValidationException {
     Customer cust = new Customer();
-    EasyMock.expect(dao.createCustomer(cust)).andReturn(cust);
+    cust.setName("test");
+    EasyMock.expect(dao.getCustomerByName(cust.getName())).andThrow(new NoResultException());
+    dao.createCustomer(cust);
+    EasyMock.expectLastCall();
+    EasyMockUnitils.replay();
+
+    service.createCustomer(cust);
+  }
+
+  @Test(expected = XlraValidationException.class)
+  public void testCreateCustomerNameExists() throws XlraValidationException {
+    Customer cust = new Customer();
+    cust.setName("test");
+    EasyMock.expect(dao.getCustomerByName(cust.getName())).andReturn(new Customer());
     EasyMockUnitils.replay();
 
     service.createCustomer(cust);

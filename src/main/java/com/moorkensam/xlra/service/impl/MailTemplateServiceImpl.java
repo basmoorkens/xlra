@@ -30,7 +30,6 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 
   @PostConstruct
   public void init() {
-    setTemplateParseService(TemplateParseServiceImpl.getInstance());
     templateParseService = TemplateParseServiceImpl.getInstance();
   }
 
@@ -80,7 +79,7 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 
   private void fillInEmailResult(QuotationResult result, EmailResult dto, MailTemplate template,
       String emailMessage) {
-    dto.addRecipient(result.getQuery().getCustomer().getEmail());
+    dto.addRecipient(result.getQuery().getCustomer().getStandardContact().getEmail());
     dto.setSubject(template.getSubject());
     dto.setEmail(emailMessage);
   }
