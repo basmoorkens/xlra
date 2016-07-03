@@ -218,6 +218,8 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
         .expect(quotationUtil.generateOfferteOptionsForRateFileAndLanguage(rfMock, Language.NL))
         .andReturn(Arrays.asList(option));
     EasyMock.expect(rfMock.getName()).andReturn("test rf");
+    quotationUtil.setupEmailRecipients(EasyMock.isA(QuotationResult.class));
+    EasyMock.expectLastCall();
     EasyMockUnitils.replay();
     QuotationResult offerte = quotationService.generateQuotationResultForQuotationQuery(query);
 

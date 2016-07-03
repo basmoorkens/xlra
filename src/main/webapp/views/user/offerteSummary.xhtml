@@ -15,9 +15,13 @@
 				<h:outputText
 					value="#{createQuotationController.quotationResult.usedRateFileName}" />
 
-				<h:outputText value="Receipient: " />
-				<p:inputText size="100" style="width:100%;"
-					value="#{createQuotationController.quotationResult.emailResult.recipientsAsString}" />
+				<h:outputText value="Receipients: " />
+				<p:panelGrid columns="2">
+					<h:outputText
+						value="#{createQuotationController.quotationResult.emailResult.recipientsAsString}" />
+					<p:commandButton value="Add/Remove recipients"
+						onclick="PF('alterRecipients').show();" />
+				</p:panelGrid>
 
 				<h:outputText value="Subject: " />
 				<p:inputText size="100" style="width:100%;"
@@ -57,5 +61,23 @@
 			showHeader="false">
 			<p:graphicImage url="/resources/images/ajax-loader.gif" />
 		</p:dialog>
+
+		<p:dialog id="alterRecipientsDialog" header="Add/Remove recipients"
+			widgetVar="alterRecipientsDialog" modal="true" width="70%"
+			height="50%">
+			<p:panel>
+				<p:panelGrid columns="2" style="width:100%;">
+					<h:outputLabel for="emailField">Add recipient</h:outputLabel>
+					<p:inputText style="width:100%;"
+						value="#{createQuotationController.manualAddedEmail}"
+						validatorMessage="Pleas enter a valid email address"
+						id="emailField">
+						<f:validateRegex
+							pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+					</p:inputText>
+				</p:panelGrid>
+			</p:panel>
+		</p:dialog>
+
 	</h:form>
 </ui:composition>

@@ -1,8 +1,11 @@
 package com.moorkensam.xlra.service.util;
 
 import com.moorkensam.xlra.model.configuration.Language;
+import com.moorkensam.xlra.model.customer.CustomerContact;
+import com.moorkensam.xlra.model.customer.Department;
 import com.moorkensam.xlra.model.offerte.OfferteOptionDto;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
+import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.rate.CalculationValueType;
 import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.RateFile;
@@ -187,6 +190,28 @@ public class QuotationUtil {
       }
     }
     return false;
+  }
+
+  /**
+   * Sets up the recipients email list for an emailresult on a result of a query. The standard
+   * contact will not be included in this list.
+   * 
+   * @param result The quotationresult to fill in.
+   */
+  public void setupEmailRecipients(QuotationResult result) {
+    if (result.getQuery().getCustomer() == null) {
+      throw new IllegalStateException("There should be a customer attached to the query.");
+    }
+    buildEmailList(result);
+  }
+
+  private void buildEmailList(QuotationResult result) {
+    List<CustomerContact> contacts = result.getQuery().getCustomer().getContacts();
+    for (CustomerContact contact : contacts) {
+      if (!Department.STANDARD.equals(contact.getDepartment())) {
+        result.addAvailableEmailRecipients(contact.getEmail());
+      }
+    }
   }
 
   public TranslationKeyToi8nMapper getMapper() {

@@ -19,6 +19,8 @@ import com.moorkensam.xlra.service.QuotationService;
 import com.moorkensam.xlra.service.impl.FileServiceImpl;
 import com.moorkensam.xlra.service.util.TranslationUtil;
 
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -74,6 +76,8 @@ public class CreateQuotationController {
   private boolean collapseOptionsPanel;
 
   private boolean collapseResultPanel;
+
+  private String manualAddedEmail;
 
   /**
    * Init logic for the controller.
@@ -454,4 +458,15 @@ public class CreateQuotationController {
     this.collapseOptionsPanel = collapseOptionsPanel;
   }
 
+  public boolean isShowCustomerContacts() {
+    return quotationQuery.getCustomer() != null;
+  }
+
+  public String getManualAddedEmail() {
+    return manualAddedEmail;
+  }
+
+  public void setManualAddedEmail(String manualAddedEmail) {
+    this.manualAddedEmail = manualAddedEmail;
+  }
 }

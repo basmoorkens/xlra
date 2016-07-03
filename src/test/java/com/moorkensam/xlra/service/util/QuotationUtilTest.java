@@ -2,8 +2,10 @@ package com.moorkensam.xlra.service.util;
 
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Customer;
+import com.moorkensam.xlra.model.customer.CustomerContact;
 import com.moorkensam.xlra.model.offerte.OfferteOptionDto;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
+import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Kind;
@@ -21,6 +23,7 @@ import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.TestedObject;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -119,6 +122,21 @@ public class QuotationUtilTest extends UnitilsJUnit4 {
     Assert.assertNotNull(option);
     Assert.assertEquals(true, option.isCalculationOption());
     Assert.assertTrue(option.isShowToCustomer());
+  }
+
+  @Test
+  public void testCreateRecipientsList() {
+    List<CustomerContact> contacts = new ArrayList<CustomerContact>();
+    contacts.add(new CustomerContact("bas"));
+    contacts.add(new CustomerContact("bas2"));
+    QuotationResult result = new QuotationResult();
+    result.setQuery(new QuotationQuery());
+    result.getQuery().setCustomer(new Customer());
+    result.getQuery().getCustomer().setContacts(contacts);
+    quotationUtil.setupEmailRecipients(result);
+
+    Assert.assertEquals(2, result.getAvailableEmailRecipients().size());
+    Assert.assertEquals("bas", result.getAvailableEmailRecipients().get(0));
   }
 
 }

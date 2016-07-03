@@ -65,8 +65,12 @@ public class QuotationResult extends BaseEntity {
   @Transient
   private List<OfferteOptionDto> selectableOptions;
 
+  @Transient
+  private List<String> availableEmailRecipients;
+
   public QuotationResult() {
     this.selectableOptions = new ArrayList<OfferteOptionDto>();
+    this.emailResult = new EmailResult();
   }
 
   public EmailResult getEmailResult() {
@@ -177,4 +181,25 @@ public class QuotationResult extends BaseEntity {
   public void setUsedRateFileName(String usedRateFileName) {
     this.usedRateFileName = usedRateFileName;
   }
+
+  public List<String> getAvailableEmailRecipients() {
+    return availableEmailRecipients;
+  }
+
+  public void setAvailableEmailRecipients(List<String> availableEmailRecipients) {
+    this.availableEmailRecipients = availableEmailRecipients;
+  }
+
+  /**
+   * Convenience method to add recipients.
+   * 
+   * @param recipient The recipient to add.
+   */
+  public void addAvailableEmailRecipients(String recipient) {
+    if (availableEmailRecipients == null) {
+      availableEmailRecipients = new ArrayList<String>();
+    }
+    availableEmailRecipients.add(recipient);
+  }
+
 }

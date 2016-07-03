@@ -23,6 +23,15 @@ public class CustomerContact extends BaseEntity implements Person {
     display = true;
   }
 
+  /**
+   * Constructor which sets the email address.
+   * 
+   * @param email The email to set.
+   */
+  public CustomerContact(String email) {
+    this.email = email;
+  }
+
   @ManyToOne
   @JoinColumn(name = "customer_id")
   private Customer customer;
@@ -111,5 +120,9 @@ public class CustomerContact extends BaseEntity implements Person {
 
   public void setDisplay(boolean display) {
     this.display = display;
+  }
+
+  public String getFrontEndName() {
+    return department + " - " + email;
   }
 }

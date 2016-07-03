@@ -280,6 +280,19 @@ public class ManageRatesController {
     updateRateFile();
   }
 
+
+
+  /**
+   * Fetch the details of from selectEvent.
+   * 
+   * @param SelectEvent the selectevent that triggered this.
+   */
+  public void fetchDetailsOfRatefile(SelectEvent selectEvent) {
+    RateFile fromFrontEnd = (RateFile) selectEvent.getObject();
+    selectedRateFile = rateFileService.getFullRateFile(fromFrontEnd.getId());
+    refreshPageForRateFile();
+  }
+
   /**
    * Fetch the details of the selected ratefile.
    * 
@@ -287,6 +300,10 @@ public class ManageRatesController {
    */
   public void fetchDetailsOfRatefile(RateFile rateFileToLoad) {
     selectedRateFile = rateFileService.getFullRateFile(rateFileToLoad.getId());
+    refreshPageForRateFile();
+  }
+
+  private void refreshPageForRateFile() {
     collapseConditionsDetailGrid = false;
     collapseRateLinesDetailGrid = false;
     collapseZonesDetailGrid = false;

@@ -26,8 +26,15 @@
 				<p:commandButton rendered="#{canEdit}" value="Create new customer"
 					id="addCustomerButton" update=":addQuickCustomerForm"
 					immediate="true" onclick="PF('addCustomerDialog').show();" />
-
 			</p:panelGrid>
+
+			<p:selectManyCheckbox
+				rendered="#{createQuotationController.showCustomerContacts}">
+				<f:selectItems
+					value="#{createQuotationController.quotationQuery.customer.contacts}"
+					var="contact" itemLabel="frontEndName" itemValue="#{contact}" />
+			</p:selectManyCheckbox>
+
 			<p:growl showDetail="true" id="messages" sticky="false" />
 			<p:panel style="margin-top:20px;">
 				<p:commandButton value="Next" id="nextButton1"

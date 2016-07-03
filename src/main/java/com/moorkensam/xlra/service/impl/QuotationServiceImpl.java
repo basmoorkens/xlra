@@ -144,6 +144,7 @@ public class QuotationServiceImpl implements QuotationService {
       offerte.setSelectableOptions(options);
       offerte.getCalculation().setBasePrice(result.getValue());
       offerte.setUsedRateFileName(rf.getName());
+      quotationUtil.setupEmailRecipients(offerte);
     } catch (RateFileException e1) {
       logger.error(e1.getBusinessException() + e1.getMessage());
       throw e1;
