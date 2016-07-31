@@ -30,12 +30,12 @@
 				<p:column style="width:110px;" rendered="#{canEdit}">
 					<p:commandButton
 						actionListener="#{manageRatesController.setupEditZone(zone)}"
-						style="margin-right:5px;" icon="ui-icon-pencil" title="Edit"
+						styleClass="navButton" icon="ui-icon-pencil" title="Edit"
 						ajax="true" id="editZoneButton" update=":editZoneForm" />
 					<p:tooltip id="editZoneTip" for="editZoneButton"
 						value="Edit the zone" />
 					<p:commandButton icon="ui-icon-trash" title="Delete"
-						id="deleteZoneButton" style="margin-left:5px;"
+						id="deleteZoneButton" styleClass="navButton"
 						update=":zoneDetailForm"
 						actionListener="#{manageRatesController.deleteZone(zone)}">
 						<p:confirm header="Confirm delete"

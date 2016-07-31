@@ -11,121 +11,124 @@
 	<h:outputStylesheet library="css" name="main.css" />
 </h:head>
 <h:body>
-	<div id="version">Version:
-		#{maven.version['com.moorkensam:xlra']}</div>
-	<h:graphicImage url="/resources/images/Extra-Logo-neu.png"
-		style="float:right;margin:0px;top:10px;" />
-	<h:form prependId="false">
-		<p:menubar id="xlraMenu">
-			<p:submenu
-				rendered="#{userSessionController.hasNonePermissions(['EDIT_RATEFILE', 'CREATE_RATEFILE', 'RAISE_RATES', 'VIEW_RATEFILE', 'EXCEL_UPLOAD'])}"
-				label="Rates" icon="ui-icon-document">
-				<p:menuitem
-					rendered="#{userSessionController.hasPermission('CREATE_RATEFILE')}"
-					value="Create ratefile"
-					url="/views/admin/rate/createRateFile.xhtml" />
-				<p:menuitem
-					rendered="#{userSessionController.hasPermission('EDIT_RATEFILE')}"
-					value="Manage rates" url="/views/admin/rate/manageRates.xhtml" />
-				<p:menuitem
-					rendered="#{userSessionController.hasPermission('VIEW_RATEFILE')}"
-					value="View rates" url="/views/user/viewRates.xhtml" />
-				<p:menuitem
-					rendered="#{userSessionController.hasPermission('RAISE_RATES')}"
-					value="Raise rates" url="/views/admin/rate/raiseRates.xhtml" />
-				<p:menuitem
-					rendered="#{userSessionController.hasPermission('EXCEL_UPLOAD')}"
-					value="Upload rate excel"
-					url="/views/admin/upload/excelUpload.xhtml" />
-			</p:submenu>
+	<div id="container">
+		<div id="version">Version:
+			#{maven.version['com.moorkensam:xlra']}</div>
+		<h:graphicImage url="/resources/images/Extra-Logo-neu.png"
+			style="float:right;margin:0px;top:10px;" />
+		<h:form prependId="false">
+			<p:menubar id="xlraMenu">
+				<p:submenu
+					rendered="#{userSessionController.hasNonePermissions(['EDIT_RATEFILE', 'CREATE_RATEFILE', 'RAISE_RATES', 'VIEW_RATEFILE', 'EXCEL_UPLOAD'])}"
+					label="Rates" icon="ui-icon-document">
+					<p:menuitem
+						rendered="#{userSessionController.hasPermission('CREATE_RATEFILE')}"
+						value="Create ratefile"
+						url="/views/admin/rate/createRateFile.xhtml" />
+					<p:menuitem
+						rendered="#{userSessionController.hasPermission('EDIT_RATEFILE')}"
+						value="Manage rates" url="/views/admin/rate/manageRates.xhtml" />
+					<p:menuitem
+						rendered="#{userSessionController.hasPermission('VIEW_RATEFILE')}"
+						value="View rates" url="/views/user/viewRates.xhtml" />
+					<p:menuitem
+						rendered="#{userSessionController.hasPermission('RAISE_RATES')}"
+						value="Raise rates" url="/views/admin/rate/raiseRates.xhtml" />
+					<p:menuitem
+						rendered="#{userSessionController.hasPermission('EXCEL_UPLOAD')}"
+						value="Upload rate excel"
+						url="/views/admin/upload/excelUpload.xhtml" />
+				</p:submenu>
 
-			<p:submenu
-				rendered="#{userSessionController.hasNonePermissions(['CREATE_OFFERTE', 'VIEW_OFFERTE'])}"
-				label="Offertes" icon="ui-icon-document">
-				<p:menuitem
-					rendered="#{userSessionController.hasPermission('CREATE_OFFERTE')}"
-					value="Create offerte" url="/views/user/createOfferte.xhtml" />
-				<p:menuitem
-					rendered="#{userSessionController.hasPermission('VIEW_OFFERTE')}"
-					value="Overview offertes" url="/views/user/offerteOverview.xhtml" />
-			</p:submenu>
+				<p:submenu
+					rendered="#{userSessionController.hasNonePermissions(['CREATE_OFFERTE', 'VIEW_OFFERTE'])}"
+					label="Offertes" icon="ui-icon-document">
+					<p:menuitem
+						rendered="#{userSessionController.hasPermission('CREATE_OFFERTE')}"
+						value="Create offerte" url="/views/user/createOfferte.xhtml" />
+					<p:menuitem
+						rendered="#{userSessionController.hasPermission('VIEW_OFFERTE')}"
+						value="Overview offertes" url="/views/user/offerteOverview.xhtml" />
+				</p:submenu>
 
-			<p:submenu
-				rendered="#{userSessionController.hasNonePermissions(['FULL_CUSTOMER_EDIT'])}"
-				label="Customer" icon="ui-icon-document">
-				<p:menuitem
-					rendered="#{userSessionController.hasPermission('FULL_CUSTOMER_EDIT')}"
-					value="Manage customers"
-					url="/views/admin/customer/manageCustomers.xhtml" />
-			</p:submenu>
+				<p:submenu
+					rendered="#{userSessionController.hasNonePermissions(['FULL_CUSTOMER_EDIT'])}"
+					label="Customer" icon="ui-icon-document">
+					<p:menuitem
+						rendered="#{userSessionController.hasPermission('FULL_CUSTOMER_EDIT')}"
+						value="Manage customers"
+						url="/views/admin/customer/manageCustomers.xhtml" />
+				</p:submenu>
 
-			<p:submenu
-				rendered="#{userSessionController.hasNonePermissions(['DIESEL_EDIT', 'EMAIL_TEMPLATE_EDIT', 'COUNTRY_EDIT'])}"
-				label="Configuration" icon="ui-icon-document">
-				<p:menuitem
-					rendered="#{userSessionController.hasPermission('CHF_EDIT')}"
-					value="Swiss rates" url="/views/admin/configuration/chfRates.xhtml" />
-				<p:menuitem
-					rendered="#{userSessionController.hasPermission('DIESEL_EDIT')}"
-					value="Diesel prices"
-					url="/views/admin/configuration/dieselRates.xhtml" />
-				<p:menuitem
-					rendered="#{userSessionController.hasPermission('EMAIL_TEMPLATE_EDIT')}"
-					value="Email templates"
-					url="/views/admin/configuration/mailTemplates.xhtml" />
-				<p:menuitem
-					rendered="#{userSessionController.hasPermission('COUNTRY_EDIT')}"
-					value="Countries" url="/views/admin/configuration/country.xhtml" />
-				<p:menuitem
-					rendered="#{userSessionController.hasPermission('VIEW_LOGS')}"
-					value="View logs" url="/views/admin/configuration/logs.xhtml" />
-			</p:submenu>
+				<p:submenu
+					rendered="#{userSessionController.hasNonePermissions(['DIESEL_EDIT', 'EMAIL_TEMPLATE_EDIT', 'COUNTRY_EDIT'])}"
+					label="Configuration" icon="ui-icon-document">
+					<p:menuitem
+						rendered="#{userSessionController.hasPermission('CHF_EDIT')}"
+						value="Swiss rates"
+						url="/views/admin/configuration/chfRates.xhtml" />
+					<p:menuitem
+						rendered="#{userSessionController.hasPermission('DIESEL_EDIT')}"
+						value="Diesel prices"
+						url="/views/admin/configuration/dieselRates.xhtml" />
+					<p:menuitem
+						rendered="#{userSessionController.hasPermission('EMAIL_TEMPLATE_EDIT')}"
+						value="Email templates"
+						url="/views/admin/configuration/mailTemplates.xhtml" />
+					<p:menuitem
+						rendered="#{userSessionController.hasPermission('COUNTRY_EDIT')}"
+						value="Countries" url="/views/admin/configuration/country.xhtml" />
+					<p:menuitem
+						rendered="#{userSessionController.hasPermission('VIEW_LOGS')}"
+						value="View logs" url="/views/admin/configuration/logs.xhtml" />
+				</p:submenu>
 
-			<p:submenu
-				rendered="#{userSessionController.hasNonePermissions(['USER_EDIT_PROFILE', 'USER_EDIT', 'ROLE_EDIT', 'PERMISSION_EDIT'])}"
-				label="Users" icon="ui-icon-document">
-				<p:menuitem
-					rendered="#{userSessionController.hasPermission('USER_EDIT_PROFILE')}"
-					value="User profile" url="/views/user/editProfile.xhtml" />
-				<p:menuitem
-					rendered="#{userSessionController.hasPermission('USER_EDIT')}"
-					value="User management"
-					url="/views/admin/user/userManagement.xhtml" />
-				<p:menuitem
-					rendered="#{userSessionController.hasPermission('ROLE_EDIT')}"
-					value="Role management"
-					url="/views/sysadmin/user/RoleManagement.xhtml" />
-				<p:menuitem
-					rendered="#{userSessionController.hasPermission('PERMISSION_EDIT')}"
-					value="Permission management"
-					url="/views/sysadmin/user/PermissionManagement.xhtml" />
-			</p:submenu>
-			<f:facet name="options">
-				<h:outputText styleClass="wb"
-					value="Welcome back #{userSessionController.loggedInUser.userName}"
-					style="margin-right:10px;" />
-				<p:commandButton id="logoutLink" value="Logout"
-					actionListener="#{logoutController.logout}"
-					style="margin-right:10px" ajax="false" icon="ui-icon-extlink" />
-			</f:facet>
-		</p:menubar>
-	</h:form>
-	<h1>
-		<ui:insert name="pageTitle">Extra logistics Rates application</ui:insert>
-	</h1>
-	<p:panel>
-		<ui:insert name="body">Welcome to the Extra logistics Rates application</ui:insert>
-	</p:panel>
-	<script type="text/javascript">
-		$(document).on(
-				"keydown",
-				".ui-cell-editor-input input",
-				function(event) {
-					if (event.keyCode == 13) {
-						$(this).closest("tr").first(
-								".ui-row-editor .ui-icon-check").click();
-					}
-				});
-	</script>
+				<p:submenu
+					rendered="#{userSessionController.hasNonePermissions(['USER_EDIT_PROFILE', 'USER_EDIT', 'ROLE_EDIT', 'PERMISSION_EDIT'])}"
+					label="Users" icon="ui-icon-document">
+					<p:menuitem
+						rendered="#{userSessionController.hasPermission('USER_EDIT_PROFILE')}"
+						value="User profile" url="/views/user/editProfile.xhtml" />
+					<p:menuitem
+						rendered="#{userSessionController.hasPermission('USER_EDIT')}"
+						value="User management"
+						url="/views/admin/user/userManagement.xhtml" />
+					<p:menuitem
+						rendered="#{userSessionController.hasPermission('ROLE_EDIT')}"
+						value="Role management"
+						url="/views/sysadmin/user/RoleManagement.xhtml" />
+					<p:menuitem
+						rendered="#{userSessionController.hasPermission('PERMISSION_EDIT')}"
+						value="Permission management"
+						url="/views/sysadmin/user/PermissionManagement.xhtml" />
+				</p:submenu>
+				<f:facet name="options">
+					<h:outputText styleClass="wb"
+						value="Welcome back #{userSessionController.loggedInUser.userName}"
+						style="margin-right:10px;" />
+					<p:commandButton id="logoutLink" value="Logout"
+						actionListener="#{logoutController.logout}"
+						style="margin-right:10px" ajax="false" icon="ui-icon-extlink" />
+				</f:facet>
+			</p:menubar>
+		</h:form>
+		<h1>
+			<ui:insert name="pageTitle">Extra logistics Rates application</ui:insert>
+		</h1>
+		<p:panel>
+			<ui:insert name="body">Welcome to the Extra logistics Rates application</ui:insert>
+		</p:panel>
+		<script type="text/javascript">
+			$(document).on(
+					"keydown",
+					".ui-cell-editor-input input",
+					function(event) {
+						if (event.keyCode == 13) {
+							$(this).closest("tr").first(
+									".ui-row-editor .ui-icon-check").click();
+						}
+					});
+		</script>
+	</div>
 </h:body>
 </html>

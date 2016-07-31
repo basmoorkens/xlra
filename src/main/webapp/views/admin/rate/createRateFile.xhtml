@@ -88,7 +88,7 @@
 					<p:commandButton value="Next" id="nextToEditRates"
 						actionListener="#{createRatesController.generateCopyOfRateFileForFilter}"
 						update=":createRatesForm :rateLinesDetailForm"
-						style="padding-left:20px; padding-right:20px;" />
+						styleClass="navButton" />
 					<p:tooltip id="nextToEditTip" for="nextToEditRates"
 						value="Load base ratefile by your filters and go to the edit rates screen" />
 				</p:panel>
@@ -111,13 +111,13 @@
 					<p:commandButton value="Back" id="backToBasicInfoButton"
 						actionListener="#{createRatesController.showBasicInfoGrid}"
 						update=":createRatesForm :rateLinesDetailForm"
-						style="padding-left:20px; padding-right:20px; margin-right:20px;" />
+						styleClass="navButton" />
 					<p:tooltip id="backToBasicInfoTip" for="backToBasicInfoButton"
 						value="Go back to the basic info screen to adjust your filters or the customer" />
 					<p:commandButton value="Next" id="nextToConditionsEditor"
 						actionListener="#{createRatesController.goToConditionsEditor}"
 						update=":rateLinesDetailForm :conditionsDetailForm"
-						style="padding-left:20px; padding-right:20px;" />
+						styleClass="navButton" />
 					<p:tooltip id="nextToConditionsTip" for="nextToConditionsEditor"
 						value="Go to the edit conditions screen" />
 				</p:panel>
@@ -165,13 +165,13 @@
 					</p:column>
 					<p:column style="width:105px;">
 						<p:commandButton icon="ui-icon-pencil" title="Edit"
-							id="editButton"
+							id="editButton" styleClass="navButton"
 							actionListener="#{createRatesController.setupEditCondition(condition)}"
 							ajax="true" immediate="true" update=":editConditionForm" />
 						<p:tooltip id="editTip" for="editButton"
 							value="Edit this condition" />
 						<p:commandButton style="margin-left:5px;" icon="ui-icon-trash"
-							title="Delete" id="deleteButton"
+							title="Delete" id="deleteButton" styleClass="navButton"
 							actionListener="#{createRatesController.deleteCondition(condition)}"
 							ajax="true" immediate="true" update=":conditionsDetailForm">
 							<p:confirm header="Confirm delete"
@@ -186,7 +186,8 @@
 					<p:commandButton value="Add condition" icon="ui-icon-pencil"
 						title="Add" id="addConditionButton"
 						actionListener="#{createRatesController.setupAddCondition}"
-						ajax="true" immediate="true" update=":editConditionForm" />
+						ajax="true" immediate="true" update=":editConditionForm"
+						styleClass="navButton" />
 					<p:tooltip id="addConditionTip" for="addConditionButton"
 						value="Add a new condition" />
 				</p:panel>
@@ -195,11 +196,10 @@
 					<p:commandButton value="Back"
 						actionListener="#{createRatesController.showRateLineEditor}"
 						update=":rateLinesDetailForm :conditionsDetailForm"
-						style="width:150px;" />
+						styleClass="navButton" />
 					<p:commandButton value="Next"
 						actionListener="#{createRatesController.showSummary}"
-						update=":conditionsDetailForm :summaryForm"
-						style="width:150px; margin-left:20px;" />
+						update=":conditionsDetailForm :summaryForm" styleClass="navButton" />
 				</p:panel>
 			</p:panel>
 		</h:form>
@@ -248,11 +248,12 @@
 					</p:panelGrid>
 					<p:panel style="margin-top:20px;">
 						<p:commandButton value="Cancel" id="cancelButton"
-							onclick="PF('editConditionDialog').hide();" />
+							onclick="PF('editConditionDialog').hide();"
+							styleClass="navButton" />
 						<p:tooltip id="cancelTip" for="cancelButton"
 							value="Cancel the operation" />
-						<p:commandButton style="margin-left:20px;" value="Save"
-							id="saveButton"
+						<p:commandButton value="Save" id="saveButton"
+							styleClass="navButton"
 							oncomplete="handleEditConditionRequest(xhr, status, args)"
 							actionListener="#{createRatesController.saveEditCondition}"
 							update=":conditionsDetailForm :editConditionForm" />
@@ -292,13 +293,12 @@
 						actionListener="#{createRatesController.goToConditionsEditor}"
 						id="backToConditionsButton"
 						update=":createRatesForm :rateLinesDetailForm :conditionsDetailForm :summaryForm"
-						style="width:150px; margin-left:20px;" />
+						styleClass="navButton" />
 					<p:tooltip id="backToConditionsTip" for="backToConditionsButton"
 						value="Go back to conditions screen" />
 					<p:commandButton value="Create rates" id="createRatesButton"
 						action="#{createRatesController.saveNewRateFile}"
-						update=":summaryForm:message"
-						style="width:250px; margin-left:20px;" />
+						update=":summaryForm:message" styleClass="navButton" />
 					<p:tooltip id="createRatesTip" for="createRatesButton"
 						value="Create and save the ratefile" />
 				</p:panel>

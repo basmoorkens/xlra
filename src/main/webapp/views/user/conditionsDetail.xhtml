@@ -47,13 +47,13 @@
 				</p:column>
 				<p:column style="width:115px;" rendered="#{canEdit}">
 					<p:commandButton icon="ui-icon-pencil" title="Edit"
-						id="editConditionButton"
+						id="editConditionButton" styleClass="navButton"
 						actionListener="#{controller.setupEditCondition(condition)}"
 						ajax="true" immediate="true" update=":editConditionForm">
 					</p:commandButton>
 					<p:tooltip id="editConditionTip" for="editConditionButton"
 						value="Edit the condition" />
-					<p:commandButton style="margin-left:10px;" icon="ui-icon-trash"
+					<p:commandButton styleClass="navButton" icon="ui-icon-trash"
 						title="Delete" id="deleteConditionButton"
 						actionListener="#{controller.deleteCondition(condition)}"
 						ajax="true" immediate="true" update=":conditionsDetailForm">
@@ -69,7 +69,7 @@
 				<p:commandButton value="Add condition" icon="ui-icon-pencil"
 					actionListener="#{controller.setupAddCondition}" ajax="true"
 					immediate="true" update=":editConditionForm"
-					id="addConditionButton" />
+					id="addConditionButton" styleClass="navButton" />
 				<p:tooltip id="addConditionTip" for="addConditionButton"
 					value="Add a condition" />
 			</p:panel>
