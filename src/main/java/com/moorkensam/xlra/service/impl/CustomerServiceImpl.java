@@ -109,4 +109,9 @@ public class CustomerServiceImpl implements CustomerService {
     return customerDao.getCustomerContactById(id);
   }
 
+  @Override
+  public List<Customer> findCustomersLikeName(String name) {
+    return customerDao.findCustomersLikeName(name);
+  }
+
 }

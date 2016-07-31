@@ -30,4 +30,6 @@ public interface CustomerDao {
   public Customer getCustomerByName(String name);
 
   public CustomerContact getCustomerContactById(Long id);
+
+  public List<Customer> findCustomersLikeName(String name);
 }

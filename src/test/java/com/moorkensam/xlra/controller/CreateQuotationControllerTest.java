@@ -2,13 +2,17 @@ package com.moorkensam.xlra.controller;
 
 import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.customer.CustomerContact;
+import com.moorkensam.xlra.service.CustomerService;
 
 import junit.framework.Assert;
 
+import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.primefaces.model.DualListModel;
 import org.unitils.UnitilsJUnit4;
+import org.unitils.easymock.EasyMockUnitils;
+import org.unitils.easymock.annotation.Mock;
 import org.unitils.inject.annotation.TestedObject;
 
 import java.util.Arrays;
@@ -18,6 +22,9 @@ public class CreateQuotationControllerTest extends UnitilsJUnit4 {
 
   @TestedObject
   private CreateQuotationController controller;
+
+  @Mock
+  private CustomerService customerService;
 
   @Before
   public void init() {
@@ -32,6 +39,7 @@ public class CreateQuotationControllerTest extends UnitilsJUnit4 {
     contacts.setTarget(Arrays.asList(contact3));
     contacts.setSource(Arrays.asList(contact1, contact2));
     controller.setCustomerContacts(contacts);
+    controller.setCustomerService(customerService);
   }
 
   @Test
@@ -40,23 +48,17 @@ public class CreateQuotationControllerTest extends UnitilsJUnit4 {
     Assert.assertEquals("test3", result);
   }
 
-  @Test
-  public void testCompleteCustomerNameWithNoCustomers() {
-    controller.setCustomers(null);
-    List<Customer> completeCustomerName = controller.completeCustomerName("test");
-    Assert.assertNotNull(completeCustomerName);
-    Assert.assertEquals(0, completeCustomerName.size());
-  }
 
   @Test
   public void testCompleteValidCustomerName() {
+    String name = "test";
     Customer customer = new Customer();
     customer.setName("test1");
     Customer customer2 = new Customer();
     customer2.setName("test2");
-    Customer customer3 = new Customer();
-    customer3.setName("oki");
-    controller.setCustomers(Arrays.asList(customer, customer2, customer3));
+    EasyMock.expect(customerService.findCustomersLikeName(name)).andReturn(
+        Arrays.asList(customer, customer2));
+    EasyMockUnitils.replay();
     List<Customer> customers = controller.completeCustomerName("test");
     Assert.assertNotNull(customers);
     Assert.assertEquals(2, customers.size());

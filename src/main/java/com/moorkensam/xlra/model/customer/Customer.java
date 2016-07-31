@@ -41,7 +41,9 @@ import javax.validation.constraints.NotNull;
         query = "SELECT c FROM Customer c where c.deleted = false AND c.hasOwnRateFile = true"),
     @NamedQuery(name = "Customer.countCustomers", query = "SELECT count(c.id) FROM Customer c"),
     @NamedQuery(name = "Customer.findByName",
-        query = "SELECT c FROM Customer c WHERE c.name = :name")})
+        query = "SELECT c FROM Customer c WHERE c.name = :name"),
+    @NamedQuery(name = "Customer.findLikeName",
+        query = "SELECT c FROM Customer c WHERE c.name LIKE :name")})
 public class Customer extends BaseEntity {
 
   private static final long serialVersionUID = 1L;

@@ -32,4 +32,5 @@ public interface CustomerService {
 
   public CustomerContact getCustomerContactById(Long id);
 
+  public List<Customer> findCustomersLikeName(String name);
 }

@@ -59,8 +59,6 @@ public class CreateQuotationController {
 
   private FileService fileService;
 
-  private List<Customer> customers;
-
   private QuotationQuery quotationQuery;
 
   private QuotationResult quotationResult;
@@ -85,7 +83,6 @@ public class CreateQuotationController {
     controllerDelegate = new QuotationControllerDelegate();
     allCountries = countryService.getAllCountries();
     initializeNewQuotationQuery();
-    refreshCustomers();
     initializeNewCustomer();
     fileService = new FileServiceImpl();
     translationUtil = new TranslationUtil();
@@ -120,10 +117,6 @@ public class CreateQuotationController {
     setQuotationQuery(query);
   }
 
-  private void refreshCustomers() {
-    setCustomers(customerService.getAllCustomers());
-  }
-
   private void initializeNewCustomer() {
     customerToAdd = new Customer();
   }
@@ -138,9 +131,8 @@ public class CreateQuotationController {
   public void createCustomer() {
     try {
       getQuotationQuery()
-          .setCustomer(customerService.createCustomerAndReturnManaged(customerToAdd));
+          .setCustomer(getCustomerService().createCustomerAndReturnManaged(customerToAdd));
       MessageUtil.addMessage("Customer created", "Created customer " + customerToAdd.getName());
-      refreshCustomers();
       renderAddCustomerGrid = false;
       customerToAdd = new Customer();
     } catch (XlraValidationException exc) {
@@ -325,15 +317,8 @@ public class CreateQuotationController {
    * @return Returns a list of names that match the input.
    */
   public List<Customer> completeCustomerName(String input) {
-    List<Customer> filteredCustomers = new ArrayList<Customer>();
-    if (customers != null) {
-      for (Customer baseCustomer : customers) {
-        if (baseCustomer.getName().toLowerCase().contains(input.toLowerCase())) {
-          filteredCustomers.add(baseCustomer);
-        }
-      }
-    }
-    return filteredCustomers;
+    List<Customer> customers = getCustomerService().findCustomersLikeName(input);
+    return customers;
   }
 
   public List<Measurement> getAllMeasurements() {
@@ -342,14 +327,6 @@ public class CreateQuotationController {
 
   public List<Kind> getAllKinds() {
     return Arrays.asList(Kind.values());
-  }
-
-  public List<Customer> getCustomers() {
-    return customers;
-  }
-
-  public void setCustomers(List<Customer> customers) {
-    this.customers = customers;
   }
 
   public Customer getCustomerToAdd() {
@@ -488,5 +465,13 @@ public class CreateQuotationController {
       return result.substring(0, result.length() - 2);
     }
     return "";
+  }
+
+  public CustomerService getCustomerService() {
+    return customerService;
+  }
+
+  public void setCustomerService(CustomerService customerService) {
+    this.customerService = customerService;
   }
 }
