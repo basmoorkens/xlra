@@ -27,7 +27,7 @@ import javax.inject.Inject;
 @Stateless
 public class RaiseRateFileServiceImpl implements RaiseRateFileService {
 
-  private final static Logger logger = LogManager.getLogger();
+  private static final Logger logger = LogManager.getLogger();
 
   @Inject
   private LogDao logDao;

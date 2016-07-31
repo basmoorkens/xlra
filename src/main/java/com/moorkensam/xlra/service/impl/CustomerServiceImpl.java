@@ -2,6 +2,7 @@ package com.moorkensam.xlra.service.impl;
 
 import com.moorkensam.xlra.dao.CustomerDao;
 import com.moorkensam.xlra.model.customer.Customer;
+import com.moorkensam.xlra.model.customer.CustomerContact;
 import com.moorkensam.xlra.model.error.XlraValidationException;
 import com.moorkensam.xlra.service.CustomerService;
 
@@ -101,6 +102,11 @@ public class CustomerServiceImpl implements CustomerService {
   public Customer createCustomerAndReturnManaged(Customer customer) throws XlraValidationException {
     createCustomer(customer);
     return customerDao.getCustomerByName(customer.getName());
+  }
+
+  @Override
+  public CustomerContact getCustomerContactById(Long id) {
+    return customerDao.getCustomerContactById(id);
   }
 
 }

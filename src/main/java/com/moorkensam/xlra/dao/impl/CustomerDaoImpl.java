@@ -3,6 +3,7 @@ package com.moorkensam.xlra.dao.impl;
 import com.moorkensam.xlra.dao.BaseDao;
 import com.moorkensam.xlra.dao.CustomerDao;
 import com.moorkensam.xlra.model.customer.Customer;
+import com.moorkensam.xlra.model.customer.CustomerContact;
 import com.moorkensam.xlra.service.util.JpaUtil;
 
 import org.apache.commons.lang3.StringUtils;
@@ -103,6 +104,13 @@ public class CustomerDaoImpl extends BaseDao implements CustomerDao {
     Query query = getEntityManager().createNamedQuery("Customer.findByName");
     query.setParameter("name", name);
     return (Customer) query.getSingleResult();
+  }
+
+  @Override
+  public CustomerContact getCustomerContactById(Long id) {
+    Query query = getEntityManager().createNamedQuery("CustomerContact.findById");
+    query.setParameter("id", id);
+    return (CustomerContact) query.getSingleResult();
   }
 
 }

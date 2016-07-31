@@ -1,5 +1,8 @@
 package com.moorkensam.xlra.model.mail;
 
+import com.moorkensam.xlra.model.customer.Customer;
+import com.moorkensam.xlra.model.customer.CustomerContact;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +12,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.Transient;
 
 @Embeddable
 public class EmailResult {
@@ -24,6 +28,9 @@ public class EmailResult {
   private List<String> recipients;
 
   private boolean send;
+
+  @Transient
+  private List<CustomerContact> selectedContacts;
 
   public String getSubject() {
     return subject;
@@ -76,12 +83,43 @@ public class EmailResult {
    */
   public String getRecipientsAsString() {
     if (recipients == null || recipients.size() == 0) {
-      return "";
+      return getSelectedCustomerContactsAsString();
     }
     StringBuilder builder = new StringBuilder();
     for (String recipient : recipients) {
       builder.append(recipient + ", ");
     }
     return builder.toString();
+  }
+
+  private String getSelectedCustomerContactsAsString() {
+    if (selectedContacts != null && selectedContacts.size() > 0) {
+      StringBuilder builder = new StringBuilder();
+      for (CustomerContact contact : selectedContacts) {
+        builder.append(contact.getEmail() + ", ");
+      }
+      return builder.toString();
+    }
+    return "";
+  }
+
+  public List<CustomerContact> getSelectedContacts() {
+    return selectedContacts;
+  }
+
+  public void setSelectedContacts(List<CustomerContact> selectedContacts) {
+    this.selectedContacts = selectedContacts;
+  }
+
+  /**
+   * Add contact to the selected contacts list.
+   * 
+   * @param contact The contact to add.
+   */
+  public void addSelectedCustomerContac(CustomerContact contact) {
+    if (selectedContacts == null) {
+      selectedContacts = new ArrayList<CustomerContact>();
+    }
+    selectedContacts.add(contact);
   }
 }

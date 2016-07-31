@@ -16,11 +16,13 @@
 					value="#{createQuotationController.quotationResult.usedRateFileName}" />
 
 				<h:outputText value="Receipients: " />
-				<p:panelGrid columns="2">
+				<p:panelGrid columns="2" style="width:100%;" columnClasses="valuesColumn,labelColumn">
 					<h:outputText
-						value="#{createQuotationController.quotationResult.emailResult.recipientsAsString}" />
+						value="#{createQuotationController.selectedCustomerContactsAsString}" />
 					<p:commandButton value="Add/Remove recipients"
-						onclick="PF('alterRecipients').show();" />
+						actionListener="#{createQuotationController.showEditRecipientsDialog}"
+						icon="ui-icon-pencil" title="View" ajax="true"
+						update=":editRecipientsForm" />
 				</p:panelGrid>
 
 				<h:outputText value="Subject: " />
@@ -40,7 +42,7 @@
 				<p:tooltip id="backTip3" for="backButton3"
 					value="Go back to options selection" />
 				<p:commandButton styleClass="navButton" value="Open pdf"
-					id="openPdfButton"
+					id="openPdfButton" style="margin-right:20px;"
 					actionListener="#{createQuotationController.downloadPdf}"
 					onclick="this.form.target='_blank'" ajax="false" />
 				<p:tooltip id="openPdfTip" for="openPdfButton"
@@ -61,23 +63,34 @@
 			showHeader="false">
 			<p:graphicImage url="/resources/images/ajax-loader.gif" />
 		</p:dialog>
+	</h:form>
 
-		<p:dialog id="alterRecipientsDialog" header="Add/Remove recipients"
-			widgetVar="alterRecipientsDialog" modal="true" width="70%"
+	<h:form id="editRecipientsForm">
+		<p:dialog id="editRecipientsDialog" header="Add/Remove recipients"
+			widgetVar="editRecipientsDialog" modal="true" width="70%"
 			height="50%">
 			<p:panel>
 				<p:panelGrid columns="2" style="width:100%;">
-					<h:outputLabel for="emailField">Add recipient</h:outputLabel>
-					<p:inputText style="width:100%;"
-						value="#{createQuotationController.manualAddedEmail}"
-						validatorMessage="Pleas enter a valid email address"
-						id="emailField">
-						<f:validateRegex
-							pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
-					</p:inputText>
+					<p:pickList id="contactPicklist" style="width:100%;"
+						value="#{createQuotationController.customerContacts}"
+						converter="#{customerContactConverter}" var="contact"
+						itemLabel="#{contact.emailAndDepartment}" itemValue="#{contact}" />
 				</p:panelGrid>
+
+				<p:panel style="margin-top:30px; ">
+					<p:commandButton immediate="true" value="Cancel"
+						style="margin-right:20px; padding-left:20px;padding-right:20px;"
+						update=":editRecipientsForm :summaryForm"
+						actionListener="#{createQuotationController.hideEditRecipientsDialog}"
+						id="editContactCancelButton" />
+					<p:commandButton value="Confirm"
+						style="padding-left:20px;padding-right:20px;margin-left:20px;"
+						actionListener="#{createQuotationController.hideEditRecipientsDialog}"
+						update=":editRecipientsForm :summaryForm"
+						id="editContactSaveButton" />
+				</p:panel>
 			</p:panel>
 		</p:dialog>
-
 	</h:form>
+
 </ui:composition>

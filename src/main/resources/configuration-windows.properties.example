@@ -6,3 +6,4 @@ pdf.temp.path=G:\\temp\\
 pdf.generate.path=G:\\data\\
 pdf.author=Extra logistics rates application
 pdf.title.prefix=Extra logistics offerte
+email.enabled=false

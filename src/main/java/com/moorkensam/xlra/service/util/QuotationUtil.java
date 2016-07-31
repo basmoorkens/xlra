@@ -214,6 +214,21 @@ public class QuotationUtil {
     }
   }
 
+  /**
+   * Sets the email addresses for customer contacts for the offerte.
+   * 
+   * @param contacts The contacts to get the emails from.
+   * @param result The Result to set the emails to.
+   */
+  public void setCustomerContactsForOfferte(final List<CustomerContact> contacts,
+      final QuotationResult result) {
+    List<String> emails = new ArrayList<String>();
+    for (CustomerContact contact : contacts) {
+      emails.add(contact.getEmail());
+    }
+    result.getEmailResult().setRecipients(emails);
+  }
+
   public TranslationKeyToi8nMapper getMapper() {
     return mapper;
   }

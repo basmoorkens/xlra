@@ -2,6 +2,11 @@ package com.moorkensam.xlra.service.util;
 
 import com.moorkensam.xlra.model.customer.Address;
 import com.moorkensam.xlra.model.customer.Customer;
+import com.moorkensam.xlra.model.customer.CustomerContact;
+import com.moorkensam.xlra.model.customer.Department;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CustomerUtil {
 
@@ -28,6 +33,24 @@ public class CustomerUtil {
     if (customer.getAddress() == null) {
       customer.setAddress(new Address());
     }
+  }
+
+  /**
+   * Returns a filtered list with all the customercontacts for a customer minus the standard
+   * contact.
+   * 
+   * @param customer The customer to list the contacts for
+   * @return The filtered contacts list.
+   */
+  public List<CustomerContact> getCustomerContactsForCustomerWithoutStandardContact(
+      Customer customer) {
+    List<CustomerContact> filteredContacts = new ArrayList<CustomerContact>();
+    for (CustomerContact contact : customer.getContacts()) {
+      if (!Department.STANDARD.equals(contact.getDepartment())) {
+        filteredContacts.add(contact);
+      }
+    }
+    return filteredContacts;
   }
 
   private CustomerUtil() {

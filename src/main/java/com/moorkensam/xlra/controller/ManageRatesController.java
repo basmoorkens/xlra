@@ -285,7 +285,7 @@ public class ManageRatesController {
   /**
    * Fetch the details of from selectEvent.
    * 
-   * @param SelectEvent the selectevent that triggered this.
+   * @param selectEvent the selectevent that triggered this.
    */
   public void fetchDetailsOfRatefile(SelectEvent selectEvent) {
     RateFile fromFrontEnd = (RateFile) selectEvent.getObject();

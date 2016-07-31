@@ -15,7 +15,7 @@ public class TranslationConfigurationLoader {
 
   private static TranslationConfigurationLoader instance;
 
-  private final static Logger logger = LogManager.getLogger();
+  private static final Logger logger = LogManager.getLogger();
 
   private Map<Language, Properties> i8nProperties;
 

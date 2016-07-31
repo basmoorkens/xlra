@@ -1,8 +1,10 @@
 package com.moorkensam.xlra.controller;
 
+import com.moorkensam.xlra.controller.delegate.QuotationControllerDelegate;
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Customer;
+import com.moorkensam.xlra.model.customer.CustomerContact;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.error.XlraValidationException;
 import com.moorkensam.xlra.model.offerte.OfferteOptionDto;
@@ -17,9 +19,11 @@ import com.moorkensam.xlra.service.CustomerService;
 import com.moorkensam.xlra.service.FileService;
 import com.moorkensam.xlra.service.QuotationService;
 import com.moorkensam.xlra.service.impl.FileServiceImpl;
+import com.moorkensam.xlra.service.util.CustomerUtil;
+import com.moorkensam.xlra.service.util.QuotationUtil;
 import com.moorkensam.xlra.service.util.TranslationUtil;
 
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
+import org.primefaces.model.DualListModel;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -67,23 +71,18 @@ public class CreateQuotationController {
 
   private List<Country> allCountries;
 
-  private boolean collapseCustomerPanel;
-
-  private boolean collapseFiltersPanel;
-
-  private boolean collapseSummaryPanel;
-
-  private boolean collapseOptionsPanel;
-
-  private boolean collapseResultPanel;
-
   private String manualAddedEmail;
+
+  private QuotationControllerDelegate controllerDelegate;
+
+  private DualListModel<CustomerContact> customerContacts;
 
   /**
    * Init logic for the controller.
    */
   @PostConstruct
   public void init() {
+    controllerDelegate = new QuotationControllerDelegate();
     allCountries = countryService.getAllCountries();
     initializeNewQuotationQuery();
     refreshCustomers();
@@ -91,6 +90,7 @@ public class CreateQuotationController {
     fileService = new FileServiceImpl();
     translationUtil = new TranslationUtil();
     showCustomerPanel();
+    customerContacts = new DualListModel<CustomerContact>();
   }
 
   public void resetPage() {
@@ -104,13 +104,7 @@ public class CreateQuotationController {
    * @throws IOException Thrown when there was a problem redirecting.
    */
   public void goToOfferteDetail() throws IOException {
-    FacesContext
-        .getCurrentInstance()
-        .getExternalContext()
-        .redirect(
-            FacesContext.getCurrentInstance().getExternalContext().getApplicationContextPath()
-                + "/views/user/offerteOverview.xhtml?offerteKey="
-                + quotationResult.getOfferteUniqueIdentifier());
+    controllerDelegate.goToOfferteDetail(quotationResult);
   }
 
   private void initializeNewQuotationQuery() {
@@ -172,55 +166,35 @@ public class CreateQuotationController {
    * Show the customer section.
    */
   public void showCustomerPanel() {
-    collapseCustomerPanel = false;
-    collapseFiltersPanel = true;
-    collapseOptionsPanel = true;
-    collapseSummaryPanel = true;
-    collapseResultPanel = true;
+    controllerDelegate.showCustomerPanel();
   }
 
   /**
    * Show the ratefilter section.
    */
   public void showRateFilterPanel() {
-    collapseCustomerPanel = true;
-    collapseFiltersPanel = false;
-    collapseOptionsPanel = true;
-    collapseSummaryPanel = true;
-    collapseResultPanel = true;
+    controllerDelegate.showRateFilterPanel();
   }
 
   /**
    * Show the options section.
    */
   public void showOptionsPanel() {
-    collapseCustomerPanel = true;
-    collapseFiltersPanel = true;
-    collapseOptionsPanel = false;
-    collapseSummaryPanel = true;
-    collapseResultPanel = true;
+    controllerDelegate.showOptionsPanel();
   }
 
   /**
    * Show the summary section.
    */
   public void showSummaryPanel() {
-    collapseCustomerPanel = true;
-    collapseFiltersPanel = true;
-    collapseOptionsPanel = true;
-    collapseSummaryPanel = false;
-    collapseResultPanel = true;
+    controllerDelegate.showSummaryPanel();
   }
 
   /**
    * Show the result section.
    */
   public void showResultPanel() {
-    collapseCustomerPanel = true;
-    collapseFiltersPanel = true;
-    collapseOptionsPanel = true;
-    collapseSummaryPanel = true;
-    collapseResultPanel = false;
+    controllerDelegate.showResultPanel();
   }
 
   /**
@@ -268,10 +242,20 @@ public class CreateQuotationController {
   public void processOptions() {
     try {
       quotationResult = quotationService.generateEmailAndPdfForOfferte(quotationResult);
+      setupCustomerContacts();
       showSummaryPanel();
     } catch (RateFileException e) {
       showRateFileError(e);
     }
+  }
+
+  private void setupCustomerContacts() {
+    customerContacts = new DualListModel<CustomerContact>();
+    List<CustomerContact> contacts =
+        CustomerUtil.getInstance().getCustomerContactsForCustomerWithoutStandardContact(
+            quotationResult.getQuery().getCustomer());
+    customerContacts.setSource(contacts);
+    customerContacts.setTarget(quotationResult.getEmailResult().getSelectedContacts());
   }
 
   /**
@@ -306,6 +290,8 @@ public class CreateQuotationController {
    */
   public void submitOfferte() {
     try {
+      QuotationUtil.getInstance().setCustomerContactsForOfferte(customerContacts.getTarget(),
+          quotationResult);
       quotationService.submitQuotationResult(quotationResult);
       MessageUtil.addMessage("Offerte successfully send", "The offerte was successfully send to "
           + quotationResult.getEmailResult().getRecipientsAsString());
@@ -407,27 +393,27 @@ public class CreateQuotationController {
   }
 
   public boolean isCollapseSummaryPanel() {
-    return collapseSummaryPanel;
+    return controllerDelegate.isCollapseSummaryPanel();
   }
 
   public void setCollapseSummaryPanel(boolean collapseSummaryPanel) {
-    this.collapseSummaryPanel = collapseSummaryPanel;
+    controllerDelegate.setCollapseSummaryPanel(collapseSummaryPanel);
   }
 
   public boolean isCollapseCustomerPanel() {
-    return collapseCustomerPanel;
+    return controllerDelegate.isCollapseCustomerPanel();
   }
 
   public void setCollapseCustomerPanel(boolean collapseCustomerPanel) {
-    this.collapseCustomerPanel = collapseCustomerPanel;
+    controllerDelegate.setCollapseCustomerPanel(collapseCustomerPanel);
   }
 
   public boolean isCollapseFiltersPanel() {
-    return collapseFiltersPanel;
+    return controllerDelegate.isCollapseFiltersPanel();
   }
 
   public void setCollapseFiltersPanel(boolean collapseFiltersPanel) {
-    this.collapseFiltersPanel = collapseFiltersPanel;
+    controllerDelegate.setCollapseFiltersPanel(collapseFiltersPanel);
   }
 
   public List<TransportType> getAllTransportTypes() {
@@ -435,11 +421,11 @@ public class CreateQuotationController {
   }
 
   public boolean isCollapseResultPanel() {
-    return collapseResultPanel;
+    return controllerDelegate.isCollapseResultPanel();
   }
 
   public void setCollapseResultPanel(boolean collapseResultPanel) {
-    this.collapseResultPanel = collapseResultPanel;
+    controllerDelegate.setCollapseResultPanel(collapseResultPanel);
   }
 
   public FileService getFileService() {
@@ -451,11 +437,11 @@ public class CreateQuotationController {
   }
 
   public boolean isCollapseOptionsPanel() {
-    return collapseOptionsPanel;
+    return controllerDelegate.isCollapseOptionsPanel();
   }
 
   public void setCollapseOptionsPanel(boolean collapseOptionsPanel) {
-    this.collapseOptionsPanel = collapseOptionsPanel;
+    controllerDelegate.setCollapseOptionsPanel(collapseOptionsPanel);
   }
 
   public boolean isShowCustomerContacts() {
@@ -468,5 +454,39 @@ public class CreateQuotationController {
 
   public void setManualAddedEmail(String manualAddedEmail) {
     this.manualAddedEmail = manualAddedEmail;
+  }
+
+  public void showEditRecipientsDialog() {
+    controllerDelegate.showEditRecipientsDialog();
+  }
+
+  public void hideEditRecipientsDialog() {
+    controllerDelegate.hideEditRecipientsDialog();
+  }
+
+  public DualListModel<CustomerContact> getCustomerContacts() {
+    return customerContacts;
+  }
+
+  public void setCustomerContacts(DualListModel<CustomerContact> customerContacts) {
+    this.customerContacts = customerContacts;
+  }
+
+  /**
+   * Gets all the selected customercontacts to send the created offerte to.
+   * 
+   * @return String representation of all customer contacts.
+   */
+  public String getSelectedCustomerContactsAsString() {
+    StringBuilder builder = new StringBuilder();
+    if (customerContacts != null && customerContacts.getTarget() != null
+        && customerContacts.getTarget().size() > 0) {
+      for (CustomerContact contact : customerContacts.getTarget()) {
+        builder.append(contact.getEmail() + ", ");
+      }
+      String result = builder.toString();
+      return result.substring(0, result.length() - 2);
+    }
+    return "";
   }
 }

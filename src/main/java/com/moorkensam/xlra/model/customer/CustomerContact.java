@@ -3,15 +3,23 @@ package com.moorkensam.xlra.model.customer;
 import com.moorkensam.xlra.model.BaseEntity;
 import com.moorkensam.xlra.model.Person;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "customer_contacts")
+
+@Cacheable
+@NamedQueries({
+    @NamedQuery(name = "CustomerContact.findById",
+        query = "SELECT c FROM CustomerContact c WHERE c.id = :id")})
 public class CustomerContact extends BaseEntity implements Person {
 
   private static final long serialVersionUID = -1943038849182892475L;
@@ -124,5 +132,9 @@ public class CustomerContact extends BaseEntity implements Person {
 
   public String getFrontEndName() {
     return department + " - " + email;
+  }
+
+  public String getEmailAndDepartment() {
+    return this.email + " - " + this.department;
   }
 }

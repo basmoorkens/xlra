@@ -1,6 +1,7 @@
 package com.moorkensam.xlra.service.impl;
 
 import com.moorkensam.xlra.dao.EmailTemplateDao;
+import com.moorkensam.xlra.dto.MailTemplatesForForLanguages;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.RateFileException;
@@ -14,7 +15,6 @@ import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.EmailService;
-import com.moorkensam.xlra.service.MailTemplateService;
 
 import junit.framework.Assert;
 
@@ -25,8 +25,10 @@ import org.unitils.UnitilsJUnit4;
 import org.unitils.easymock.EasyMockUnitils;
 import org.unitils.easymock.annotation.Mock;
 import org.unitils.inject.annotation.TestedObject;
+import org.unitils.mock.core.matching.impl.AssertNotInvokedVerifyingMatchingInvocationHandler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MailTemplateServiceImplTest extends UnitilsJUnit4 {
 
@@ -89,6 +91,25 @@ public class MailTemplateServiceImplTest extends UnitilsJUnit4 {
     Assert.assertNotNull(dto);
     Assert.assertEquals("SUBJECT", dto.getSubject());
     Assert.assertTrue(dto.getRecipientsAsString().contains("test@test.com"));
+  }
+
+  @Test
+  public void testGetAllTemplates() {
+    MailTemplate template = new MailTemplate();
+    template.setLanguage(Language.NL);
+    template.setSubject("ok");
+    MailTemplate template2 = new MailTemplate();
+    template2.setLanguage(Language.EN);
+    template2.setSubject("ok2");
+    EasyMock.expect(emailTemplateDao.getAllTemplates()).andReturn(
+        Arrays.asList(template, template2));
+    EasyMockUnitils.replay();
+
+    MailTemplatesForForLanguages dto = mailTemplateService.getAllTemplates();
+    Assert.assertNotNull(dto.getEnTemplate());
+    Assert.assertNotNull(dto.getNlTemplate());
+    Assert.assertEquals("ok", dto.getNlTemplate().getSubject());
+    Assert.assertEquals("ok2", dto.getEnTemplate().getSubject());
   }
 
   @Test

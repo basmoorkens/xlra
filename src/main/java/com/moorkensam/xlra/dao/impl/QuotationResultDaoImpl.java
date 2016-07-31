@@ -32,6 +32,7 @@ public class QuotationResultDaoImpl extends BaseDao implements QuotationResultDa
     result.getQuery();
     result.getEmailResult();
     result.getEmailHistory().size();
+    result.getEmailResult().getRecipients().size();
   }
 
   @SuppressWarnings("unchecked")

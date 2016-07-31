@@ -1,6 +1,7 @@
 package com.moorkensam.xlra.dao;
 
 import com.moorkensam.xlra.model.customer.Customer;
+import com.moorkensam.xlra.model.customer.CustomerContact;
 
 import org.primefaces.model.SortOrder;
 
@@ -27,4 +28,6 @@ public interface CustomerDao {
   public int countCustomers();
 
   public Customer getCustomerByName(String name);
+
+  public CustomerContact getCustomerContactById(Long id);
 }

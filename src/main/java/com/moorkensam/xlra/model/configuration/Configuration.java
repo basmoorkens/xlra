@@ -32,7 +32,7 @@ public class Configuration extends BaseEntity {
     super();
   }
 
-  public final static String MAIN_CONFIG_NAME = "mainconfig";
+  public static final String MAIN_CONFIG_NAME = "mainconfig";
 
   private static final long serialVersionUID = -7748281252917328759L;
 

@@ -33,8 +33,11 @@ public class MailTemplatesForForLanguages {
     if (mailTemplates == null) {
       return null;
     }
+    if (lang == null) {
+      return null;
+    }
     for (MailTemplate template : mailTemplates) {
-      if (template.getLanguage().equals(lang)) {
+      if (lang.equals(template.getLanguage())) {
         return template;
       }
     }

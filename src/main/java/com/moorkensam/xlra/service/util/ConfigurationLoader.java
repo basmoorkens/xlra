@@ -29,6 +29,8 @@ public class ConfigurationLoader {
 
   public static final String IMAGE_PATH = "image.path";
 
+  public static final String EMAIL_ENABLED = "email.enabled";
+
   public static ConfigurationLoader instance;
 
   private Properties properties;

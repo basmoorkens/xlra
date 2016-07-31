@@ -41,7 +41,7 @@ import javax.mail.internet.MimeMultipart;
 @Stateless
 public class EmailServiceImpl implements EmailService {
 
-  private final static Logger logger = LogManager.getLogger();
+  private static final Logger logger = LogManager.getLogger();
 
   @Resource(name = "java:/mail/xlra")
   private Session mailSession;
@@ -75,7 +75,7 @@ public class EmailServiceImpl implements EmailService {
   }
 
   @Override
-  public void sendOfferteMail(QuotationResult result) throws MessagingException {
+  public void sendOfferteMail(final QuotationResult result) throws MessagingException {
     logger.info("Sending offerte mail to " + result.getEmailResult().getRecipientsAsString()
         + " with subject " + result.getEmailResult().getSubject() + " for content look up result "
         + result.getId());
@@ -105,7 +105,7 @@ public class EmailServiceImpl implements EmailService {
 
   }
 
-  protected Message createOfferteMail(QuotationResult result, String fromAddress)
+  protected Message createOfferteMail(final QuotationResult result, final String fromAddress)
       throws MessagingException, AddressException {
     Message message = new MimeMessage(getMailSession());
     message.setFrom(new InternetAddress(fromAddress));
@@ -125,7 +125,7 @@ public class EmailServiceImpl implements EmailService {
   }
 
   @Override
-  public void sendResetPasswordEmail(User user) throws MessagingException {
+  public void sendResetPasswordEmail(final User user) throws MessagingException {
     logger.info("Sending user reset password to " + user.getEmail());
     try {
       String fromAddress = configLoader.getProperty(ConfigurationLoader.MAIL_SENDER);
@@ -150,7 +150,7 @@ public class EmailServiceImpl implements EmailService {
   }
 
   @Override
-  public void sendUserCreatedEmail(User user) throws MessagingException {
+  public void sendUserCreatedEmail(final User user) throws MessagingException {
     logger.info("Sending user reset password to " + user.getEmail());
     try {
       String fromAddress = configLoader.getProperty(ConfigurationLoader.MAIL_SENDER);

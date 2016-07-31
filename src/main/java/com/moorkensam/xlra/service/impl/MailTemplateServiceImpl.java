@@ -26,7 +26,7 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 
   private TemplateParseService templateParseService;
 
-  private final static Logger logger = LogManager.getLogger();
+  private static final Logger logger = LogManager.getLogger();
 
   @PostConstruct
   public void init() {
@@ -79,7 +79,7 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 
   private void fillInEmailResult(QuotationResult result, EmailResult dto, MailTemplate template,
       String emailMessage) {
-    dto.addRecipient(result.getQuery().getCustomer().getStandardContact().getEmail());
+    dto.addSelectedCustomerContac(result.getQuery().getCustomer().getStandardContact());
     dto.setSubject(template.getSubject());
     dto.setEmail(emailMessage);
   }
