@@ -28,7 +28,7 @@
 						<h:outputText value="Edit the template to see this" />
 					</p:column>
 					<p:column style="width:50px">
-						<p:commandButton style="margin-left:5px;margin-right:5px;"
+						<p:commandButton style="margin-right:5px;" styleClass="navButton"
 							actionListener="#{mailTemplateController.setupPageForEdit(template)}"
 							icon="ui-icon-pencil" title="Edit" ajax="true" immediate="true"
 							id="editTemplateButton" update=":editMailTemplateForm" />
@@ -41,7 +41,7 @@
 
 		<h:form id="editMailTemplateForm">
 			<p:growl id="msgs" showDetail="true" />
-			<p:dialog id="editDialog"
+			<p:dialog id="editDialog" appendTo="@(body)"
 				header="#{mailTemplateController.popupHeader}"
 				widgetVar="editMailDialog" modal="true" width="80%" height="50%"
 				dynamic="true">
@@ -63,11 +63,11 @@
 
 					<p:panel style="margin-top:20px;">
 						<p:commandButton title="Cancel" value="Cancel"
-							style="padding-left:5px;padding-right:5px;margin-right:20px;"
+							styleClass="navButton" style="margin-right:20px;"
 							actionListener="#{mailTemplateController.cancelEdit}"
 							update=":editMailTemplateForm" />
 						<p:commandButton title="Save mail templates"
-							style="padding-left:5px;padding-right:5px;margin-right:20px;"
+							styleClass="navButton" style="margin-right:20px;"
 							id="saveMailTemplatesButton" value="Save mail template"
 							update=":editMailTemplateForm :mailTemplateOverviewForm"
 							actionListener="#{mailTemplateController.saveActiveTemplate}" />

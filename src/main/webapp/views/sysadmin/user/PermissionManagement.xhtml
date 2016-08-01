@@ -54,29 +54,32 @@
 
 				<p:panel>
 					<p:commandButton value="Create new permission"
+						styleClass="navButton" style="margin-right:20px;"
 						onclick="PF('addPermissionDialog').show();" />
 				</p:panel>
 			</p:panel>
 		</h:form>
 
-		<p:dialog header="Create new permission"
+		<p:dialog header="Create new permission" appendTo="@(body)"
 			widgetVar="addPermissionDialog" modal="true" height="280px"
-			width="900px" dynamic="true">
+			width="90%" dynamic="true">
 			<p:growl showDetail="true" id="messages" sticky="false" />
 			<h:form id="addPermissionsForm">
-				<p:panel>
-					<p:panelGrid columns="2">
-						<h:outputText value="Name:" />
-						<p:inputText value="#{permissionController.newPermission.key}"
-							size="75" />
 
-						<h:outputText value="Description:" />
-						<p:inputTextarea
-							value="#{permissionController.newPermission.description}"
-							cols="74" rows="5" />
-					</p:panelGrid>
+				<p:panelGrid columns="2" style="width:100%;">
+					<h:outputText value="Name:" />
+					<p:inputText value="#{permissionController.newPermission.key}"
+						size="75" />
 
-					<p:commandButton style="margin-top:30px" value="Save"
+					<h:outputText value="Description:" />
+					<p:inputTextarea
+						value="#{permissionController.newPermission.description}"
+						cols="74" rows="5" />
+				</p:panelGrid>
+
+				<p:panel style="margin-top:20px;">
+					<p:commandButton value="Save" styleClass="navButton"
+						style="margin-right:20px;"
 						update=":addPermissionsForm :permissionsForm"
 						actionListener="#{permissionController.saveNewPermission}"
 						ajax="true"

@@ -30,11 +30,12 @@
 						<p:commandButton
 							actionListener="#{chfController.setupPageForEditChfRate(chfRate)}"
 							icon="ui-icon-pencil" title="Edit" ajax="true"
-							id="editChfRateButton" update=":addChfRateForm" />
+							id="editChfRateButton" update=":addChfRateForm"
+							styleClass="navButton" />
 						<p:tooltip id="editChfRateTip" for="editChfRateButton"
 							value="Edit the rate value" />
 						<p:commandButton icon="ui-icon-trash" title="Delete"
-							id="deleteChfRateButton"
+							id="deleteChfRateButton" styleClass="navButton"
 							actionListener="#{chfController.deleteChfRate(chfRate)}"
 							ajax="true" immediate="true" update=":chfRatesForm">
 							<p:confirm header="Confirm delete"
@@ -46,7 +47,7 @@
 				</p:dataTable>
 
 				<p:panel style="margin-top:20px;">
-					<p:commandButton value="Create rate"
+					<p:commandButton value="Add new rate" styleClass="navButton"
 						actionListener="#{chfController.setupPageForNewCurrencyRate}"
 						update=":chfRatesForm :addChfRateForm" id="setupAddButton" />
 					<p:tooltip id="addNewRateTip" for="setupAddButton"
@@ -64,8 +65,8 @@
 				</p:panelGrid>
 				<p:panel style="margin-top:20px;">
 					<p:commandButton action="#{chfController.updateCurrentChfRate}"
-						value="Save new price" update=":chfRatesForm:msgs"
-						id="newPriceButton" />
+						styleClass="navButton" value="Save new price"
+						update=":chfRatesForm:msgs" id="newPriceButton" />
 					<p:tooltip id="saveNewPriceTip" for="newPriceButton"
 						value="Save the current chf price" />
 				</p:panel>
@@ -74,8 +75,8 @@
 
 		<h:form id="addChfRateForm">
 			<p:dialog id="addDialog" header="#{chfController.detailTitle}"
-				widgetVar="addChfDialog" modal="true" width="80%" height="50%"
-				dynamic="true">
+				appendTo="@(body)" widgetVar="addChfDialog" modal="true" width="80%"
+				height="50%" dynamic="true">
 				<p:panel header="Rate info">
 					<p:panelGrid style="width:100%;" columns="2"
 						columnClasses="labelColumn,valuesColumn">
@@ -98,25 +99,17 @@
 					</p:panelGrid>
 					<p:panel style="margin-top:30px; ">
 						<p:commandButton immediate="true" value="Cancel"
-							style="margin-right:20px; padding-left:20px;padding-right:20px;"
+							styleClass="navButton" style="margin-right:20px;"
 							update=":chfRatesForm :addChfRateForm"
 							actionListener="#{chfController.cancelAddNewCurrencyRate}"
 							id="chfRateCancelButton" />
-						<p:commandButton value="Save"
-							style="padding-left:20px;padding-right:20px;margin-left:20px;"
+						<p:commandButton value="Save" styleClass="navButton"
 							actionListener="#{chfController.saveNewCurrencyRate}"
 							update=":chfRatesForm :addChfRateForm" id="chfRateSaveButton"
 							oncomplete="handleAddChfRequest(xhr, status, args)" />
 					</p:panel>
 				</p:panel>
 			</p:dialog>
-
-			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-				<p:commandButton value="Yes" type="button"
-					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-				<p:commandButton value="No" type="button"
-					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-			</p:confirmDialog>
 		</h:form>
 		<script type="text/javascript">
 			function handleAddChfRequest(xhr, status, args) {

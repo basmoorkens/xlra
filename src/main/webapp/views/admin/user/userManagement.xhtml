@@ -32,21 +32,24 @@
 					<p:column style="width:200px;">
 						<p:commandButton style="margin-top:5px;margin-bottom:5px;"
 							icon="ui-icon-pencil" update=":addUserForm" id="editButton"
+							styleClass="navButton"
 							actionListener="#{manageUsersController.selectUserForEdit(user)}" />
 						<p:tooltip id="editTip" for="editButton" value="Edit user" />
 						<p:commandButton icon="ui-icon-locked"
 							update=":usersForm :addUserForm" id="disableButton"
+							styleClass="navButton"
 							actionListener="#{manageUsersController.disableUser(user)}" />
 						<p:tooltip id="disabletip" for="disableButton"
 							value="Disable user" />
 						<p:commandButton icon="ui-icon-unlocked"
 							update=":usersForm :addUserForm" id="enableButton"
+							styleClass="navButton"
 							actionListener="#{manageUsersController.enableUser(user)}" />
 						<p:tooltip id="enabletip" for="enableButton" value="Enable user" />
 						<p:commandButton icon="ui-icon-trash" title="Delete"
 							actionListener="#{manageUsersController.deleteUser(user)}"
-							ajax="true" immediate="true" update=":usersForm"
-							id="deleteButton">
+							styleClass="navButton" ajax="true" immediate="true"
+							update=":usersForm" id="deleteButton">
 							<p:confirm header="Confirm delete"
 								message="Are you sure you want to delete the user?"
 								icon="ui-icon-alert" />
@@ -59,23 +62,18 @@
 					<p:commandButton
 						actionListener="#{manageUsersController.setupNewUser}"
 						update=":addUserForm" immediate="true" ajax="true"
-						value="Create new user" id="gotoCreateButton" />
+						styleClass="navButton" value="Create new user"
+						id="gotoCreateButton" />
 					<p:tooltip id="goToCreateTip" for="gotoCreateButton"
 						value="Create a new user" />
 
 				</p:panel>
 			</p:panel>
-			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-				<p:commandButton value="Yes" type="button"
-					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-				<p:commandButton value="No" type="button"
-					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-			</p:confirmDialog>
 		</h:form>
 
 		<p:dialog header="Create new user" widgetVar="addUserDialog"
-			modal="true" height="650px" style="width:80% !important;"
-			dynamic="true">
+			appendTo="@(body)" modal="true" height="650px"
+			style="width:80% !important;" dynamic="true">
 			<h:form id="addUserForm">
 				<p:growl showDetail="true" id="messages" sticky="false" />
 				<p:tooltip for="userNameInput" id="idUserNameInput"
@@ -132,18 +130,17 @@
 					</p:panelGrid>
 					<p:panel style="margin-top:30px;">
 						<p:commandButton immediate="true" value="Cancel"
-							style="margin-right:20px;padding-left:20px;padding-right:20px;"
+							styleClass="navButton" style="margin-right:20px;"
 							update="
 							:addUserForm"
 							actionListener="#{manageUsersController.cancelAddNewUser}" />
 						<p:commandButton rendered="true" value="Reset password"
 							ajax="true" id="resetPasswordButton"
 							actionListener="#{manageUsersController.resetUserPassword}"
-							update=":usersForm :addUserForm"
-							style="padding-left:20px;padding-right:20px;" />
+							update=":usersForm :addUserForm" styleClass="navButton"
+							style="margin-right:20px;" />
 						<p:commandButton value="Save" update=":usersForm :addUserForm"
-							ajax="true"
-							style="margin-left:20px;padding-left:20px;padding-right:20px;"
+							ajax="true" styleClass="navButton" style="margin-right:20px;"
 							id="saveButton"
 							actionListener="#{manageUsersController.createOrUpdateUser}"
 							oncomplete="handleAddUserRequest(xhr, status, args)" />

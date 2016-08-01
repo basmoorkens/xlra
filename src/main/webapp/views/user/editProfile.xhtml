@@ -49,9 +49,10 @@
 
 				<p:panel style="margin-top:20px;">
 					<p:commandButton value="Save edited profile" id="saveButton"
-						style="padding-left:20px; padding-right:20px;"
-						actionListener="#{userController.saveUser}" update=":userForm" />
-					<p:tooltip id="saveTip" for="saveButton" value="Save the changes you made" />
+						styleClass="navButton" actionListener="#{userController.saveUser}"
+						update=":userForm" />
+					<p:tooltip id="saveTip" for="saveButton"
+						value="Save the changes you made" />
 				</p:panel>
 			</p:panel>
 		</h:form>

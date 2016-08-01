@@ -42,14 +42,14 @@
 						</p:cellEditor>
 					</p:column>
 					<p:column style="width:120px;">
-						<p:commandButton id="editButton"
+						<p:commandButton id="editButton" styleClass="navButton"
 							actionListener="#{countryController.setupPageForEdit(country)}"
 							icon="ui-icon-pencil" title="View" ajax="true"
 							update=":countryEditForm" style="margin-right:10px;" />
 						<p:tooltip id="editCountryTip" for="editButton"
 							value="Edit the country" />
 						<p:commandButton icon="ui-icon-trash" title="Delete"
-							id="deleteCountryButton"
+							id="deleteCountryButton" styleClass="navButton"
 							style="margin-right:5px;margin-left:5px;"
 							actionListener="#{countryController.deleteCountry(country)}"
 							ajax="true" immediate="true" update=":countryForm">
@@ -63,7 +63,7 @@
 		</h:form>
 
 		<h:form id="countryEditForm">
-			<p:dialog id="editDialog"
+			<p:dialog id="editDialog" appendTo="@(body)"
 				header="#{countryController.detailGridTitle}"
 				widgetVar="editCountryDialog" modal="true" width="70%" height="50%"
 				dynamic="true">
@@ -94,24 +94,17 @@
 
 					<p:panel style="margin-top:20px;">
 						<p:commandButton value="cancel"
-							actionListener="#{countryController.cancel}"
-							style="padding-left:10px; padding-right:10px; margin-right:10px;" />
+							actionListener="#{countryController.cancel}" immediate="true"
+							update=":countryForm :countryEditForm" styleClass="navButton"
+							style="margin-right:20px;" />
 						<p:commandButton value="Save"
 							update=":countryForm :countryEditForm"
 							actionListener="#{countryController.saveEditedCountry}"
-							style="padding-left:10px; padding-right:10px; margin-right:10px;" />
+							styleClass="navButton" style="margin-right:20px;" />
 					</p:panel>
 				</p:panel>
 			</p:dialog>
 		</h:form>
-
-
-		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-			<p:commandButton value="Yes" type="button"
-				styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-			<p:commandButton value="No" type="button"
-				styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-		</p:confirmDialog>
 	</ui:define>
 </ui:composition>
 </html>

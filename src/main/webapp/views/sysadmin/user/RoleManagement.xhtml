@@ -25,8 +25,8 @@
 					</p:column>
 					<p:column width="170">
 						<p:commandButton value="Edit role" id="editRoleButton"
-							update=":rolesForm :addRolesForm"
-							style="padding-left:20px;padding-right:20px;margin-top:5px; margin-bottom:5px;"
+							update=":rolesForm :addRolesForm" styleClass="navButton"
+							style="margin-left:20px; margin-right:20px;"
 							actionListener="#{rolesController.selectRoleForEdit(role)}" />
 					</p:column>
 					<p:tooltip id="editRoleTip" for="editRoleButton"
@@ -36,6 +36,7 @@
 				<p:panel style="margin-top:20px;">
 					<p:commandButton id="addRoleButton"
 						actionListener="#{rolesController.setupNewRole}"
+						styleClass="navButton" style="margin-right:20px;"
 						update=":rolesForm :addRolesForm" value="Create new role" />
 					<p:tooltip id="addRoleTip" for="addRoleButton"
 						value="Create a new role" />
@@ -44,7 +45,8 @@
 		</h:form>
 
 		<p:dialog header="Create new role" widgetVar="addRoleDialog"
-			modal="true" height="650px" style="width:80%;" dynamic="true">
+			appendTo="@(body)" modal="true" height="650px" style="width:80%;"
+			dynamic="true">
 			<h:form id="addRolesForm">
 				<p:panel header="Role information">
 					<p:growl showDetail="true" id="messages" sticky="false" />
@@ -78,14 +80,13 @@
 
 					<p:panel style="margin-top:20px;">
 						<p:commandButton immediate="true" id="cancelRoleButton"
-							value="Cancel"
-							style="margin-right:20px;padding-left:20px;padding-right:20px;"
+							value="Cancel" styleClass="navButton" style="margin-right:20px;"
 							update=":addRolesForm"
 							actionListener="#{rolesController.cancelAddRole}" />
 						<p:tooltip id="cancelRoleTip" for="cancelRoleButton"
 							value="Go back to the overview screen" />
 						<p:commandButton value="Save" id="saveRoleButton"
-							style="padding-left:20px; padding-right:20px;"
+							styleClass="navButton" style="margin-right:20px;"
 							update=":addRolesForm :rolesForm" ajax="true"
 							actionListener="#{rolesController.createOrUpdateRole}"
 							oncomplete="handleAddRolesRequest(xhr, status, args)" />
