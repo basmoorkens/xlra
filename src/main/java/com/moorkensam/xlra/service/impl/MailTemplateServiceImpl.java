@@ -79,7 +79,9 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 
   private void fillInEmailResult(QuotationResult result, EmailResult dto, MailTemplate template,
       String emailMessage) {
-    dto.addSelectedCustomerContac(result.getQuery().getCustomer().getStandardContact());
+    if (result.getQuery().getCustomer().getStandardContact() != null) {
+      dto.addSelectedCustomerContac(result.getQuery().getCustomer().getStandardContact());
+    }
     dto.setSubject(template.getSubject());
     dto.setEmail(emailMessage);
   }

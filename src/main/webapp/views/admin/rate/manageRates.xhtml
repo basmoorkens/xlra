@@ -41,7 +41,7 @@
 						#{rateFile.country.shortName}
 					</p:column>
 					<p:column style="width:50px;text-align: center">
-						<p:commandButton id="editButton"
+						<p:commandButton id="editButton" styleClass="navButton"
 							actionListener="#{manageRatesController.fetchDetailsOfRatefile(rateFile)}"
 							icon="ui-icon-pencil" title="View" ajax="true"
 							update=":basicForm :zoneDetailForm :rateLinesDetailForm :conditionsDetailForm" />

@@ -49,10 +49,10 @@
 					<p:commandButton icon="ui-icon-pencil" title="Edit"
 						id="editConditionButton" styleClass="navButton"
 						actionListener="#{controller.setupEditCondition(condition)}"
-						ajax="true" immediate="true" update=":editConditionForm">
-					</p:commandButton>
+						ajax="true" immediate="true" update=":editConditionForm" />
 					<p:tooltip id="editConditionTip" for="editConditionButton"
 						value="Edit the condition" />
+
 					<p:commandButton styleClass="navButton" icon="ui-icon-trash"
 						title="Delete" id="deleteConditionButton"
 						actionListener="#{controller.deleteCondition(condition)}"
@@ -77,10 +77,10 @@
 	</h:form>
 
 	<h:form id="editConditionForm">
-		<p:dialog id="editDialog" header="Edit condition"
+		<p:dialog id="editDialog" header="Edit condition" appendTo="@(body)"
 			widgetVar="editConditionDialog" modal="true" width="50%" height="50%"
 			dynamic="true">
-			<p:panel style="width:80%; margin:auto;">
+			<p:panel style="width:100%; margin:auto;">
 				<p:panelGrid columns="2" style="width:100%;margin-top:10px;">
 					<h:outputLabel value="Selected key" />
 					<h:outputLabel style="font-weight:bold;"
@@ -114,23 +114,22 @@
 						value="#{controller.selectedCondition.standardSelected}" />
 				</p:panelGrid>
 				<p:panel style="margin-top:20px;">
-					<p:commandButton value="Cancel"
-						onclick="PF('editConditionDialog').hide();" />
+					<p:commandButton value="Cancel" id="cancelEditConditionButton"
+						onclick="PF('editConditionDialog').hide();" styleClass="navButton" />
+					<p:tooltip id="cancelEditConditionButtonTip"
+						for="cancelEditConditionButton" value="Undo all changes." />
 					<p:commandButton style="margin-left:20px;" value="Save"
 						oncomplete="handleEditConditionRequest(xhr, status, args)"
 						actionListener="#{controller.saveEditCondition}"
+						styleClass="navButton" id="saveEditConditionButton"
 						update=":conditionsDetailForm :editConditionForm" />
+					<p:tooltip id="saveEditConditionButtonTip"
+						for="saveEditConditionButton" value="Save the changes made." />
 				</p:panel>
 			</p:panel>
 		</p:dialog>
 	</h:form>
 
-	<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-		<p:commandButton value="Yes" type="button"
-			styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-		<p:commandButton value="No" type="button"
-			styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-	</p:confirmDialog>
 	<script type="text/javascript">
 		function handleEditConditionRequest(xhr, status, args) {
 			if (args.validationFailed) {

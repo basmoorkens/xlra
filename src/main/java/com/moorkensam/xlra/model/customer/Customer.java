@@ -39,11 +39,12 @@ import javax.validation.constraints.NotNull;
         query = "SELECT b FROM Customer b where b.deleted = false"),
     @NamedQuery(name = "Customer.findAllFullCustomers",
         query = "SELECT c FROM Customer c where c.deleted = false AND c.hasOwnRateFile = true"),
-    @NamedQuery(name = "Customer.countCustomers", query = "SELECT count(c.id) FROM Customer c"),
+    @NamedQuery(name = "Customer.countCustomers",
+        query = "SELECT count(c.id) FROM Customer c where c.deleted = false"),
     @NamedQuery(name = "Customer.findByName",
-        query = "SELECT c FROM Customer c WHERE c.name = :name"),
+        query = "SELECT c FROM Customer c WHERE c.name = :name and c.deleted = false"),
     @NamedQuery(name = "Customer.findLikeName",
-        query = "SELECT c FROM Customer c WHERE c.name LIKE :name")})
+        query = "SELECT c FROM Customer c WHERE c.name LIKE :name and c.deleted = false")})
 public class Customer extends BaseEntity {
 
   private static final long serialVersionUID = 1L;

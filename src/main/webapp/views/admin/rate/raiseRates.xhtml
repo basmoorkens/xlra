@@ -37,7 +37,8 @@
 
 				<p:panel style="margin-top:20px;">
 					<p:commandButton value="Raise rates" immediate="true"
-						update=":raiseRatesForm" ajax="true" id="raiseRatesButton"
+						styleClass="navButton" update=":raiseRatesForm" ajax="true"
+						id="raiseRatesButton"
 						actionListener="#{raiseRatesController.showAddDialog}" />
 					<p:tooltip id="raiseRatesTip" for="raiseRatesButton"
 						value="Create a raise of ratefiles" />
@@ -46,7 +47,7 @@
 		</h:form>
 
 		<h:form id="raiseRatesForm">
-			<p:dialog id="raiseDialog" header="Raise rates"
+			<p:dialog id="raiseDialog" header="Raise rates" appendTo="@(body)"
 				widgetVar="raiseRatesDialog" modal="true" width="70%" height="50%"
 				dynamic="true">
 				<p:growl id="msgs" showDetail="true" />
@@ -81,22 +82,20 @@
 					<p:panel style="margin-top:20px;">
 						<p:commandButton value="cancel"
 							actionListener="#{raiseRatesController.cancel}"
-							style="padding-left:10px; padding-right:10px; margin-right:10px;"
+							style="margin-right:20px;" styleClass="navButton"
+							id="cancelRaiseRatesButton"
 							update=":raiseRatesForm :raiseHistoryForm" ajax="true" />
-						<p:commandButton value="raise rates"
-							style="padding-left:10px; padding-right:10px; margin-left:10px;"
+						<p:tooltip for="cancelRaiseRatesButton"
+							value="Cancel editing raise rates" />
+						<p:commandButton value="raise rates" styleClass="navButton"
 							actionListener="#{raiseRatesController.raiseRates}"
+							id="confirmRaiseRatesButton"
 							update=":raiseRatesForm :raiseHistoryForm" ajax="true" />
+						<p:tooltip for="confirmRaiseRatesButton"
+							value="Confirm the raise of rates" />
 					</p:panel>
 				</p:panel>
 			</p:dialog>
-
-			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-				<p:commandButton value="Yes" type="button"
-					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-				<p:commandButton value="No" type="button"
-					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-			</p:confirmDialog>
 			<p:ajaxStatus onstart="showStatusDialog();"
 				onsuccess="hideStatusDialog();" />
 

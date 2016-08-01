@@ -130,8 +130,8 @@ public class CreateQuotationController {
    */
   public void createCustomer() {
     try {
-      getQuotationQuery()
-          .setCustomer(getCustomerService().createCustomerAndReturnManaged(customerToAdd));
+      getQuotationQuery().setCustomer(
+          getCustomerService().createCustomerAndReturnManaged(customerToAdd));
       MessageUtil.addMessage("Customer created", "Created customer " + customerToAdd.getName());
       renderAddCustomerGrid = false;
       customerToAdd = new Customer();

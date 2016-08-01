@@ -25,7 +25,8 @@
 
 				<p:commandButton rendered="#{canEdit}" value="Create new customer"
 					id="addCustomerButton" update=":addQuickCustomerForm"
-					immediate="true" onclick="PF('addCustomerDialog').show();" />
+					styleClass="navButton" immediate="true"
+					onclick="PF('addCustomerDialog').show();" />
 			</p:panelGrid>
 
 			<p:selectManyCheckbox
@@ -46,10 +47,11 @@
 	</h:form>
 
 	<p:dialog header="Add customer" widgetVar="addCustomerDialog"
-		modal="true" height="480px" width="900px" dynamic="true">
+		appendTo="@(body)" modal="true" height="480px" width="900px"
+		dynamic="true">
 		<p:growl showDetail="true" id="messages" sticky="false" />
 		<h:form id="addQuickCustomerForm">
-			<p:panel header="Add customer" style="margin-top:50px;">
+			<p:panel>
 				<p:panelGrid columns="2" style="width:100%;">
 					<h:outputLabel for="nameField">Name</h:outputLabel>
 					<p:inputText size="50" style="width:100%;" required="true"
@@ -59,7 +61,7 @@
 
 					<h:outputLabel for="emailField">Email</h:outputLabel>
 					<p:inputText size="50" style="width:100%;"
-						value="#{createQuotationController.customerToAdd.email}"
+						value="#{createQuotationController.customerToAdd.standardContact.email}"
 						id="emailField" required="true"
 						requiredMessage="A customer email is required"
 						validatorMessage="Please enter a valid email adres">
@@ -85,11 +87,18 @@
 					</p:selectOneRadio>
 				</p:panelGrid>
 				<p:panel style="margin-top:20px;">
+					<p:commandButton value="Cancel" immediate="true"
+						update=":customerForm :addQuickCustomerForm"
+						onclick="PF('addCustomerDialog').hide();" styleClass="navButton"
+						id="cancelCustomerEdit" style="margin-right:20px;" />
+					<p:tooltip for="cancelCustomerEdit"
+						value="Cancel creation of new customer" />
 					<p:commandButton value="Save customer" styleClass="navButton"
 						update=":customerForm :addQuickCustomerForm"
 						actionListener="#{createQuotationController.createCustomer}"
-						ajax="true"
+						ajax="true" id="saveCustomerButton"
 						oncomplete="handleAddCustomerRequest(xhr, status, args)" />
+					<p:tooltip for="saveCustomerButton" value="Save the new customer" />
 				</p:panel>
 			</p:panel>
 		</h:form>

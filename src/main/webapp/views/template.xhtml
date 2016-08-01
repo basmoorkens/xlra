@@ -118,6 +118,14 @@
 		<p:panel>
 			<ui:insert name="body">Welcome to the Extra logistics Rates application</ui:insert>
 		</p:panel>
+
+		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+			<p:commandButton value="No" type="button" style="margin-right:20px;"
+				styleClass="ui-confirmdialog-no navButton" icon="ui-icon-close" />
+			<p:commandButton value="Yes" type="button"
+				styleClass="ui-confirmdialog-yes navButton" icon="ui-icon-check" />
+		</p:confirmDialog>
+
 		<script type="text/javascript">
 			$(document).on(
 					"keydown",

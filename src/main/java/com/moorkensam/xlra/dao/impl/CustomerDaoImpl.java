@@ -117,8 +117,7 @@ public class CustomerDaoImpl extends BaseDao implements CustomerDao {
   @Override
   public List<Customer> findCustomersLikeName(String name) {
     Query query = getEntityManager().createNamedQuery("Customer.findLikeName");
-    query.setParameter("name", name);
+    query.setParameter("name", "%" + name + "%");
     return (List<Customer>) query.getResultList();
   }
-
 }
