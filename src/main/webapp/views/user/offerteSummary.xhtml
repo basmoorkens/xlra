@@ -16,7 +16,8 @@
 					value="#{createQuotationController.quotationResult.usedRateFileName}" />
 
 				<h:outputText value="Receipients: " />
-				<p:panelGrid columns="2" style="width:100%;" columnClasses="valuesColumn,labelColumn">
+				<p:panelGrid columns="2" style="width:100%;"
+					columnClasses="valuesColumn,labelColumn">
 					<h:outputText
 						value="#{createQuotationController.selectedCustomerContactsAsString}" />
 					<p:commandButton value="Add/Remove recipients"
@@ -34,10 +35,9 @@
 			<p:editor height="350"
 				value="#{createQuotationController.quotationResult.emailResult.email}" />
 			<p:panel style="margin-top:20px;">
-				<p:commandButton value="Back"
-					style="padding-left:5px; padding-right:5px; margin-right:20px;"
-					update=":summaryForm :optionsForm" immediate="true"
-					id="backButton3"
+				<p:commandButton value="Back" styleClass="navButton"
+					style="margin-right:20px;" update=":summaryForm :optionsForm"
+					immediate="true" id="backButton3"
 					actionListener="#{createQuotationController.showOptionsPanel}" />
 				<p:tooltip id="backTip3" for="backButton3"
 					value="Go back to options selection" />

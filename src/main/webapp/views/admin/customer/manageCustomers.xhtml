@@ -53,13 +53,13 @@
 						<p:commandButton id="editButton"
 							actionListener="#{customerController.setupPageForEditCustomer(customer)}"
 							icon="ui-icon-pencil" title="View" ajax="true"
-							update=":customerDetailForm" />
+							styleClass="navButton" update=":customerDetailForm" />
 						<p:tooltip id="editButtonTip" for="editButton"
 							value="Edit the customer" />
 						<p:commandButton style="margin-left:5px;" id="deleteButton"
 							actionListener="#{customerController.deleteCustomer(customer)}"
 							ajax="true" title="delete" update=":customerOverviewForm"
-							icon="ui-icon-trash">
+							styleClass="navButton" icon="ui-icon-trash">
 							<p:confirm header="Confirm delete"
 								message="Are you sure you want to delete this customer? This can not be undone!"
 								icon="ui-icon-alert" />
@@ -72,7 +72,7 @@
 				<p:panel style="margin-top:20px;">
 					<p:commandButton value="Add new customer" title="Add new customer"
 						actionListener="#{customerController.setupPageForNewCustomer}"
-						id="addCustomerButton" icon="ui-icon-check" ajax="true"
+						id="addCustomerButton" ajax="true" styleClass="navButton"
 						update=":customerDetailForm" immediate="true" />
 					<p:tooltip id="addTip" for="addCustomerButton"
 						value="Create a new customer" />
@@ -80,7 +80,7 @@
 			</p:panel>
 		</h:form>
 		<h:form id="customerDetailForm">
-			<p:dialog id="addDialog"
+			<p:dialog id="addDialog" appendTo="@(body)"
 				header="#{customerController.detailGridTitle}"
 				widgetVar="addCustomerDialog" modal="true" width="70%" height="50%"
 				dynamic="true">
@@ -93,21 +93,14 @@
 
 		<h:form id="customerContactForm">
 			<p:dialog id="addContactDialog" header="Contact details"
-				widgetVar="addContactDialog" modal="true" width="70%" height="50%"
-				dynamic="true">
+				appendTo="@(body)" widgetVar="addContactDialog" modal="true"
+				width="70%" height="50%" dynamic="true">
 				<ui:include src="/views/admin/customer/customerContactDetail.xhtml">
 					<ui:param name="contact"
 						value="#{customerController.selectedContact}"></ui:param>
 				</ui:include>
 			</p:dialog>
 		</h:form>
-
-		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-			<p:commandButton value="Yes" type="button"
-				styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-			<p:commandButton value="No" type="button" immediate="true"
-				styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-		</p:confirmDialog>
 
 		<script type="text/javascript">
 			function handleAddCustomerRequest(xhr, status, args) {

@@ -93,12 +93,13 @@
 					<p:commandButton id="editContactButton"
 						actionListener="#{customerController.setupPageForEditContact(contact)}"
 						icon="ui-icon-pencil" title="View" ajax="true"
+						styleClass="navButton"
 						update=":customerDetailForm :customerContactForm" />
 					<p:tooltip id="editContactButtonTip" for="editContactButton"
 						value="Edit the contact" />
 					<p:commandButton style="margin-left:5px;" id="deleteContactButton"
 						actionListener="#{customerController.deleteCustomerContact(contact)}"
-						ajax="true" title="delete"
+						ajax="true" title="delete" styleClass="navButton"
 						update=":customerDetailForm :customerContactForm"
 						icon="ui-icon-trash">
 						<p:confirm header="Confirm delete"
@@ -110,19 +111,19 @@
 				</p:column>
 			</p:dataTable>
 
-
 			<p:panel style="margin-top:20px;">
 				<p:commandButton value="Cancel" title="Cancel" immediate="true"
 					actionListener="#{customerController.cancelDetail}" ajax="true"
-					update=":customerDetailForm"
-					style="padding-left:5px; padding-right:5px; margin-right:20px;" />
+					update=":customerDetailForm" styleClass="navButton"
+					style="margin-right:20px;" />
 				<p:commandButton value="Add new contact" ajax="true"
 					update=":customerDetailForm :customerContactForm" immediate="true"
+					styleClass="navButton"
 					actionListener="#{customerController.setupPageForNewContact}"
-					style="padding-left:10px;padding-right:10px;margin-right:20px;" />
+					style="margin-right:20px;" />
 				<p:commandButton value="Save customer" title="Save customer"
 					actionListener="#{customerController.createCustomerOrUpdate}"
-					style="padding-left:5px; padding-right:5px; margin-right:20px;"
+					styleClass="navButton" style="margin-right:20px;"
 					icon="ui-icon-check" validateClient="true" ajax="true"
 					update=":customerDetailForm :customerOverviewForm"
 					oncomplete="handleAddCustomerRequest(xhr, status, args)" />
