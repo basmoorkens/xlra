@@ -43,14 +43,25 @@ public class ManageUsersController {
 
   private boolean editMode;
 
+  private String crudPopupTitle;
+
   /**
    * Initializes the controller.
    */
   @PostConstruct
   public void initialize() {
+    setCreateTitle();
     roles = new DualListModel<Role>();
     refreshUsers();
     fillInAvailableRoles();
+  }
+
+  private void setUpdateTitle() {
+    crudPopupTitle = "Edit user " + selectedUser.getUserName();
+  }
+
+  private void setCreateTitle() {
+    crudPopupTitle = "Create new user";
   }
 
   private void fillInAvailableRoles() {
@@ -153,6 +164,7 @@ public class ManageUsersController {
     selectedUser = user;
     roles.setTarget(user.getRoles());
     roles.setSource(getSourceRoles(user));
+    setUpdateTitle();
     RequestContext context = RequestContext.getCurrentInstance();
     editMode = true;
     context.execute("PF('addUserDialog').show();");
@@ -277,4 +289,11 @@ public class ManageUsersController {
     this.userSessionController = userSessionController;
   }
 
+  public String getCrudPopupTitle() {
+    return crudPopupTitle;
+  }
+
+  public void setCrudPopupTitle(String crudPopupTitle) {
+    this.crudPopupTitle = crudPopupTitle;
+  }
 }

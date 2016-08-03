@@ -32,7 +32,7 @@
 					<p:column style="width:200px;">
 						<p:commandButton style="margin-top:5px;margin-bottom:5px;"
 							icon="ui-icon-pencil" update=":addUserForm" id="editButton"
-							styleClass="navButton"
+							styleClass="navButton" ajax="true"
 							actionListener="#{manageUsersController.selectUserForEdit(user)}" />
 						<p:tooltip id="editTip" for="editButton" value="Edit user" />
 						<p:commandButton icon="ui-icon-locked"
@@ -71,9 +71,11 @@
 			</p:panel>
 		</h:form>
 
-		<p:dialog header="Create new user" widgetVar="addUserDialog"
-			height="650px" style="width:80% !important;" dynamic="true">
-			<h:form id="addUserForm">
+		<h:form id="addUserForm">
+			<p:dialog header="#{manageUsersController.crudPopupTitle}"
+				widgetVar="addUserDialog" height="650px"
+				style="width:80% !important;" dynamic="true">
+
 				<p:growl showDetail="true" id="messages" sticky="false" />
 				<p:tooltip for="userNameInput" id="idUserNameInput"
 					value="The username that will be used to log in to the application." />
@@ -133,8 +135,8 @@
 							update="
 							:addUserForm"
 							actionListener="#{manageUsersController.cancelAddNewUser}" />
-						<p:commandButton rendered="true" value="Reset password"
-							ajax="true" id="resetPasswordButton"
+						<p:commandButton rendered="#{manageUsersController.editMode}"
+							value="Reset password" ajax="true" id="resetPasswordButton"
 							actionListener="#{manageUsersController.resetUserPassword}"
 							update=":usersForm :addUserForm" styleClass="navButton"
 							style="margin-right:20px;" />
@@ -153,9 +155,8 @@
 					showHeader="false">
 					<p:graphicImage url="/resources/images/ajax-loader.gif" />
 				</p:dialog>
-
-			</h:form>
-		</p:dialog>
+			</p:dialog>
+		</h:form>
 		<script type="text/javascript">
 			var statusDlgTimer = null;
 
