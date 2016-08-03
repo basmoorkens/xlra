@@ -130,4 +130,13 @@
 			</p:panel>
 		</p:panel>
 	</p:scrollPanel>
+	<script type="text/javascript">
+		function handleAddCustomerRequest(xhr, status, args) {
+			if (args.validationFailed) {
+				PF('addCustomerDialog').show();
+			} else {
+				PF('addCustomerDialog').hide();
+			}
+		}
+	</script>
 </ui:composition>

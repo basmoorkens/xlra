@@ -41,10 +41,9 @@
 
 		<h:form id="editMailTemplateForm">
 			<p:growl id="msgs" showDetail="true" />
-			<p:dialog id="editDialog" appendTo="@(body)"
+			<p:dialog id="editDialog"
 				header="#{mailTemplateController.popupHeader}"
-				widgetVar="editMailDialog" modal="true" width="80%" height="50%"
-				dynamic="true">
+				widgetVar="editMailDialog" width="80%" height="50%" dynamic="true">
 				<p:panel id="mailTemplatePanel" header="Email template">
 					<p:panelGrid columns="2" style="width:100%;"
 						columnClasses="labelColumn,valuesColumn">

@@ -60,9 +60,9 @@
 			</p:panel>
 		</h:form>
 
-		<p:dialog header="Create new permission" appendTo="@(body)"
-			widgetVar="addPermissionDialog" modal="true" height="280px"
-			width="90%" dynamic="true">
+		<p:dialog header="Create new permission"
+			widgetVar="addPermissionDialog" height="280px" width="90%"
+			dynamic="true">
 			<p:growl showDetail="true" id="messages" sticky="false" />
 			<h:form id="addPermissionsForm">
 
@@ -78,6 +78,11 @@
 				</p:panelGrid>
 
 				<p:panel style="margin-top:20px;">
+					<p:commandButton immediate="true" value="Cancel"
+						styleClass="navButton" style="margin-right:20px;"
+						update=":addPermissionsForm :permissionsForm"
+						actionListener="#{permissionController.cancelAddNewPermission}"
+						id="chfRateCancelButton" />
 					<p:commandButton value="Save" styleClass="navButton"
 						style="margin-right:20px;"
 						update=":addPermissionsForm :permissionsForm"

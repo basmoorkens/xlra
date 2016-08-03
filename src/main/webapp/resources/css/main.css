@@ -5,10 +5,11 @@ body {
 	font-size: 18px;
 	margin: 0;
 	padding: 0p;
+	background-image: url("../resources/images/extra_bg.png");
 }
 
 #container {
-	background-color: #DBDBDB;
+	background-color: white;
 	opacity: 0.9;
 	margin-left: auto;
 	margin-right: auto;
@@ -18,6 +19,7 @@ body {
 	min-height: 35em;
 	padding-bottom: 50px;
 	z-index: -1;
+	opacity: 0.9;
 }
 
 .customerCreateGrid td {
@@ -78,12 +80,120 @@ body {
 	width: 12em !important;
 }
 
+/* navbuttons */
+.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-icon-only.navButton
+	{
+	background-color: #d11174;
+}
+
+.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only.navButton
+	{
+	background-color: #d11174;
+}
+
+.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-icon-left.navButton
+	{
+	background-color: #d11174;
+}
+
 .navButton {
 	padding-left: 10px;
 	padding-right: 10px;
 	margin-right: 20px;
+	background-color: #d11174;
+}
+
+.ui-dialog-titlebar {
+	background-color: #d11174;
+}
+
+.ui-widget-header {
+	background-color: #FAE1EE;
+}
+
+.ui-datatable-odd {
+	background-color: #FAE1EE;
 }
 
 .navButton.ui-button {
 	background-color: #d11174;
+}
+
+.ui-menu {
+	background-color: #FAE1EE;
+}
+
+/*Menu hover*/
+.ui-menuitem-link.ui-corner-all.ui-state-hover {
+	background-color: #d11174;
+}
+
+/*Submenu block*/
+.ui-widget-content.ui-menu-list.ui-corner-all.ui-helper-clearfix.ui-menu-child.ui-shadow
+	{
+	background-color: #FAE1EE;
+}
+
+.ui-datatable.ui-widget.ui-state-default {
+	background-color: #FAE1EE;
+}
+
+/* picklist buttons */
+.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-icon-only.ui-picklist-button-add
+	{
+	background-color: #d11174;
+}
+
+.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-icon-only.ui-picklist-button-add-all
+	{
+	background-color: #d11174;
+}
+
+.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-icon-only.ui-picklist-button-remove
+	{
+	background-color: #d11174;
+}
+
+.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-icon-only.ui-picklist-button-remove-all
+	{
+	background-color: #d11174;
+}
+
+.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-icon-left.ui-state-disabled
+	{
+	background-color: #FAE1EE;
+}
+
+/* Dropdown box */
+.ui-selectonemenu-trigger.ui-state-default.ui-corner-right {
+	background-color: #FAE1EE;
+}
+
+.ui-selectonemenu-item.ui-selectonemenu-list-item.ui-corner-all.ui-state-highlight
+	{
+	background-color: #FAE1EE;
+}
+
+/* autocomplete */
+.ui-autocomplete-dropdown.ui-button.ui-widget.ui-state-default.ui-corner-right.ui-button-icon-only
+	{
+	background-color: #FAE1EE;
+}
+
+.ui-autocomplete-item.ui-autocomplete-list-item.ui-corner-all.ui-state-highlight
+	{
+	background-color: #FAE1EE;
+}
+
+.ui-state-default.ui-sortable-column.ui-filter-column {
+	background-color: #FAE1EE;
+}
+
+th.ui-state-default {
+	background-color: #FAE1EE;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default,
+	.ui-widget-header .ui-state-default {
+	background-color: #FAE1EE;
 }

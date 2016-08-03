@@ -61,7 +61,7 @@
 						<p:commandButton
 							actionListener="#{offerteOverviewController.setupOfferteDetail(quotationResult)}"
 							icon="ui-icon-search" title="View" id="detailButton"
-							update=":offertesForm :offerteDetailForm">
+							styleClass="navButton" update=":offertesForm :offerteDetailForm">
 							<p:tooltip id="detailTip" for="detailButton"
 								value="Open the details for this offerte" />
 						</p:commandButton>
@@ -72,8 +72,8 @@
 		<h:form id="offerteDetailForm">
 			<p:dialog id="detailDialog"
 				header="Details for offerte #{offerteOverviewController.selectedOfferte.offerteUniqueIdentifier}"
-				widgetVar="detailOfferteDialog" modal="true" width="80%"
-				height="50%" dynamic="true">
+				widgetVar="detailOfferteDialog" width="80%" height="50%"
+				dynamic="true">
 				<ui:include src="/views/user/offerteDetail.xhtml" />
 			</p:dialog>
 		</h:form>

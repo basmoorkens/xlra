@@ -72,8 +72,7 @@
 		</h:form>
 
 		<p:dialog header="Create new user" widgetVar="addUserDialog"
-			appendTo="@(body)" modal="true" height="650px"
-			style="width:80% !important;" dynamic="true">
+			height="650px" style="width:80% !important;" dynamic="true">
 			<h:form id="addUserForm">
 				<p:growl showDetail="true" id="messages" sticky="false" />
 				<p:tooltip for="userNameInput" id="idUserNameInput"
@@ -149,7 +148,7 @@
 				<p:ajaxStatus onstart="showStatusDialog();"
 					onsuccess="hideStatusDialog();" />
 
-				<p:dialog id="statusDialog" widgetVar="statusDialog" modal="true"
+				<p:dialog id="statusDialog" widgetVar="statusDialog"
 					draggable="false" closable="false" resizable="false"
 					showHeader="false">
 					<p:graphicImage url="/resources/images/ajax-loader.gif" />

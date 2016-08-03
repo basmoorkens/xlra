@@ -4,6 +4,7 @@ import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.security.Permission;
 import com.moorkensam.xlra.service.RolePermissionService;
 
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.RowEditEvent;
 
 import java.util.List;
@@ -54,6 +55,16 @@ public class PermissionController {
     MessageUtil.addMessage("Permission created", "Created permission" + newPermission.getKey());
     newPermission = new Permission();
     refreshPermissions();
+  }
+
+  public void cancelAddNewPermission() {
+    newPermission = null;
+    hideAddDialog();
+  }
+
+  private void hideAddDialog() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    context.execute("PF('addPermissionDialog').hide();");
   }
 
   public List<Permission> getAllPermissions() {

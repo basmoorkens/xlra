@@ -58,17 +58,15 @@
 		<p:ajaxStatus onstart="showStatusDialog();"
 			onsuccess="hideStatusDialog();" />
 
-		<p:dialog id="statusDialog" widgetVar="statusDialog" modal="true"
-			draggable="false" closable="false" resizable="false"
-			showHeader="false">
+		<p:dialog id="statusDialog" widgetVar="statusDialog" draggable="false"
+			closable="false" resizable="false" showHeader="false">
 			<p:graphicImage url="/resources/images/ajax-loader.gif" />
 		</p:dialog>
 	</h:form>
 
 	<h:form id="editRecipientsForm">
 		<p:dialog id="editRecipientsDialog" header="Add/Remove recipients"
-			widgetVar="editRecipientsDialog" modal="true" width="70%"
-			height="50%">
+			widgetVar="editRecipientsDialog" width="70%" height="50%">
 			<p:panel>
 				<p:panelGrid columns="2" style="width:100%;">
 					<p:pickList id="contactPicklist" style="width:100%;"

@@ -136,16 +136,14 @@
 				<p:commandButton value="Back to search" id="backButton"
 					actionListener="#{offerteOverviewController.hideDetailDialog}"
 					ajax="true" update=":offerteDetailForm :offertesForm"
-					style="padding-left:5px; padding-right:5px;" />
-				<p:commandButton value="Open pdf"
-					style="padding-left:5px; padding-right:5px; margin-left:20px;"
-					id="openPdfButton"
+					styleClass="navButton" style="margin-right:20px;" />
+				<p:commandButton value="Open pdf" styleClass="navButton"
+					style="margin-right:20px;" id="openPdfButton"
 					actionListener="#{offerteOverviewController.downloadPdf}"
 					onclick="this.form.target='_blank'" ajax="false" />
 				<p:tooltip id="openPdfTip" for="openPdfButton"
 					value="Open the PDF for this offerte" />
-				<p:commandButton value="Resend email"
-					style="padding-left:5px; padding-right:5px; margin-left:20px;"
+				<p:commandButton value="Resend email" styleClass="navButton"
 					id="resendMailButton"
 					actionListener="#{offerteOverviewController.resendEmail}"
 					ajax="true" update=":offerteDetailForm" />

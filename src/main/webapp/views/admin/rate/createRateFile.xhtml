@@ -207,8 +207,8 @@
 		<h:form id="editConditionForm">
 			<p:dialog id="editDialog"
 				header="#{createRatesController.conditionDialogHeader}"
-				widgetVar="editConditionDialog" modal="true" width="80%"
-				height="50%" dynamic="true">
+				widgetVar="editConditionDialog" width="80%" height="50%"
+				dynamic="true">
 				<p:panel header="Condition info">
 					<p:panelGrid columns="2" style="width:100%;margin-top:10px;"
 						columnClasses="labelColumn,valuesColumn">
@@ -306,7 +306,7 @@
 			<p:ajaxStatus onstart="showStatusDialog();"
 				onsuccess="hideStatusDialog();" />
 
-			<p:dialog id="statusDialog" widgetVar="statusDialog" modal="true"
+			<p:dialog id="statusDialog" widgetVar="statusDialog"
 				draggable="false" closable="false" resizable="false"
 				showHeader="false">
 				<p:graphicImage url="/resources/images/ajax-loader.gif" />

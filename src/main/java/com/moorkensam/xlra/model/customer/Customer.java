@@ -19,9 +19,11 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -55,7 +57,7 @@ public class Customer extends BaseEntity {
   public Customer() {
     this.address = new Address();
     CustomerContact standardContact = createStandardCustomerContact();
-    addContact(standardContact);
+    setStandardContact(standardContact);
   }
 
   private CustomerContact createStandardCustomerContact() {
@@ -90,6 +92,11 @@ public class Customer extends BaseEntity {
   private String btwNumber;
 
   private boolean hasOwnRateFile;
+
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "standard_contact_id")
+  @NotNull
+  private CustomerContact standardContact;
 
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer", cascade = CascadeType.ALL,
       orphanRemoval = true)
@@ -160,9 +167,11 @@ public class Customer extends BaseEntity {
   @Transient
   public List<CustomerContact> getDisplayContacts() {
     List<CustomerContact> displayContacts = new ArrayList<CustomerContact>();
-    for (CustomerContact customerContact : contacts) {
-      if (customerContact.isDisplay()) {
-        displayContacts.add(customerContact);
+    if (contacts != null && contacts.size() > 0) {
+      for (CustomerContact customerContact : contacts) {
+        if (customerContact.isDisplay()) {
+          displayContacts.add(customerContact);
+        }
       }
     }
     return displayContacts;
@@ -197,21 +206,12 @@ public class Customer extends BaseEntity {
     }
   }
 
-  /**
-   * Fetches the standard contact for the customer. There should only be one contact with the
-   * department STANDARD.
-   * 
-   * @return The contact.
-   */
   public CustomerContact getStandardContact() {
-    if (contacts != null) {
-      for (CustomerContact cc : contacts) {
-        if (Department.STANDARD.equals(cc.getDepartment())) {
-          return cc;
-        }
-      }
-    }
-    return null;
+    return this.standardContact;
+  }
+
+  public void setStandardContact(CustomerContact standardContact) {
+    this.standardContact = standardContact;
   }
 
 }

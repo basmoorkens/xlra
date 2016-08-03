@@ -79,18 +79,31 @@ public class RaiseRatesController {
     logRecords = raiseRatesService.getRaiseRatesLogRecordsThatAreNotUndone();
   }
 
-  public String onFlowProcess(FlowEvent event) {
-    return event.getNewStep();
-  }
-
   /**
    * Raise the selected ratefiles by the given percentage.
    */
   public void raiseRates() {
-    raiseRatesService.raiseRateFileRateLinesWithPercentage(rateFiles.getTarget(), percentage);
-    hideAddDialog();
-    refreshLogs();
-    MessageUtil.addMessage("Rates raised", "Succesfully raised rates for");
+    if (validRaise()) {
+      raiseRatesService.raiseRateFileRateLinesWithPercentage(rateFiles.getTarget(), percentage);
+      hideAddDialog();
+      MessageUtil.addMessage("Rates raised", "Succesfully raised rates for");
+      resetState();
+    } else {
+      showAddDialog();
+    }
+  }
+
+  private boolean validRaise() {
+    if (rateFiles.getTarget() == null || rateFiles.getTarget().size() == 0) {
+      MessageUtil.addErrorMessage("No rates selected", "Please select ratefiles to raise.");
+      return false;
+    }
+    if (percentage == 0.00d) {
+      MessageUtil.addErrorMessage("0.00 is an invalid percentage",
+          "A raise of 0.00 doesnt do anything.");
+      return false;
+    }
+    return true;
   }
 
   /**

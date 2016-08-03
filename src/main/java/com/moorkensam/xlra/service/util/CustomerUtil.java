@@ -53,6 +53,21 @@ public class CustomerUtil {
     return filteredContacts;
   }
 
+  /**
+   * Returns all departments that should be shown on the frontend.
+   * 
+   * @return The list of display departments.
+   */
+  public List<Department> getDisplayDepartments() {
+    List<Department> displayDepartments = new ArrayList<Department>();
+    for (Department dep : Department.values()) {
+      if (!Department.STANDARD.equals(dep)) {
+        displayDepartments.add(dep);
+      }
+    }
+    return displayDepartments;
+  }
+
   private CustomerUtil() {
 
   }

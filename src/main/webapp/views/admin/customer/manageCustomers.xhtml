@@ -20,7 +20,8 @@
 					id="customerTable" rows="10" sortMode="single"
 					currentPageReportTemplate="Customers {startRecord} - {endRecord} of {totalRecords}, Page: {currentPage}/{totalPages}"
 					paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
-					rowsPerPageTemplate="10,25,50,100" paginatorPosition="top">
+					rowsPerPageTemplate="10,25,50,100" paginatorPosition="top"
+					styleClass="myHeader">
 					<p:column sortBy="#{customer.name}" filterBy="#{customer.name}"
 						filterStyle="width:100%;">
 						<f:facet name="header">Name</f:facet>
@@ -37,12 +38,11 @@
 						<f:facet name="header">Phone</f:facet>
 						#{customer.phone}
 					</p:column>
-					<p:column sortBy="#{customer.language}"
-						filterBy="#{customer.language})" filterStyle="width:100%;">
+					<p:column filterBy="#{customer.language}" filterStyle="width:100%;">
 						<f:facet name="header">Language</f:facet>
 						#{customer.language}
 					</p:column>
-					<p:column>
+					<p:column styleClass="myHeader">
 						<f:facet name="header">Has own ratefile</f:facet>
 						<p:selectBooleanButton offLabel="Standard ratefile"
 							disabled="true" onLabel="Own ratefile"
@@ -80,9 +80,9 @@
 			</p:panel>
 		</h:form>
 		<h:form id="customerDetailForm">
-			<p:dialog id="addDialog" appendTo="@(body)"
+			<p:dialog id="addDialog"
 				header="#{customerController.detailGridTitle}"
-				widgetVar="addCustomerDialog" modal="true" width="70%" height="50%"
+				widgetVar="addCustomerDialog" width="70%" height="50%"
 				dynamic="true">
 				<ui:include src="/views/admin/customer/customerDetail.xhtml">
 					<ui:param name="customer"
@@ -93,24 +93,13 @@
 
 		<h:form id="customerContactForm">
 			<p:dialog id="addContactDialog" header="Contact details"
-				appendTo="@(body)" widgetVar="addContactDialog" modal="true"
-				width="70%" height="50%" dynamic="true">
+				widgetVar="addContactDialog" width="70%" height="50%" dynamic="true">
 				<ui:include src="/views/admin/customer/customerContactDetail.xhtml">
 					<ui:param name="contact"
 						value="#{customerController.selectedContact}"></ui:param>
 				</ui:include>
 			</p:dialog>
 		</h:form>
-
-		<script type="text/javascript">
-			function handleAddCustomerRequest(xhr, status, args) {
-				if (args.validationFailed) {
-					PF('addCustomerDialog').show();
-				} else {
-					PF('addCustomerDialog').hide();
-				}
-			}
-		</script>
 	</ui:define>
 </ui:composition>
 </html>

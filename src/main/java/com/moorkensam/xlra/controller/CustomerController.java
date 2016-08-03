@@ -259,7 +259,7 @@ public class CustomerController {
   }
 
   public List<Department> getAllDepartments() {
-    return Arrays.asList(Department.values());
+    return CustomerUtil.getInstance().getDisplayDepartments();
   }
 
   public String getContactHeader() {

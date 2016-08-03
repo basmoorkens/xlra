@@ -14,6 +14,7 @@
 	</ui:define>
 	<ui:define name="body">
 		<h:form id="raiseHistoryForm">
+			<p:growl id="msgs" showDetail="true" />
 			<p:panel title="Raise history" header="Raise history">
 				<p:dataTable var="logRecord"
 					value="#{raiseRatesController.logRecords}">
@@ -22,7 +23,7 @@
 					</p:column>
 					<p:column headerText="Date:">
 						<h:outputText value="#{logRecord.createdDateTime}">
-							<f:convertDateTime type="both" pattern="dd-mm-YYYY HH:mm:ss" />
+							<f:convertDateTime type="both" pattern="dd-MM-YYYY HH:mm:ss" />
 						</h:outputText>
 					</p:column>
 					<p:column headerText="Percentage">
@@ -47,10 +48,8 @@
 		</h:form>
 
 		<h:form id="raiseRatesForm">
-			<p:dialog id="raiseDialog" header="Raise rates" appendTo="@(body)"
-				widgetVar="raiseRatesDialog" modal="true" width="70%" height="50%"
-				dynamic="true">
-				<p:growl id="msgs" showDetail="true" />
+			<p:dialog id="raiseDialog" header="Raise rates"
+				widgetVar="raiseRatesDialog" width="70%" height="50%" dynamic="true">
 				<p:panel header="Raise info">
 					<p:panelGrid columns="2" style="width:100%;"
 						columnClasses="labelColumn,valuesColumn">
@@ -84,23 +83,21 @@
 							actionListener="#{raiseRatesController.cancel}"
 							style="margin-right:20px;" styleClass="navButton"
 							id="cancelRaiseRatesButton"
-							update=":raiseRatesForm :raiseHistoryForm" ajax="true" />
-						<p:tooltip for="cancelRaiseRatesButton"
-							value="Cancel editing raise rates" />
+							update=":raiseRatesForm :raiseHistoryForm" />
+
 						<p:commandButton value="raise rates" styleClass="navButton"
 							actionListener="#{raiseRatesController.raiseRates}"
 							id="confirmRaiseRatesButton"
-							update=":raiseRatesForm :raiseHistoryForm" ajax="true" />
-						<p:tooltip for="confirmRaiseRatesButton"
-							value="Confirm the raise of rates" />
+							update=":raiseRatesForm :raiseHistoryForm " />
+
 					</p:panel>
 				</p:panel>
 			</p:dialog>
 			<p:ajaxStatus onstart="showStatusDialog();"
 				onsuccess="hideStatusDialog();" />
 
-			<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
-				closable="false" resizable="false" showHeader="false">
+			<p:dialog widgetVar="statusDialog" draggable="false" closable="false"
+				resizable="false" showHeader="false">
 				<p:graphicImage url="/resources/images/ajax-loader.gif" />
 			</p:dialog>
 		</h:form>

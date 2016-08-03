@@ -70,6 +70,7 @@ public class DieselRateController {
     selectedDieselRate = new DieselRate();
     selectedDieselRate.setInterval(new Interval());
     detailTitle = "Create new diesel rate";
+    editMode = false;
     showAddDialog();
   }
 
