@@ -37,6 +37,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.validator.ValidatorException;
@@ -81,6 +82,8 @@ public class ManageRatesController {
   private boolean editable;
 
   private Zone selectedZone;
+
+  private Zone originalSelectedZone;
 
   private Condition selectedCondition;
 
@@ -173,14 +176,23 @@ public class ManageRatesController {
    * @param zone The zone to edit.
    */
   public void setupEditZone(Zone zone) {
-    this.selectedZone = zone;
+    this.originalSelectedZone = zone;
+    this.selectedZone = zone.deepCopy();
     editZoneMode = true;
     showZoneDetailDialog();
   }
 
+  /**
+   * Cancels the editing of a zone.
+   */
   public void cancelEditZone() {
-    selectedZone = null;
+    resetZoneEdit();
     hideZoneDetailDialog();
+  }
+
+  private void resetZoneEdit() {
+    selectedZone = null;
+    originalSelectedZone = null;
   }
 
   private void showZoneDetailDialog() {
@@ -258,8 +270,12 @@ public class ManageRatesController {
    */
   public void saveZone() {
     if (isSelectedZoneIsValid()) {
-      MessageUtil.addMessage("Zone update", selectedZone.getName() + " successfully updated.");
+      originalSelectedZone.fillInValuesFromZone(selectedZone);
       updateRateFile();
+      resetZoneEdit();
+      MessageUtil.addMessage("Zone update", selectedZone.getName() + " successfully updated.");
+    } else {
+      showZoneDetailDialog();
     }
   }
 
@@ -441,7 +457,6 @@ public class ManageRatesController {
       MessageUtil.addErrorMessage("Postal codes not valid",
           "The given postal codes are not valid, make sure its a ','"
               + " seperated list of numerical postcode intervals START-STOP,START-STOP,...");
-      showZoneDetailDialog();
     }
     return false;
   }
@@ -558,6 +573,14 @@ public class ManageRatesController {
 
   public void setModel(LazyDataModel<RateFile> model) {
     this.model = model;
+  }
+
+  public Zone getOriginalSelectedZone() {
+    return originalSelectedZone;
+  }
+
+  public void setOriginalSelectedZone(Zone originalSelectedZone) {
+    this.originalSelectedZone = originalSelectedZone;
   }
 
 }

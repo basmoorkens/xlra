@@ -49,8 +49,8 @@
 	</h:form>
 
 	<h:form id="editZoneForm">
-		<p:dialog id="editDialog" header="Edit zone" appendTo="@(body)"
-			widgetVar="editZoneDialog" width="80%" height="50%" dynamic="true">
+		<p:dialog id="editDialog" header="Edit zone" dynamic="true"
+			widgetVar="editZoneDialog" width="80%" height="50%">
 			<p:panel header="Rate info">
 				<p:panelGrid style="width:100%;" columns="2"
 					columnClasses="labelColumn,valuesColumn">
@@ -62,7 +62,7 @@
 					<c:if test="#{manageRatesController.numericRateFileZone}">
 						<h:outputText
 							value="Postal code list(start-stop) seperated by ',':" />
-						<p:inputTextarea
+						<p:inputTextarea id="numericalPostalCodesInput"
 							value="#{manageRatesController.selectedZone.numericalPostalCodesAsString}"
 							style="width:100%;" />
 					</c:if>

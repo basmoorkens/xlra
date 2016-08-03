@@ -22,8 +22,7 @@ import javax.persistence.Transient;
 @Table(name = "zone")
 public class Zone extends BaseEntity {
 
-  public Zone() {
-  }
+  public Zone() {}
 
   public Zone(String name) {
     this.name = name;
@@ -157,16 +156,25 @@ public class Zone extends BaseEntity {
    */
   public Zone deepCopy() {
     Zone copy = new Zone();
-    copy.setName(name);
-    copy.setAlphaNumericPostalCodesAsString(alphaNumericPostalCodesAsString);
-    copy.setNumericalPostalCodesAsString(numericalPostalCodesAsString);
-    copy.setAlphaNumericalPostalCodes(alphaNumericalPostalCodes);
-    copy.setNumericalPostalCodes(numericalPostalCodes);
-    copy.setCountry(country);
-    copy.setExtraInfo(extraInfo);
-    copy.setZoneType(zoneType);
+    copy.fillInValuesFromZone(this);
     copy.setRateFile(null);
     return copy;
+  }
+
+  /**
+   * Fill in values from a different zone.
+   * 
+   * @param zone The zone to fill values in from.
+   */
+  public void fillInValuesFromZone(Zone zone) {
+    this.setName(zone.getName());
+    this.setAlphaNumericPostalCodesAsString(zone.getAlphaNumericPostalCodesAsString());
+    this.setNumericalPostalCodesAsString(zone.getNumericalPostalCodesAsString());
+    this.setAlphaNumericalPostalCodes(zone.getAlphaNumericalPostalCodes());
+    this.setNumericalPostalCodes(zone.getNumericalPostalCodes());
+    this.setCountry(zone.getCountry());
+    this.setExtraInfo(zone.getExtraInfo());
+    this.setZoneType(zone.getZoneType());
   }
 
 }
