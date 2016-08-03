@@ -26,6 +26,9 @@ public class CreateQuotationControllerTest extends UnitilsJUnit4 {
   @Mock
   private CustomerService customerService;
 
+  /**
+   * init method.
+   */
   @Before
   public void init() {
     controller = new CreateQuotationController();
