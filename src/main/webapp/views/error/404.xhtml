@@ -9,20 +9,22 @@
 	xmlns:of="http://omnifaces.org/functions">
 <h:head>
 	<title><ui:insert name="title">Extra logistics Rates application</ui:insert></title>
-	<h:outputStylesheet library="css" name="main.css" ></h:outputStylesheet>
+	<h:outputStylesheet library="css" name="main.css"></h:outputStylesheet>
 </h:head>
 <h:body>
-	<div id="version">Version:
-		#{maven.version['com.moorkensam:xlra']}</div>
-	<h:graphicImage url="/resources/images/Extra-Logo-neu.png"
-		style="float:right;margin:0px;top:10px;" />
-	<p:panel style="margin-top:150px;">
-		<h1>Looks like we lost the page that you are trying to access...</h1>
-		<p>
-			<h:outputLink value="#{errorController.applicationBaseUrl}">
+	<div id="container">
+		<div id="version">Version:
+			#{maven.version['com.moorkensam:xlra']}</div>
+		<h:graphicImage url="/resources/images/Extra-Logo-neu.png"
+			style="float:right;margin:0px;top:10px;" />
+		<p:panel style="margin-top:150px;">
+			<h1>Looks like we lost the page that you are trying to access...</h1>
+			<p>
+				<h:outputLink value="#{errorController.applicationBaseUrl}">
 			Click here to return to the application.
 		</h:outputLink>
-		</p>
-	</p:panel>
+			</p>
+		</p:panel>
+	</div>
 </h:body>
 </html>
