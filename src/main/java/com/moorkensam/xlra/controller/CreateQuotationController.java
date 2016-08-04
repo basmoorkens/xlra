@@ -20,6 +20,7 @@ import com.moorkensam.xlra.service.FileService;
 import com.moorkensam.xlra.service.QuotationService;
 import com.moorkensam.xlra.service.impl.FileServiceImpl;
 import com.moorkensam.xlra.service.util.CustomerUtil;
+import com.moorkensam.xlra.service.util.FileUtil;
 import com.moorkensam.xlra.service.util.QuotationUtil;
 import com.moorkensam.xlra.service.util.TranslationUtil;
 
@@ -259,21 +260,8 @@ public class CreateQuotationController {
     FacesContext facesContext = FacesContext.getCurrentInstance();
     HttpServletResponse response =
         (HttpServletResponse) facesContext.getExternalContext().getResponse();
-    response.reset();
-    response.setHeader("Content-Type", "application/pdf");
-    OutputStream responseOutputStream = response.getOutputStream();
-    File generatedPdfFromDisk =
-        fileService.getOffertePdfFromFileSystem(quotationResult.getPdfFileName());
-    InputStream pdfInputStream = new FileInputStream(generatedPdfFromDisk);
-    byte[] bytesBuffer = new byte[2048];
-    int bytesRead;
-    while ((bytesRead = pdfInputStream.read(bytesBuffer)) > 0) {
-      responseOutputStream.write(bytesBuffer, 0, bytesRead);
-    }
-
-    responseOutputStream.flush();
-    pdfInputStream.close();
-    responseOutputStream.close();
+    File pdfToServe = fileService.getOffertePdfFromFileSystem(quotationResult.getPdfFileName());
+    FileUtil.serveDownloadToHttpServletResponse(pdfToServe, response);
     facesContext.responseComplete();
   }
 
