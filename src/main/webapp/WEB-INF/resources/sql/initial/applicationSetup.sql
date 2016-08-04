@@ -71,6 +71,8 @@ VALUES
 	(24,'2015-10-28 19:43:45',00000000,NULL,NULL,0,'The permission to view log files','VIEW_LOGS');
 	
 	
+	
+	
 INSERT INTO role (id, createdDateTime, deleted, deletedDateTime, lastUpdatedDateTime, version, role_description, role_name)
 VALUES
 	(1,'2015-10-27 22:47:38',00000000,NULL,'2015-10-28 19:43:55',3,'Admin role, has all permissions','Admin'),
@@ -103,6 +105,36 @@ VALUES
 	(2,22),
 	(1,24);
 	
+	delete from role_permissions 
+	where permission_id in 
+	(select id from permissions where permission_key in ('ROLE_EDIT', 'PERMISSION_EDIT'));
+	
+	INSERT INTO role (id, createdDateTime, deleted, deletedDateTime, lastUpdatedDateTime, version, role_description, role_name)
+VALUES
+	(3, '2016-01-03 02:11:54', 00000000, NULL, NULL, 0, 'System administrator, has standard admin privileges but can edit roles and permissions on top of this.', 'SysAdmin');
+
+INSERT INTO role_permissions (role_id, permission_id)
+VALUES
+	(3, 1),
+	(3, 2),
+	(3, 3),
+	(3, 4),
+	(3, 5),
+	(3, 6),
+	(3, 7),
+	(3, 8),
+	(3, 9),
+	(3, 10),
+	(3, 11),
+	(3, 12),
+	(3, 13),
+	(3, 14),
+	(3, 15),
+	(3, 16),
+	(3, 17),
+	(3, 22),
+	(3, 23);
+	
 	INSERT INTO user (id, createdDateTime, deleted, deletedDateTime, lastUpdatedDateTime, version, email, firstName, name, password, validTo, verificationToken, userName, userStatus)
 VALUES
 	(1,'2015-10-27 22:51:37',00000000,NULL,'2015-12-05 20:35:31',2,'bas_moorkens@hotmail.com','bas','moorkens','c05e198412a3608e7a626e473180472d170f0f9c95c158eb0a43583e286799f3',NULL,NULL,'bmoork','IN_OPERATION');
@@ -110,3 +142,5 @@ VALUES
 	INSERT INTO user_roles (user_id, role_id)
 VALUES
 	(1,1);
+	
+	insert into user_roles values(1,3);
