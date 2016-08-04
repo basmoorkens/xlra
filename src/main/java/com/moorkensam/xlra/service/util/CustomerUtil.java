@@ -68,6 +68,24 @@ public class CustomerUtil {
     return displayDepartments;
   }
 
+  /**
+   * Takes a list of customercontacts and returns its email adresses as a string.
+   * 
+   * @param customerContacts The list to get the email adresses from.
+   * @return The email adresses as a string.
+   */
+  public String getCustomerContactsAsString(List<CustomerContact> customerContacts) {
+    StringBuilder builder = new StringBuilder();
+    if (customerContacts != null && customerContacts.size() > 0) {
+      for (CustomerContact contact : customerContacts) {
+        builder.append(contact.getEmail() + ", ");
+      }
+      String result = builder.toString();
+      return result.substring(0, result.length() - 2);
+    }
+    return "";
+  }
+
   private CustomerUtil() {
 
   }

@@ -455,14 +455,8 @@ public class CreateQuotationController {
    * @return String representation of all customer contacts.
    */
   public String getSelectedCustomerContactsAsString() {
-    StringBuilder builder = new StringBuilder();
-    if (customerContacts != null && customerContacts.getTarget() != null
-        && customerContacts.getTarget().size() > 0) {
-      for (CustomerContact contact : customerContacts.getTarget()) {
-        builder.append(contact.getEmail() + ", ");
-      }
-      String result = builder.toString();
-      return result.substring(0, result.length() - 2);
+    if (customerContacts != null) {
+      return CustomerUtil.getInstance().getCustomerContactsAsString(customerContacts.getTarget());
     }
     return "";
   }
