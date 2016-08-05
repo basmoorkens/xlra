@@ -12,14 +12,16 @@
 	<h:outputStylesheet library="css" name="main.css"></h:outputStylesheet>
 </h:head>
 <h:body>
-	<div id="version">Version:
-		#{maven.version['com.moorkensam:xlra']}</div>
-	<h:graphicImage url="/resources/images/Extra-Logo-neu.png"
-		style="float:right;margin:0px;top:10px;" />
-	<h1>Session disconnected</h1>
-	<p:panel>
-		<p>You were logged out due to being inactive for a prolonged
-			period of time. Please log back in to the application.</p>
-	</p:panel>
+	<div id="container">
+		<div id="version">Version:
+			#{maven.version['com.moorkensam:xlra']}</div>
+		<h:graphicImage url="/resources/images/Extra-Logo-neu.png"
+			style="float:right;margin:0px;top:10px;" />
+		<h1>Session disconnected</h1>
+		<p:panel>
+			<p>You were logged out due to being inactive for a prolonged
+				period of time. Please log back in to the application.</p>
+		</p:panel>
+	</div>
 </h:body>
 </html>
