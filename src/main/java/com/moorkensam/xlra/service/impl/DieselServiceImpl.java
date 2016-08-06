@@ -9,6 +9,7 @@ import com.moorkensam.xlra.model.error.IntervalOverlapException;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.service.DieselService;
+import com.moorkensam.xlra.service.LogService;
 import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
 import com.moorkensam.xlra.service.util.RateUtil;
@@ -37,7 +38,7 @@ public class DieselServiceImpl implements DieselService {
   private ConfigurationDao xlraConfigurationDao;
 
   @Inject
-  private LogDao logDao;
+  private LogService logService;
 
   @Inject
   private UserService userService;
@@ -50,12 +51,12 @@ public class DieselServiceImpl implements DieselService {
   }
 
   @Override
-  public void updateDieselRate(DieselRate dieselRate) {
+  public void updateDieselRate(final DieselRate dieselRate) {
     getDieselRateDao().updateDieselRate(dieselRate);
   }
 
   @Override
-  public void createDieselRate(DieselRate dieselRate) throws IntervalOverlapException {
+  public void createDieselRate(final DieselRate dieselRate) throws IntervalOverlapException {
     RateUtil.validateRateInterval(dieselRate, dieselRateDao.getAllDieselRates());
     getDieselRateDao().createDieselRate(dieselRate);
   }
@@ -67,22 +68,26 @@ public class DieselServiceImpl implements DieselService {
 
   @Override
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
-  public void updateCurrentDieselValue(BigDecimal value) {
+  public void updateCurrentDieselValue(final BigDecimal value) {
     Configuration config = getXlraConfigurationDao().getXlraConfiguration();
 
-    LogRecord createDieselLogRecord =
-        logRecordFactory.createDieselLogRecord(config.getCurrentDieselPrice(), value,
-            getUserService().getCurrentUsername());
-    logger.info("Saving dieselprice logrecord " + createDieselLogRecord);
-    getLogDao().createLogRecord(createDieselLogRecord);
+    logUpdateCurrentDieselValue(value, config);
 
     config.setCurrentDieselPrice(value);
     logger.info("Saving current diesel price" + config.getCurrentDieselPrice());
     getXlraConfigurationDao().updateXlraConfiguration(config);
   }
 
+  private void logUpdateCurrentDieselValue(final BigDecimal value, final Configuration config) {
+    LogRecord createDieselLogRecord =
+        logRecordFactory.createDieselLogRecord(config.getCurrentDieselPrice(), value,
+            getUserService().getCurrentUsername());
+    logger.info("Saving dieselprice logrecord " + createDieselLogRecord);
+    logService.createLogRecord(createDieselLogRecord);
+  }
+
   @Override
-  public DieselRate getDieselRateForCurrentPrice(BigDecimal price) throws RateFileException {
+  public DieselRate getDieselRateForCurrentPrice(final BigDecimal price) throws RateFileException {
     List<DieselRate> rates = getAllDieselRates();
     for (DieselRate rate : rates) {
       if (rate.getInterval().getStart() <= price.doubleValue()
@@ -108,14 +113,6 @@ public class DieselServiceImpl implements DieselService {
     this.logRecordFactory = logRecordFactory;
   }
 
-  public LogDao getLogDao() {
-    return logDao;
-  }
-
-  public void setLogDao(LogDao logDao) {
-    this.logDao = logDao;
-  }
-
   public DieselRateDao getDieselRateDao() {
     return dieselRateDao;
   }
@@ -138,5 +135,13 @@ public class DieselServiceImpl implements DieselService {
 
   public void setUserService(UserService userService) {
     this.userService = userService;
+  }
+
+  public LogService getLogService() {
+    return logService;
+  }
+
+  public void setLogService(LogService logService) {
+    this.logService = logService;
   }
 }

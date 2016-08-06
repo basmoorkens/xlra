@@ -53,6 +53,7 @@ public class LogRecordFactory {
     record.setRate(value);
     record.setType(LogType.CURRENCYRATE);
     record.setUserName(username);
+    record.setNewRate(newValue);
     return record;
   }
 

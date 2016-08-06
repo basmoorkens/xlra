@@ -9,6 +9,7 @@ import com.moorkensam.xlra.model.error.IntervalOverlapException;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.service.CurrencyService;
+import com.moorkensam.xlra.service.LogService;
 import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
 import com.moorkensam.xlra.service.util.RateUtil;
@@ -40,7 +41,7 @@ public class CurrencyServiceImpl implements CurrencyService {
   private ConfigurationDao xlraConfigurationDao;
 
   @Inject
-  private LogDao logDao;
+  private LogService logService;
 
   @Inject
   private CurrencyRateDao currencyRateDao;
@@ -56,12 +57,12 @@ public class CurrencyServiceImpl implements CurrencyService {
   }
 
   @Override
-  public void updateCurrencyRate(CurrencyRate currencyRate) {
+  public void updateCurrencyRate(final CurrencyRate currencyRate) {
     getCurrencyRateDao().updateCurrencyRate(currencyRate);
   }
 
   @Override
-  public void createCurrencyRate(CurrencyRate currencyRate) throws IntervalOverlapException {
+  public void createCurrencyRate(final CurrencyRate currencyRate) throws IntervalOverlapException {
     RateUtil.validateRateInterval(currencyRate, currencyRateDao.getAllChfRates());
     getCurrencyRateDao().createCurrencyRate(currencyRate);
   }
@@ -78,22 +79,26 @@ public class CurrencyServiceImpl implements CurrencyService {
 
   @Override
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
-  public void updateCurrentChfValue(BigDecimal value) {
+  public void updateCurrentChfValue(final BigDecimal value) {
     Configuration config = getXlraConfigurationDao().getXlraConfiguration();
 
-    LogRecord createChfLogRecord =
-        logRecordFactory.createChfLogRecord(config.getCurrentChfValue(), value, getUserService()
-            .getCurrentUsername());
-    logger.info("saving chfprice logrecord" + createChfLogRecord);
-    getLogDao().createLogRecord(createChfLogRecord);
+    logUpdateCurrentChfValue(value, config);
 
     config.setCurrentChfValue(value);
     logger.info("Saving current chf rate " + config.getCurrentChfValue());
     getXlraConfigurationDao().updateXlraConfiguration(config);
   }
 
+  private void logUpdateCurrentChfValue(final BigDecimal value, final Configuration config) {
+    LogRecord createChfLogRecord =
+        logRecordFactory.createChfLogRecord(config.getCurrentChfValue(), value, getUserService()
+            .getCurrentUsername());
+    logger.info("saving chfprice logrecord" + createChfLogRecord);
+    getLogService().createLogRecord(createChfLogRecord);
+  }
+
   @Override
-  public CurrencyRate getChfRateForCurrentPrice(BigDecimal price) throws RateFileException {
+  public CurrencyRate getChfRateForCurrentPrice(final BigDecimal price) throws RateFileException {
     List<CurrencyRate> allRates = getAllChfRates();
     if (allRates == null || allRates.isEmpty()) {
       throw new RateFileException("No Chf rates found, please add chf rates first.");
@@ -115,14 +120,6 @@ public class CurrencyServiceImpl implements CurrencyService {
 
   public void setCurrencyRateDao(CurrencyRateDao currencyRateDao) {
     this.currencyRateDao = currencyRateDao;
-  }
-
-  public LogDao getLogDao() {
-    return logDao;
-  }
-
-  public void setLogDao(LogDao logDao) {
-    this.logDao = logDao;
   }
 
   public ConfigurationDao getXlraConfigurationDao() {
@@ -153,6 +150,14 @@ public class CurrencyServiceImpl implements CurrencyService {
 
   public void setUserService(UserService userService) {
     this.userService = userService;
+  }
+
+  public LogService getLogService() {
+    return logService;
+  }
+
+  public void setLogService(LogService logService) {
+    this.logService = logService;
   }
 
 }

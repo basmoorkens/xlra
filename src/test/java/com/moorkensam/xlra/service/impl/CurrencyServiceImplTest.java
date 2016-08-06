@@ -2,7 +2,6 @@ package com.moorkensam.xlra.service.impl;
 
 import com.moorkensam.xlra.dao.ConfigurationDao;
 import com.moorkensam.xlra.dao.CurrencyRateDao;
-import com.moorkensam.xlra.dao.LogDao;
 import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.CurrencyRate;
 import com.moorkensam.xlra.model.configuration.Interval;
@@ -10,6 +9,7 @@ import com.moorkensam.xlra.model.configuration.XlraCurrency;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.model.log.RateLogRecord;
+import com.moorkensam.xlra.service.LogService;
 import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
 
@@ -45,7 +45,7 @@ public class CurrencyServiceImplTest extends UnitilsJUnit4 {
   private LogRecordFactory logRecordFactory;
 
   @Mock
-  private LogDao logDao;
+  private LogService logService;
 
   private List<CurrencyRate> rates;
 
@@ -62,7 +62,7 @@ public class CurrencyServiceImplTest extends UnitilsJUnit4 {
     currencyService.setCurrencyRateDao(dao);
     currencyService.setXlraConfigurationDao(configDao);
     currencyService.setLogRecordFactory(logRecordFactory);
-    currencyService.setLogDao(logDao);
+    currencyService.setLogService(logService);
     currencyService.setUserService(userService);
     r1 = new CurrencyRate();
     r1.setCurrencyType(XlraCurrency.CHF);
@@ -131,7 +131,7 @@ public class CurrencyServiceImplTest extends UnitilsJUnit4 {
     EasyMock.expect(
         logRecordFactory.createChfLogRecord(new BigDecimal(110d), new BigDecimal(100d), "bas"))
         .andReturn(record);
-    logDao.createLogRecord(record);
+    logService.createLogRecord(record);
     EasyMock.expectLastCall();
     configDao.updateXlraConfiguration(config);
     EasyMockUnitils.replay();

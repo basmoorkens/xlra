@@ -10,17 +10,19 @@ import java.util.List;
 
 public interface LogDao {
 
-  public void createLogRecord(LogRecord record);
+  public void createLogRecord(final LogRecord record);
 
   public List<RaiseRatesRecord> getAllRaiseRateLogRecords();
 
   public RaiseRatesRecord getLastRaiseRates();
 
-  public void updateRaiseRatesRecord(RaiseRatesRecord rr);
+  public void updateRaiseRatesRecord(final RaiseRatesRecord rr);
 
-  public List<RateLogRecord> getRateLogRecordsByDate(Date startDate, Date endDate);
+  public List<RateLogRecord> getRateLogRecordsByDate(final Date startDate, final Date endDate);
 
-  public List<RaiseRatesRecord> getRaiseRatesLogRecordByDate(Date startDate, Date endDate);
+  public List<RaiseRatesRecord> getRaiseRatesLogRecordByDate(final Date startDate,
+      final Date endDate);
 
-  public List<QuotationLogRecord> getQuotationLogRecordsByDate(Date startDate, Date endDate);
+  public List<QuotationLogRecord> getQuotationLogRecordsByDate(final Date startDate,
+      final Date endDate);
 }

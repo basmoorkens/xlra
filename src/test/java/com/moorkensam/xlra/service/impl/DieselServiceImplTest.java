@@ -10,6 +10,7 @@ import com.moorkensam.xlra.model.error.IntervalOverlapException;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.model.log.RateLogRecord;
+import com.moorkensam.xlra.service.LogService;
 import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
 
@@ -46,7 +47,7 @@ public class DieselServiceImplTest extends UnitilsJUnit4 {
   private ConfigurationDao configDao;
 
   @Mock
-  private LogDao logDao;
+  private LogService logService;
 
   private List<DieselRate> rates;
 
@@ -69,7 +70,7 @@ public class DieselServiceImplTest extends UnitilsJUnit4 {
     service.setDieselRateDao(dieselRateDao);
     service.setUserService(userService);
     service.setLogRecordFactory(logFactory);
-    service.setLogDao(logDao);
+    service.setLogService(logService);
     service.setXlraConfigurationDao(configDao);
     r1 = new DieselRate();
     r1.setInterval(new Interval("1.20", "1.30"));
@@ -128,7 +129,7 @@ public class DieselServiceImplTest extends UnitilsJUnit4 {
     EasyMock.expect(
         logFactory.createDieselLogRecord(config.getCurrentDieselPrice(), BigDecimal.valueOf(2d),
             "bas")).andReturn(log);
-    logDao.createLogRecord(log);
+    logService.createLogRecord(log);
     EasyMock.expectLastCall();
     configDao.updateXlraConfiguration(config);
     EasyMock.expectLastCall();

@@ -73,12 +73,14 @@ public class LogRecordFactoryTest extends UnitilsJUnit4 {
     RateLogRecord expected = new RateLogRecord();
     expected.setType(LogType.CURRENCYRATE);
     expected.setRate(BigDecimal.valueOf(10.05d));
+    expected.setNewRate(BigDecimal.valueOf(10.0d));
     LogRecord result =
-        factory.createChfLogRecord(BigDecimal.valueOf(10.05d), BigDecimal.valueOf(10d), "bas");
+        factory.createChfLogRecord(BigDecimal.valueOf(10.05d), BigDecimal.valueOf(10.0d), "bas");
     Assert.assertNotNull(result);
     Assert.assertTrue(result instanceof RateLogRecord);
     RateLogRecord rl = (RateLogRecord) result;
     Assert.assertEquals(expected.getType(), rl.getType());
     Assert.assertEquals(expected.getRate(), rl.getRate());
+    Assert.assertEquals(expected.getNewRate(), rl.getNewRate());
   }
 }

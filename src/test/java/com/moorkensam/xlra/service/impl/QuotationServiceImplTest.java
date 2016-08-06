@@ -1,7 +1,6 @@
 package com.moorkensam.xlra.service.impl;
 
 import com.moorkensam.xlra.dao.EmailTemplateDao;
-import com.moorkensam.xlra.dao.LogDao;
 import com.moorkensam.xlra.dao.PriceCalculationDao;
 import com.moorkensam.xlra.dao.QuotationQueryDao;
 import com.moorkensam.xlra.dao.QuotationResultDao;
@@ -26,6 +25,7 @@ import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.CalculationService;
 import com.moorkensam.xlra.service.EmailService;
 import com.moorkensam.xlra.service.FileService;
+import com.moorkensam.xlra.service.LogService;
 import com.moorkensam.xlra.service.MailTemplateService;
 import com.moorkensam.xlra.service.PdfService;
 import com.moorkensam.xlra.service.RateFileService;
@@ -108,7 +108,7 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
   private LogRecordFactory logRecordFactory;
 
   @Mock
-  private LogDao logDao;
+  private LogService logService;
 
   private QuotationQuery query;
 
@@ -142,7 +142,7 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
     quotationService.setPdfService(pdfService);
     quotationService.setUserService(userService);
     quotationService.setQuotationUtil(quotationUtil);
-    quotationService.setLogDao(logDao);
+    quotationService.setLogService(logService);
     quotationService.setLogFactory(logRecordFactory);
   }
 
@@ -179,7 +179,7 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
     EasyMock.expect(fileService.convertTransientOfferteToFinal("uq123")).andReturn("uq123.pdf");
     LogRecord log = new QuotationLogRecord();
     EasyMock.expect(logRecordFactory.createOfferteLogRecord(result)).andReturn(log);
-    logDao.createLogRecord(log);
+    logService.createLogRecord(log);
     EasyMock.expectLastCall();
     mailService.sendOfferteMail(result);
     EasyMock.expectLastCall();

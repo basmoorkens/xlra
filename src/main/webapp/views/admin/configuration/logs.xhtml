@@ -17,12 +17,16 @@
 				<p:dataTable value="#{logOverviewController.quotationLogRecords}"
 					var="log" emptyMessage="No offerte  logs found." id="offerteLogs">
 					<p:column>
-						<f:facet name="header">offerteKey</f:facet>
-						#{log.offerteKey}
+						<f:facet name="header">Date time</f:facet>
+						#{log.logDate}
 					</p:column>
 					<p:column>
-						<f:facet name="header">createdUserName</f:facet>
+						<f:facet name="header">Username</f:facet>
 						#{log.userName}
+					</p:column>
+					<p:column>
+						<f:facet name="header">offerteKey</f:facet>
+						#{log.offerteKey}
 					</p:column>
 					<p:column>
 						<f:facet name="header">customerName</f:facet>
@@ -38,6 +42,10 @@
 					<p:column>
 						<f:facet name="header">Date time</f:facet>
 						#{log.logDate}
+					</p:column>
+					<p:column>
+						<f:facet name="header">Username</f:facet>
+						#{log.userName}
 					</p:column>
 					<p:column>
 						<f:facet name="header">Type</f:facet>
@@ -61,6 +69,10 @@
 					<p:column>
 						<f:facet name="header">Date time</f:facet>
 						#{log.logDate}
+					</p:column>
+					<p:column>
+						<f:facet name="header">Username</f:facet>
+						#{log.userName}
 					</p:column>
 					<p:column>
 						<f:facet name="header">Operation</f:facet>

@@ -19,6 +19,7 @@ import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.CalculationService;
 import com.moorkensam.xlra.service.EmailService;
 import com.moorkensam.xlra.service.FileService;
+import com.moorkensam.xlra.service.LogService;
 import com.moorkensam.xlra.service.MailTemplateService;
 import com.moorkensam.xlra.service.PdfService;
 import com.moorkensam.xlra.service.QuotationService;
@@ -76,7 +77,7 @@ public class QuotationServiceImpl implements QuotationService {
   private UserService userService;
 
   @Inject
-  private LogDao logDao;
+  private LogService logService;
 
   private LogRecordFactory logFactory;
 
@@ -215,7 +216,7 @@ public class QuotationServiceImpl implements QuotationService {
 
   private void logOfferteSubmit(QuotationResult result) {
     LogRecord log = logFactory.createOfferteLogRecord(result);
-    logDao.createLogRecord(log);
+    logService.createLogRecord(log);
   }
 
   private void createAndSaveFullOfferte(QuotationResult offerte) {
@@ -358,14 +359,6 @@ public class QuotationServiceImpl implements QuotationService {
     return quotationResultDao.getOfferteByKey(offerteKey);
   }
 
-  public LogDao getLogDao() {
-    return logDao;
-  }
-
-  public void setLogDao(LogDao logDao) {
-    this.logDao = logDao;
-  }
-
   public LogRecordFactory getLogFactory() {
     return logFactory;
   }
@@ -383,5 +376,13 @@ public class QuotationServiceImpl implements QuotationService {
   @Override
   public int countOffertes() {
     return quotationResultDao.countOffertes();
+  }
+
+  public LogService getLogService() {
+    return logService;
+  }
+
+  public void setLogService(LogService logService) {
+    this.logService = logService;
   }
 }

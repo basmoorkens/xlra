@@ -6,6 +6,7 @@ import com.moorkensam.xlra.model.log.RaiseRatesRecord;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.RateOperation;
+import com.moorkensam.xlra.service.LogService;
 import com.moorkensam.xlra.service.RaiseRateFileService;
 import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.util.CalcUtil;
@@ -30,7 +31,7 @@ public class RaiseRateFileServiceImpl implements RaiseRateFileService {
   private static final Logger logger = LogManager.getLogger();
 
   @Inject
-  private LogDao logDao;
+  private LogService logService;
 
   private LogRecordFactory logRecordFactory;
 
@@ -57,12 +58,12 @@ public class RaiseRateFileServiceImpl implements RaiseRateFileService {
 
   @Override
   public List<RaiseRatesRecord> getRaiseRatesLogRecordsThatAreNotUndone() {
-    return getLogDao().getAllRaiseRateLogRecords();
+    return logService.getAllRaiseRateLogRecords();
   }
 
   @Override
   public void undoLatestRatesRaise() {
-    RaiseRatesRecord lastRaise = getLogDao().getLastRaiseRates();
+    RaiseRatesRecord lastRaise = logService.getLastRaiseRates();
     if (lastRaise == null) {
       logger.info("No raise found in the database");
     } else {
@@ -70,7 +71,7 @@ public class RaiseRateFileServiceImpl implements RaiseRateFileService {
       applyRateOperation(lastRaise.getRateFiles(), lastRaise.getPercentage(),
           RateOperation.SUBTRACT);
       lastRaise.setUndone(true);
-      getLogDao().updateRaiseRatesRecord(lastRaise);
+      logService.updateRaiseRatesRecord(lastRaise);
     }
   }
 
@@ -88,10 +89,7 @@ public class RaiseRateFileServiceImpl implements RaiseRateFileService {
 
     raiseRateFiles(percentage, fullRateFiles, operation);
 
-    RaiseRatesRecord createRaiseRatesRecord =
-        getLogRecordFactory().createRaiseRatesRecord(operation, percentage, fullRateFiles,
-            getUserService().getCurrentUsername());
-    logDao.createLogRecord(createRaiseRatesRecord);
+    logRaiseRates(percentage, operation, fullRateFiles);
 
     for (RateFile rf : fullRateFiles) {
       if (operation == RateOperation.RAISE) {
@@ -101,6 +99,14 @@ public class RaiseRateFileServiceImpl implements RaiseRateFileService {
       }
       getRateFileDao().updateRateFile(rf);
     }
+  }
+
+  private void logRaiseRates(double percentage, RateOperation operation,
+      List<RateFile> fullRateFiles) {
+    RaiseRatesRecord createRaiseRatesRecord =
+        getLogRecordFactory().createRaiseRatesRecord(operation, percentage, fullRateFiles,
+            getUserService().getCurrentUsername());
+    logService.createLogRecord(createRaiseRatesRecord);
   }
 
   /**
@@ -164,14 +170,6 @@ public class RaiseRateFileServiceImpl implements RaiseRateFileService {
     }
   }
 
-  public LogDao getLogDao() {
-    return logDao;
-  }
-
-  public void setLogDao(LogDao logDao) {
-    this.logDao = logDao;
-  }
-
   public LogRecordFactory getLogRecordFactory() {
     return logRecordFactory;
   }
@@ -202,6 +200,14 @@ public class RaiseRateFileServiceImpl implements RaiseRateFileService {
 
   public void setUserService(UserService userService) {
     this.userService = userService;
+  }
+
+  public LogService getLogService() {
+    return logService;
+  }
+
+  public void setLogService(LogService logService) {
+    this.logService = logService;
   }
 
 }
