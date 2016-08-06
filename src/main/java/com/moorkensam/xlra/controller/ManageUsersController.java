@@ -234,6 +234,10 @@ public class ManageUsersController {
     return !UserUtil.canEnableUser(user);
   }
 
+  public boolean canUserResetPassword(User user) {
+    return !UserUtil.canResetPassword(user);
+  }
+
   public boolean canUserBeDisabled(User user) {
     return !UserUtil.canDisableUser(user);
   }

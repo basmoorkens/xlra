@@ -139,6 +139,7 @@
 							value="Reset password" ajax="true" id="resetPasswordButton"
 							actionListener="#{manageUsersController.resetUserPassword}"
 							update=":usersForm :addUserForm" styleClass="navButton"
+							disabled="#{manageUsersController.canUserResetPassword(user)}"
 							style="margin-right:20px;" />
 						<p:commandButton value="Save" update=":usersForm :addUserForm"
 							ajax="true" styleClass="navButton" style="margin-right:20px;"
