@@ -4,6 +4,7 @@ import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.dao.LogDao;
 import com.moorkensam.xlra.dao.UserDao;
 import com.moorkensam.xlra.model.error.UserException;
+import com.moorkensam.xlra.model.error.XlraValidationException;
 import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.model.log.LogType;
 import com.moorkensam.xlra.model.security.User;
@@ -13,6 +14,7 @@ import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
 import com.moorkensam.xlra.service.util.PasswordUtil;
 import com.moorkensam.xlra.service.util.TokenUtil;
+import com.moorkensam.xlra.service.util.UserStatusUtil;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -134,7 +136,8 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public void resetUserPassword(final User user) throws MessagingException {
+  public void resetUserPassword(final User user) throws MessagingException, XlraValidationException {
+    validateResetRequest(user);
     try {
       logger
           .info("Sending reset password email to " + user.getUserName() + " - " + user.getEmail());
@@ -144,6 +147,16 @@ public class UserServiceImpl implements UserService {
     } catch (MessagingException e) {
       logger.error(e);
       throw new MessagingException();
+    }
+  }
+
+  private void validateResetRequest(final User user) throws XlraValidationException {
+    if (!UserStatusUtil.canResetPassword(user)) {
+      String businessException =
+          "Can not change the user status to PASSWORD_RESET for user " + user.getUserName()
+              + " which has status " + user.getUserStatus();
+      logger.error(businessException);
+      throw new XlraValidationException(businessException);
     }
   }
 
@@ -218,15 +231,35 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public void disableUser(final User user) {
+  public void disableUser(final User user) throws XlraValidationException {
+    validateDisableRequest(user);
     user.setUserStatus(UserStatus.DISABLED);
     updateUser(user, false);
   }
 
+  private void validateDisableRequest(final User user) throws XlraValidationException {
+    if (!UserStatusUtil.canDisableUser(user)) {
+      String businessException =
+          "Can not disable user " + user.getUserName() + " with status " + user.getUserStatus();
+      logger.error(businessException);
+      throw new XlraValidationException(businessException);
+    }
+  }
+
   @Override
-  public void enableUser(final User user) {
+  public void enableUser(final User user) throws XlraValidationException {
+    validateEnableRequest(user);
     user.setUserStatus(UserStatus.IN_OPERATION);
     updateUser(user, false);
+  }
+
+  private void validateEnableRequest(final User user) throws XlraValidationException {
+    if (!UserStatusUtil.canEnableUser(user)) {
+      String businessException =
+          "Can not enable user " + user.getUserName() + " with status " + user.getUserStatus();
+      logger.error(businessException);
+      throw new XlraValidationException(businessException);
+    }
   }
 
   @Override

@@ -3,6 +3,7 @@ package com.moorkensam.xlra.service.impl;
 import com.moorkensam.xlra.dao.LogDao;
 import com.moorkensam.xlra.dao.UserDao;
 import com.moorkensam.xlra.model.error.UserException;
+import com.moorkensam.xlra.model.error.XlraValidationException;
 import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.model.log.LogType;
 import com.moorkensam.xlra.model.security.User;
@@ -126,5 +127,62 @@ public class UserServiceImplTest extends UnitilsJUnit4 {
 
     Assert.assertEquals(xlraHash, user.getPassword());
     Assert.assertEquals(UserStatus.IN_OPERATION, user.getUserStatus());
+  }
+
+  @Test
+  public void testEnableUserSucces() throws XlraValidationException {
+    User user = new User();
+    user.setUserName("bmoork");
+    user.setUserStatus(UserStatus.DISABLED);
+    EasyMock.expect(userDao.updateUser(user)).andReturn(user);
+    EasyMockUnitils.replay();
+    service.enableUser(user);
+
+  }
+
+  @Test(expected = XlraValidationException.class)
+  public void testEnableUserFailedValidation() throws XlraValidationException {
+    User user = new User();
+    user.setUserName("bmoork");
+    user.setUserStatus(UserStatus.IN_OPERATION);
+    service.enableUser(user);
+  }
+
+  @Test(expected = XlraValidationException.class)
+  public void testResetPwFailedValidation() throws XlraValidationException, MessagingException {
+    User user = new User();
+    user.setUserName("bmoork");
+    user.setUserStatus(UserStatus.PASSWORD_RESET);
+    service.resetUserPassword(user);
+  }
+
+  @Test
+  public void testResetPwSucces() throws XlraValidationException, MessagingException {
+    User user = new User();
+    user.setUserName("bmoork");
+    user.setUserStatus(UserStatus.IN_OPERATION);
+    emailService.sendResetPasswordEmail(user);
+    EasyMock.expectLastCall();
+    EasyMock.expect(userDao.updateUser(user)).andReturn(user);
+    EasyMockUnitils.replay();
+    service.resetUserPassword(user);
+  }
+
+  @Test(expected = XlraValidationException.class)
+  public void testDisableUserFailedValidation() throws XlraValidationException {
+    User user = new User();
+    user.setUserName("bmoork");
+    user.setUserStatus(UserStatus.DISABLED);
+    service.disableUser(user);
+  }
+
+  @Test
+  public void testDisableUserSucces() throws XlraValidationException {
+    User user = new User();
+    user.setUserName("bmoork");
+    user.setUserStatus(UserStatus.IN_OPERATION);
+    EasyMock.expect(userDao.updateUser(user)).andReturn(user);
+    EasyMockUnitils.replay();
+    service.disableUser(user);
   }
 }

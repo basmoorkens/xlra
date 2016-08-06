@@ -2,11 +2,12 @@ package com.moorkensam.xlra.controller;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.error.UserException;
+import com.moorkensam.xlra.model.error.XlraValidationException;
 import com.moorkensam.xlra.model.security.Role;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.RolePermissionService;
 import com.moorkensam.xlra.service.UserService;
-import com.moorkensam.xlra.service.util.UserUtil;
+import com.moorkensam.xlra.service.util.UserStatusUtil;
 
 import org.primefaces.context.RequestContext;
 import org.primefaces.model.DualListModel;
@@ -117,6 +118,8 @@ public class ManageUsersController {
                 + selectedUser.getUserName()
                 + ". Please try again or of this errors persists contact the system "
                 + "administrator.");
+      } catch (XlraValidationException e2) {
+        MessageUtil.addErrorMessage("Error resetting user password", e2.getBusinessException());
       }
     }
   }
@@ -127,9 +130,13 @@ public class ManageUsersController {
    * @param user The user to enable.
    */
   public void enableUser(User user) {
-    userService.enableUser(user);
-    MessageUtil.addMessage("User enabled", "Enabled user " + user.getUserName());
-    refreshUsers();
+    try {
+      userService.enableUser(user);
+      MessageUtil.addMessage("User enabled", "Enabled user " + user.getUserName());
+      refreshUsers();
+    } catch (XlraValidationException e) {
+      MessageUtil.addErrorMessage("Can not enable user", e.getBusinessException());
+    }
   }
 
   /**
@@ -138,9 +145,13 @@ public class ManageUsersController {
    * @param user The user to disable.
    */
   public void disableUser(User user) {
-    userService.disableUser(user);
-    MessageUtil.addMessage("User disabled", "Disabled user " + user.getUserName());
-    refreshUsers();
+    try {
+      userService.disableUser(user);
+      MessageUtil.addMessage("User disabled", "Disabled user " + user.getUserName());
+      refreshUsers();
+    } catch (XlraValidationException e) {
+      MessageUtil.addErrorMessage("Can not disable user", e.getBusinessException());
+    }
   }
 
   /**
@@ -231,15 +242,15 @@ public class ManageUsersController {
   }
 
   public boolean canUserBeEnabled(User user) {
-    return !UserUtil.canEnableUser(user);
+    return !UserStatusUtil.canEnableUser(user);
   }
 
   public boolean canUserResetPassword(User user) {
-    return !UserUtil.canResetPassword(user);
+    return !UserStatusUtil.canResetPassword(user);
   }
 
   public boolean canUserBeDisabled(User user) {
-    return !UserUtil.canDisableUser(user);
+    return !UserStatusUtil.canDisableUser(user);
   }
 
   public List<User> getUsers() {
@@ -290,7 +301,7 @@ public class ManageUsersController {
    */
   public boolean getCanResetPassword() {
     if (selectedUser.getId() > 0) {
-      return UserUtil.canResetPassword(selectedUser);
+      return UserStatusUtil.canResetPassword(selectedUser);
     }
     return false;
   }

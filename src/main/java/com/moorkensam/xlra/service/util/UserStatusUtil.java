@@ -9,7 +9,7 @@ import com.moorkensam.xlra.model.security.UserStatus;
  * @author bas
  *
  */
-public class UserUtil {
+public class UserStatusUtil {
 
 
   /**
