@@ -2,6 +2,9 @@ package com.moorkensam.xlra.model.security;
 
 import com.moorkensam.xlra.model.BaseEntity;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
@@ -46,7 +49,12 @@ public class Permission extends BaseEntity {
       return false;
     }
     Permission other = (Permission) obj;
-    return other.getId() == id;
+    return new EqualsBuilder().append(id, other.getId()).isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder(17, 31).append(id).toHashCode();
   }
 
   public String getKey() {

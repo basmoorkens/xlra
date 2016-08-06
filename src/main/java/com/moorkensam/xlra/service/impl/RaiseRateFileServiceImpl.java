@@ -1,6 +1,5 @@
 package com.moorkensam.xlra.service.impl;
 
-import com.moorkensam.xlra.dao.LogDao;
 import com.moorkensam.xlra.dao.RateFileDao;
 import com.moorkensam.xlra.model.log.RaiseRatesRecord;
 import com.moorkensam.xlra.model.rate.RateFile;

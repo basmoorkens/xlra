@@ -4,7 +4,6 @@ import com.moorkensam.xlra.model.BaseEntity;
 import com.moorkensam.xlra.model.mail.EmailHistoryRecord;
 import com.moorkensam.xlra.model.mail.EmailResult;
 import com.moorkensam.xlra.model.rate.Country;
-import com.moorkensam.xlra.model.rate.RateFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +14,6 @@ import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;

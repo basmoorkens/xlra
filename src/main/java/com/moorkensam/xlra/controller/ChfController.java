@@ -5,14 +5,11 @@ import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.CurrencyRate;
 import com.moorkensam.xlra.model.configuration.Interval;
 import com.moorkensam.xlra.model.configuration.XlraCurrency;
-import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.IntervalOverlapException;
 import com.moorkensam.xlra.service.ApplicationConfigurationService;
 import com.moorkensam.xlra.service.CurrencyService;
-import com.moorkensam.xlra.service.util.CustomerUtil;
 
 import org.primefaces.context.RequestContext;
-import org.primefaces.event.RowEditEvent;
 
 import java.math.BigDecimal;
 import java.util.List;

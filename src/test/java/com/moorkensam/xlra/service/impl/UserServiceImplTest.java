@@ -26,6 +26,9 @@ import javax.persistence.NoResultException;
 
 public class UserServiceImplTest extends UnitilsJUnit4 {
 
+  private static final String xlraHash =
+      "c05e198412a3608e7a626e473180472d170f0f9c95c158eb0a43583e286799f3";
+
   @TestedObject
   private UserServiceImpl service;
 
@@ -41,9 +44,6 @@ public class UserServiceImplTest extends UnitilsJUnit4 {
   @Mock
   private User userMock;
 
-  private static final String xlraHash =
-      "c05e198412a3608e7a626e473180472d170f0f9c95c158eb0a43583e286799f3";
-
   @Mock
   private LogRecordFactory logRecordFactory;
 
@@ -57,12 +57,6 @@ public class UserServiceImplTest extends UnitilsJUnit4 {
     service.setUserDao(userDao);
     service.setLogDao(logDao);
     service.setEmailService(emailService);
-  }
-
-  @Test
-  public void testGetPasswordHash() {
-    String result = service.makePasswordHash("xlra");
-    Assert.assertEquals(xlraHash, result);
   }
 
   @Test(expected = UserException.class)

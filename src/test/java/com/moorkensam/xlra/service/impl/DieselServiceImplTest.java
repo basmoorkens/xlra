@@ -2,7 +2,6 @@ package com.moorkensam.xlra.service.impl;
 
 import com.moorkensam.xlra.dao.ConfigurationDao;
 import com.moorkensam.xlra.dao.DieselRateDao;
-import com.moorkensam.xlra.dao.LogDao;
 import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.DieselRate;
 import com.moorkensam.xlra.model.configuration.Interval;

@@ -32,26 +32,6 @@
 		<ui:include src="/views/user/resultForm.xhtml">
 			<ui:param name="canEdit" value="true" />
 		</ui:include>
-
-
-		<script type="text/javascript">
-			var statusDlgTimer = null;
-
-			function showStatusDialog() {
-				if (statusDlgTimer === null) {
-					statusDlgTimer = setTimeout("PF('statusDialog').show()",
-							500);
-				}
-			}
-
-			function hideStatusDialog() {
-				if (statusDlgTimer !== null) {
-					clearTimeout(statusDlgTimer);
-					PF('statusDialog').hide();
-					statusDlgTimer = null;
-				}
-			}
-		</script>
 	</ui:define>
 </ui:composition>
 </html>

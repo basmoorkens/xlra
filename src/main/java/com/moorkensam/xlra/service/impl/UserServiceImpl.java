@@ -11,14 +11,12 @@ import com.moorkensam.xlra.model.security.UserStatus;
 import com.moorkensam.xlra.service.EmailService;
 import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
+import com.moorkensam.xlra.service.util.PasswordUtil;
 import com.moorkensam.xlra.service.util.TokenUtil;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -64,25 +62,25 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public void createUser(User user) throws UserException {
+  public void createUser(final User user) throws UserException {
     validateUserIsUnique(user);
     LogRecord record = logRecordFactory.createUserRecord(user, LogType.USER_CREATED);
     getLogDao().createLogRecord(record);
 
     user.setPassword("xlra");
     user.setTokenInfo(TokenUtil.getNextToken());
-    user.setPassword(makePasswordHash(user.getPassword()));
+    user.setPassword(PasswordUtil.makePasswordHash(user.getPassword()));
     user.setUserStatus(UserStatus.FIRST_TIME_LOGIN);
     getUserDao().createUser(user);
     sendUserCreatedEmail(user);
   }
 
-  private void validateUserIsUnique(User user) throws UserException {
+  private void validateUserIsUnique(final User user) throws UserException {
     validateUserEmail(user);
     validateUserUsername(user);
   }
 
-  private void validateUserUsername(User user) throws UserException {
+  private void validateUserUsername(final User user) throws UserException {
     try {
       userDao.getUserByUserName(user.getUserName());
       throw new UserException("A user with this username already exists");
@@ -93,7 +91,7 @@ public class UserServiceImpl implements UserService {
     }
   }
 
-  private void validateUserEmail(User user) throws UserException {
+  private void validateUserEmail(final User user) throws UserException {
     try {
       userDao.getUserByEmail(user.getEmail());
       throw new UserException("A user with this email adres already exists");
@@ -104,7 +102,7 @@ public class UserServiceImpl implements UserService {
     }
   }
 
-  protected void sendUserCreatedEmail(User user) {
+  protected void sendUserCreatedEmail(final User user) {
     try {
       logger.info("Sending account created email to " + user.getUserName() + " - "
           + user.getEmail());
@@ -116,9 +114,9 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public User updateUser(User user, boolean updatedPw) {
+  public User updateUser(final User user, boolean updatedPw) {
     if (updatedPw) {
-      user.setPassword(makePasswordHash(user.getPassword()));
+      user.setPassword(PasswordUtil.makePasswordHash(user.getPassword()));
     }
     return getUserDao().updateUser(user);
   }
@@ -129,38 +127,14 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public void deleteUser(User user) {
+  public void deleteUser(final User user) {
     logger.info("Deleting user " + user.getUserName());
     User toDelete = getUserDao().getUserbyId(user.getId());
     getUserDao().deleteUser(toDelete);
   }
 
-  protected String makePasswordHash(String password) {
-    MessageDigest md;
-    try {
-      md = MessageDigest.getInstance("SHA-256");
-      md.update(password.getBytes("UTF-8"));
-      byte[] digest = md.digest();
-
-      StringBuffer hexString = new StringBuffer();
-      for (int i = 0; i < digest.length; i++) {
-        String hex = Integer.toHexString(0xff & digest[i]);
-        if (hex.length() == 1) {
-          hexString.append('0');
-        }
-        hexString.append(hex);
-      }
-      return hexString.toString();
-    } catch (NoSuchAlgorithmException e) {
-      logger.error(e.getMessage());
-    } catch (UnsupportedEncodingException e) {
-      logger.error(e.getMessage());
-    }
-    return "";
-  }
-
   @Override
-  public void resetUserPassword(User user) throws MessagingException {
+  public void resetUserPassword(final User user) throws MessagingException {
     try {
       logger
           .info("Sending reset password email to " + user.getUserName() + " - " + user.getEmail());
@@ -174,26 +148,26 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public User getUserByEmail(String email) {
+  public User getUserByEmail(final String email) {
     return getUserDao().getUserByEmail(email);
   }
 
   @Override
-  public void resendAccountCreatedEmail(User user) {
+  public void resendAccountCreatedEmail(final User user) {
     sendUserCreatedEmail(user);
   }
 
   @Override
-  public User isValidPasswordRequest(String email, String token) {
+  public User isValidPasswordRequest(final String email, final String token) {
     return getUserDao().isValidPasswordRequest(email, token);
   }
 
   @Override
-  public void setPasswordAndActivateUser(User user, String password) {
+  public void setPasswordAndActivateUser(final User user, final String password) {
     logger.info("User " + user.getUserName() + " is now activated");
     LogRecord record = logRecordFactory.createUserRecord(user, LogType.USER_ACTIVATED);
     getLogDao().createLogRecord(record);
-    user.setPassword(makePasswordHash(password));
+    user.setPassword(PasswordUtil.makePasswordHash(password));
     user.setUserStatus(UserStatus.IN_OPERATION);
     getUserDao().updateUser(user);
   }
@@ -231,7 +205,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public User getUserByUserName(String username) {
+  public User getUserByUserName(final String username) {
     return userDao.getUserByUserName(username);
   }
 
@@ -244,19 +218,19 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public void disableUser(User user) {
+  public void disableUser(final User user) {
     user.setUserStatus(UserStatus.DISABLED);
     updateUser(user, false);
   }
 
   @Override
-  public void enableUser(User user) {
+  public void enableUser(final User user) {
     user.setUserStatus(UserStatus.IN_OPERATION);
     updateUser(user, false);
   }
 
   @Override
-  public User isValidPasswordResetRequest(String email, String token) {
+  public User isValidPasswordResetRequest(final String email, final String token) {
     return userDao.isValidPasswordResetRequest(email, token);
   }
 }

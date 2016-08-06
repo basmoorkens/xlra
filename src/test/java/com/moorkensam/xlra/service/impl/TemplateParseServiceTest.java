@@ -16,6 +16,7 @@ import com.moorkensam.xlra.service.util.ConfigurationLoader;
 
 import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Configuration;
+import freemarker.template.Version;
 
 import junit.framework.Assert;
 
@@ -41,7 +42,7 @@ public class TemplateParseServiceTest extends UnitilsJUnit4 {
   public void setup() {
     templateEngine = TemplateParseServiceImpl.getInstance();
     templateEngine.setStringTemplateLoader(new StringTemplateLoader());
-    templateEngine.setConfiguration(new Configuration());
+    templateEngine.setConfiguration(new Configuration(new Version("2.3.22")));
     templateEngine.setConfigLoader(ConfigurationLoader.getInstance());
   }
 

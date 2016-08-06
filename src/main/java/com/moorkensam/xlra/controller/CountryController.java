@@ -3,10 +3,8 @@ package com.moorkensam.xlra.controller;
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.service.CountryService;
-import com.moorkensam.xlra.service.util.CustomerUtil;
 
 import org.primefaces.context.RequestContext;
-import org.primefaces.event.RowEditEvent;
 
 import java.util.List;
 

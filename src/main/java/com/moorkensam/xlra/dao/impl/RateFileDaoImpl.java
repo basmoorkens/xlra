@@ -3,7 +3,6 @@ package com.moorkensam.xlra.dao.impl;
 import com.moorkensam.xlra.dao.BaseDao;
 import com.moorkensam.xlra.dao.RateFileDao;
 import com.moorkensam.xlra.dto.RateFileIdNameDto;
-import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateFileSearchFilter;

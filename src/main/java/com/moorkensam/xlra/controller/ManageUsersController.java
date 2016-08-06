@@ -6,6 +6,7 @@ import com.moorkensam.xlra.model.security.Role;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.RolePermissionService;
 import com.moorkensam.xlra.service.UserService;
+import com.moorkensam.xlra.service.util.UserUtil;
 
 import org.primefaces.context.RequestContext;
 import org.primefaces.model.DualListModel;
@@ -108,6 +109,7 @@ public class ManageUsersController {
         userService.resetUserPassword(selectedUser);
         MessageUtil.addMessage("Password reset",
             "Password reset email was sent to " + selectedUser.getEmail());
+        refreshUsers();
       } catch (MessagingException e) {
         MessageUtil.addErrorMessage(
             "Failed to send email to user",
@@ -147,9 +149,8 @@ public class ManageUsersController {
   public void setupNewUser() {
     selectedUser = new User();
     selectUserForEdit(selectedUser);
-    RequestContext context = RequestContext.getCurrentInstance();
     editMode = false;
-    context.execute("PF('addUserDialog').show();");
+    showAddDialog();
   }
 
   /**
@@ -165,9 +166,8 @@ public class ManageUsersController {
     roles.setTarget(user.getRoles());
     roles.setSource(getSourceRoles(user));
     setUpdateTitle();
-    RequestContext context = RequestContext.getCurrentInstance();
     editMode = true;
-    context.execute("PF('addUserDialog').show();");
+    showAddDialog();
   }
 
   private List<Role> getSourceRoles(User user) {
@@ -184,6 +184,7 @@ public class ManageUsersController {
   public void cancelAddNewUser() {
     selectedUser = null;
     hideAddDialog();
+    roles = new DualListModel<Role>();
   }
 
   private void hideAddDialog() {
@@ -229,6 +230,14 @@ public class ManageUsersController {
     hideAddDialog();
   }
 
+  public boolean canUserBeEnabled(User user) {
+    return !UserUtil.canEnableUser(user);
+  }
+
+  public boolean canUserBeDisabled(User user) {
+    return !UserUtil.canDisableUser(user);
+  }
+
   public List<User> getUsers() {
     return users;
   }
@@ -269,8 +278,17 @@ public class ManageUsersController {
     this.allRoles = allRoles;
   }
 
+  /**
+   * Check if the user canbe put in password reset state. only makes sense for a user that is
+   * already persisted.
+   * 
+   * @return the result of the check
+   */
   public boolean getCanResetPassword() {
-    return selectedUser != null && selectedUser.getId() > 0;
+    if (selectedUser.getId() > 0) {
+      return UserUtil.canResetPassword(selectedUser);
+    }
+    return false;
   }
 
   public boolean isEditMode() {

@@ -17,6 +17,7 @@ import freemarker.template.MalformedTemplateNameException;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateNotFoundException;
+import freemarker.template.Version;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -54,7 +55,7 @@ public class TemplateParseServiceImpl implements TemplateParseService {
 
   private void inializeEngine() {
     setStringTemplateLoader(new StringTemplateLoader());
-    setConfiguration(new Configuration());
+    setConfiguration(new Configuration(new Version("2.3.22")));
     setConfigLoader(ConfigurationLoader.getInstance());
     translationLoader = TranslationConfigurationLoader.getInstance();
     quotationUtil = QuotationUtil.getInstance();

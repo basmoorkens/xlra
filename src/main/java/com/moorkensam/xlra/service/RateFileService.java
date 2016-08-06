@@ -1,7 +1,6 @@
 package com.moorkensam.xlra.service;
 
 import com.moorkensam.xlra.dto.RateFileIdNameDto;
-import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.rate.Condition;

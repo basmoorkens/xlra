@@ -38,12 +38,14 @@
 						<p:commandButton icon="ui-icon-locked"
 							update=":usersForm :addUserForm" id="disableButton"
 							styleClass="navButton"
+							disabled="#{manageUsersController.canUserBeDisabled(user)}"
 							actionListener="#{manageUsersController.disableUser(user)}" />
 						<p:tooltip id="disabletip" for="disableButton"
 							value="Disable user" />
 						<p:commandButton icon="ui-icon-unlocked"
 							update=":usersForm :addUserForm" id="enableButton"
 							styleClass="navButton"
+							disabled="#{manageUsersController.canUserBeEnabled(user)}"
 							actionListener="#{manageUsersController.enableUser(user)}" />
 						<p:tooltip id="enabletip" for="enableButton" value="Enable user" />
 						<p:commandButton icon="ui-icon-trash" title="Delete"
@@ -83,8 +85,7 @@
 					value="This email adres will be used to send the confirmation email to." />
 				<p:tooltip for="rolesPicklist" id="rolesSelectorTip"
 					value="Select the roles which you want to give to the user." />
-				<p:tooltip for="resetPasswordButton" id="resetPasswordButtonTip"
-					value="Disables the user's account and sends out a password reset email to the user. The user can't use the application till he has completed the password reset process." />
+
 				<p:panel header="User information">
 					<p:panelGrid columns="2" columnClasses="labelColumn,valuesColumn"
 						style="width:100%;">
@@ -132,8 +133,7 @@
 					<p:panel style="margin-top:30px;">
 						<p:commandButton immediate="true" value="Cancel"
 							styleClass="navButton" style="margin-right:20px;"
-							update="
-							:addUserForm"
+							update=":addUserForm"
 							actionListener="#{manageUsersController.cancelAddNewUser}" />
 						<p:commandButton rendered="#{manageUsersController.editMode}"
 							value="Reset password" ajax="true" id="resetPasswordButton"
@@ -158,23 +158,6 @@
 			</p:dialog>
 		</h:form>
 		<script type="text/javascript">
-			var statusDlgTimer = null;
-
-			function showStatusDialog() {
-				if (statusDlgTimer === null) {
-					statusDlgTimer = setTimeout("PF('statusDialog').show()",
-							500);
-				}
-			}
-
-			function hideStatusDialog() {
-				if (statusDlgTimer !== null) {
-					clearTimeout(statusDlgTimer);
-					PF('statusDialog').hide();
-					statusDlgTimer = null;
-				}
-			}
-
 			function handleAddUserRequest(xhr, status, args) {
 				if (args.validationFailed) {
 					PF('addUserDialog').jq.effect("shake", {

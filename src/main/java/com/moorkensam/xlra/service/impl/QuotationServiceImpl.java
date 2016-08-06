@@ -1,6 +1,5 @@
 package com.moorkensam.xlra.service.impl;
 
-import com.moorkensam.xlra.dao.LogDao;
 import com.moorkensam.xlra.dao.PriceCalculationDao;
 import com.moorkensam.xlra.dao.QuotationQueryDao;
 import com.moorkensam.xlra.dao.QuotationResultDao;

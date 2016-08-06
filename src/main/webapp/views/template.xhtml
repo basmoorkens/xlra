@@ -136,6 +136,26 @@
 									".ui-row-editor .ui-icon-check").click();
 						}
 					});
+
+			/* Status dialog functions */
+			var statusDlgTimer = null;
+
+			function showStatusDialog() {
+				if (statusDlgTimer === null) {
+					statusDlgTimer = setTimeout("PF('statusDialog').show()",
+							500);
+				}
+			}
+
+			function hideStatusDialog() {
+				if (statusDlgTimer !== null) {
+					clearTimeout(statusDlgTimer);
+					if (PF('statusDialog') != null) {
+						PF('statusDialog').hide();
+					}
+					statusDlgTimer = null;
+				}
+			}
 		</script>
 	</div>
 </h:body>

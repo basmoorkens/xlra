@@ -9,7 +9,6 @@ import com.moorkensam.xlra.service.ApplicationConfigurationService;
 import com.moorkensam.xlra.service.DieselService;
 
 import org.primefaces.context.RequestContext;
-import org.primefaces.event.RowEditEvent;
 
 import java.math.BigDecimal;
 import java.util.List;

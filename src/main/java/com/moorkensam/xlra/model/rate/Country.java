@@ -3,6 +3,9 @@ package com.moorkensam.xlra.model.rate;
 import com.moorkensam.xlra.model.BaseEntity;
 import com.moorkensam.xlra.model.configuration.Language;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,10 +70,13 @@ public class Country extends BaseEntity {
       return false;
     }
     Country country = (Country) obj;
-    if (country.getId() == id && country.getShortName().equals(shortName)) {
-      return true;
-    }
-    return false;
+    return new EqualsBuilder().append(id, country.getId())
+        .append(shortName, country.getShortName()).isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder(17, 31).append(id).append(shortName).toHashCode();
   }
 
   @Override
