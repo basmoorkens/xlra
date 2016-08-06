@@ -115,11 +115,21 @@ a:hover {
 	font-weight: bold;
 }
 </style>
+
+<script type="text/javascript">
+	function checkSubmit(e) {
+		if (e && e.keyCode == 13) {
+			document.forms[0].submit();
+		}
+	}
+</script>
+
 </head>
 <body>
 	<div id="container">
 		<div id="work">
-			<img src="<%=request.getContextPath()%>/resources/images/Extra-Logo-neu.png"
+			<img
+				src="<%=request.getContextPath()%>/resources/images/Extra-Logo-neu.png"
 				style="float: left;" />
 			<h1>RATES APPLICATION</h1>
 
@@ -138,7 +148,8 @@ a:hover {
 					</tr>
 					<tr>
 						<td align="right"><span class="stronk">PASSWORD:</span></td>
-						<td><input type="password" size="25" name="j_password"></td>
+						<td><input type="password" size="25" name="j_password"
+							onKeyPress="return checkSubmit(event)"></td>
 					</tr>
 					<tr>
 						<td align="right"><a href="#" onclick="loginForm.submit();"
