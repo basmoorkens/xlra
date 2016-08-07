@@ -34,8 +34,6 @@ public interface UserService {
 
   public void setPasswordAndActivateUser(User user, String password);
 
-  public String getCurrentUsername();
-
   public void disableUser(User user) throws XlraValidationException;
 
   public void enableUser(User user) throws XlraValidationException;

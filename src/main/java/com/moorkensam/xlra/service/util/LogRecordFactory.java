@@ -82,13 +82,14 @@ public class LogRecordFactory {
    * Create a offerte log record.
    * 
    * @param offerte The offerte to generate a log for.
+   * @param userName The username to set as creator
    * @return The generated logrecord.
    */
-  public LogRecord createOfferteLogRecord(QuotationResult offerte) {
+  public LogRecord createOfferteLogRecord(final QuotationResult offerte, final String userName) {
     QuotationLogRecord record = new QuotationLogRecord();
     record.setCustomerName(offerte.getQuery().getCustomer().getName());
     record.setOfferteKey(offerte.getOfferteUniqueIdentifier());
-    record.setUserName(offerte.getCreatedUserFullName());
+    record.setUserName(userName);
     fillInBasicProperties(record);
     return record;
   }

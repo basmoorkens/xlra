@@ -7,9 +7,10 @@ import com.moorkensam.xlra.model.configuration.DieselRate;
 import com.moorkensam.xlra.model.error.IntervalOverlapException;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.log.LogRecord;
+import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.DieselService;
 import com.moorkensam.xlra.service.LogService;
-import com.moorkensam.xlra.service.UserService;
+import com.moorkensam.xlra.service.UserSessionService;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
 import com.moorkensam.xlra.service.util.RateUtil;
 
@@ -40,7 +41,7 @@ public class DieselServiceImpl implements DieselService {
   private LogService logService;
 
   @Inject
-  private UserService userService;
+  private UserSessionService userSessionService;
 
   private LogRecordFactory logRecordFactory;
 
@@ -78,10 +79,11 @@ public class DieselServiceImpl implements DieselService {
   }
 
   private void logUpdateCurrentDieselValue(final BigDecimal value, final Configuration config) {
+    User loggedInUser = userSessionService.getLoggedInUser();
     LogRecord createDieselLogRecord =
         logRecordFactory.createDieselLogRecord(config.getCurrentDieselPrice(), value,
-            getUserService().getCurrentUsername());
-    logger.info(userService.getCurrentUsername() + " updated dieselprice "
+            loggedInUser.getUserName());
+    logger.info(loggedInUser.getUserName() + " updated dieselprice "
         + config.getCurrentDieselPrice() + " to " + value);
     logService.createLogRecord(createDieselLogRecord);
   }
@@ -129,19 +131,19 @@ public class DieselServiceImpl implements DieselService {
     this.xlraConfigurationDao = xlraConfigurationDao;
   }
 
-  public UserService getUserService() {
-    return userService;
-  }
-
-  public void setUserService(UserService userService) {
-    this.userService = userService;
-  }
-
   public LogService getLogService() {
     return logService;
   }
 
   public void setLogService(LogService logService) {
     this.logService = logService;
+  }
+
+  public UserSessionService getUserSessionService() {
+    return userSessionService;
+  }
+
+  public void setUserSessionService(UserSessionService userSessionService) {
+    this.userSessionService = userSessionService;
   }
 }

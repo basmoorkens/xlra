@@ -24,6 +24,7 @@ import com.moorkensam.xlra.service.PdfService;
 import com.moorkensam.xlra.service.QuotationService;
 import com.moorkensam.xlra.service.RateFileService;
 import com.moorkensam.xlra.service.UserService;
+import com.moorkensam.xlra.service.UserSessionService;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
 import com.moorkensam.xlra.service.util.QuotationUtil;
 
@@ -73,7 +74,7 @@ public class QuotationServiceImpl implements QuotationService {
   private PdfService pdfService;
 
   @Inject
-  private UserService userService;
+  private UserSessionService userSessionService;
 
   @Inject
   private LogService logService;
@@ -177,7 +178,7 @@ public class QuotationServiceImpl implements QuotationService {
     quotationResult.setQuery(query);
     fillInMailLanguage(query);
     quotationResult.setOfferteUniqueIdentifier(identityService.getNextIdentifier());
-    User loggedInUser = userService.getUserByUserName(userService.getCurrentUsername());
+    User loggedInUser = userSessionService.getLoggedInUser();
     quotationResult.setCreatedUserFullName(loggedInUser.getFullName());
     PriceCalculation calculatedPrice = new PriceCalculation();
     quotationResult.setCalculation(calculatedPrice);
@@ -214,13 +215,13 @@ public class QuotationServiceImpl implements QuotationService {
   }
 
   private void logOfferteSubmit(QuotationResult result) {
-    LogRecord log = logFactory.createOfferteLogRecord(result);
+    User user = userSessionService.getLoggedInUser();
+    LogRecord log = logFactory.createOfferteLogRecord(result, user.getUserName());
     logService.createLogRecord(log);
-    logger.info(userService.getCurrentUsername() + " created offerte "
-        + result.getOfferteUniqueIdentifier());
+    logger.info(user.getUserName() + " created offerte " + result.getOfferteUniqueIdentifier());
   }
 
-  
+
   private void createAndSaveFullOfferte(QuotationResult offerte) {
     offerte.getQuery().setQuotationDate(new Date());
     QuotationQuery managedQuery = getQuotationDao().createQuotationQuery(offerte.getQuery());
@@ -335,14 +336,6 @@ public class QuotationServiceImpl implements QuotationService {
     this.fileService = fileService;
   }
 
-  public UserService getUserService() {
-    return userService;
-  }
-
-  public void setUserService(UserService userService) {
-    this.userService = userService;
-  }
-
   public QuotationUtil getQuotationUtil() {
     return quotationUtil;
   }
@@ -386,5 +379,13 @@ public class QuotationServiceImpl implements QuotationService {
 
   public void setLogService(LogService logService) {
     this.logService = logService;
+  }
+
+  public UserSessionService getUserSessionService() {
+    return userSessionService;
+  }
+
+  public void setUserSessionService(UserSessionService userSessionService) {
+    this.userSessionService = userSessionService;
   }
 }

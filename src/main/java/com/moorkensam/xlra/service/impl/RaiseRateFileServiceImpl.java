@@ -8,6 +8,7 @@ import com.moorkensam.xlra.model.rate.RateOperation;
 import com.moorkensam.xlra.service.LogService;
 import com.moorkensam.xlra.service.RaiseRateFileService;
 import com.moorkensam.xlra.service.UserService;
+import com.moorkensam.xlra.service.UserSessionService;
 import com.moorkensam.xlra.service.util.CalcUtil;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
 
@@ -38,7 +39,7 @@ public class RaiseRateFileServiceImpl implements RaiseRateFileService {
   private RateFileDao rateFileDao;
 
   @Inject
-  private UserService userService;
+  private UserSessionService userSessionService;
 
   private CalcUtil calcUtil;
 
@@ -104,7 +105,7 @@ public class RaiseRateFileServiceImpl implements RaiseRateFileService {
       List<RateFile> fullRateFiles) {
     RaiseRatesRecord createRaiseRatesRecord =
         getLogRecordFactory().createRaiseRatesRecord(operation, percentage, fullRateFiles,
-            getUserService().getCurrentUsername());
+            userSessionService.getLoggedInUser().getUserName());
     logService.createLogRecord(createRaiseRatesRecord);
   }
 
@@ -193,20 +194,20 @@ public class RaiseRateFileServiceImpl implements RaiseRateFileService {
     this.calcUtil = calcUtil;
   }
 
-  public UserService getUserService() {
-    return userService;
-  }
-
-  public void setUserService(UserService userService) {
-    this.userService = userService;
-  }
-
   public LogService getLogService() {
     return logService;
   }
 
   public void setLogService(LogService logService) {
     this.logService = logService;
+  }
+
+  public UserSessionService getUserSessionService() {
+    return userSessionService;
+  }
+
+  public void setUserSessionService(UserSessionService userSessionService) {
+    this.userSessionService = userSessionService;
   }
 
 }

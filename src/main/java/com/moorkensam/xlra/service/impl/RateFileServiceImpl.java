@@ -12,8 +12,9 @@ import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.Zone;
+import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.RateFileService;
-import com.moorkensam.xlra.service.UserService;
+import com.moorkensam.xlra.service.UserSessionService;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
 import com.moorkensam.xlra.service.util.QuotationUtil;
 import com.moorkensam.xlra.service.util.RateUtil;
@@ -51,7 +52,7 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
   private RateFileDao rateFileDao;
 
   @Inject
-  private UserService userService;
+  private UserSessionService userSessionService;
 
   private TranslationKeyToi8nMapper translationMapper;
 
@@ -80,7 +81,7 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
   @Override
   public void createRateFile(final RateFile rateFile) {
     logger.info("Creating ratefile for " + rateFile.getName());
-    rateFile.setLastEditedBy(userService.getCurrentUsername());
+    rateFile.setLastEditedBy(userSessionService.getLoggedInUser().getUserName());
     convertStringCodesToObjects(rateFile);
     getRateFileDao().createRateFile(rateFile);
   }
@@ -96,17 +97,18 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
 
   @Override
   public RateFile updateRateFile(final RateFile rateFile) {
+    User loggedInUser = userSessionService.getLoggedInUser();
     convertStringCodesToObjects(rateFile);
-    rateFile.setLastEditedBy(userService.getCurrentUsername());
+    rateFile.setLastEditedBy(loggedInUser.getUserName());
     RateFile updateRateFile = getRateFileDao().updateRateFile(rateFile);
     fillInConditionKeyTranslations(updateRateFile);
-    logRateFileUpdate(updateRateFile);
+    logRateFileUpdate(updateRateFile, loggedInUser);
     return updateRateFile;
   }
 
-  private void logRateFileUpdate(final RateFile rateFile) {
-    logger.info(userService.getCurrentUsername() + " updated ratefile " + rateFile.getName()
-        + " with id " + rateFile.getId());
+  private void logRateFileUpdate(final RateFile rateFile, final User user) {
+    logger.info(user.getUserName() + " updated ratefile " + rateFile.getName() + " with id "
+        + rateFile.getId());
   }
 
   @Override
@@ -119,8 +121,8 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
 
   @Override
   public void deleteRateFile(final RateFile rateFile) {
-    logger.info(userService.getCurrentUsername() + " deleted ratefile " + rateFile.getName()
-        + " with id " + rateFile.getId());
+    logger.info(userSessionService.getLoggedInUser().getUserName() + " deleted ratefile "
+        + rateFile.getName() + " with id " + rateFile.getId());
     getRateFileDao().deleteRateFile(rateFile);
   }
 
@@ -190,6 +192,13 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
   public RateFile deleteZone(Zone zone) {
     logger.info("Deleting zone " + zone.getName());
     RateFile rf = zone.getRateFile();
+    removeZoneFromRateFile(zone, rf);
+    rf = updateRateFile(rf);
+    getRateFileDao().getFullRateFile(rf.getId());
+    return rf;
+  }
+
+  private void removeZoneFromRateFile(Zone zone, RateFile rf) {
     rf.getZones().remove(zone);
     zone.setRateFile(null);
     Iterator<RateLine> iterator = rf.getRateLines().iterator();
@@ -202,9 +211,6 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
         break;
       }
     }
-    rf = updateRateFile(rf);
-    getRateFileDao().getFullRateFile(rf.getId());
-    return rf;
   }
 
   @Override
@@ -290,14 +296,6 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
     return rateFileDao.getRateFilesById(ids);
   }
 
-  public UserService getUserService() {
-    return userService;
-  }
-
-  public void setUserService(UserService userService) {
-    this.userService = userService;
-  }
-
   public ZoneUtil getZoneUtil() {
     return zoneUtil;
   }
@@ -315,5 +313,13 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
   @Override
   public int countRateFiles() {
     return rateFileDao.countRateFiles();
+  }
+
+  public UserSessionService getUserSessionService() {
+    return userSessionService;
+  }
+
+  public void setUserSessionService(UserSessionService userSessionService) {
+    this.userSessionService = userSessionService;
   }
 }

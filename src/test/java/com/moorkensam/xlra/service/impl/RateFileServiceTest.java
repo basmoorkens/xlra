@@ -4,6 +4,7 @@ import com.moorkensam.xlra.dao.RateFileDao;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.RateFileException;
+import com.moorkensam.xlra.model.generator.UserGenerator;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Measurement;
@@ -11,6 +12,7 @@ import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
 import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.service.UserService;
+import com.moorkensam.xlra.service.UserSessionService;
 import com.moorkensam.xlra.service.util.QuotationUtil;
 import com.moorkensam.xlra.service.util.ZoneUtil;
 
@@ -37,7 +39,7 @@ public class RateFileServiceTest extends UnitilsJUnit4 {
   private RateFileServiceImpl rateFileService;
 
   @Mock
-  private UserService userService;
+  private UserSessionService userSessionService;
 
   @Mock
   private RateFileDao rfDao;
@@ -53,7 +55,7 @@ public class RateFileServiceTest extends UnitilsJUnit4 {
     rateFileService = new RateFileServiceImpl();
     rateFileService.setRateFileDao(rfDao);
     rateFileService.setQuotationUtil(quotationUtil);
-    rateFileService.setUserService(userService);
+    rateFileService.setUserSessionService(userSessionService);
     rateFileService.setZoneUtil(new ZoneUtil());
   }
 
@@ -89,7 +91,8 @@ public class RateFileServiceTest extends UnitilsJUnit4 {
     RateFile rf = new RateFile();
     rf.setLastEditedBy("admin");
     rf.setZones(new ArrayList<Zone>());
-    EasyMock.expect(userService.getCurrentUsername()).andReturn("bmoork");
+    EasyMock.expect(userSessionService.getLoggedInUser())
+        .andReturn(UserGenerator.getStandardUser());
     rfDao.createRateFile(rf);
     EasyMock.expectLastCall();
     EasyMockUnitils.replay();
@@ -139,8 +142,8 @@ public class RateFileServiceTest extends UnitilsJUnit4 {
     rf.addZone(zone);
     rf.addZone(zone2);
     EasyMock.expect(rfDao.updateRateFile(rf)).andReturn(rf);
-    String username = "bmoork";
-    EasyMock.expect(userService.getCurrentUsername()).andReturn(username);
+    EasyMock.expect(userSessionService.getLoggedInUser())
+        .andReturn(UserGenerator.getStandardUser());
     EasyMock.expect(rfDao.getFullRateFile(rf.getId())).andReturn(rf);
     EasyMockUnitils.replay();
 
@@ -148,7 +151,7 @@ public class RateFileServiceTest extends UnitilsJUnit4 {
     Assert.assertNotNull(result);
     Assert.assertNotNull(result.getZones());
     Assert.assertEquals(1, result.getZones().size());
-    Assert.assertEquals(result.getLastEditedBy(), username);
+    Assert.assertEquals(result.getLastEditedBy(), UserGenerator.STANDARD_USERNAME);
   }
 
   @Test

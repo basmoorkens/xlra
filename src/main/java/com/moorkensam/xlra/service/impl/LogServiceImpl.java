@@ -7,6 +7,7 @@ import com.moorkensam.xlra.model.log.RaiseRatesRecord;
 import com.moorkensam.xlra.model.log.RateLogRecord;
 import com.moorkensam.xlra.service.LogService;
 import com.moorkensam.xlra.service.UserService;
+import com.moorkensam.xlra.service.UserSessionService;
 
 import java.util.Date;
 import java.util.List;
@@ -16,7 +17,7 @@ import javax.inject.Inject;
 public class LogServiceImpl implements LogService {
 
   @Inject
-  private UserService userService;
+  private UserSessionService userSessionService;
 
   @Inject
   private LogDao logDao;
@@ -40,16 +41,8 @@ public class LogServiceImpl implements LogService {
 
   @Override
   public void createLogRecord(final LogRecord record) {
-    record.setUserName(userService.getCurrentUsername());
+    record.setUserName(userSessionService.getLoggedInUser().getUserName());
     logDao.createLogRecord(record);
-  }
-
-  public UserService getUserService() {
-    return userService;
-  }
-
-  public void setUserService(UserService userService) {
-    this.userService = userService;
   }
 
   @Override
@@ -65,5 +58,13 @@ public class LogServiceImpl implements LogService {
   @Override
   public List<RaiseRatesRecord> getAllRaiseRateLogRecords() {
     return logDao.getAllRaiseRateLogRecords();
+  }
+
+  public UserSessionService getUserSessionService() {
+    return userSessionService;
+  }
+
+  public void setUserSessionService(UserSessionService userSessionService) {
+    this.userSessionService = userSessionService;
   }
 }

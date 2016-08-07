@@ -1,6 +1,7 @@
 package com.moorkensam.xlra.service.impl;
 
 import com.moorkensam.xlra.dao.RateFileDao;
+import com.moorkensam.xlra.model.generator.UserGenerator;
 import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
@@ -9,6 +10,7 @@ import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.rate.ZoneType;
 import com.moorkensam.xlra.service.LogService;
 import com.moorkensam.xlra.service.UserService;
+import com.moorkensam.xlra.service.UserSessionService;
 import com.moorkensam.xlra.service.util.CalcUtil;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
 
@@ -37,7 +39,7 @@ public class RaiseRateServiceTest extends UnitilsJUnit4 {
   private RateFileDao rateFileDaoMock;
 
   @Mock
-  private UserService userService;
+  private UserSessionService userSessionService;
 
   @Mock
   private LogService logService;
@@ -127,7 +129,7 @@ public class RaiseRateServiceTest extends UnitilsJUnit4 {
     logRecordFactory = LogRecordFactory.getInstance();
     raiseRateFileServiceImpl.setLogRecordFactory(logRecordFactory);
     raiseRateFileServiceImpl.setLogService(logService);
-    raiseRateFileServiceImpl.setUserService(userService);
+    raiseRateFileServiceImpl.setUserSessionService(userSessionService);
   }
 
   @Test
@@ -160,7 +162,8 @@ public class RaiseRateServiceTest extends UnitilsJUnit4 {
   @Test
   public void testRaiseRatesWithPercentage() {
     EasyMock.expect(rateFileDaoMock.getFullRateFile(rateFile.getId())).andReturn(rateFile);
-    EasyMock.expect(userService.getCurrentUsername()).andReturn("bas");
+    EasyMock.expect(userSessionService.getLoggedInUser())
+        .andReturn(UserGenerator.getStandardUser());
     logService.createLogRecord((LogRecord) EasyMock.anyObject());
     EasyMock.expect(rateFileDaoMock.updateRateFile(rateFile)).andReturn(rateFile);
 
@@ -175,7 +178,8 @@ public class RaiseRateServiceTest extends UnitilsJUnit4 {
   @Test
   public void testApplyRateOperation() {
     EasyMock.expect(rateFileDaoMock.getFullRateFile(rateFile.getId())).andReturn(rateFile);
-    EasyMock.expect(userService.getCurrentUsername()).andReturn("bas");
+    EasyMock.expect(userSessionService.getLoggedInUser())
+        .andReturn(UserGenerator.getStandardUser());
     logService.createLogRecord((LogRecord) EasyMock.anyObject());
     EasyMock.expect(rateFileDaoMock.updateRateFile(rateFile)).andReturn(rateFile);
 
@@ -196,7 +200,8 @@ public class RaiseRateServiceTest extends UnitilsJUnit4 {
     rl4.setValue(new BigDecimal(190));
     rl5.setValue(new BigDecimal(260));
     EasyMock.expect(rateFileDaoMock.getFullRateFile(rateFile.getId())).andReturn(rateFile);
-    EasyMock.expect(userService.getCurrentUsername()).andReturn("bas");
+    EasyMock.expect(userSessionService.getLoggedInUser())
+        .andReturn(UserGenerator.getStandardUser());
     logService.createLogRecord((LogRecord) EasyMock.anyObject());
     EasyMock.expect(rateFileDaoMock.updateRateFile(rateFile)).andReturn(rateFile);
 

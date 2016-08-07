@@ -10,11 +10,13 @@ import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.service.CurrencyService;
 import com.moorkensam.xlra.service.LogService;
 import com.moorkensam.xlra.service.UserService;
+import com.moorkensam.xlra.service.UserSessionService;
 import com.moorkensam.xlra.service.util.LogRecordFactory;
 import com.moorkensam.xlra.service.util.RateUtil;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.hssf.record.UseSelFSRecord;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -46,7 +48,7 @@ public class CurrencyServiceImpl implements CurrencyService {
   private CurrencyRateDao currencyRateDao;
 
   @Inject
-  private UserService userService;
+  private UserSessionService userSessionService;
 
   private LogRecordFactory logRecordFactory;
 
@@ -80,20 +82,17 @@ public class CurrencyServiceImpl implements CurrencyService {
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
   public void updateCurrentChfValue(final BigDecimal value) {
     Configuration config = getXlraConfigurationDao().getXlraConfiguration();
-
     logUpdateCurrentChfValue(value, config);
-
     config.setCurrentChfValue(value);
-    logger.info("Saving current chf rate " + config.getCurrentChfValue());
     getXlraConfigurationDao().updateXlraConfiguration(config);
   }
 
   private void logUpdateCurrentChfValue(final BigDecimal value, final Configuration config) {
+    String loggedInUserName = getUserSessionService().getLoggedInUser().getUserName();
     LogRecord createChfLogRecord =
-        logRecordFactory.createChfLogRecord(config.getCurrentChfValue(), value, getUserService()
-            .getCurrentUsername());
-    logger.info(userService.getCurrentUsername() + " updated chfprice "
-        + config.getCurrentChfValue() + " to " + value);
+        logRecordFactory.createChfLogRecord(config.getCurrentChfValue(), value, loggedInUserName);
+    logger.info(loggedInUserName + " updated chfprice " + config.getCurrentChfValue() + " to "
+        + value);
     getLogService().createLogRecord(createChfLogRecord);
   }
 
@@ -144,20 +143,20 @@ public class CurrencyServiceImpl implements CurrencyService {
     this.logRecordFactory = logRecordFactory;
   }
 
-  public UserService getUserService() {
-    return userService;
-  }
-
-  public void setUserService(UserService userService) {
-    this.userService = userService;
-  }
-
   public LogService getLogService() {
     return logService;
   }
 
   public void setLogService(LogService logService) {
     this.logService = logService;
+  }
+
+  public UserSessionService getUserSessionService() {
+    return userSessionService;
+  }
+
+  public void setUserSessionService(UserSessionService userSessionService) {
+    this.userSessionService = userSessionService;
   }
 
 }

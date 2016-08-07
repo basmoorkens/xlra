@@ -2,11 +2,13 @@ package com.moorkensam.xlra.service.impl;
 
 import com.moorkensam.xlra.dao.EmailHistoryDao;
 import com.moorkensam.xlra.model.error.TemplatingException;
+import com.moorkensam.xlra.model.generator.UserGenerator;
 import com.moorkensam.xlra.model.mail.EmailHistoryRecord;
 import com.moorkensam.xlra.model.mail.EmailResult;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.UserService;
+import com.moorkensam.xlra.service.UserSessionService;
 import com.moorkensam.xlra.service.util.ConfigurationLoader;
 import com.moorkensam.xlra.service.util.EmailAttachmentHelper;
 import com.moorkensam.xlra.service.util.TransportDelegate;
@@ -33,7 +35,7 @@ public class EmailServiceImplTest extends UnitilsJUnit4 {
   private TransportDelegate transportDelegate;
 
   @Mock
-  private UserService userService;
+  private UserSessionService userSessionService;
 
   @Mock
   private EmailAttachmentHelper helper;
@@ -54,7 +56,7 @@ public class EmailServiceImplTest extends UnitilsJUnit4 {
     configLoader = ConfigurationLoader.getInstance();
     emailServiceImpl.setConfigLoader(configLoader);
     emailServiceImpl.setHelper(helper);
-    emailServiceImpl.setUserService(userService);
+    emailServiceImpl.setUserSessionService(userSessionService);
     emailServiceImpl.setEmailHistoryDao(emailHistoryDao);
   }
 
@@ -85,6 +87,7 @@ public class EmailServiceImplTest extends UnitilsJUnit4 {
 
   @Test
   public void testsendOfferteMail() throws MessagingException {
+    User user = UserGenerator.getStandardUser();
     EmailResult emailResult = new EmailResult();
     emailResult.setEmail("test email");
     emailResult.setSubject("test");
@@ -95,7 +98,7 @@ public class EmailServiceImplTest extends UnitilsJUnit4 {
     EasyMock.expect(helper.generatedPdfAttachment(offerte)).andReturn(new MimeBodyPart());
     transportDelegate.send(EasyMock.isA(MimeMessage.class));
     EasyMock.expectLastCall();
-    EasyMock.expect(userService.getCurrentUsername()).andReturn("bmoork");
+    EasyMock.expect(userSessionService.getLoggedInUser()).andReturn(user);
     emailHistoryDao.createEmailHistoryRecord(EasyMock.isA(EmailHistoryRecord.class));
     EasyMock.expectLastCall();
     EasyMockUnitils.replay();

@@ -59,11 +59,6 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public String getCurrentUsername() {
-    return getSessionContext().getCallerPrincipal().getName();
-  }
-
-  @Override
   public void createUser(final User user) throws UserException {
     validateUserIsUnique(user);
     LogRecord record = logRecordFactory.createUserRecord(user, LogType.USER_CREATED);
