@@ -91,7 +91,7 @@ public class EmailServiceImpl implements EmailService {
       result.getEmailResult().setSend(true);
     } catch (MessagingException e) {
       result.getEmailResult().setSend(false);
-      logger.error("Error sending email: " + e);
+      logger.error("Error sending email: " + e.getLocalizedMessage());
       status = EmailSentStatus.NOT_SENT;
       throw new MessagingException("Error sending offerte email");
     } finally {
@@ -141,7 +141,7 @@ public class EmailServiceImpl implements EmailService {
         logger.debug("Email succesfully sent");
       }
     } catch (MessagingException e) {
-      logger.error("Error sending email: " + e);
+      logger.error("Error sending email: " + e.getLocalizedMessage());
       throw new MessagingException("Error sending password reset email");
     } catch (TemplatingException exc) {
       logger.error("Error parsing mail template: " + exc);
@@ -166,7 +166,7 @@ public class EmailServiceImpl implements EmailService {
         logger.debug("Email succesfully sent");
       }
     } catch (MessagingException e) {
-      logger.error("Error sending email: " + e);
+      logger.error("Error sending email: " + e.getLocalizedMessage());
       throw new MessagingException("Error sending password reset email");
     } catch (TemplatingException e) {
       logger.error(e);

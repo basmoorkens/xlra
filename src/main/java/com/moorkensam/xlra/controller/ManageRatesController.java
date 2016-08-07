@@ -10,6 +10,7 @@ import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.ExcelService;
 import com.moorkensam.xlra.service.RateFileService;
+import com.moorkensam.xlra.service.UserSessionService;
 import com.moorkensam.xlra.service.util.ConditionFactory;
 import com.moorkensam.xlra.service.util.RateUtil;
 import com.moorkensam.xlra.service.util.TranslationUtil;
@@ -49,7 +50,7 @@ public class ManageRatesController {
   private RateFileService rateFileService;
 
   @Inject
-  private UserSessionController sessionController;
+  private UserSessionService userSessionService;
 
   @Inject
   private ExcelService excelService;
@@ -95,7 +96,7 @@ public class ManageRatesController {
    */
   @PostConstruct
   public void initializeController() {
-    editable = sessionController.isAdmin();
+    editable = userSessionService.isLoggedInUserAdmin();
     resetSelectedRateFile();
     translationUtil = new TranslationUtil();
     conditionFactory = new ConditionFactory();
@@ -576,6 +577,14 @@ public class ManageRatesController {
 
   public void setOriginalSelectedZone(Zone originalSelectedZone) {
     this.originalSelectedZone = originalSelectedZone;
+  }
+
+  public UserSessionService getUserSessionService() {
+    return userSessionService;
+  }
+
+  public void setUserSessionService(UserSessionService userSessionService) {
+    this.userSessionService = userSessionService;
   }
 
 }

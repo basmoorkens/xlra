@@ -3,6 +3,7 @@ package com.moorkensam.xlra.controller;
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.UserService;
+import com.moorkensam.xlra.service.UserSessionService;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -23,11 +24,11 @@ public class UserController {
   private String retypedPassword;
 
   @Inject
-  private UserSessionController userSessionController;
+  private UserSessionService userSessionService;
 
   @PostConstruct
   public void initialize() {
-    user = userSessionController.getLoggedInUser();
+    user = userSessionService.getLoggedInUser();
   }
 
   public User getUser() {

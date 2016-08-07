@@ -19,92 +19,92 @@
 		<h:form prependId="false">
 			<p:menubar id="xlraMenu">
 				<p:submenu
-					rendered="#{userSessionController.hasNonePermissions(['EDIT_RATEFILE', 'CREATE_RATEFILE', 'RAISE_RATES', 'VIEW_RATEFILE', 'EXCEL_UPLOAD'])}"
+					rendered="#{templateController.hasNonePermissions(['EDIT_RATEFILE', 'CREATE_RATEFILE', 'RAISE_RATES', 'VIEW_RATEFILE', 'EXCEL_UPLOAD'])}"
 					label="Rates" icon="ui-icon-document">
 					<p:menuitem
-						rendered="#{userSessionController.hasPermission('CREATE_RATEFILE')}"
+						rendered="#{templateController.hasPermission('CREATE_RATEFILE')}"
 						value="Create ratefile"
 						url="/views/admin/rate/createRateFile.xhtml" />
 					<p:menuitem
-						rendered="#{userSessionController.hasPermission('EDIT_RATEFILE')}"
+						rendered="#{templateController.hasPermission('EDIT_RATEFILE')}"
 						value="Manage rates" url="/views/admin/rate/manageRates.xhtml" />
 					<p:menuitem
-						rendered="#{userSessionController.hasPermission('VIEW_RATEFILE')}"
+						rendered="#{templateController.hasPermission('VIEW_RATEFILE')}"
 						value="View rates" url="/views/user/viewRates.xhtml" />
 					<p:menuitem
-						rendered="#{userSessionController.hasPermission('RAISE_RATES')}"
+						rendered="#{templateController.hasPermission('RAISE_RATES')}"
 						value="Raise rates" url="/views/admin/rate/raiseRates.xhtml" />
 					<p:menuitem
-						rendered="#{userSessionController.hasPermission('EXCEL_UPLOAD')}"
+						rendered="#{templateController.hasPermission('EXCEL_UPLOAD')}"
 						value="Upload rate excel"
 						url="/views/admin/upload/excelUpload.xhtml" />
 				</p:submenu>
 
 				<p:submenu
-					rendered="#{userSessionController.hasNonePermissions(['CREATE_OFFERTE', 'VIEW_OFFERTE'])}"
+					rendered="#{templateController.hasNonePermissions(['CREATE_OFFERTE', 'VIEW_OFFERTE'])}"
 					label="Offertes" icon="ui-icon-document">
 					<p:menuitem
-						rendered="#{userSessionController.hasPermission('CREATE_OFFERTE')}"
+						rendered="#{templateController.hasPermission('CREATE_OFFERTE')}"
 						value="Create offerte" url="/views/user/createOfferte.xhtml" />
 					<p:menuitem
-						rendered="#{userSessionController.hasPermission('VIEW_OFFERTE')}"
+						rendered="#{templateController.hasPermission('VIEW_OFFERTE')}"
 						value="Overview offertes" url="/views/user/offerteOverview.xhtml" />
 				</p:submenu>
 
 				<p:submenu
-					rendered="#{userSessionController.hasNonePermissions(['FULL_CUSTOMER_EDIT'])}"
+					rendered="#{templateController.hasNonePermissions(['FULL_CUSTOMER_EDIT'])}"
 					label="Customer" icon="ui-icon-document">
 					<p:menuitem
-						rendered="#{userSessionController.hasPermission('FULL_CUSTOMER_EDIT')}"
+						rendered="#{templateController.hasPermission('FULL_CUSTOMER_EDIT')}"
 						value="Manage customers"
 						url="/views/admin/customer/manageCustomers.xhtml" />
 				</p:submenu>
 
 				<p:submenu
-					rendered="#{userSessionController.hasNonePermissions(['DIESEL_EDIT', 'EMAIL_TEMPLATE_EDIT', 'COUNTRY_EDIT'])}"
+					rendered="#{templateController.hasNonePermissions(['DIESEL_EDIT', 'EMAIL_TEMPLATE_EDIT', 'COUNTRY_EDIT'])}"
 					label="Configuration" icon="ui-icon-document">
 					<p:menuitem
-						rendered="#{userSessionController.hasPermission('CHF_EDIT')}"
+						rendered="#{templateController.hasPermission('CHF_EDIT')}"
 						value="Swiss rates"
 						url="/views/admin/configuration/chfRates.xhtml" />
 					<p:menuitem
-						rendered="#{userSessionController.hasPermission('DIESEL_EDIT')}"
+						rendered="#{templateController.hasPermission('DIESEL_EDIT')}"
 						value="Diesel prices"
 						url="/views/admin/configuration/dieselRates.xhtml" />
 					<p:menuitem
-						rendered="#{userSessionController.hasPermission('EMAIL_TEMPLATE_EDIT')}"
+						rendered="#{templateController.hasPermission('EMAIL_TEMPLATE_EDIT')}"
 						value="Email templates"
 						url="/views/admin/configuration/mailTemplates.xhtml" />
 					<p:menuitem
-						rendered="#{userSessionController.hasPermission('COUNTRY_EDIT')}"
+						rendered="#{templateController.hasPermission('COUNTRY_EDIT')}"
 						value="Countries" url="/views/admin/configuration/country.xhtml" />
 					<p:menuitem
-						rendered="#{userSessionController.hasPermission('VIEW_LOGS')}"
+						rendered="#{templateController.hasPermission('VIEW_LOGS')}"
 						value="View logs" url="/views/admin/configuration/logs.xhtml" />
 				</p:submenu>
 
 				<p:submenu
-					rendered="#{userSessionController.hasNonePermissions(['USER_EDIT_PROFILE', 'USER_EDIT', 'ROLE_EDIT', 'PERMISSION_EDIT'])}"
+					rendered="#{templateController.hasNonePermissions(['USER_EDIT_PROFILE', 'USER_EDIT', 'ROLE_EDIT', 'PERMISSION_EDIT'])}"
 					label="Users" icon="ui-icon-document">
 					<p:menuitem
-						rendered="#{userSessionController.hasPermission('USER_EDIT_PROFILE')}"
+						rendered="#{templateController.hasPermission('USER_EDIT_PROFILE')}"
 						value="User profile" url="/views/user/editProfile.xhtml" />
 					<p:menuitem
-						rendered="#{userSessionController.hasPermission('USER_EDIT')}"
+						rendered="#{templateController.hasPermission('USER_EDIT')}"
 						value="User management"
 						url="/views/admin/user/userManagement.xhtml" />
 					<p:menuitem
-						rendered="#{userSessionController.hasPermission('ROLE_EDIT')}"
+						rendered="#{templateController.hasPermission('ROLE_EDIT')}"
 						value="Role management"
 						url="/views/sysadmin/user/RoleManagement.xhtml" />
 					<p:menuitem
-						rendered="#{userSessionController.hasPermission('PERMISSION_EDIT')}"
+						rendered="#{templateController.hasPermission('PERMISSION_EDIT')}"
 						value="Permission management"
 						url="/views/sysadmin/user/PermissionManagement.xhtml" />
 				</p:submenu>
 				<f:facet name="options">
 					<h:outputText styleClass="wb"
-						value="Welcome back #{userSessionController.loggedInUser.userName}"
+						value="Welcome back #{templateController.loggedInUserName}"
 						style="margin-right:10px;" />
 					<p:commandButton id="logoutLink" value="Logout"
 						actionListener="#{logoutController.logout}" styleClass="navButton"

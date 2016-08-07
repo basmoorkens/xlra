@@ -220,6 +220,7 @@ public class QuotationServiceImpl implements QuotationService {
         + result.getOfferteUniqueIdentifier());
   }
 
+  
   private void createAndSaveFullOfferte(QuotationResult offerte) {
     offerte.getQuery().setQuotationDate(new Date());
     QuotationQuery managedQuery = getQuotationDao().createQuotationQuery(offerte.getQuery());

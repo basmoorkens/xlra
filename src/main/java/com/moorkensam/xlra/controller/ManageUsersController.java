@@ -7,6 +7,7 @@ import com.moorkensam.xlra.model.security.Role;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.RolePermissionService;
 import com.moorkensam.xlra.service.UserService;
+import com.moorkensam.xlra.service.UserSessionService;
 import com.moorkensam.xlra.service.util.UserStatusUtil;
 
 import org.primefaces.context.RequestContext;
@@ -33,7 +34,7 @@ public class ManageUsersController {
   private RolePermissionService permissionService;
 
   @Inject
-  private UserSessionController userSessionController;
+  private UserSessionService userSessionService;
 
   private List<User> users;
 
@@ -68,7 +69,7 @@ public class ManageUsersController {
 
   private void fillInAvailableRoles() {
     List<Role> allRoles = permissionService.getAllRoles();
-    if (!userSessionController.isSysAdmin()) {
+    if (!userSessionService.isLoggedInUserSystemAdmin()) {
       removeSysAdminRole(allRoles);
     }
     setAllRoles(allRoles);
@@ -314,13 +315,6 @@ public class ManageUsersController {
     this.editMode = editMode;
   }
 
-  public UserSessionController getUserSessionController() {
-    return userSessionController;
-  }
-
-  public void setUserSessionController(UserSessionController userSessionController) {
-    this.userSessionController = userSessionController;
-  }
 
   public String getCrudPopupTitle() {
     return crudPopupTitle;
