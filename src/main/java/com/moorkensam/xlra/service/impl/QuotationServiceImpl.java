@@ -216,6 +216,8 @@ public class QuotationServiceImpl implements QuotationService {
   private void logOfferteSubmit(QuotationResult result) {
     LogRecord log = logFactory.createOfferteLogRecord(result);
     logService.createLogRecord(log);
+    logger.info(userService.getCurrentUsername() + " created offerte "
+        + result.getOfferteUniqueIdentifier());
   }
 
   private void createAndSaveFullOfferte(QuotationResult offerte) {

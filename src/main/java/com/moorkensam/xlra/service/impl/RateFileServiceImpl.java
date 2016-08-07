@@ -100,7 +100,13 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
     rateFile.setLastEditedBy(userService.getCurrentUsername());
     RateFile updateRateFile = getRateFileDao().updateRateFile(rateFile);
     fillInConditionKeyTranslations(updateRateFile);
+    logRateFileUpdate(updateRateFile);
     return updateRateFile;
+  }
+
+  private void logRateFileUpdate(final RateFile rateFile) {
+    logger.info(userService.getCurrentUsername() + " updated ratefile " + rateFile.getName()
+        + " with id " + rateFile.getId());
   }
 
   @Override
@@ -113,7 +119,8 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
 
   @Override
   public void deleteRateFile(final RateFile rateFile) {
-    logger.info("Deleting ratefile " + rateFile.getId());
+    logger.info(userService.getCurrentUsername() + " deleted ratefile " + rateFile.getName()
+        + " with id " + rateFile.getId());
     getRateFileDao().deleteRateFile(rateFile);
   }
 

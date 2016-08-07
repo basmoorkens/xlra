@@ -81,7 +81,8 @@ public class DieselServiceImpl implements DieselService {
     LogRecord createDieselLogRecord =
         logRecordFactory.createDieselLogRecord(config.getCurrentDieselPrice(), value,
             getUserService().getCurrentUsername());
-    logger.info("Saving dieselprice logrecord " + createDieselLogRecord);
+    logger.info(userService.getCurrentUsername() + " updated dieselprice "
+        + config.getCurrentDieselPrice() + " to " + value);
     logService.createLogRecord(createDieselLogRecord);
   }
 

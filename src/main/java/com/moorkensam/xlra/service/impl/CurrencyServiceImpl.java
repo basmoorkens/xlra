@@ -92,7 +92,8 @@ public class CurrencyServiceImpl implements CurrencyService {
     LogRecord createChfLogRecord =
         logRecordFactory.createChfLogRecord(config.getCurrentChfValue(), value, getUserService()
             .getCurrentUsername());
-    logger.info("saving chfprice logrecord" + createChfLogRecord);
+    logger.info(userService.getCurrentUsername() + " updated chfprice "
+        + config.getCurrentChfValue() + " to " + value);
     getLogService().createLogRecord(createChfLogRecord);
   }
 
