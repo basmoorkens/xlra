@@ -5,12 +5,12 @@ import com.moorkensam.xlra.model.log.RaiseRatesRecord;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.RateOperation;
+import com.moorkensam.xlra.service.LogRecordFactoryService;
 import com.moorkensam.xlra.service.LogService;
 import com.moorkensam.xlra.service.RaiseRateFileService;
 import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.UserSessionService;
 import com.moorkensam.xlra.service.util.CalcUtil;
-import com.moorkensam.xlra.service.util.LogRecordFactory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,7 +33,8 @@ public class RaiseRateFileServiceImpl implements RaiseRateFileService {
   @Inject
   private LogService logService;
 
-  private LogRecordFactory logRecordFactory;
+  @Inject
+  private LogRecordFactoryService logRecordFactoryService;
 
   @Inject
   private RateFileDao rateFileDao;
@@ -46,7 +47,6 @@ public class RaiseRateFileServiceImpl implements RaiseRateFileService {
   @PostConstruct
   public void init() {
     setCalcUtil(CalcUtil.getInstance());
-    setLogRecordFactory(LogRecordFactory.getInstance());
   }
 
   @Override
@@ -104,8 +104,7 @@ public class RaiseRateFileServiceImpl implements RaiseRateFileService {
   private void logRaiseRates(double percentage, RateOperation operation,
       List<RateFile> fullRateFiles) {
     RaiseRatesRecord createRaiseRatesRecord =
-        getLogRecordFactory().createRaiseRatesRecord(operation, percentage, fullRateFiles,
-            userSessionService.getLoggedInUser().getUserName());
+        logRecordFactoryService.createRaiseRatesRecord(operation, percentage, fullRateFiles);
     logService.createLogRecord(createRaiseRatesRecord);
   }
 
@@ -170,14 +169,6 @@ public class RaiseRateFileServiceImpl implements RaiseRateFileService {
     }
   }
 
-  public LogRecordFactory getLogRecordFactory() {
-    return logRecordFactory;
-  }
-
-  public void setLogRecordFactory(LogRecordFactory logRecordFactory) {
-    this.logRecordFactory = logRecordFactory;
-  }
-
   public RateFileDao getRateFileDao() {
     return rateFileDao;
   }
@@ -208,6 +199,14 @@ public class RaiseRateFileServiceImpl implements RaiseRateFileService {
 
   public void setUserSessionService(UserSessionService userSessionService) {
     this.userSessionService = userSessionService;
+  }
+
+  public LogRecordFactoryService getLogRecordFactoryService() {
+    return logRecordFactoryService;
+  }
+
+  public void setLogRecordFactoryService(LogRecordFactoryService logRecordFactoryService) {
+    this.logRecordFactoryService = logRecordFactoryService;
   }
 
 }

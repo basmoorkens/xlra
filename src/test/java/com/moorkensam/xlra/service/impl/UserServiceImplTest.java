@@ -10,7 +10,7 @@ import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.model.security.UserLogRecord;
 import com.moorkensam.xlra.model.security.UserStatus;
 import com.moorkensam.xlra.service.EmailService;
-import com.moorkensam.xlra.service.util.LogRecordFactory;
+import com.moorkensam.xlra.service.LogRecordFactoryService;
 
 import org.easymock.EasyMock;
 import org.junit.Assert;
@@ -46,7 +46,7 @@ public class UserServiceImplTest extends UnitilsJUnit4 {
   private User userMock;
 
   @Mock
-  private LogRecordFactory logRecordFactory;
+  private LogRecordFactoryService logRecordFactory;
 
   /**
    * Initializes the test.
@@ -54,10 +54,10 @@ public class UserServiceImplTest extends UnitilsJUnit4 {
   @Before
   public void init() {
     service = new UserServiceImpl();
-    service.setLogRecordFactory(logRecordFactory);
     service.setUserDao(userDao);
     service.setLogDao(logDao);
     service.setEmailService(emailService);
+    service.setLogRecordFactoryService(logRecordFactory);
   }
 
   @Test(expected = UserException.class)

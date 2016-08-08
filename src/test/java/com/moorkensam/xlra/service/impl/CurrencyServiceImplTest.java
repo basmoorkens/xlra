@@ -11,10 +11,10 @@ import com.moorkensam.xlra.model.generator.UserGenerator;
 import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.model.log.RateLogRecord;
 import com.moorkensam.xlra.model.security.User;
+import com.moorkensam.xlra.service.LogRecordFactoryService;
 import com.moorkensam.xlra.service.LogService;
 import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.UserSessionService;
-import com.moorkensam.xlra.service.util.LogRecordFactory;
 
 import junit.framework.Assert;
 
@@ -45,7 +45,7 @@ public class CurrencyServiceImplTest extends UnitilsJUnit4 {
   private UserSessionService userSessionService;
 
   @Mock
-  private LogRecordFactory logRecordFactory;
+  private LogRecordFactoryService logRecordFactory;
 
   @Mock
   private LogService logService;
@@ -64,7 +64,7 @@ public class CurrencyServiceImplTest extends UnitilsJUnit4 {
     currencyService = new CurrencyServiceImpl();
     currencyService.setCurrencyRateDao(dao);
     currencyService.setXlraConfigurationDao(configDao);
-    currencyService.setLogRecordFactory(logRecordFactory);
+    currencyService.setLogRecordFactoryService(logRecordFactory);
     currencyService.setLogService(logService);
     currencyService.setUserSessionService(userSessionService);
     r1 = new CurrencyRate();
@@ -132,9 +132,9 @@ public class CurrencyServiceImplTest extends UnitilsJUnit4 {
     EasyMock.expect(configDao.getXlraConfiguration()).andReturn(config);
     EasyMock.expect(userSessionService.getLoggedInUser()).andReturn(user);
     LogRecord record = new RateLogRecord();
-    EasyMock.expect(
-        logRecordFactory.createChfLogRecord(new BigDecimal(110d), new BigDecimal(100d),
-            UserGenerator.STANDARD_USERNAME)).andReturn(record);
+    EasyMock
+        .expect(logRecordFactory.createChfLogRecord(new BigDecimal(110d), new BigDecimal(100d)))
+        .andReturn(record);
     logService.createLogRecord(record);
     EasyMock.expectLastCall();
     configDao.updateXlraConfiguration(config);

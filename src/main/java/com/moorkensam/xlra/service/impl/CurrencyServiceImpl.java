@@ -8,10 +8,10 @@ import com.moorkensam.xlra.model.error.IntervalOverlapException;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.service.CurrencyService;
+import com.moorkensam.xlra.service.LogRecordFactoryService;
 import com.moorkensam.xlra.service.LogService;
 import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.UserSessionService;
-import com.moorkensam.xlra.service.util.LogRecordFactory;
 import com.moorkensam.xlra.service.util.RateUtil;
 
 import org.apache.logging.log4j.LogManager;
@@ -50,12 +50,11 @@ public class CurrencyServiceImpl implements CurrencyService {
   @Inject
   private UserSessionService userSessionService;
 
-  private LogRecordFactory logRecordFactory;
+  @Inject
+  private LogRecordFactoryService logRecordFactoryService;
 
   @PostConstruct
-  public void init() {
-    logRecordFactory = LogRecordFactory.getInstance();
-  }
+  public void init() {}
 
   @Override
   public void updateCurrencyRate(final CurrencyRate currencyRate) {
@@ -90,7 +89,7 @@ public class CurrencyServiceImpl implements CurrencyService {
   private void logUpdateCurrentChfValue(final BigDecimal value, final Configuration config) {
     String loggedInUserName = getUserSessionService().getLoggedInUser().getUserName();
     LogRecord createChfLogRecord =
-        logRecordFactory.createChfLogRecord(config.getCurrentChfValue(), value, loggedInUserName);
+        logRecordFactoryService.createChfLogRecord(config.getCurrentChfValue(), value);
     logger.info(loggedInUserName + " updated chfprice " + config.getCurrentChfValue() + " to "
         + value);
     getLogService().createLogRecord(createChfLogRecord);
@@ -135,14 +134,6 @@ public class CurrencyServiceImpl implements CurrencyService {
     currencyRateDao.deleteCurrencyRate(toDelete);
   }
 
-  public LogRecordFactory getLogRecordFactory() {
-    return logRecordFactory;
-  }
-
-  public void setLogRecordFactory(LogRecordFactory logRecordFactory) {
-    this.logRecordFactory = logRecordFactory;
-  }
-
   public LogService getLogService() {
     return logService;
   }
@@ -157,6 +148,14 @@ public class CurrencyServiceImpl implements CurrencyService {
 
   public void setUserSessionService(UserSessionService userSessionService) {
     this.userSessionService = userSessionService;
+  }
+
+  public LogRecordFactoryService getLogRecordFactoryService() {
+    return logRecordFactoryService;
+  }
+
+  public void setLogRecordFactoryService(LogRecordFactoryService logRecordFactoryService) {
+    this.logRecordFactoryService = logRecordFactoryService;
   }
 
 }

@@ -10,8 +10,8 @@ import com.moorkensam.xlra.model.log.LogType;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.model.security.UserStatus;
 import com.moorkensam.xlra.service.EmailService;
+import com.moorkensam.xlra.service.LogRecordFactoryService;
 import com.moorkensam.xlra.service.UserService;
-import com.moorkensam.xlra.service.util.LogRecordFactory;
 import com.moorkensam.xlra.service.util.PasswordUtil;
 import com.moorkensam.xlra.service.util.TokenUtil;
 import com.moorkensam.xlra.service.util.UserStatusUtil;
@@ -46,12 +46,8 @@ public class UserServiceImpl implements UserService {
   @Resource
   private SessionContext sessionContext;
 
-  private LogRecordFactory logRecordFactory;
-
-  @PostConstruct
-  public void init() {
-    setLogRecordFactory(LogRecordFactory.getInstance());
-  }
+  @Inject
+  private LogRecordFactoryService logRecordFactoryService;
 
   @Override
   public List<User> getAllUsers() {
@@ -61,7 +57,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public void createUser(final User user) throws UserException {
     validateUserIsUnique(user);
-    LogRecord record = logRecordFactory.createUserRecord(user, LogType.USER_CREATED);
+    LogRecord record = getLogRecordFactoryService().createUserRecord(user, LogType.USER_CREATED);
     getLogDao().createLogRecord(record);
 
     user.setPassword("xlra");
@@ -173,7 +169,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public void setPasswordAndActivateUser(final User user, final String password) {
     logger.info("User " + user.getUserName() + " is now activated");
-    LogRecord record = logRecordFactory.createUserRecord(user, LogType.USER_ACTIVATED);
+    LogRecord record = getLogRecordFactoryService().createUserRecord(user, LogType.USER_ACTIVATED);
     getLogDao().createLogRecord(record);
     user.setPassword(PasswordUtil.makePasswordHash(password));
     user.setUserStatus(UserStatus.IN_OPERATION);
@@ -202,14 +198,6 @@ public class UserServiceImpl implements UserService {
 
   public void setEmailService(EmailService emailService) {
     this.emailService = emailService;
-  }
-
-  public LogRecordFactory getLogRecordFactory() {
-    return logRecordFactory;
-  }
-
-  public void setLogRecordFactory(LogRecordFactory logRecordFactory) {
-    this.logRecordFactory = logRecordFactory;
   }
 
   @Override
@@ -260,5 +248,13 @@ public class UserServiceImpl implements UserService {
   @Override
   public User isValidPasswordResetRequest(final String email, final String token) {
     return userDao.isValidPasswordResetRequest(email, token);
+  }
+
+  public LogRecordFactoryService getLogRecordFactoryService() {
+    return logRecordFactoryService;
+  }
+
+  public void setLogRecordFactoryService(LogRecordFactoryService logRecordFactoryService) {
+    this.logRecordFactoryService = logRecordFactoryService;
   }
 }

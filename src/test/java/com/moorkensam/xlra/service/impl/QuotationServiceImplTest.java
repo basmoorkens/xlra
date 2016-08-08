@@ -26,13 +26,13 @@ import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.CalculationService;
 import com.moorkensam.xlra.service.EmailService;
 import com.moorkensam.xlra.service.FileService;
+import com.moorkensam.xlra.service.LogRecordFactoryService;
 import com.moorkensam.xlra.service.LogService;
 import com.moorkensam.xlra.service.MailTemplateService;
 import com.moorkensam.xlra.service.PdfService;
 import com.moorkensam.xlra.service.RateFileService;
 import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.UserSessionService;
-import com.moorkensam.xlra.service.util.LogRecordFactory;
 import com.moorkensam.xlra.service.util.QuotationUtil;
 
 import com.itextpdf.text.DocumentException;
@@ -107,7 +107,7 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
   private UserSessionService userSessionService;
 
   @Mock
-  private LogRecordFactory logRecordFactory;
+  private LogRecordFactoryService logRecordFactory;
 
   @Mock
   private LogService logService;
@@ -145,7 +145,7 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
     quotationService.setPdfService(pdfService);
     quotationService.setQuotationUtil(quotationUtil);
     quotationService.setLogService(logService);
-    quotationService.setLogFactory(logRecordFactory);
+    quotationService.setLogFactoryService(logRecordFactory);
   }
 
   @Test
@@ -183,8 +183,7 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
         .andReturn(UserGenerator.getStandardUser());
     EasyMock.expect(fileService.convertTransientOfferteToFinal("uq123")).andReturn("uq123.pdf");
     LogRecord log = new QuotationLogRecord();
-    EasyMock.expect(logRecordFactory.createOfferteLogRecord(result, user.getUserName())).andReturn(
-        log);
+    EasyMock.expect(logRecordFactory.createOfferteLogRecord(result)).andReturn(log);
     logService.createLogRecord(log);
     EasyMock.expectLastCall();
     mailService.sendOfferteMail(result);

@@ -64,7 +64,6 @@ public class RateFileServiceTest extends UnitilsJUnit4 {
     RateFileServiceImpl testImpl = new RateFileServiceImpl();
     testImpl.init();
     Assert.assertNotNull(testImpl.getQuotationUtil());
-    Assert.assertNotNull(testImpl.getLogRecordFactory());
     Assert.assertNotNull(testImpl.getTranslationMapper());
     Assert.assertNotNull(testImpl.getZoneUtil());
   }

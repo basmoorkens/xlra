@@ -11,10 +11,10 @@ import com.moorkensam.xlra.model.generator.UserGenerator;
 import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.model.log.RateLogRecord;
 import com.moorkensam.xlra.model.security.User;
+import com.moorkensam.xlra.service.LogRecordFactoryService;
 import com.moorkensam.xlra.service.LogService;
 import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.UserSessionService;
-import com.moorkensam.xlra.service.util.LogRecordFactory;
 
 import junit.framework.Assert;
 
@@ -43,7 +43,7 @@ public class DieselServiceImplTest extends UnitilsJUnit4 {
   private DieselRateDao dieselRateDao;
 
   @Mock
-  private LogRecordFactory logFactory;
+  private LogRecordFactoryService logFactory;
 
   @Mock
   private ConfigurationDao configDao;
@@ -71,7 +71,7 @@ public class DieselServiceImplTest extends UnitilsJUnit4 {
     existing2 = new DieselRate(2.0d, 3.0d);
     service.setDieselRateDao(dieselRateDao);
     service.setUserSessionService(userSessionService);
-    service.setLogRecordFactory(logFactory);
+    service.setLogRecordFactoryService(logFactory);
     service.setLogService(logService);
     service.setXlraConfigurationDao(configDao);
     r1 = new DieselRate();
@@ -131,8 +131,8 @@ public class DieselServiceImplTest extends UnitilsJUnit4 {
     LogRecord log = new RateLogRecord();
     EasyMock.expect(userSessionService.getLoggedInUser()).andReturn(user);
     EasyMock.expect(
-        logFactory.createDieselLogRecord(config.getCurrentDieselPrice(), BigDecimal.valueOf(2d),
-            "bmoork")).andReturn(log);
+        logFactory.createDieselLogRecord(config.getCurrentDieselPrice(), BigDecimal.valueOf(2d)))
+        .andReturn(log);
     logService.createLogRecord(log);
     EasyMock.expectLastCall();
     configDao.updateXlraConfiguration(config);

@@ -9,9 +9,9 @@ import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.DieselService;
+import com.moorkensam.xlra.service.LogRecordFactoryService;
 import com.moorkensam.xlra.service.LogService;
 import com.moorkensam.xlra.service.UserSessionService;
-import com.moorkensam.xlra.service.util.LogRecordFactory;
 import com.moorkensam.xlra.service.util.RateUtil;
 
 import org.apache.logging.log4j.LogManager;
@@ -43,12 +43,9 @@ public class DieselServiceImpl implements DieselService {
   @Inject
   private UserSessionService userSessionService;
 
-  private LogRecordFactory logRecordFactory;
+  @Inject
+  private LogRecordFactoryService logRecordFactoryService;
 
-  @PostConstruct
-  public void init() {
-    setLogRecordFactory(LogRecordFactory.getInstance());
-  }
 
   @Override
   public void updateDieselRate(final DieselRate dieselRate) {
@@ -81,8 +78,7 @@ public class DieselServiceImpl implements DieselService {
   private void logUpdateCurrentDieselValue(final BigDecimal value, final Configuration config) {
     User loggedInUser = userSessionService.getLoggedInUser();
     LogRecord createDieselLogRecord =
-        logRecordFactory.createDieselLogRecord(config.getCurrentDieselPrice(), value,
-            loggedInUser.getUserName());
+        getLogRecordFactoryService().createDieselLogRecord(config.getCurrentDieselPrice(), value);
     logger.info(loggedInUser.getUserName() + " updated dieselprice "
         + config.getCurrentDieselPrice() + " to " + value);
     logService.createLogRecord(createDieselLogRecord);
@@ -105,14 +101,6 @@ public class DieselServiceImpl implements DieselService {
   public void deleteDieselRate(DieselRate rate) {
     logger.info("Removing diesel rate " + rate);
     dieselRateDao.deleteDieselRate(rate);
-  }
-
-  public LogRecordFactory getLogRecordFactory() {
-    return logRecordFactory;
-  }
-
-  public void setLogRecordFactory(LogRecordFactory logRecordFactory) {
-    this.logRecordFactory = logRecordFactory;
   }
 
   public DieselRateDao getDieselRateDao() {
@@ -145,5 +133,13 @@ public class DieselServiceImpl implements DieselService {
 
   public void setUserSessionService(UserSessionService userSessionService) {
     this.userSessionService = userSessionService;
+  }
+
+  public LogRecordFactoryService getLogRecordFactoryService() {
+    return logRecordFactoryService;
+  }
+
+  public void setLogRecordFactoryService(LogRecordFactoryService logRecordFactoryService) {
+    this.logRecordFactoryService = logRecordFactoryService;
   }
 }

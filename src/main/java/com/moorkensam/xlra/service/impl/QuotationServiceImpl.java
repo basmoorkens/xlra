@@ -18,6 +18,7 @@ import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.CalculationService;
 import com.moorkensam.xlra.service.EmailService;
 import com.moorkensam.xlra.service.FileService;
+import com.moorkensam.xlra.service.LogRecordFactoryService;
 import com.moorkensam.xlra.service.LogService;
 import com.moorkensam.xlra.service.MailTemplateService;
 import com.moorkensam.xlra.service.PdfService;
@@ -25,7 +26,6 @@ import com.moorkensam.xlra.service.QuotationService;
 import com.moorkensam.xlra.service.RateFileService;
 import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.UserSessionService;
-import com.moorkensam.xlra.service.util.LogRecordFactory;
 import com.moorkensam.xlra.service.util.QuotationUtil;
 
 import com.itextpdf.text.DocumentException;
@@ -79,7 +79,8 @@ public class QuotationServiceImpl implements QuotationService {
   @Inject
   private LogService logService;
 
-  private LogRecordFactory logFactory;
+  @Inject
+  private LogRecordFactoryService logFactoryService;
 
   private FileService fileService;
 
@@ -95,7 +96,6 @@ public class QuotationServiceImpl implements QuotationService {
     identityService = IdentityService.getInstance();
     fileService = new FileServiceImpl();
     setQuotationUtil(QuotationUtil.getInstance());
-    logFactory = LogRecordFactory.getInstance();
   }
 
   @Override
@@ -216,7 +216,7 @@ public class QuotationServiceImpl implements QuotationService {
 
   private void logOfferteSubmit(QuotationResult result) {
     User user = userSessionService.getLoggedInUser();
-    LogRecord log = logFactory.createOfferteLogRecord(result, user.getUserName());
+    LogRecord log = getLogFactoryService().createOfferteLogRecord(result);
     logService.createLogRecord(log);
     logger.info(user.getUserName() + " created offerte " + result.getOfferteUniqueIdentifier());
   }
@@ -354,14 +354,6 @@ public class QuotationServiceImpl implements QuotationService {
     return quotationResultDao.getOfferteByKey(offerteKey);
   }
 
-  public LogRecordFactory getLogFactory() {
-    return logFactory;
-  }
-
-  public void setLogFactory(LogRecordFactory logFactory) {
-    this.logFactory = logFactory;
-  }
-
   @Override
   public List<QuotationResult> getLazyloadedOffertes(int first, int pageSize, String sortField,
       SortOrder sortOrder, Map<String, Object> filters) {
@@ -387,5 +379,13 @@ public class QuotationServiceImpl implements QuotationService {
 
   public void setUserSessionService(UserSessionService userSessionService) {
     this.userSessionService = userSessionService;
+  }
+
+  public LogRecordFactoryService getLogFactoryService() {
+    return logFactoryService;
+  }
+
+  public void setLogFactoryService(LogRecordFactoryService logFactoryService) {
+    this.logFactoryService = logFactoryService;
   }
 }

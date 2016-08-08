@@ -13,9 +13,9 @@ import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.security.User;
+import com.moorkensam.xlra.service.LogRecordFactoryService;
 import com.moorkensam.xlra.service.RateFileService;
 import com.moorkensam.xlra.service.UserSessionService;
-import com.moorkensam.xlra.service.util.LogRecordFactory;
 import com.moorkensam.xlra.service.util.QuotationUtil;
 import com.moorkensam.xlra.service.util.RateUtil;
 import com.moorkensam.xlra.service.util.TranslationKeyToi8nMapper;
@@ -54,11 +54,12 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
   @Inject
   private UserSessionService userSessionService;
 
+  @Inject
+  private LogRecordFactoryService logRecordFactoryService;
+
   private TranslationKeyToi8nMapper translationMapper;
 
   private QuotationUtil quotationUtil;
-
-  private LogRecordFactory logRecordFactory;
 
   private ZoneUtil zoneUtil;
 
@@ -67,7 +68,6 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
    */
   @PostConstruct
   public void init() {
-    setLogRecordFactory(LogRecordFactory.getInstance());
     quotationUtil = QuotationUtil.getInstance();
     translationMapper = new TranslationKeyToi8nMapper();
     zoneUtil = new ZoneUtil();
@@ -225,14 +225,6 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
     return conditionDao.updateCondition(condition);
   }
 
-  public LogRecordFactory getLogRecordFactory() {
-    return logRecordFactory;
-  }
-
-  public void setLogRecordFactory(LogRecordFactory logRecordFactory) {
-    this.logRecordFactory = logRecordFactory;
-  }
-
   @Override
   public RateFile getRateFileById(long id) {
     RateFile fullRateFile = getRateFileDao().getFullRateFile(id);
@@ -321,5 +313,13 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
 
   public void setUserSessionService(UserSessionService userSessionService) {
     this.userSessionService = userSessionService;
+  }
+
+  public LogRecordFactoryService getLogRecordFactoryService() {
+    return logRecordFactoryService;
+  }
+
+  public void setLogRecordFactoryService(LogRecordFactoryService logRecordFactoryService) {
+    this.logRecordFactoryService = logRecordFactoryService;
   }
 }
