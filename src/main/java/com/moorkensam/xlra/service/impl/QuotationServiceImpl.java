@@ -137,10 +137,15 @@ public class QuotationServiceImpl implements QuotationService {
   }
 
   @Override
-  public QuotationResult generateQuotationResultForQuotationQuery(QuotationQuery query)
+  public QuotationResult generateQuotationResultForQuotationQuery(final QuotationQuery query)
       throws RateFileException {
     QuotationResult offerte = initializeQuotationResult(query);
-    query.setQuotationDate(new Date());
+    fillInOfferteFromRateFile(query, offerte);
+    return offerte;
+  }
+
+  private void fillInOfferteFromRateFile(final QuotationQuery query, QuotationResult offerte)
+      throws RateFileException {
     RateLine result;
     try {
       RateFile rf = rateFileService.getRateFileForQuery(query);
@@ -152,12 +157,10 @@ public class QuotationServiceImpl implements QuotationService {
       offerte.getCalculation().setBasePrice(result.getValue());
       offerte.setUsedRateFileName(rf.getName());
       quotationUtil.setupEmailRecipients(offerte);
-      offerte.setQuotationResultStatus(QuotationResultStatus.PROCESSED_OPTIONS);
     } catch (RateFileException e1) {
       logger.error(e1.getBusinessException() + e1.getMessage());
       throw e1;
     }
-    return offerte;
   }
 
   @Override
@@ -190,6 +193,8 @@ public class QuotationServiceImpl implements QuotationService {
     quotationResult.setCreatedUserFullName(loggedInUser.getFullName());
     PriceCalculation calculatedPrice = new PriceCalculation();
     quotationResult.setCalculation(calculatedPrice);
+    query.setQuotationDate(new Date());
+    quotationResult.setQuotationResultStatus(QuotationResultStatus.PROCESSED_RATE_FILTERS);
     return quotationResult;
   }
 

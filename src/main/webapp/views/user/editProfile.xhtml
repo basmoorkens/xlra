@@ -9,50 +9,52 @@
 		<h:outputText value="XLRA - User - Edit profile" />
 	</ui:define>
 	<ui:define name="pageTitle">
-		<h:outputText value="Edit profile" />
+		<h:outputText value="#{msg['userprofile.title']}" />
 	</ui:define>
 	<ui:define name="body">
 		<h:form id="userForm">
 			<p:growl showDetail="true" id="messages" sticky="false" />
-			<p:panel header="Profile for #{userController.user.fullName}">
-				<p:panel header="Account information">
+			<p:panel
+				header="#{msg['userprofile.profile.for']} #{userController.user.fullName}">
+				<p:panel header="#{msg['userprofile.account.information']}">
 					<p:panelGrid columns="2" style="width:100%;"
 						columnClasses="labelColumn,valuesColumn">
-						<h:outputText value="UserName: " />
+						<h:outputText value="#{msg['userprofile.username']}" />
 						<h:outputText value="#{userController.user.userName}" />
 
-						<h:outputText value="Email: " />
+						<h:outputText value="#{msg['userprofile.email']}" />
 						<h:outputText value="#{userController.user.email}" />
 
 					</p:panelGrid>
 				</p:panel>
-				<p:panel header="User information" style="margin-top:20px;">
+				<p:panel header="#{msg['userprofile.user.information']}"
+					style="margin-top:20px;">
 					<p:panelGrid columns="2" style="width:100%;"
 						columnClasses="labelColumn,valuesColumn">
-						<h:outputText value="First name: " />
+						<h:outputText value="#{msg['userprofile.first.name']}" />
 						<p:inputText style="width:100%;"
 							value="#{userController.user.firstName}" />
 
-						<h:outputText value="Name: " />
+						<h:outputText value="#{msg['userprofile.name']}" />
 						<p:inputText style="width:100%;"
 							value="#{userController.user.name}" />
 
-						<h:outputText value="New password: " />
+						<h:outputText value="#{msg['userprofile.password.new']}" />
 						<p:password style="width:100%;"
 							value="#{userController.newPassword}" />
 
-						<h:outputText value="Retype new password: " />
+						<h:outputText value="#{msg['userprofile.password.confirm']}" />
 						<p:password style="width:100%;"
 							value="#{userController.retypedPassword}" />
 					</p:panelGrid>
 				</p:panel>
 
 				<p:panel style="margin-top:20px;">
-					<p:commandButton value="Save edited profile" id="saveButton"
-						styleClass="navButton" actionListener="#{userController.saveUser}"
-						update=":userForm" />
+					<p:commandButton value="#{msg['userprofile.save.edited.profile']}"
+						id="saveButton" styleClass="navButton"
+						actionListener="#{userController.saveUser}" update=":userForm" />
 					<p:tooltip id="saveTip" for="saveButton"
-						value="Save the changes you made" />
+						value="#{msg['userprofile.save.tooltip']}" />
 				</p:panel>
 			</p:panel>
 		</h:form>

@@ -20,103 +20,112 @@
 			<p:menubar id="xlraMenu">
 				<p:submenu
 					rendered="#{templateController.hasNonePermissions(['EDIT_RATEFILE', 'CREATE_RATEFILE', 'RAISE_RATES', 'VIEW_RATEFILE', 'EXCEL_UPLOAD'])}"
-					label="Rates" icon="ui-icon-document">
+					label="#{msg['menu.ratefile.rates']}" icon="ui-icon-document">
 					<p:menuitem
 						rendered="#{templateController.hasPermission('CREATE_RATEFILE')}"
-						value="Create ratefile"
+						value="#{msg['menu.ratefile.create']}"
 						url="/views/admin/rate/createRateFile.xhtml" />
 					<p:menuitem
 						rendered="#{templateController.hasPermission('EDIT_RATEFILE')}"
-						value="Manage rates" url="/views/admin/rate/manageRates.xhtml" />
+						value="#{msg['menu.ratefile.managerates']}"
+						url="/views/admin/rate/manageRates.xhtml" />
 					<p:menuitem
 						rendered="#{templateController.hasPermission('VIEW_RATEFILE')}"
-						value="View rates" url="/views/user/viewRates.xhtml" />
+						value="#{msg['menu.ratefile.viewrates']}"
+						url="/views/user/viewRates.xhtml" />
 					<p:menuitem
 						rendered="#{templateController.hasPermission('RAISE_RATES')}"
-						value="Raise rates" url="/views/admin/rate/raiseRates.xhtml" />
+						value="#{msg['menu.ratefile.raiserates']}"
+						url="/views/admin/rate/raiseRates.xhtml" />
 					<p:menuitem
 						rendered="#{templateController.hasPermission('EXCEL_UPLOAD')}"
-						value="Upload rate excel"
+						value="#{msg['menu.ratefile.uploadexcel']}"
 						url="/views/admin/upload/excelUpload.xhtml" />
 				</p:submenu>
 
 				<p:submenu
 					rendered="#{templateController.hasNonePermissions(['CREATE_OFFERTE', 'VIEW_OFFERTE'])}"
-					label="Offertes" icon="ui-icon-document">
+					label="#{msg['menu.offertes.offerte']}" icon="ui-icon-document">
 					<p:menuitem
 						rendered="#{templateController.hasPermission('CREATE_OFFERTE')}"
-						value="Create offerte" url="/views/user/createOfferte.xhtml" />
+						value="#{msg['menu.offertes.createofferte']}"
+						url="/views/user/createOfferte.xhtml" />
 					<p:menuitem
 						rendered="#{templateController.hasPermission('VIEW_OFFERTE')}"
-						value="Overview offertes" url="/views/user/offerteOverview.xhtml" />
+						value="#{msg['menu.offertes.overviewofferte']}"
+						url="/views/user/offerteOverview.xhtml" />
 				</p:submenu>
 
 				<p:submenu
 					rendered="#{templateController.hasNonePermissions(['FULL_CUSTOMER_EDIT'])}"
-					label="Customer" icon="ui-icon-document">
+					label="#{msg['menu.customers.customer']}" icon="ui-icon-document">
 					<p:menuitem
 						rendered="#{templateController.hasPermission('FULL_CUSTOMER_EDIT')}"
-						value="Manage customers"
+						value="#{msg['menu.customers.managecustomer']}"
 						url="/views/admin/customer/manageCustomers.xhtml" />
 				</p:submenu>
 
 				<p:submenu
 					rendered="#{templateController.hasNonePermissions(['DIESEL_EDIT', 'EMAIL_TEMPLATE_EDIT', 'COUNTRY_EDIT'])}"
-					label="Configuration" icon="ui-icon-document">
+					label="#{msg['menu.configuration.configuration']}"
+					icon="ui-icon-document">
 					<p:menuitem
 						rendered="#{templateController.hasPermission('CHF_EDIT')}"
-						value="Swiss rates"
+						value="#{msg['menu.configuration.chfrates']}"
 						url="/views/admin/configuration/chfRates.xhtml" />
 					<p:menuitem
 						rendered="#{templateController.hasPermission('DIESEL_EDIT')}"
-						value="Diesel prices"
+						value="#{msg['menu.configuration.dieselrates']}"
 						url="/views/admin/configuration/dieselRates.xhtml" />
 					<p:menuitem
 						rendered="#{templateController.hasPermission('EMAIL_TEMPLATE_EDIT')}"
-						value="Email templates"
+						value="#{msg['menu.configuration.emailtemplates']}"
 						url="/views/admin/configuration/mailTemplates.xhtml" />
 					<p:menuitem
 						rendered="#{templateController.hasPermission('COUNTRY_EDIT')}"
-						value="Countries" url="/views/admin/configuration/country.xhtml" />
+						value="#{msg['menu.configuration.countries']}"
+						url="/views/admin/configuration/country.xhtml" />
 					<p:menuitem
 						rendered="#{templateController.hasPermission('VIEW_LOGS')}"
-						value="View logs" url="/views/admin/configuration/logs.xhtml" />
+						value="#{msg['menu.configuration.viewlogs']}"
+						url="/views/admin/configuration/logs.xhtml" />
 				</p:submenu>
 
 				<p:submenu
 					rendered="#{templateController.hasNonePermissions(['USER_EDIT_PROFILE', 'USER_EDIT', 'ROLE_EDIT', 'PERMISSION_EDIT'])}"
-					label="Users" icon="ui-icon-document">
+					label="#{msg['menu.users.users']}" icon="ui-icon-document">
 					<p:menuitem
 						rendered="#{templateController.hasPermission('USER_EDIT_PROFILE')}"
-						value="User profile" url="/views/user/editProfile.xhtml" />
+						value="#{msg['menu.users.viewprofile']}"
+						url="/views/user/editProfile.xhtml" />
 					<p:menuitem
 						rendered="#{templateController.hasPermission('USER_EDIT')}"
-						value="User management"
+						value="#{msg['menu.users.usermanagement']}"
 						url="/views/admin/user/userManagement.xhtml" />
 					<p:menuitem
 						rendered="#{templateController.hasPermission('ROLE_EDIT')}"
-						value="Role management"
+						value="#{msg['menu.users.rolemanagement']}"
 						url="/views/sysadmin/user/RoleManagement.xhtml" />
 					<p:menuitem
 						rendered="#{templateController.hasPermission('PERMISSION_EDIT')}"
-						value="Permission management"
+						value="#{msg['menu.users.permissionmanagement']}"
 						url="/views/sysadmin/user/PermissionManagement.xhtml" />
 				</p:submenu>
 				<f:facet name="options">
 					<h:outputText styleClass="wb"
-						value="Welcome back #{templateController.loggedInUserName}"
+						value="#{msg['menu.welcome.back.message']} #{templateController.loggedInUserName}"
 						style="margin-right:10px;" />
-					<p:commandButton id="logoutLink" value="Logout"
+					<p:commandButton id="logoutLink" value="#{msg['menu.logout']}"
 						actionListener="#{logoutController.logout}" styleClass="navButton"
 						style="margin-right:10px" ajax="false" icon="ui-icon-extlink" />
 				</f:facet>
 			</p:menubar>
 		</h:form>
 		<h1>
-			<ui:insert name="pageTitle">Extra logistics Rates application</ui:insert>
+			<ui:insert name="pageTitle">#{msg['template.welcome.title']}</ui:insert>
 		</h1>
 		<p:panel>
-			<ui:insert name="body">Welcome to the Extra logistics Rates application</ui:insert>
+			<ui:insert name="body">#{msg['template.welcome.body']}</ui:insert>
 		</p:panel>
 
 		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">

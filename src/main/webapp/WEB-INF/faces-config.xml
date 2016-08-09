@@ -13,6 +13,10 @@
 			<base-name>translations</base-name>
 			<var>translation</var>
 		</resource-bundle>
+		<resource-bundle>
+			<base-name>com.moorkensam.xlra.messages</base-name>
+			<var>msg</var>
+		</resource-bundle>
 	</application>
 
 	<factory>
