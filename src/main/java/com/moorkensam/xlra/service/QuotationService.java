@@ -1,6 +1,7 @@
 package com.moorkensam.xlra.service;
 
 import com.moorkensam.xlra.model.error.RateFileException;
+import com.moorkensam.xlra.model.error.UnAuthorizedAccessException;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 
@@ -57,9 +58,10 @@ public interface QuotationService {
 
   public int getQuotationQueryCount(Map<String, String> filters);
 
-  public QuotationResult getFullOfferteById(Long id);
+  public QuotationResult getFullOfferteById(Long id) throws UnAuthorizedAccessException;
 
-  public QuotationResult getOfferteByOfferteKey(String offertekey);
+  public QuotationResult getOfferteByOfferteKey(String offertekey)
+      throws UnAuthorizedAccessException;
 
   /**
    * This method loads the offertes in pages.

@@ -9,4 +9,6 @@ public interface UserSessionService {
   boolean isLoggedInUserAdmin();
 
   boolean isLoggedInUserSystemAdmin();
+
+  boolean doesLoggedInUserHaveAdminRights();
 }

@@ -1,6 +1,7 @@
 package com.moorkensam.xlra.controller;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
+import com.moorkensam.xlra.model.error.UnAuthorizedAccessException;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.service.CountryService;
@@ -84,8 +85,12 @@ public class OfferteOverviewController {
         FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap()
             .get("offerteKey");
     if (StringUtils.isNotBlank(offerteKey)) {
-      selectedOfferte = quotationService.getOfferteByOfferteKey(offerteKey);
-      showDetailDialog();
+      try {
+        selectedOfferte = quotationService.getOfferteByOfferteKey(offerteKey);
+        showDetailDialog();
+      } catch (UnAuthorizedAccessException e) {
+        MessageUtil.addErrorMessage("Unauthorized offerte access", e.getBusinessException());
+      }
     }
   }
 
@@ -95,8 +100,12 @@ public class OfferteOverviewController {
    * @param quotationResult The offerte to view the details of.
    */
   public void setupOfferteDetail(QuotationResult quotationResult) {
-    selectedOfferte = quotationService.getFullOfferteById(quotationResult.getId());
-    showDetailDialog();
+    try {
+      selectedOfferte = quotationService.getFullOfferteById(quotationResult.getId());
+      showDetailDialog();
+    } catch (UnAuthorizedAccessException e) {
+      MessageUtil.addErrorMessage("Unauthorized offerte access", e.getBusinessException());
+    }
   }
 
   public void hideDetailDialog() {
@@ -146,6 +155,8 @@ public class OfferteOverviewController {
     } catch (MessagingException e) {
       MessageUtil.addErrorMessage("Could not send email",
           "Error sending email! Contact the system admin if this error persists.");
+    } catch (UnAuthorizedAccessException e) {
+      MessageUtil.addErrorMessage("Unauthorized offerte access", e.getBusinessException());
     }
   }
 

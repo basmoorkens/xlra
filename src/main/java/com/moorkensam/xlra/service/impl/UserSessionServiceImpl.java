@@ -77,4 +77,9 @@ public class UserSessionServiceImpl implements UserSessionService {
     return false;
   }
 
+  @Override
+  public boolean doesLoggedInUserHaveAdminRights() {
+    return isLoggedInUserAdmin() || isLoggedInUserSystemAdmin();
+  }
+
 }

@@ -6,15 +6,18 @@ import com.moorkensam.xlra.dao.QuotationResultDao;
 import com.moorkensam.xlra.model.error.PdfException;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.error.TemplatingException;
+import com.moorkensam.xlra.model.error.UnAuthorizedAccessException;
 import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.model.mail.EmailResult;
 import com.moorkensam.xlra.model.offerte.OfferteOptionDto;
 import com.moorkensam.xlra.model.offerte.PriceCalculation;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
+import com.moorkensam.xlra.model.offerte.QuotationResultStatus;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.security.User;
+import com.moorkensam.xlra.service.AuthorizationService;
 import com.moorkensam.xlra.service.CalculationService;
 import com.moorkensam.xlra.service.EmailService;
 import com.moorkensam.xlra.service.FileService;
@@ -82,6 +85,9 @@ public class QuotationServiceImpl implements QuotationService {
   @Inject
   private LogRecordFactoryService logFactoryService;
 
+  @Inject
+  private AuthorizationService authorizationService;
+
   private FileService fileService;
 
   private IdentityService identityService;
@@ -146,6 +152,7 @@ public class QuotationServiceImpl implements QuotationService {
       offerte.getCalculation().setBasePrice(result.getValue());
       offerte.setUsedRateFileName(rf.getName());
       quotationUtil.setupEmailRecipients(offerte);
+      offerte.setQuotationResultStatus(QuotationResultStatus.PROCESSED_OPTIONS);
     } catch (RateFileException e1) {
       logger.error(e1.getBusinessException() + e1.getMessage());
       throw e1;
@@ -163,6 +170,7 @@ public class QuotationServiceImpl implements QuotationService {
       EmailResult dto = mailTemplateService.initializeOfferteEmail(offerte);
       offerte.setEmailResult(dto);
       pdfService.generateTransientOffertePdf(offerte, offerte.getQuery().getResultLanguage());
+      offerte.setQuotationResultStatus(QuotationResultStatus.PROCESSED_OPTIONS);
     } catch (TemplatingException e) {
       logger.error("Failed to parse Template" + e.getMessage());
       throw new RateFileException("Failed to parse email template.");
@@ -201,8 +209,9 @@ public class QuotationServiceImpl implements QuotationService {
   public void submitQuotationResult(QuotationResult result) throws RateFileException {
     copyTransientResultLanguageToLanguageIfNeeded(result);
     try {
-      createAndSaveFullOfferte(result);
-      logOfferteSubmit(result);
+      User user = userSessionService.getLoggedInUser();
+      createAndSaveFullOfferte(result, user);
+      logOfferteSubmit(result, user);
       result.setPdfFileName(fileService.convertTransientOfferteToFinal(result
           .getOfferteUniqueIdentifier()));
       getEmailService().sendOfferteMail(result);
@@ -214,21 +223,22 @@ public class QuotationServiceImpl implements QuotationService {
     }
   }
 
-  private void logOfferteSubmit(QuotationResult result) {
-    User user = userSessionService.getLoggedInUser();
+  private void logOfferteSubmit(final QuotationResult result, final User user) {
     LogRecord log = getLogFactoryService().createOfferteLogRecord(result);
     logService.createLogRecord(log);
     logger.info(user.getUserName() + " created offerte " + result.getOfferteUniqueIdentifier());
   }
 
 
-  private void createAndSaveFullOfferte(QuotationResult offerte) {
+  private void createAndSaveFullOfferte(final QuotationResult offerte, final User user) {
     offerte.getQuery().setQuotationDate(new Date());
+    offerte.setCreatedUserName(user.getUserName());
     QuotationQuery managedQuery = getQuotationDao().createQuotationQuery(offerte.getQuery());
     offerte.setQuery(managedQuery);
     PriceCalculation managedCalculation =
         priceCalculationDao.createCalculation(offerte.getCalculation());
     offerte.setCalculation(managedCalculation);
+    offerte.setQuotationResultStatus(QuotationResultStatus.FINALIZED);
     getQuotationResultDao().createQuotationResult(offerte);
   }
 
@@ -345,13 +355,18 @@ public class QuotationServiceImpl implements QuotationService {
   }
 
   @Override
-  public QuotationResult getFullOfferteById(Long id) {
-    return quotationResultDao.getQuotationResultById(id);
+  public QuotationResult getFullOfferteById(Long id) throws UnAuthorizedAccessException {
+    QuotationResult offerte = quotationResultDao.getQuotationResultById(id);
+    authorizationService.authorizeOfferteAccess(offerte);
+    return offerte;
   }
 
   @Override
-  public QuotationResult getOfferteByOfferteKey(String offerteKey) {
-    return quotationResultDao.getOfferteByKey(offerteKey);
+  public QuotationResult getOfferteByOfferteKey(String offerteKey)
+      throws UnAuthorizedAccessException {
+    QuotationResult offerte = quotationResultDao.getOfferteByKey(offerteKey);
+    authorizationService.authorizeOfferteAccess(offerte);
+    return offerte;
   }
 
   @Override
@@ -387,5 +402,13 @@ public class QuotationServiceImpl implements QuotationService {
 
   public void setLogFactoryService(LogRecordFactoryService logFactoryService) {
     this.logFactoryService = logFactoryService;
+  }
+
+  public AuthorizationService getAuthorizationService() {
+    return authorizationService;
+  }
+
+  public void setAuthorizationService(AuthorizationService authorizationService) {
+    this.authorizationService = authorizationService;
   }
 }
