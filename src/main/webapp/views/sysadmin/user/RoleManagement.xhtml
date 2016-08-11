@@ -9,45 +9,49 @@
 		<h:outputText value="XLRA - User - Role management" />
 	</ui:define>
 	<ui:define name="pageTitle">
-		<h:outputText value="Role management" />
+		<h:outputText value="#{msg['rolemanagement.title']}" />
 	</ui:define>
 	<ui:define name="body">
 		<h:form id="rolesForm">
 			<p:growl showDetail="true" id="messages" sticky="false" />
 			<p:panel>
-				<p:dataTable emptyMessage="No roles found." id="rolesTable"
-					value="#{rolesController.allRoles}" var="role">
-					<p:column headerText="Name: " width="200">
+				<p:dataTable emptyMessage="#{msg['rolemanagement.roles.empty']}"
+					id="rolesTable" value="#{rolesController.allRoles}" var="role">
+					<p:column headerText="#{msg['label.name']}" width="200">
 						<h:outputText value="#{role.name}" />
 					</p:column>
-					<p:column headerText="Permission list">
+					<p:column headerText="#{msg['rolemanagement.permission.list']}">
 						#{role.permissionsString}
 					</p:column>
 					<p:column width="170">
-						<p:commandButton value="Edit role" id="editRoleButton"
-							update=":rolesForm :addRolesForm" styleClass="navButton"
+						<p:commandButton value="#{msg['rolemanagement.role.edit']}"
+							id="editRoleButton" update=":rolesForm :addRolesForm"
+							styleClass="navButton"
 							style="margin-left:20px; margin-right:20px;"
 							actionListener="#{rolesController.selectRoleForEdit(role)}" />
 					</p:column>
 					<p:tooltip id="editRoleTip" for="editRoleButton"
-						value="Edit basic info and add / remove permissions for role." />
+						value="#{msg['rolemanagement.role.edit.tip']}" />
 				</p:dataTable>
 
 				<p:panel style="margin-top:20px;">
 					<p:commandButton id="addRoleButton"
 						actionListener="#{rolesController.setupNewRole}"
 						styleClass="navButton" style="margin-right:20px;"
-						update=":rolesForm :addRolesForm" value="Create new role" />
+						update=":rolesForm :addRolesForm"
+						value="#{msg['rolemanagement.role.create']}" />
 					<p:tooltip id="addRoleTip" for="addRoleButton"
-						value="Create a new role" />
+						value="#{msg['rolemanagement.role.create.tip']}" />
 				</p:panel>
 			</p:panel>
 		</h:form>
 
-		<p:dialog header="Create new role" widgetVar="addRoleDialog"
-			height="650px" style="width:80%;" dynamic="true">
+		<p:dialog header="#{msg['rolemanagement.role.adddialog.title']}"
+			widgetVar="addRoleDialog" height="650px" style="width:80%;"
+			dynamic="true">
 			<h:form id="addRolesForm">
-				<p:panel header="Role information">
+				<p:panel
+					header="#{msg['rolemanagement.role.adddialog.role.information']}">
 					<p:growl showDetail="true" id="messages" sticky="false" />
 					<p:panelGrid columns="2" style="width:100%;"
 						columnClasses="labelColumn,valuesColumn">
@@ -55,19 +59,19 @@
 						<p:inputText value="#{rolesController.selectedRole.name}"
 							style="width:100%;" />
 
-						<h:outputText value="Description:" />
+						<h:outputText value="#{msg['label.description']}" />
 						<p:inputTextarea
 							value="#{rolesController.selectedRole.description}"
 							style="width:100%;" rows="5" />
 
-						<h:outputText value="Permissions: " />
+						<h:outputText value="#{msg['rolemanagement.role.permissions']}" />
 						<p:pickList id="permissionsPicklist"
 							value="#{rolesController.permissions}" var="permission"
 							effect="bounce" itemValue="#{permission}"
 							itemLabel="#{permission.key}" converter="#{permissionConverter}">
 
-							<f:facet name="sourceCaption">All available permissions</f:facet>
-							<f:facet name="targetCaption">Selected permissions</f:facet>
+							<f:facet name="sourceCaption">#{msg['rolemanagement.all.available.permission']}</f:facet>
+							<f:facet name="targetCaption">#{msg['rolemanagement.permissions.selected']}</f:facet>
 
 							<p:column>
 								<h:outputText value="#{permission.key}" />
@@ -75,22 +79,22 @@
 						</p:pickList>
 					</p:panelGrid>
 					<p:tooltip id="permissionsListTip" for="permissionsPicklist"
-						value="Add /remove permissions to the role" />
+						value="#{msg['rolemanagement.permissions.tip']}" />
 
 					<p:panel style="margin-top:20px;">
 						<p:commandButton immediate="true" id="cancelRoleButton"
-							value="Cancel" styleClass="navButton" style="margin-right:20px;"
-							update=":addRolesForm"
+							value="#{msg['button.cancel']}" styleClass="navButton"
+							style="margin-right:20px;" update=":addRolesForm"
 							actionListener="#{rolesController.cancelAddRole}" />
 						<p:tooltip id="cancelRoleTip" for="cancelRoleButton"
-							value="Go back to the overview screen" />
-						<p:commandButton value="Save" id="saveRoleButton"
+							value="#{msg['rolemanagement.cancel.tip']}" />
+						<p:commandButton value="#{msg['button.save']}" id="saveRoleButton"
 							styleClass="navButton" style="margin-right:20px;"
 							update=":addRolesForm :rolesForm" ajax="true"
 							actionListener="#{rolesController.createOrUpdateRole}"
 							oncomplete="handleAddRolesRequest(xhr, status, args)" />
 						<p:tooltip id="saveRoletip" for="saveRoleButton"
-							value="Save the role" />
+							value="#{msg['rolemanagement.save.tip']}" />
 					</p:panel>
 				</p:panel>
 			</h:form>

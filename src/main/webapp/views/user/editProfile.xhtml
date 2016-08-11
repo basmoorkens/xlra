@@ -19,10 +19,10 @@
 				<p:panel header="#{msg['userprofile.account.information']}">
 					<p:panelGrid columns="2" style="width:100%;"
 						columnClasses="labelColumn,valuesColumn">
-						<h:outputText value="#{msg['userprofile.username']}" />
+						<h:outputText value="#{msg['label.username']}" />
 						<h:outputText value="#{userController.user.userName}" />
 
-						<h:outputText value="#{msg['userprofile.email']}" />
+						<h:outputText value="#{msg['label.email']}" />
 						<h:outputText value="#{userController.user.email}" />
 
 					</p:panelGrid>
@@ -31,11 +31,11 @@
 					style="margin-top:20px;">
 					<p:panelGrid columns="2" style="width:100%;"
 						columnClasses="labelColumn,valuesColumn">
-						<h:outputText value="#{msg['userprofile.first.name']}" />
+						<h:outputText value="#{msg['label.first.name']}" />
 						<p:inputText style="width:100%;"
 							value="#{userController.user.firstName}" />
 
-						<h:outputText value="#{msg['userprofile.name']}" />
+						<h:outputText value="#{msg['label.name']}" />
 						<p:inputText style="width:100%;"
 							value="#{userController.user.name}" />
 

@@ -9,13 +9,14 @@
 		<h:outputText value="XLRA - User - Permission management" />
 	</ui:define>
 	<ui:define name="pageTitle">
-		<h:outputText value="Permission management" />
+		<h:outputText value="#{msg['permissionmanagement.title']}" />
 	</ui:define>
 	<ui:define name="body">
 		<h:form id="permissionsForm">
 			<p:growl showDetail="true" id="messages" sticky="false" />
-			<p:panel header="Permission management">
-				<p:dataTable emptyMessage="No permissions found."
+			<p:panel header="#{msg['permissionmanagement.panel.header']}">
+				<p:dataTable
+					emptyMessage="#{msg['permissionmanagement.empty.permissionslist']}"
 					id="permissionsTable" editMode="row"
 					value="#{permissionController.allPermissions}" var="permission"
 					editable="true" rowsPerPageTemplate="5,10,15,25,50"
@@ -26,7 +27,7 @@
 						listener="#{permissionController.onPermissionRowEdit}"
 						update=":permissionsForm:messages" />
 
-					<p:column headerText="Name: ">
+					<p:column headerText="#{msg['label.name']}">
 						<p:cellEditor>
 							<f:facet name="output">
 								<h:outputText value="#{permission.key}" />
@@ -36,7 +37,7 @@
 							</f:facet>
 						</p:cellEditor>
 					</p:column>
-					<p:column headerText="Description: ">
+					<p:column headerText="#{msg['label.description']}">
 						<p:cellEditor>
 							<f:facet name="output">
 								<h:outputText value="#{permission.description}" />
@@ -53,38 +54,38 @@
 				</p:dataTable>
 
 				<p:panel>
-					<p:commandButton value="Create new permission"
+					<p:commandButton value="#{msg['permissionmanagement.create']}"
 						styleClass="navButton" style="margin-right:20px;"
 						onclick="PF('addPermissionDialog').show();" />
 				</p:panel>
 			</p:panel>
 		</h:form>
 
-		<p:dialog header="Create new permission"
+		<p:dialog header="#{msg['permissionmanagement.create']}"
 			widgetVar="addPermissionDialog" height="280px" width="90%"
 			dynamic="true">
 			<p:growl showDetail="true" id="messages" sticky="false" />
 			<h:form id="addPermissionsForm">
 
 				<p:panelGrid columns="2" style="width:100%;">
-					<h:outputText value="Name:" />
+					<h:outputText value="#{msg['label.name']}" />
 					<p:inputText value="#{permissionController.newPermission.key}"
 						size="75" />
 
-					<h:outputText value="Description:" />
+					<h:outputText value="#{msg['label.description']}" />
 					<p:inputTextarea
 						value="#{permissionController.newPermission.description}"
 						cols="74" rows="5" />
 				</p:panelGrid>
 
 				<p:panel style="margin-top:20px;">
-					<p:commandButton immediate="true" value="Cancel"
+					<p:commandButton immediate="true" value="#{msg['button.cancel']}"
 						styleClass="navButton" style="margin-right:20px;"
 						update=":addPermissionsForm :permissionsForm"
 						actionListener="#{permissionController.cancelAddNewPermission}"
 						id="chfRateCancelButton" />
-					<p:commandButton value="Save" styleClass="navButton"
-						style="margin-right:20px;"
+					<p:commandButton value="#{msg['button.save']}"
+						styleClass="navButton" style="margin-right:20px;"
 						update=":addPermissionsForm :permissionsForm"
 						actionListener="#{permissionController.saveNewPermission}"
 						ajax="true"

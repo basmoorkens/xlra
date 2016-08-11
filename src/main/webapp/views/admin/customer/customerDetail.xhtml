@@ -5,52 +5,53 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 	<p:scrollPanel style="height:600px;" mode="native">
-		<p:panel id="customerDetailPanel" header="Customer info">
+		<p:panel id="customerDetailPanel"
+			header="#{msg['customermanagement.customer.create.dialog.title']}">
 			<p:growl id="message" showDetail="true" />
 			<p:panelGrid columns="2" style="width:100%;"
 				columnClasses="labelColumn,valuesColumn">
-				<h:outputLabel for="nameField">Name</h:outputLabel>
+				<h:outputLabel for="nameField">#{msg['label.name']}</h:outputLabel>
 				<p:inputText style="width:100%;" value="#{customer.name}"
 					id="nameField"></p:inputText>
 
-				<h:outputLabel for="emailField">Email</h:outputLabel>
+				<h:outputLabel for="emailField">#{msg['label.email']}</h:outputLabel>
 				<p:inputText style="width:100%;"
 					value="#{customer.standardContact.email}"
-					validatorMessage="Pleas enter a valid email address"
+					validatorMessage="#{msg['customermanagement.customer.create.email.invalid']}"
 					id="emailField">
 					<f:validateRegex
 						pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
 				</p:inputText>
 
-				<h:outputLabel for="phoneField">Phone</h:outputLabel>
+				<h:outputLabel for="phoneField">#{msg['label.phone']}</h:outputLabel>
 				<p:inputText style="width:100%;" value="#{customer.phone}"
-					id="phoneField"></p:inputText>
+					id="phoneField" />
 
-				<h:outputLabel for="streetField">Street</h:outputLabel>
+				<h:outputLabel for="streetField">#{msg['label.street']}</h:outputLabel>
 				<p:inputText style="width:100%;" value="#{customer.address.street}"
-					id="streetField"></p:inputText>
+					id="streetField" />
 
-				<h:outputLabel for="numberField">Number</h:outputLabel>
+				<h:outputLabel for="numberField">#{msg['label.number']}</h:outputLabel>
 				<p:inputText style="width:100%;" value="#{customer.address.number}"
-					id="numberField"></p:inputText>
+					id="numberField" />
 
-				<h:outputLabel for="zipField">ZIP</h:outputLabel>
+				<h:outputLabel for="zipField">#{msg['label.zip']}</h:outputLabel>
 				<p:inputText style="width:100%;" value="#{customer.address.zip}"
-					id="zipField"></p:inputText>
+					id="zipField" />
 
-				<h:outputLabel for="cityField">City</h:outputLabel>
+				<h:outputLabel for="cityField">#{msg['label.city']}</h:outputLabel>
 				<p:inputText style="width:100%;" value="#{customer.address.city}"
-					id="cityField"></p:inputText>
+					id="cityField" />
 
-				<h:outputLabel for="countryField">Country</h:outputLabel>
+				<h:outputLabel for="countryField">#{msg['label.country']}</h:outputLabel>
 				<p:inputText style="width:100%;" value="#{customer.address.country}"
-					id="countryField"></p:inputText>
+					id="countryField" />
 
-				<h:outputLabel for="btwField">BTW number</h:outputLabel>
+				<h:outputLabel for="btwField">#{msg['label.btw.number']}</h:outputLabel>
 				<p:inputText style="width:100%;" value="#{customer.btwNumber}"
-					id="btwField"></p:inputText>
+					id="btwField" />
 
-				<h:outputLabel for="languageField">Language</h:outputLabel>
+				<h:outputLabel for="languageField">#{msg['label.language']}</h:outputLabel>
 
 				<p:selectOneMenu value="#{customer.language}" id="languageField"
 					style="width:100%;">
@@ -60,32 +61,33 @@
 			</p:panelGrid>
 
 			<p:dataTable value="#{customer.displayContacts}" var="contact"
-				style="margin-top:10px;" emptyMessage="No contacts found."
+				style="margin-top:10px;"
+				emptyMessage="#{msg['customermanagement.customer.contacts.empty']}"
 				id="customerTable" rows="10">
 				<f:facet name="header">
-					Customer contacts
+					#{msg['label.customer.contacts']}
 				</f:facet>
 				<p:column>
 					<f:facet name="header">
-						Department
+						#{msg['label.department']}
 					</f:facet>
 					#{contact.department}
 				</p:column>
 				<p:column>
 					<f:facet name="header">
-						Email
+						#{msg['label.email']}
 					</f:facet>
 					#{contact.email}
 				</p:column>
 				<p:column>
 					<f:facet name="header">
-						First name
+						#{msg['label.first.name']}
 					</f:facet>
 					#{contact.firstName}
 				</p:column>
 				<p:column>
 					<f:facet name="header">
-						Name
+						#{msg['label.name']}
 					</f:facet>
 					#{contact.name}
 				</p:column>
@@ -96,32 +98,33 @@
 						styleClass="navButton"
 						update=":customerDetailForm :customerContactForm" />
 					<p:tooltip id="editContactButtonTip" for="editContactButton"
-						value="Edit the contact" />
+						value="#{msg['customermanagement.customer.contacts.edit']}" />
 					<p:commandButton style="margin-left:5px;" id="deleteContactButton"
 						actionListener="#{customerController.deleteCustomerContact(contact)}"
 						ajax="true" title="delete" styleClass="navButton"
 						update=":customerDetailForm :customerContactForm"
 						icon="ui-icon-trash">
-						<p:confirm header="Confirm delete"
-							message="Are you sure you want to delete this contact? This can not be undone!"
+						<p:confirm header="#{msg['dialog.confirm.delete.title']}"
+							message="#{msg['customermanagement.customer.contact.delete.confirm.message']}"
 							icon="ui-icon-alert" />
 					</p:commandButton>
 					<p:tooltip id="deleteContactTip" for="deleteContactButton"
-						value="Delete the contact" />
+						value="#{msg['customermanagement.customer.contact.delete.tip']}" />
 				</p:column>
 			</p:dataTable>
 
 			<p:panel style="margin-top:20px;">
-				<p:commandButton value="Cancel" title="Cancel" immediate="true"
+				<p:commandButton value="#{msg['button.cancel']}" immediate="true"
 					actionListener="#{customerController.cancelDetail}" ajax="true"
 					update=":customerDetailForm" styleClass="navButton"
 					style="margin-right:20px;" />
-				<p:commandButton value="Add new contact" ajax="true"
+				<p:commandButton
+					value="#{msg['customermanagement.add.new.contact']}" ajax="true"
 					update=":customerDetailForm :customerContactForm" immediate="true"
 					styleClass="navButton"
 					actionListener="#{customerController.setupPageForNewContact}"
 					style="margin-right:20px;" />
-				<p:commandButton value="Save customer" title="Save customer"
+				<p:commandButton value="#{msg['button.save']}" title="Save customer"
 					actionListener="#{customerController.createCustomerOrUpdate}"
 					styleClass="navButton" style="margin-right:20px;"
 					icon="ui-icon-check" validateClient="true" ajax="true"

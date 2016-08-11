@@ -21,7 +21,7 @@
 					<p:column headerText="#{msg['usermanagement.username']}">
 						<h:outputText value="#{user.userName}" />
 					</p:column>
-					<p:column headerText="#{msg['usermanagement.email']}">
+					<p:column headerText="#{msg['label.email']}">
 						<h:outputText value="#{user.email}" />
 					</p:column>
 					<p:column headerText="#{msg['usermanagement.status']}">
@@ -55,7 +55,7 @@
 							actionListener="#{manageUsersController.deleteUser(user)}"
 							styleClass="navButton" ajax="true" immediate="true"
 							update=":usersForm" id="deleteButton">
-							<p:confirm header="#{msg['usermanagement.confirm.delete.title']}"
+							<p:confirm header="#{msg['dialog.confirm.delete.title']}"
 								message="#{msg['usermanagement.confirm.delete.message']}"
 								icon="ui-icon-alert" />
 						</p:commandButton>
@@ -93,14 +93,14 @@
 				<p:panel header="#{msg['usermanagement.user.information']}">
 					<p:panelGrid columns="2" columnClasses="labelColumn,valuesColumn"
 						style="width:100%;">
-						<h:outputText value="#{msg['usermanagement.username']}" />
+						<h:outputText value="#{msg['label.username']}" />
 						<p:inputText style="width:100%;"
 							value="#{manageUsersController.selectedUser.userName}"
 							required="true"
 							requiredMessage="#{msg['usermanagement.user.username.required']}"
 							id="userNameInput" disabled="#{manageUsersController.editMode}" />
 
-						<h:outputText value="#{msg['usermanagement.email']}" />
+						<h:outputText value="#{msg['label.email']}" />
 						<p:inputText value="#{manageUsersController.selectedUser.email}"
 							required="true"
 							requiredMessage="#{msg['usermanagement.user.email.required']}"
@@ -111,12 +111,12 @@
 								pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
 						</p:inputText>
 
-						<h:outputText value="#{msg['usermanagement.user.first.name']}" />
+						<h:outputText value="#{msg['label.first.name']}" />
 						<p:inputText style="width:100%;" required="true"
 							requiredMessage="#{msg['usermanagement.user.first.name.required']}"
 							value="#{manageUsersController.selectedUser.firstName}" />
 
-						<h:outputText value="#{msg['usermanagement.user.name']}" />
+						<h:outputText value="#{msg['label.name']}" />
 						<p:inputText value="#{manageUsersController.selectedUser.name}"
 							required="true"
 							requiredMessage="#{msg['usermanagement.user.name.required']}"
@@ -149,7 +149,7 @@
 							update=":usersForm :addUserForm" styleClass="navButton"
 							disabled="#{manageUsersController.canUserResetPassword(user)}"
 							style="margin-right:20px;" />
-						<p:commandButton value="#{msg[button.save]}"
+						<p:commandButton value="#{msg['button.save']}"
 							update=":usersForm :addUserForm" ajax="true"
 							styleClass="navButton" style="margin-right:20px;" id="saveButton"
 							actionListener="#{manageUsersController.createOrUpdateUser}"
