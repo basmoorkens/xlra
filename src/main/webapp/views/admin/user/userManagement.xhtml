@@ -18,13 +18,13 @@
 				<p:dataTable
 					emptyMessage="#{msg['usermanagement.empty.user.table']}"
 					id="usersTable" value="#{manageUsersController.users}" var="user">
-					<p:column headerText="#{msg['usermanagement.username']}">
+					<p:column headerText="#{msg['label.username']}">
 						<h:outputText value="#{user.userName}" />
 					</p:column>
 					<p:column headerText="#{msg['label.email']}">
 						<h:outputText value="#{user.email}" />
 					</p:column>
-					<p:column headerText="#{msg['usermanagement.status']}">
+					<p:column headerText="#{msg['label.status']}">
 						<h:outputLabel value="#{user.userStatus}" />
 					</p:column>
 					<p:column headerText="#{msg['usermanagement.roles.list']}">
@@ -119,7 +119,7 @@
 						<h:outputText value="#{msg['label.name']}" />
 						<p:inputText value="#{manageUsersController.selectedUser.name}"
 							required="true"
-							requiredMessage="#{msg['usermanagement.user.name.required']}"
+							requiredMessage="#{msg['message.user.name.required']}"
 							style="width:100%;" />
 
 						<h:outputText value="#{msg['usermanagement.user.roles']}" />

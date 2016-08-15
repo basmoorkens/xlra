@@ -17,7 +17,7 @@
 				<h:outputLabel for="emailField">#{msg['label.email']}</h:outputLabel>
 				<p:inputText style="width:100%;"
 					value="#{customer.standardContact.email}"
-					validatorMessage="#{msg['customermanagement.customer.create.email.invalid']}"
+					validatorMessage="#{msg['message.email.invalid.message']}"
 					id="emailField">
 					<f:validateRegex
 						pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />

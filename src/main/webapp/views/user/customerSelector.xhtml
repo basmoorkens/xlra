@@ -7,23 +7,27 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 	<h:form id="customerForm">
-		<p:panel id="customerPanel" header="Customer" toggleable="false"
+		<p:panel id="customerPanel"
+			header="#{msg['customerselector.customer.header']}"
+			toggleable="false"
 			collapsed="#{createQuotationController.collapseCustomerPanel}">
 			<p:tooltip id="addCustomerTip" for="addCustomerButton"
-				value="Create a new customer with only basic information" />
+				value="#{msg['customerselector.customer.add.tip']}" />
 			<p:tooltip id="nextTip1" for="nextButton1"
-				value="Go to the rates filter step" />
+				value="#{msg['customerselector.next1.tip']}" />
 			<p:panelGrid columns="3" style="width:100%;">
-				<h:outputText value="Select an existing customer: " />
+				<h:outputText
+					value="#{msg['customerselector.customer.select.existing']}" />
 				<p:autoComplete size="60" id="customerSelector" dropdown="true"
 					value="#{createQuotationController.quotationQuery.customer}"
 					completeMethod="#{createQuotationController.completeCustomerName}"
 					var="customer" itemLabel="#{customer.name}" required="true"
-					requiredMessage="Please select a customer/create a new one"
+					requiredMessage="#{msg['customerselector.customer.select.existing.required.message']}"
 					itemValue="#{customer}" converter="#{customerConverter}">
 				</p:autoComplete>
 
-				<p:commandButton rendered="#{canEdit}" value="Create new customer"
+				<p:commandButton rendered="#{canEdit}"
+					value="#{msg['customerselector.customer.create']}"
 					id="addCustomerButton" update=":addQuickCustomerForm"
 					styleClass="navButton" immediate="true"
 					onclick="PF('addCustomerDialog').show();" />
@@ -46,58 +50,62 @@
 		</p:panel>
 	</h:form>
 
-	<p:dialog header="Add customer" widgetVar="addCustomerDialog"
-		height="480px" width="900px" dynamic="true">
+	<p:dialog
+		header="#{msg['customerselector.customer.create.dialog.title']}"
+		widgetVar="addCustomerDialog" height="480px" width="900px"
+		dynamic="true">
 		<p:growl showDetail="true" id="messages" sticky="false" />
 		<h:form id="addQuickCustomerForm">
 			<p:panel>
 				<p:panelGrid columns="2" style="width:100%;">
-					<h:outputLabel for="nameField">Name</h:outputLabel>
+					<h:outputLabel for="nameField">#{msg['label.name']}</h:outputLabel>
 					<p:inputText size="50" style="width:100%;" required="true"
-						requiredMessage="A customer name is required"
+						requiredMessage="#{msg['customerselector.customer.create.name.required']}"
 						value="#{createQuotationController.customerToAdd.name}"
-						id="nameField"></p:inputText>
+						id="nameField" />
 
-					<h:outputLabel for="emailField">Email</h:outputLabel>
+					<h:outputLabel for="emailField">#{msg['label.email']}</h:outputLabel>
 					<p:inputText size="50" style="width:100%;"
 						value="#{createQuotationController.customerToAdd.standardContact.email}"
 						id="emailField" required="true"
-						requiredMessage="A customer email is required"
-						validatorMessage="Please enter a valid email adres">
+						requiredMessage="#{msg['customerselector.customer.create.email.required']}"
+						validatorMessage="#{msg['message.email.invalid.message']}">
 
 						<f:validateRegex
 							pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
 
 					</p:inputText>
 
-					<h:outputLabel for="phoneField">Phone</h:outputLabel>
+					<h:outputLabel for="phoneField">#{msg['label.phone']}</h:outputLabel>
 					<p:inputText size="50" style="width:100%;"
 						value="#{createQuotationController.customerToAdd.phone}"
-						required="true"
-						requiredMessage="A customer phone number is required"
+						required="true" requiredMessage="#{msg['message.phone.required']}"
 						id="phoneField" />
 
-					<h:outputLabel for="languageField">Language</h:outputLabel>
+					<h:outputLabel for="languageField">#{msg['label.language']}</h:outputLabel>
 					<p:selectOneRadio
 						value="#{createQuotationController.customerToAdd.language}"
-						required="true" requiredMessage="Customer language is required"
+						required="true"
+						requiredMessage="#{msg['message.language.required']}"
 						id="languageField">
 						<f:selectItems value="#{createQuotationController.allLanguages}"></f:selectItems>
 					</p:selectOneRadio>
 				</p:panelGrid>
 				<p:panel style="margin-top:20px;">
-					<p:commandButton value="Cancel" immediate="true"
+					<p:commandButton value="#{msg['button.cancel']}" immediate="true"
 						update=":customerForm :addQuickCustomerForm"
 						onclick="PF('addCustomerDialog').hide();" styleClass="navButton"
 						id="cancelCustomerEdit" style="margin-right:20px;" />
 					<p:tooltip for="cancelCustomerEdit"
-						value="Cancel creation of new customer" />
-					<p:commandButton value="Save customer" styleClass="navButton"
+						value="#{msg['customerselector.customer.cancel.tip']}" />
+					<p:commandButton value="#{msg['button.save']}"
+						styleClass="navButton"
 						update=":customerForm :addQuickCustomerForm"
 						actionListener="#{createQuotationController.createCustomer}"
 						ajax="true" id="saveCustomerButton"
 						oncomplete="handleAddCustomerRequest(xhr, status, args)" />
-					<p:tooltip for="saveCustomerButton" value="Save the new customer" />
+					<p:tooltip for="saveCustomerButton"
+						value="#{msg['customerselector.customer.save']}" />
 				</p:panel>
 			</p:panel>
 		</h:form>

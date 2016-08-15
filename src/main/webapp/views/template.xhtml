@@ -5,167 +5,180 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui">
-<h:head>
-	<title><ui:insert name="title">Extra logistics Rates application</ui:insert></title>
-	<h:outputStylesheet library="css" name="main.css" />
-</h:head>
-<h:body>
-	<div id="container">
-		<div id="version">Version:
-			#{maven.version['com.moorkensam:xlra']}</div>
-		<h:graphicImage url="/resources/images/Extra-Logo-neu.png"
-			style="float:right;margin:0px;top:10px;" />
-		<h:form prependId="false">
-			<p:menubar id="xlraMenu">
-				<p:submenu
-					rendered="#{templateController.hasNonePermissions(['EDIT_RATEFILE', 'CREATE_RATEFILE', 'RAISE_RATES', 'VIEW_RATEFILE', 'EXCEL_UPLOAD'])}"
-					label="#{msg['menu.ratefile.rates']}" icon="ui-icon-document">
-					<p:menuitem
-						rendered="#{templateController.hasPermission('CREATE_RATEFILE')}"
-						value="#{msg['menu.ratefile.create']}"
-						url="/views/admin/rate/createRateFile.xhtml" />
-					<p:menuitem
-						rendered="#{templateController.hasPermission('EDIT_RATEFILE')}"
-						value="#{msg['menu.ratefile.managerates']}"
-						url="/views/admin/rate/manageRates.xhtml" />
-					<p:menuitem
-						rendered="#{templateController.hasPermission('VIEW_RATEFILE')}"
-						value="#{msg['menu.ratefile.viewrates']}"
-						url="/views/user/viewRates.xhtml" />
-					<p:menuitem
-						rendered="#{templateController.hasPermission('RAISE_RATES')}"
-						value="#{msg['menu.ratefile.raiserates']}"
-						url="/views/admin/rate/raiseRates.xhtml" />
-					<p:menuitem
-						rendered="#{templateController.hasPermission('EXCEL_UPLOAD')}"
-						value="#{msg['menu.ratefile.uploadexcel']}"
-						url="/views/admin/upload/excelUpload.xhtml" />
-				</p:submenu>
+	xmlns:p="http://primefaces.org/ui" lang="#{localeController.language}">
+<f:view locale="#{localeController.locale}">
+	<h:head>
+		<title><ui:insert name="title">Extra logistics Rates application</ui:insert></title>
+		<h:outputStylesheet library="css" name="main.css" />
+	</h:head>
+	<h:body>
+		<div id="container">
+			<div id="version">Version:
+				#{maven.version['com.moorkensam:xlra']}</div>
+			<div id="languageSelector">
+				<h:form>
+					<h:selectOneMenu value="#{localeController.language}"
+						onchange="submit()">
+						<f:selectItem itemValue="en" itemLabel="English" />
+						<f:selectItem itemValue="nl" itemLabel="Nederlands" />
+					</h:selectOneMenu>
+				</h:form>
+			</div>
+			<h:graphicImage url="/resources/images/Extra-Logo-neu.png"
+				style="float:right;margin:0px;top:10px;" />
+			<h:form prependId="false">
+				<p:menubar id="xlraMenu">
+					<p:submenu
+						rendered="#{templateController.hasNonePermissions(['EDIT_RATEFILE', 'CREATE_RATEFILE', 'RAISE_RATES', 'VIEW_RATEFILE', 'EXCEL_UPLOAD'])}"
+						label="#{msg['menu.ratefile.rates']}" icon="ui-icon-document">
+						<p:menuitem
+							rendered="#{templateController.hasPermission('CREATE_RATEFILE')}"
+							value="#{msg['menu.ratefile.create']}"
+							url="/views/admin/rate/createRateFile.xhtml" />
+						<p:menuitem
+							rendered="#{templateController.hasPermission('EDIT_RATEFILE')}"
+							value="#{msg['menu.ratefile.managerates']}"
+							url="/views/admin/rate/manageRates.xhtml" />
+						<p:menuitem
+							rendered="#{templateController.hasPermission('VIEW_RATEFILE')}"
+							value="#{msg['menu.ratefile.viewrates']}"
+							url="/views/user/viewRates.xhtml" />
+						<p:menuitem
+							rendered="#{templateController.hasPermission('RAISE_RATES')}"
+							value="#{msg['menu.ratefile.raiserates']}"
+							url="/views/admin/rate/raiseRates.xhtml" />
+						<p:menuitem
+							rendered="#{templateController.hasPermission('EXCEL_UPLOAD')}"
+							value="#{msg['menu.ratefile.uploadexcel']}"
+							url="/views/admin/upload/excelUpload.xhtml" />
+					</p:submenu>
 
-				<p:submenu
-					rendered="#{templateController.hasNonePermissions(['CREATE_OFFERTE', 'VIEW_OFFERTE'])}"
-					label="#{msg['menu.offertes.offerte']}" icon="ui-icon-document">
-					<p:menuitem
-						rendered="#{templateController.hasPermission('CREATE_OFFERTE')}"
-						value="#{msg['menu.offertes.createofferte']}"
-						url="/views/user/createOfferte.xhtml" />
-					<p:menuitem
-						rendered="#{templateController.hasPermission('VIEW_OFFERTE')}"
-						value="#{msg['menu.offertes.overviewofferte']}"
-						url="/views/user/offerteOverview.xhtml" />
-				</p:submenu>
+					<p:submenu
+						rendered="#{templateController.hasNonePermissions(['CREATE_OFFERTE', 'VIEW_OFFERTE'])}"
+						label="#{msg['menu.offertes.offerte']}" icon="ui-icon-document">
+						<p:menuitem
+							rendered="#{templateController.hasPermission('CREATE_OFFERTE')}"
+							value="#{msg['menu.offertes.createofferte']}"
+							url="/views/user/createOfferte.xhtml" />
+						<p:menuitem
+							rendered="#{templateController.hasPermission('VIEW_OFFERTE')}"
+							value="#{msg['menu.offertes.overviewofferte']}"
+							url="/views/user/offerteOverview.xhtml" />
+					</p:submenu>
 
-				<p:submenu
-					rendered="#{templateController.hasNonePermissions(['FULL_CUSTOMER_EDIT'])}"
-					label="#{msg['menu.customers.customer']}" icon="ui-icon-document">
-					<p:menuitem
-						rendered="#{templateController.hasPermission('FULL_CUSTOMER_EDIT')}"
-						value="#{msg['menu.customers.managecustomer']}"
-						url="/views/admin/customer/manageCustomers.xhtml" />
-				</p:submenu>
+					<p:submenu
+						rendered="#{templateController.hasNonePermissions(['FULL_CUSTOMER_EDIT'])}"
+						label="#{msg['menu.customers.customer']}" icon="ui-icon-document">
+						<p:menuitem
+							rendered="#{templateController.hasPermission('FULL_CUSTOMER_EDIT')}"
+							value="#{msg['menu.customers.managecustomer']}"
+							url="/views/admin/customer/manageCustomers.xhtml" />
+					</p:submenu>
 
-				<p:submenu
-					rendered="#{templateController.hasNonePermissions(['DIESEL_EDIT', 'EMAIL_TEMPLATE_EDIT', 'COUNTRY_EDIT'])}"
-					label="#{msg['menu.configuration.configuration']}"
-					icon="ui-icon-document">
-					<p:menuitem
-						rendered="#{templateController.hasPermission('CHF_EDIT')}"
-						value="#{msg['menu.configuration.chfrates']}"
-						url="/views/admin/configuration/chfRates.xhtml" />
-					<p:menuitem
-						rendered="#{templateController.hasPermission('DIESEL_EDIT')}"
-						value="#{msg['menu.configuration.dieselrates']}"
-						url="/views/admin/configuration/dieselRates.xhtml" />
-					<p:menuitem
-						rendered="#{templateController.hasPermission('EMAIL_TEMPLATE_EDIT')}"
-						value="#{msg['menu.configuration.emailtemplates']}"
-						url="/views/admin/configuration/mailTemplates.xhtml" />
-					<p:menuitem
-						rendered="#{templateController.hasPermission('COUNTRY_EDIT')}"
-						value="#{msg['menu.configuration.countries']}"
-						url="/views/admin/configuration/country.xhtml" />
-					<p:menuitem
-						rendered="#{templateController.hasPermission('VIEW_LOGS')}"
-						value="#{msg['menu.configuration.viewlogs']}"
-						url="/views/admin/configuration/logs.xhtml" />
-				</p:submenu>
+					<p:submenu
+						rendered="#{templateController.hasNonePermissions(['DIESEL_EDIT', 'EMAIL_TEMPLATE_EDIT', 'COUNTRY_EDIT'])}"
+						label="#{msg['menu.configuration.configuration']}"
+						icon="ui-icon-document">
+						<p:menuitem
+							rendered="#{templateController.hasPermission('CHF_EDIT')}"
+							value="#{msg['menu.configuration.chfrates']}"
+							url="/views/admin/configuration/chfRates.xhtml" />
+						<p:menuitem
+							rendered="#{templateController.hasPermission('DIESEL_EDIT')}"
+							value="#{msg['menu.configuration.dieselrates']}"
+							url="/views/admin/configuration/dieselRates.xhtml" />
+						<p:menuitem
+							rendered="#{templateController.hasPermission('EMAIL_TEMPLATE_EDIT')}"
+							value="#{msg['menu.configuration.emailtemplates']}"
+							url="/views/admin/configuration/mailTemplates.xhtml" />
+						<p:menuitem
+							rendered="#{templateController.hasPermission('COUNTRY_EDIT')}"
+							value="#{msg['menu.configuration.countries']}"
+							url="/views/admin/configuration/country.xhtml" />
+						<p:menuitem
+							rendered="#{templateController.hasPermission('VIEW_LOGS')}"
+							value="#{msg['menu.configuration.viewlogs']}"
+							url="/views/admin/configuration/logs.xhtml" />
+					</p:submenu>
 
-				<p:submenu
-					rendered="#{templateController.hasNonePermissions(['USER_EDIT_PROFILE', 'USER_EDIT', 'ROLE_EDIT', 'PERMISSION_EDIT'])}"
-					label="#{msg['menu.users.users']}" icon="ui-icon-document">
-					<p:menuitem
-						rendered="#{templateController.hasPermission('USER_EDIT_PROFILE')}"
-						value="#{msg['menu.users.viewprofile']}"
-						url="/views/user/editProfile.xhtml" />
-					<p:menuitem
-						rendered="#{templateController.hasPermission('USER_EDIT')}"
-						value="#{msg['menu.users.usermanagement']}"
-						url="/views/admin/user/userManagement.xhtml" />
-					<p:menuitem
-						rendered="#{templateController.hasPermission('ROLE_EDIT')}"
-						value="#{msg['menu.users.rolemanagement']}"
-						url="/views/sysadmin/user/RoleManagement.xhtml" />
-					<p:menuitem
-						rendered="#{templateController.hasPermission('PERMISSION_EDIT')}"
-						value="#{msg['menu.users.permissionmanagement']}"
-						url="/views/sysadmin/user/PermissionManagement.xhtml" />
-				</p:submenu>
-				<f:facet name="options">
-					<h:outputText styleClass="wb"
-						value="#{msg['menu.welcome.back.message']} #{templateController.loggedInUserName}"
-						style="margin-right:10px;" />
-					<p:commandButton id="logoutLink" value="#{msg['menu.logout']}"
-						actionListener="#{logoutController.logout}" styleClass="navButton"
-						style="margin-right:10px" ajax="false" icon="ui-icon-extlink" />
-				</f:facet>
-			</p:menubar>
-		</h:form>
-		<h1>
-			<ui:insert name="pageTitle">#{msg['template.welcome.title']}</ui:insert>
-		</h1>
-		<p:panel>
-			<ui:insert name="body">#{msg['template.welcome.body']}</ui:insert>
-		</p:panel>
+					<p:submenu
+						rendered="#{templateController.hasNonePermissions(['USER_EDIT_PROFILE', 'USER_EDIT', 'ROLE_EDIT', 'PERMISSION_EDIT'])}"
+						label="#{msg['menu.users.users']}" icon="ui-icon-document">
+						<p:menuitem
+							rendered="#{templateController.hasPermission('USER_EDIT_PROFILE')}"
+							value="#{msg['menu.users.viewprofile']}"
+							url="/views/user/editProfile.xhtml" />
+						<p:menuitem
+							rendered="#{templateController.hasPermission('USER_EDIT')}"
+							value="#{msg['menu.users.usermanagement']}"
+							url="/views/admin/user/userManagement.xhtml" />
+						<p:menuitem
+							rendered="#{templateController.hasPermission('ROLE_EDIT')}"
+							value="#{msg['menu.users.rolemanagement']}"
+							url="/views/sysadmin/user/RoleManagement.xhtml" />
+						<p:menuitem
+							rendered="#{templateController.hasPermission('PERMISSION_EDIT')}"
+							value="#{msg['menu.users.permissionmanagement']}"
+							url="/views/sysadmin/user/PermissionManagement.xhtml" />
+					</p:submenu>
+					<f:facet name="options">
+						<h:outputText styleClass="wb"
+							value="#{msg['menu.welcome.back.message']} #{templateController.loggedInUserName}"
+							style="margin-right:10px;" />
+						<p:commandButton id="logoutLink" value="#{msg['menu.logout']}"
+							actionListener="#{logoutController.logout}"
+							styleClass="navButton" style="margin-right:10px" ajax="false"
+							icon="ui-icon-extlink" />
+					</f:facet>
+				</p:menubar>
+			</h:form>
+			<h1>
+				<ui:insert name="pageTitle">#{msg['template.welcome.title']}</ui:insert>
+			</h1>
+			<p:panel>
+				<ui:insert name="body">#{msg['template.welcome.body']}</ui:insert>
+			</p:panel>
 
-		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-			<p:commandButton value="No" type="button" style="margin-right:20px;"
-				styleClass="ui-confirmdialog-no navButton" icon="ui-icon-close" />
-			<p:commandButton value="Yes" type="button"
-				styleClass="ui-confirmdialog-yes navButton" icon="ui-icon-check" />
-		</p:confirmDialog>
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				<p:commandButton value="No" type="button" style="margin-right:20px;"
+					styleClass="ui-confirmdialog-no navButton" icon="ui-icon-close" />
+				<p:commandButton value="Yes" type="button"
+					styleClass="ui-confirmdialog-yes navButton" icon="ui-icon-check" />
+			</p:confirmDialog>
 
-		<script type="text/javascript">
-			$(document).on(
-					"keydown",
-					".ui-cell-editor-input input",
-					function(event) {
-						if (event.keyCode == 13) {
-							$(this).closest("tr").first(
-									".ui-row-editor .ui-icon-check").click();
-						}
-					});
+			<script type="text/javascript">
+				$(document).on(
+						"keydown",
+						".ui-cell-editor-input input",
+						function(event) {
+							if (event.keyCode == 13) {
+								$(this).closest("tr").first(
+										".ui-row-editor .ui-icon-check")
+										.click();
+							}
+						});
 
-			/* Status dialog functions */
-			var statusDlgTimer = null;
+				/* Status dialog functions */
+				var statusDlgTimer = null;
 
-			function showStatusDialog() {
-				if (statusDlgTimer === null) {
-					statusDlgTimer = setTimeout("PF('statusDialog').show()",
-							500);
-				}
-			}
-
-			function hideStatusDialog() {
-				if (statusDlgTimer !== null) {
-					clearTimeout(statusDlgTimer);
-					if (PF('statusDialog') != null) {
-						PF('statusDialog').hide();
+				function showStatusDialog() {
+					if (statusDlgTimer === null) {
+						statusDlgTimer = setTimeout(
+								"PF('statusDialog').show()", 500);
 					}
-					statusDlgTimer = null;
 				}
-			}
-		</script>
-	</div>
-</h:body>
+
+				function hideStatusDialog() {
+					if (statusDlgTimer !== null) {
+						clearTimeout(statusDlgTimer);
+						if (PF('statusDialog') != null) {
+							PF('statusDialog').hide();
+						}
+						statusDlgTimer = null;
+					}
+				}
+			</script>
+		</div>
+	</h:body>
+</f:view>
 </html>

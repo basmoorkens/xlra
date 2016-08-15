@@ -6,38 +6,39 @@
 	xmlns:p="http://primefaces.org/ui">
 <ui:composition template="/views/template.xhtml">
 	<ui:define name="title">
-		<h:outputText value="XLRA - Rate management" />
+		<h:outputText value="XLRA - #{msg['managerates.title']}" />
 	</ui:define>
 	<ui:define name="pageTitle">
-		<h:outputText value="Rate management" />
+		<h:outputText value="#{msg['managerates.title']}" />
 	</ui:define>
 	<ui:define name="body">
 		<h:form id="ratesForm">
-			<h3>Search options</h3>
+			<h3>#{msg['managerates.search.options']}</h3>
 
-			<p:panel id="ratesOverviewPanel" header="Ratefile overview">
+			<p:panel id="ratesOverviewPanel"
+				header="#{msg['managerates.header.title']}">
 				<p:dataTable value="#{manageRatesController.model}" var="rateFile"
-					emptyMessage="No ratefiles found." lazy="true" paginator="true"
-					id="rateFileTable" rows="10" sortMode="single"
+					emptyMessage="#{msg['message.rates.empty']}" lazy="true"
+					paginator="true" id="rateFileTable" rows="10" sortMode="single"
 					currentPageReportTemplate="Ratefiles {startRecord} - {endRecord} of {totalRecords}, Page: {currentPage}/{totalPages}"
 					paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
 					rowsPerPageTemplate="10,25,50,100" paginatorPosition="top">
 
 					<p:column sortBy="#{rateFile.name}" filterBy="#{rateFile.name}"
 						filterStyle="width:100%;">
-						<f:facet name="header">Name</f:facet>
+						<f:facet name="header">#{msg['label.name']}</f:facet>
 						#{rateFile.name}
 					</p:column>
 
 					<p:column sortBy="#{rateFile.customer.name}"
 						filterBy="#{rateFile.customer.name}" filterStyle="width:100%;">
-						<f:facet name="header">Customer</f:facet>
+						<f:facet name="header">#{msg['label.customer.name']}</f:facet>
 						#{rateFile.customer.name}
 					</p:column>
 
 					<p:column sortBy="#{rateFile.country.shortName}"
 						filterBy="#{rateFile.country.shortName}" filterStyle="width:100%;">
-						<f:facet name="header">Country</f:facet>
+						<f:facet name="header">#{msg['label.country']}</f:facet>
 						#{rateFile.country.shortName}
 					</p:column>
 					<p:column style="width:50px;text-align: center">
@@ -46,14 +47,14 @@
 							icon="ui-icon-pencil" title="View" ajax="true"
 							update=":basicForm :zoneDetailForm :rateLinesDetailForm :conditionsDetailForm" />
 						<p:tooltip id="editButtonTip" for="editButton"
-							value="Load the ratefile to edit" />
+							value="#{msg['managerates.edit.tip']}" />
 					</p:column>
 
 				</p:dataTable>
 			</p:panel>
 		</h:form>
 
-		<h3>Details</h3>
+		<h3>#{msg['label.details']}</h3>
 		<ui:include src="/views/user/rateBasicInfo.xhtml">
 			<ui:param name="rateFile"
 				value="#{manageRatesController.selectedRateFile}" />

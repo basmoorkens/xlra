@@ -10,42 +10,43 @@
 		<h:outputText value="XLRA - Create rates" />
 	</ui:define>
 	<ui:define name="pageTitle">
-		<h:outputText value="Create rates" />
+		<h:outputText value="#{msg['createrates.title']}" />
 	</ui:define>
 	<ui:define name="body">
 		<h:form id="createRatesForm">
 			<p:growl id="growl" showDetail="true" />
 
 			<p:tooltip id="customerTip" for="customerSelector"
-				value="The customer to create a ratefile for" />
+				value="#{msg['createrates.customer.tip']}" />
 			<p:tooltip id="selectCountryTip" for="selectCountry"
-				value="The country of the ratefile" />
+				value="#{msg['createrates.country.tip']}" />
 			<p:tooltip id="selectMeasurementTip" for="selectMeasurement"
-				value="The measurement of the ratefile" />
+				value="#{msg['createrates.measurement.tip']}" />
 			<p:tooltip id="selectTypeOfTransportTip" for="selectTypeOfTransport"
-				value="The type of transport of the ratefile" />
+				value="#{msg['createrates.type.of.transport.tip']}" />
 			<p:tooltip id="selectImportExportTip" for="selectImportExport"
-				value="The import/export type of the ratefile" />
-			<p:panel header="Basic information"
+				value="#{msg['createrates.import.export.tip']}" />
+			<p:panel header="#{msg['label.basic.information']}"
 				collapsed="#{createRatesController.collapseBasicInfoGrid}">
 				<p:panelGrid columns="2" style="margin:0; width:100%"
 					columnClasses="labelColumn,valuesColumn">
-					<h:outputText value="Name: " />
-					<h:outputText value="Auto generated" />
+					<h:outputText value="#{msg['label.name']}:" />
+					<h:outputText value="#{msg['label.auto.generated']}" />
 
-					<h:outputText value="Customer: " />
+					<h:outputText value="#{msg['label.customer']}:" />
 					<p:autoComplete size="" id="customerSelector" dropdown="true"
 						value="#{createRatesController.filter.customer}"
 						completeMethod="#{createRatesController.completeCustomerName}"
 						var="customer" itemLabel="#{customer.name}"
 						itemValue="#{customer}" converter="#{customerConverter}"
-						required="true" requiredMessage="Select a customer">
+						required="true"
+						requiredMessage="#{msg['message.customer.required']}">
 					</p:autoComplete>
 
-					<h:outputText value="Transport type:" />
+					<h:outputText value="#{msg['label.transport.type']}:" />
 					<p:selectOneMenu style="width:100%;" required="true"
 						id="selectImportExport"
-						requiredMessage="Select import/export type"
+						requiredMessage="#{msg['message.import.export.required']}"
 						value="#{createRatesController.filter.transportationType}">
 						<f:selectItem itemValue="#{null}" itemLabel="" />
 						<f:selectItems value="#{createRatesController.allTransportTypes}"
@@ -53,10 +54,10 @@
 							itemDescription="#{transportationType.description}" />
 					</p:selectOneMenu>
 
-					<h:outputText value="Country: " />
+					<h:outputText value="#{msg['label.country']}:" />
 					<p:selectOneMenu style="width:100%;"
 						converter="#{countryConverter}" id="selectCountry" required="true"
-						requiredMessage="Select a country"
+						requiredMessage="#{msg['message.country.required']}"
 						value="#{createRatesController.filter.country}">
 						<f:selectItem itemValue="#{null}" itemLabel="" />
 						<f:selectItems value="#{createRatesController.countries}"
@@ -64,9 +65,9 @@
 							itemValue="#{country}" />
 					</p:selectOneMenu>
 
-					<h:outputText value="Measurement: " />
+					<h:outputText value="#{msg['label.measurement']}:" />
 					<p:selectOneMenu style="width:100%;" id="selectMeasurement"
-						required="true" requiredMessage="Select a measurement"
+						required="true" requiredMessage=""
 						value="#{createRatesController.filter.measurement}">
 						<f:selectItem itemValue="#{null}" itemLabel="" />
 						<f:selectItems value="#{createRatesController.measurements}"
@@ -74,10 +75,10 @@
 							itemValue="#{measurement}" />
 					</p:selectOneMenu>
 
-					<h:outputText value="Type of transport: " />
+					<h:outputText value="#{msg['label.type.of.transport']}:" />
 					<p:selectOneMenu style="width:100%;" id="selectTypeOfTransport"
-						requiredMessage="Select a transport type" required="true"
-						value="#{createRatesController.filter.rateKind}">
+						requiredMessage="#{msg['message.transport.type.required']}"
+						required="true" value="#{createRatesController.filter.rateKind}">
 						<f:selectItem itemValue="#{null}" itemLabel="" />
 						<f:selectItems value="#{createRatesController.kindOfRates}"
 							var="kind" itemLabel="#{kind.description}" itemValue="#{kind}" />
@@ -85,19 +86,19 @@
 				</p:panelGrid>
 
 				<p:panel style="margin-top:20px;">
-					<p:commandButton value="Next" id="nextToEditRates"
+					<p:commandButton value="#{msg['button.next']}" id="nextToEditRates"
 						actionListener="#{createRatesController.generateCopyOfRateFileForFilter}"
 						update=":createRatesForm :rateLinesDetailForm"
 						styleClass="navButton" />
 					<p:tooltip id="nextToEditTip" for="nextToEditRates"
-						value="Load base ratefile by your filters and go to the edit rates screen" />
+						value="#{msg['createrates.next.to.edit.rates.tip']}" />
 				</p:panel>
 			</p:panel>
 		</h:form>
 
 		<h:form id="rateLinesDetailForm">
 			<p:growl id="message" showDetail="true" />
-			<p:panel header="Edit rates"
+			<p:panel header="#{msg['label.rates.edit']}"
 				collapsed="#{createRatesController.collapseRateLineEditor}">
 				<ui:include src="/views/user/rateLinesDetail.xhtml">
 					<ui:param name="rateFile" value="#{createRatesController.rateFile}" />
@@ -108,18 +109,20 @@
 				</ui:include>
 
 				<p:panel style="margin-top:20px;">
-					<p:commandButton value="Back" id="backToBasicInfoButton"
+					<p:commandButton value="#{msg['button.back']}"
+						id="backToBasicInfoButton"
 						actionListener="#{createRatesController.showBasicInfoGrid}"
 						update=":createRatesForm :rateLinesDetailForm"
 						styleClass="navButton" />
 					<p:tooltip id="backToBasicInfoTip" for="backToBasicInfoButton"
-						value="Go back to the basic info screen to adjust your filters or the customer" />
-					<p:commandButton value="Next" id="nextToConditionsEditor"
+						value="#{msg['createrates.back.to.basic.screen']}" />
+					<p:commandButton value="#{msg['button.next']}"
+						id="nextToConditionsEditor"
 						actionListener="#{createRatesController.goToConditionsEditor}"
 						update=":rateLinesDetailForm :conditionsDetailForm"
 						styleClass="navButton" />
 					<p:tooltip id="nextToConditionsTip" for="nextToConditionsEditor"
-						value="Go to the edit conditions screen" />
+						value="#{msg['createrates.next.to.edit.conditions.tip']}" />
 				</p:panel>
 			</p:panel>
 		</h:form>
@@ -128,18 +131,19 @@
 			<p:growl id="message" showDetail="true" />
 			<p:panel id="conditionsDetailPanel"
 				collapsed="#{createRatesController.collapseConditionsDetailGrid}"
-				header="Terms and conditions">
+				header="#{msg['label.terms.and.conditions.title']}">
 
 				<p:dataTable value="#{createRatesController.rateFile.conditions}"
 					editable="true" var="condition" editMode="row"
-					emptyMessage="No conditions found." id="conditionTable">
-					<p:column headerText="Key" width="15%">
+					emptyMessage="#{msg['message.conditions.empty']}"
+					id="conditionTable">
+					<p:column headerText="#{msg['label.key']}" width="15%">
 						<h:outputText value="#{condition.translatedKey}" />
 					</p:column>
-					<p:column headerText="Condition type" width="15%">
+					<p:column headerText="#{msg['label.condition.type']}" width="15%">
 						<h:outputText value="#{condition.conditionType}" />
 					</p:column>
-					<p:column headerText="Value">
+					<p:column headerText="#{msg['label.value']}">
 						<p:outputPanel rendered="#{condition.calculationCondition}">
 							<h:outputText
 								value="#{condition.value} #{condition.calculationValueType.suffix}" />
@@ -159,7 +163,8 @@
 							<br />
 						</p:outputPanel>
 					</p:column>
-					<p:column headerText="Standard option" style="width:128px;">
+					<p:column headerText="#{msg['label.standard.option']}"
+						style="width:128px;">
 						<p:selectBooleanCheckbox value="#{condition.standardSelected}"
 							disabled="true" />
 					</p:column>
@@ -169,35 +174,37 @@
 							actionListener="#{createRatesController.setupEditCondition(condition)}"
 							ajax="true" immediate="true" update=":editConditionForm" />
 						<p:tooltip id="editTip" for="editButton"
-							value="Edit this condition" />
+							value="#{msg['message.edit.condition.tip']}" />
 						<p:commandButton style="margin-left:5px;" icon="ui-icon-trash"
 							title="Delete" id="deleteButton" styleClass="navButton"
 							actionListener="#{createRatesController.deleteCondition(condition)}"
 							ajax="true" immediate="true" update=":conditionsDetailForm">
-							<p:confirm header="Confirm delete"
-								message="Are you sure you want to delete?" icon="ui-icon-alert" />
+							<p:confirm
+								header="#{msg['createrates.delete.condition.confirm']}"
+								message="#{msg['createrates.delete.condition.tip']}"
+								icon="ui-icon-alert" />
 						</p:commandButton>
 						<p:tooltip id="deleteTip" for="deleteButton"
-							value="Delete this condition" />
+							value="#{msg['createrates.delete.condition.tip']}" />
 					</p:column>
 				</p:dataTable>
 
 				<p:panel style="margin-top:10px;">
-					<p:commandButton value="Add condition" icon="ui-icon-pencil"
-						title="Add" id="addConditionButton"
+					<p:commandButton value="#{msg['createrates.add.condition.title']}"
+						icon="ui-icon-pencil" title="Add" id="addConditionButton"
 						actionListener="#{createRatesController.setupAddCondition}"
 						ajax="true" immediate="true" update=":editConditionForm"
 						styleClass="navButton" />
 					<p:tooltip id="addConditionTip" for="addConditionButton"
-						value="Add a new condition" />
+						value="#{msg['createrates.add.condition.tip']}" />
 				</p:panel>
 
 				<p:panel style="margin-top:10px;padding:0px;border:0px;">
-					<p:commandButton value="Back"
+					<p:commandButton value="#{msg['button.back']}"
 						actionListener="#{createRatesController.showRateLineEditor}"
 						update=":rateLinesDetailForm :conditionsDetailForm"
 						styleClass="navButton" />
-					<p:commandButton value="Next"
+					<p:commandButton value="#{msg['button.next']}"
 						actionListener="#{createRatesController.showSummary}"
 						update=":conditionsDetailForm :summaryForm" styleClass="navButton" />
 				</p:panel>
@@ -209,10 +216,10 @@
 				header="#{createRatesController.conditionDialogHeader}"
 				widgetVar="editConditionDialog" width="80%" height="50%"
 				dynamic="true">
-				<p:panel header="Condition info">
+				<p:panel header="#{msg['createrates.condition.info.header']}">
 					<p:panelGrid columns="2" style="width:100%;margin-top:10px;"
 						columnClasses="labelColumn,valuesColumn">
-						<h:outputLabel value="Selected key" />
+						<h:outputLabel value="#{msg['label.selected.key']}" />
 						<h:outputLabel style="font-weight:bold;"
 							rendered="#{createRatesController.editMode}"
 							value="#{createRatesController.selectedCondition.translatedKey}" />
@@ -220,7 +227,8 @@
 							value="#{createRatesController.selectedCondition.conditionKey}"
 							rendered="#{!createRatesController.editMode}"
 							style="width:200px;">
-							<f:selectItem itemValue="#{null}" itemLabel="Select key" />
+							<f:selectItem itemValue="#{null}"
+								itemLabel="#{msg['label.select.key']}" />
 							<f:selectItems
 								value="#{createRatesController.availableTranslationKeysForSelectedRateFile}" />
 							<p:ajax
@@ -228,7 +236,7 @@
 								update=":editConditionForm" />
 						</p:selectOneMenu>
 
-						<h:outputLabel value="New value:"
+						<h:outputLabel value="#{msg['label.new.value']}:"
 							rendered="#{createRatesController.selectedCondition.calculationCondition}" />
 						<p:inputText style="width:100%;"
 							value="#{createRatesController.selectedCondition.value}"
@@ -242,32 +250,32 @@
 								value="#{translation.translation}" />
 						</c:forEach>
 
-						<h:outputLabel value="Standard selected:" />
+						<h:outputLabel value="#{msg['label.standard.selected']}:" />
 						<p:selectBooleanCheckbox
 							value="#{createRatesController.selectedCondition.standardSelected}" />
 					</p:panelGrid>
 					<p:panel style="margin-top:20px;">
-						<p:commandButton value="Cancel" id="cancelButton"
+						<p:commandButton value="#{msg['button.cancel']}" id="cancelButton"
 							onclick="PF('editConditionDialog').hide();"
 							styleClass="navButton" />
 						<p:tooltip id="cancelTip" for="cancelButton"
-							value="Cancel the operation" />
-						<p:commandButton value="Save" id="saveButton"
+							value="#{msg['createrates.condition.edit.cancel.tip']}" />
+						<p:commandButton value="#{msg['button.save']}" id="saveButton"
 							styleClass="navButton"
 							oncomplete="handleEditConditionRequest(xhr, status, args)"
 							actionListener="#{createRatesController.saveEditCondition}"
 							update=":conditionsDetailForm :editConditionForm" />
 						<p:tooltip id="saveTip" for="saveButton"
-							value="Save the condition" />
+							value="#{msg['createrates.condition.edit.save.tip']}" />
 					</p:panel>
 				</p:panel>
 			</p:dialog>
 		</h:form>
 
 		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-			<p:commandButton value="Yes" type="button"
+			<p:commandButton value="#{msg['button.yes']}" type="button"
 				styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-			<p:commandButton value="No" type="button"
+			<p:commandButton value="#{msg['button.no']}" type="button"
 				styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
 		</p:confirmDialog>
 		<script type="text/javascript">
@@ -289,18 +297,19 @@
 				<ui:include src="/views/user/rateSummary.xhtml" />
 
 				<p:panel style="margin-top:10px;padding:0px;border:0px;">
-					<p:commandButton value="Back"
+					<p:commandButton value="#{msg['button.back']}"
 						actionListener="#{createRatesController.goToConditionsEditor}"
 						id="backToConditionsButton"
 						update=":createRatesForm :rateLinesDetailForm :conditionsDetailForm :summaryForm"
 						styleClass="navButton" />
 					<p:tooltip id="backToConditionsTip" for="backToConditionsButton"
-						value="Go back to conditions screen" />
-					<p:commandButton value="Create rates" id="createRatesButton"
+						value="#{msg['createrates.condition.back.tip']}" />
+					<p:commandButton value="#{msg['button.save']}"
+						id="createRatesButton"
 						action="#{createRatesController.saveNewRateFile}"
 						update=":summaryForm:message" styleClass="navButton" />
 					<p:tooltip id="createRatesTip" for="createRatesButton"
-						value="Create and save the ratefile" />
+						value="#{msg['createrates.condition.next.tip']}" />
 				</p:panel>
 			</p:panel>
 			<p:ajaxStatus onstart="showStatusDialog();"

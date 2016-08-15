@@ -10,18 +10,19 @@
 		<p:panel id="conditionsDetailPanel" style="width:100%;"
 			toggleable="#{controller.hasRateFileSelected}"
 			collapsed="#{controller.collapseConditionsDetailGrid}"
-			header="Terms and conditions">
+			header="#{msg['label.terms.and.conditions.title']}">
 
 			<p:dataTable editable="#{canEdit}" value="#{conditions}"
-				var="condition" editMode="row" emptyMessage="No conditions found."
+				var="condition" editMode="row"
+				emptyMessage="#{msg['message.conditions.empty']}"
 				id="conditionTable">
-				<p:column headerText="Key" width="15%">
+				<p:column headerText="#{msg['label.key']}" width="15%">
 					<h:outputText value="#{condition.translatedKey}" />
 				</p:column>
-				<p:column headerText="Condition type" width="15%">
+				<p:column headerText="#{msg['label.condition.type']}" width="15%">
 					<h:outputText value="#{condition.conditionType}" />
 				</p:column>
-				<p:column headerText="Value">
+				<p:column headerText="#{msg['label.value']}">
 					<p:outputPanel rendered="#{condition.calculationCondition}">
 						<h:outputText
 							value="#{condition.value} #{condition.calculationValueType.suffix}" />
@@ -41,7 +42,8 @@
 						<br />
 					</p:outputPanel>
 				</p:column>
-				<p:column headerText="Standard option" style="width:128px;">
+				<p:column headerText="#{msg['label.standard.option']}"
+					style="width:128px;">
 					<p:selectBooleanCheckbox value="#{condition.standardSelected}"
 						disabled="true" />
 				</p:column>
@@ -51,52 +53,55 @@
 						actionListener="#{controller.setupEditCondition(condition)}"
 						ajax="true" immediate="true" update=":editConditionForm" />
 					<p:tooltip id="editConditionTip" for="editConditionButton"
-						value="Edit the condition" />
+						value="#{msg['message.edit.condition.tip']}" />
 
 					<p:commandButton styleClass="navButton" icon="ui-icon-trash"
 						title="Delete" id="deleteConditionButton"
 						actionListener="#{controller.deleteCondition(condition)}"
 						ajax="true" immediate="true" update=":conditionsDetailForm">
-						<p:confirm header="Confirm delete"
-							message="Are you sure you want to delete?" icon="ui-icon-alert" />
+						<p:confirm header="#{msg['dialog.confirm.delete.title']}"
+							message="#{msg['conditiondetail.delete.confirm']}"
+							icon="ui-icon-alert" />
 					</p:commandButton>
 					<p:tooltip id="deleteConditionTip" for="deleteConditionButton"
-						value="Delete the condition" />
+						value="#{msg['conditiondetail.delete.tip']}" />
 				</p:column>
 			</p:dataTable>
 
 			<p:panel style="margin-top:10px;" rendered="#{canEdit}">
-				<p:commandButton value="Add condition" icon="ui-icon-pencil"
+				<p:commandButton value="#{msg['createrates.add.condition.title']}"
+					icon="ui-icon-pencil"
 					actionListener="#{controller.setupAddCondition}" ajax="true"
 					immediate="true" update=":editConditionForm"
 					id="addConditionButton" styleClass="navButton" />
 				<p:tooltip id="addConditionTip" for="addConditionButton"
-					value="Add a condition" />
+					value="#{msg['conditiondetail.add.tip']}" />
 			</p:panel>
 		</p:panel>
 	</h:form>
 
 	<h:form id="editConditionForm">
-		<p:dialog id="editDialog" header="Edit condition"
+		<p:dialog id="editDialog" header="#{msg['label.condition.edit']}"
 			widgetVar="editConditionDialog" width="50%" height="50%"
 			dynamic="true">
 			<p:panel style="width:100%; margin:auto;">
 				<p:panelGrid columns="2" style="width:100%;margin-top:10px;">
-					<h:outputLabel value="Selected key" />
+					<h:outputLabel value="#{msg['label.selected.key']}" />
 					<h:outputLabel style="font-weight:bold;"
 						rendered="#{controller.editMode}"
 						value="#{controller.selectedCondition.translatedKey}" />
 					<p:selectOneMenu
 						value="#{controller.selectedCondition.conditionKey}"
 						rendered="#{!controller.editMode}" style="width:200px;">
-						<f:selectItem itemValue="#{null}" itemLabel="Select key" />
+						<f:selectItem itemValue="#{null}"
+							itemLabel="#{msg['label.select.key']}" />
 						<f:selectItems
 							value="#{controller.availableTranslationKeysForSelectedRateFile}" />
 						<p:ajax listener="#{controller.loadConditionBasedOnKey}"
 							update=":editConditionForm" />
 					</p:selectOneMenu>
 
-					<h:outputLabel value="New value:"
+					<h:outputLabel value="#{msg['label.new.value']}:"
 						rendered="#{controller.selectedCondition.calculationCondition}" />
 					<p:inputText style="width:100%;"
 						value="#{controller.selectedCondition.value}"
@@ -109,22 +114,25 @@
 							value="#{translation.translation}" />
 					</c:forEach>
 
-					<h:outputLabel value="Standard selected:" />
+					<h:outputLabel value="#{msg['label.standard.selected']}:" />
 					<p:selectBooleanCheckbox
 						value="#{controller.selectedCondition.standardSelected}" />
 				</p:panelGrid>
 				<p:panel style="margin-top:20px;">
-					<p:commandButton value="Cancel" id="cancelEditConditionButton"
+					<p:commandButton value="#{msg['button.cancel']}"
+						id="cancelEditConditionButton"
 						onclick="PF('editConditionDialog').hide();" styleClass="navButton" />
 					<p:tooltip id="cancelEditConditionButtonTip"
-						for="cancelEditConditionButton" value="Undo all changes." />
-					<p:commandButton style="margin-left:20px;" value="Save"
+						for="cancelEditConditionButton"
+						value="#{msg['message.condition.edit.cancel']}" />
+					<p:commandButton style="margin-left:20px;"
+						value="#{msg['button.save']}"
 						oncomplete="handleEditConditionRequest(xhr, status, args)"
 						actionListener="#{controller.saveEditCondition}"
 						styleClass="navButton" id="saveEditConditionButton"
 						update=":conditionsDetailForm :editConditionForm" />
 					<p:tooltip id="saveEditConditionButtonTip"
-						for="saveEditConditionButton" value="Save the changes made." />
+						for="saveEditConditionButton" value="#{msg['button.save']}" />
 				</p:panel>
 			</p:panel>
 		</p:dialog>

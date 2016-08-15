@@ -4,9 +4,11 @@ import com.moorkensam.xlra.model.security.Permission;
 import com.moorkensam.xlra.service.UserSessionService;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
 @ManagedBean

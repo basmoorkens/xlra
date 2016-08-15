@@ -6,18 +6,19 @@
 	xmlns:p="http://primefaces.org/ui">
 <ui:composition template="/views/template.xhtml">
 	<ui:define name="title">
-		<h:outputText value="XLRA - Rate management" />
+		<h:outputText value="XLRA - #{msg['viewrates.title']}" />
 	</ui:define>
 	<ui:define name="pageTitle">
-		<h:outputText value="View rates" />
+		<h:outputText value="#{msg['viewrates.title']}" />
 	</ui:define>
 	<ui:define name="body">
 		<h:form id="ratesForm">
-			<h3>Search options</h3>
+			<h3>#{msg['managerates.search.options']}</h3>
 			<p:growl id="message" showDetail="true" />
 			<p:panelGrid columns="2" style="width:100%"
 				columnClasses="labelColumn,valuesColumn">
-				<p:outputLabel value="Select Rates to display:" for="rateSelector" />
+				<p:outputLabel value="#{msg['label.rates.display']}:"
+					for="rateSelector" />
 
 				<p:autoComplete size="90" id="rateSelector" dropdown="true"
 					value="#{manageRatesController.selectedRateFile}"
@@ -31,7 +32,7 @@
 			</p:panelGrid>
 		</h:form>
 
-		<h3>Details</h3>
+		<h3>#{msg['label.details']}</h3>
 		<ui:include src="/views/user/rateBasicInfo.xhtml">
 			<ui:param name="rateFile"
 				value="#{manageRatesController.selectedRateFile}" />

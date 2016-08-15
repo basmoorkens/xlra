@@ -10,84 +10,87 @@
 		<p:panel id="detailPanel">
 			<p:panel header="Administration" style="margin-top:20px;">
 				<p:panelGrid columns="2" style="width:100%;">
-					<h:outputText value="Used ratefile: " />
+					<h:outputText value="#{msg['label.used.ratefile']}:" />
 					<h:outputText
 						value="#{offerteOverviewController.selectedOfferte.usedRateFileName}" />
 
-					<h:outputText value="Created by: " />
+					<h:outputText value="#{msg['label.created.by']}:" />
 					<h:outputText
 						value="#{offerteOverviewController.selectedOfferte.createdUserFullName}" />
 
-					<h:outputText value="Created on: " />
+					<h:outputText value="#{msg['label.created.on']}:" />
 					<h:outputText
 						value="#{offerteOverviewController.selectedOfferte.query.quotationDate}" />
 				</p:panelGrid>
 			</p:panel>
 
-			<p:panel header="Input parameters" style="margin-top:20px;">
+			<p:panel header="#{msg['offertedetail.input.parameters.detail']}"
+				style="margin-top:20px;">
 				<p:panelGrid columns="2" style="width:100%;">
-					<h:outputText value="Customer: " />
+					<h:outputText value="#{msg['label.customer']}:" />
 					<h:outputText
 						value="#{offerteOverviewController.selectedOfferte.query.customer.name}" />
 
-					<h:outputText value="Kind of rate: " />
+					<h:outputText value="#{msg['label.kind.of.rate']}:" />
 					<h:outputText
 						value="#{offerteOverviewController.selectedOfferte.query.kindOfRate.description}" />
 
-					<h:outputText value="Measurement: " />
+					<h:outputText value="#{msg['label.measurement']}:" />
 					<h:outputText
 						value="#{offerteOverviewController.selectedOfferte.query.measurement}" />
 
-					<h:outputText value="Country: " />
+					<h:outputText value="#{msg['label.country']}:" />
 					<h:outputText
 						value="#{offerteOverviewController.selectedOfferte.query.country.englishName}" />
 
-					<h:outputText value="Quantity: " />
+					<h:outputText value="#{msg['label.quantity']}:" />
 					<h:outputText
 						value="#{offerteOverviewController.selectedOfferte.query.quantity}" />
 
-					<h:outputText value="Language: " />
+					<h:outputText value="#{msg['label.language']}:" />
 					<h:outputText
 						value="#{offerteOverviewController.selectedOfferte.query.language.description}" />
 
-					<h:outputText value="Transport type: " />
+					<h:outputText value="#{msg['label.transport.type']}:" />
 					<h:outputText
 						value="#{offerteOverviewController.selectedOfferte.query.transportType.description}" />
 
-					<h:outputText value="Postal code: " />
+					<h:outputText value="#{msg['label.postal.code']}:" />
 					<h:outputText
 						value="#{offerteOverviewController.selectedOfferte.query.postalCode}" />
 
 				</p:panelGrid>
 			</p:panel>
 
-			<p:panel header="Email / PDF" style="margin-top:20px;">
+			<p:panel header="#{msg['offertedetail.email.and.pdf']}"
+				style="margin-top:20px;">
 				<p:panelGrid columns="2" style="width:100%;">
-					<h:outputText value="Recipient: " />
+					<h:outputText value="#{msg['label.recipients']}:" />
 					<h:outputText
 						value="#{offerteOverviewController.selectedOfferte.emailResult.recipientsAsString}" />
 
-					<h:outputText value="Subject: " />
+					<h:outputText value="#{msg['label.mail.subject']}:" />
 					<h:outputText
 						value="#{offerteOverviewController.selectedOfferte.emailResult.subject}" />
 
-					<h:outputText value="Email: " />
+					<h:outputText value="#{msg['label.email']}:" />
 					<h:outputText escape="false"
 						value="#{offerteOverviewController.selectedOfferte.emailResult.email}" />
 
 				</p:panelGrid>
 
-				<p:panel style="margin-top:20px;" header="Email history">
+				<p:panel style="margin-top:20px;"
+					header="#{msg['offertedetail.email.history']}">
 					<p:dataTable
 						value="#{offerteOverviewController.selectedOfferte.emailHistory}"
 						var="historyRecord">
-						<p:column headerText="Date / time">
+						<p:column headerText="#{msg['label.date.and.time']}">
 							<h:outputLabel value="#{historyRecord.dateTime}" />
 						</p:column>
-						<p:column headerText="User">
+						<p:column headerText="#{msg['label.username']}">
 							<h:outputLabel value="#{historyRecord.username}" />
 						</p:column>
-						<p:column headerText="Status">
+						<p:column headerText="#{msg['label.status']}">
 							<h:outputLabel value="#{historyRecord.status}" />
 						</p:column>
 
@@ -95,60 +98,63 @@
 				</p:panel>
 			</p:panel>
 
-			<p:panel header="Calculation" style="margin-top:20px;">
+			<p:panel header="#{msg['offertedetail.price.calculation']}"
+				style="margin-top:20px;">
 				<p:panelGrid columns="2" style="width:100%;">
-					<h:outputText value="Base price: " />
+					<h:outputText value="#{msg['label.basic.price']}:" />
 					<h:outputText
 						value="#{offerteOverviewController.selectedOfferte.calculation.basePrice}" />
 
-					<h:outputText value="Diesel supplement: " />
+					<h:outputText value="#{msg['label.diesel.supplement']}:" />
 					<h:outputText
 						value="#{offerteOverviewController.selectedOfferte.calculation.dieselPrice != null ?
 						offerteOverviewController.selectedOfferte.calculation.dieselPrice : 'N/A'}" />
 
-					<h:outputText value="Swiss franc supplement: " />
+					<h:outputText value="#{msg['label.chf.supplement']}:" />
 					<h:outputText
 						value="#{offerteOverviewController.selectedOfferte.calculation.chfPrice  != null
 						? offerteOverviewController.selectedOfferte.calculation.chfPrice : 'N/A'}" />
 
-					<h:outputText value="Adr surcharge: " />
+					<h:outputText value="#{msg['label.adr.surcharge']}:" />
 					<h:outputText
 						value="#{offerteOverviewController.selectedOfferte.calculation.resultingPriceSurcharge != null ?
 						offerteOverviewController.selectedOfferte.calculation.resultingPriceSurcharge : 'N/A'}" />
 
-					<h:outputText value="Import formalities: " />
+					<h:outputText value="#{msg['label.import.formalities']}:" />
 					<h:outputText
 						value="#{offerteOverviewController.selectedOfferte.calculation.importFormalities != null ? 
 						offerteOverviewController.selectedOfferte.calculation.importFormalities : 'N/A'}" />
 
-					<h:outputText value="Export formalities: " />
+					<h:outputText value="#{msg['label.export.formalities']}:" />
 					<h:outputText
 						value="#{offerteOverviewController.selectedOfferte.calculation.exportFormalities != null ? 
 						offerteOverviewController.selectedOfferte.calculation.exportFormalities : 'N/A'}" />
 
-					<h:outputText value="Final price: " />
+					<h:outputText value="#{msg['label.final.price']}" />
 					<h:outputText
 						value="#{offerteOverviewController.selectedOfferte.calculation.finalPrice}" />
 				</p:panelGrid>
 			</p:panel>
 
 			<p:panel style="margin-top:20px;">
-				<p:commandButton value="Back to search" id="backButton"
+				<p:commandButton value="#{msg['button.back.to.search']}"
+					id="backButton"
 					actionListener="#{offerteOverviewController.hideDetailDialog}"
 					ajax="true" update=":offerteDetailForm :offertesForm"
 					styleClass="navButton" style="margin-right:20px;" />
-				<p:commandButton value="Open pdf" styleClass="navButton"
-					style="margin-right:20px;" id="openPdfButton"
+				<p:commandButton value="#{msg['button.show.pdf']}"
+					styleClass="navButton" style="margin-right:20px;"
+					id="openPdfButton"
 					actionListener="#{offerteOverviewController.downloadPdf}"
 					onclick="this.form.target='_blank'" ajax="false" />
 				<p:tooltip id="openPdfTip" for="openPdfButton"
-					value="Open the PDF for this offerte" />
-				<p:commandButton value="Resend email" styleClass="navButton"
-					id="resendMailButton"
+					value="#{msg['button.tip.open.pdf']}" />
+				<p:commandButton value="#{msg['button.email.resend']}"
+					styleClass="navButton" id="resendMailButton"
 					actionListener="#{offerteOverviewController.resendEmail}"
 					ajax="true" update=":offerteDetailForm" />
 				<p:tooltip id="resendMailTip" for="resendMailButton"
-					value="Resend the offerte email to the customer" />
+					value="#{msg['button.tip.resend.email']}" />
 			</p:panel>
 		</p:panel>
 	</p:scrollPanel>

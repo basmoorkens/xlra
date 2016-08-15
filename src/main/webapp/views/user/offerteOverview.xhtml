@@ -9,48 +9,49 @@
 		<h:outputText value="XLRA - offerte overview" />
 	</ui:define>
 	<ui:define name="pageTitle">
-		<h:outputText value="Offerte list" />
+		<h:outputText value="#{msg['offerteoverview.title']}" />
 	</ui:define>
 	<ui:define name="body">
 		<h:form id="offertesForm">
-			<p:panel id="overviewPanel" header="Offerte overview">
+			<p:panel id="overviewPanel" header="#{msg['offerteoverview.title']}">
 				<p:dataTable var="quotationResult"
 					value="#{offerteOverviewController.model}" paginator="true"
-					id="offerteTable" emptyMessage="No offertes to view..."
+					id="offerteTable"
+					emptyMessage="#{msg['offerteoverview.offertes.empty']}"
 					sortMode="single" lazy="true" rows="10"
 					currentPageReportTemplate="Customers {startRecord} - {endRecord} of {totalRecords}, Page: {currentPage}/{totalPages}"
 					paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
 					rowsPerPageTemplate="10,25,50,100" paginatorPosition="top">
 
-					<p:column headerText="Offerte key"
+					<p:column headerText="#{msg['offerteoverview.offerte.key']}"
 						sortBy="#{quotationResult.offerteUniqueIdentifier}"
 						filterBy="#{quotationResult.offerteUniqueIdentifier}"
 						filterStyle="width:100%;">
 						<h:outputText value="#{quotationResult.offerteUniqueIdentifier}" />
 					</p:column>
 
-					<p:column headerText="Customer"
+					<p:column headerText="#{msg['label.customer']}"
 						sortBy="#{quotationResult.query.customer.name}"
 						filterBy="#{quotationResult.query.customer.name}"
 						filterStyle="width:100%;">
 						<h:outputText value="#{quotationResult.query.customer.name}" />
 					</p:column>
 
-					<p:column headerText="Date"
+					<p:column headerText="#{msg['label.date']}"
 						sortBy="#{quotationResult.query.quotationDate}"
 						filterBy="#{quotationResult.query.quotationDate}"
 						filterStyle="width:100%;">
 						<h:outputText value="#{quotationResult.query.quotationDate}" />
 					</p:column>
 
-					<p:column headerText="Country"
+					<p:column headerText="#{msg['label.country']}"
 						sortBy="#{quotationResult.query.country.shortName}"
 						filterBy="#{quotationResult.query.country.shortName}"
 						filterStyle="width:100%;">
 						<h:outputText value="#{quotationResult.query.country.shortName}" />
 					</p:column>
 
-					<p:column headerText="PostalCode"
+					<p:column headerText="#{msg['label.postal.code']}"
 						sortBy="#{quotationResult.query.postalCode}"
 						filterBy="#{quotationResult.query.postalCode}"
 						filterStyle="width:100%;">
@@ -63,7 +64,7 @@
 							icon="ui-icon-search" title="View" id="detailButton"
 							styleClass="navButton" update=":offertesForm :offerteDetailForm">
 							<p:tooltip id="detailTip" for="detailButton"
-								value="Open the details for this offerte" />
+								value="#{msg['offerteoverview.show.details']}" />
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>
