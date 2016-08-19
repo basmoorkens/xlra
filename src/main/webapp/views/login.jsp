@@ -144,7 +144,8 @@ a:hover {
 				<table id="loginTable">
 					<tr>
 						<td style="width: 50%;" align="right"><span class="stronk">USERNAME:</span></td>
-						<td><input type="text" name="j_username" size="25"></td>
+						<td><input type="text" name="j_username" id="usernameInput"
+							size="25"></td>
 					</tr>
 					<tr>
 						<td align="right"><span class="stronk">PASSWORD:</span></td>
@@ -160,6 +161,8 @@ a:hover {
 			</form>
 		</div>
 	</div>
-
+	<script>
+		document.getElementById("usernameInput").focus();
+	</script>
 </body>
 </html>

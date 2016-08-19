@@ -6,9 +6,11 @@ import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.util.ConfigurationLoader;
 
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -19,6 +21,11 @@ public class ResetPasswordController {
 
   @Inject
   private UserService userService;
+
+  @ManagedProperty("#{msg}")
+  private ResourceBundle messageBundle;
+
+  private MessageUtil messageUtil;
 
   private String password;
 
@@ -41,6 +48,7 @@ public class ResetPasswordController {
    */
   @PostConstruct
   public void initialize() {
+    messageUtil = MessageUtil.getInstance(messageBundle);
     config = ConfigurationLoader.getInstance();
     loginLink = config.getProperty(ConfigurationLoader.APPLICATION_BASE_URL);
     Map<String, String> requestParameters =
@@ -62,7 +70,7 @@ public class ResetPasswordController {
   public void savePassword() {
     if (validatePasswords()) {
       userService.setPasswordAndActivateUser(user, password);
-      MessageUtil.addMessage("Password set",
+      messageUtil.addMessage("Password set",
           "Your password was reset. You can now login to the application.");
       completed = true;
     }
@@ -71,12 +79,11 @@ public class ResetPasswordController {
   private boolean validatePasswords() {
     if (password == null || password.isEmpty() || confirmPassword == null
         || confirmPassword.isEmpty()) {
-
-      MessageUtil.addErrorMessage("Fill in passwords", "Please fill in both password fields!");
+      messageUtil.addErrorMessage("Fill in passwords", "Please fill in both password fields!");
       return false;
     } else {
       if (!password.equals(confirmPassword)) {
-        MessageUtil.addErrorMessage("Passwords don't match",
+        messageUtil.addErrorMessage("Passwords don't match",
             "Please make sure that the password and confirm password field are the same!");
         return false;
       }
@@ -142,6 +149,22 @@ public class ResetPasswordController {
 
   public boolean isValidAndNotCompleted() {
     return validRequest && !completed;
+  }
+
+  public ResourceBundle getMessageBundle() {
+    return messageBundle;
+  }
+
+  public void setMessageBundle(ResourceBundle messageBundle) {
+    this.messageBundle = messageBundle;
+  }
+
+  public MessageUtil getMessageUtil() {
+    return messageUtil;
+  }
+
+  public void setMessageUtil(MessageUtil messageUtil) {
+    this.messageUtil = messageUtil;
   }
 
 }

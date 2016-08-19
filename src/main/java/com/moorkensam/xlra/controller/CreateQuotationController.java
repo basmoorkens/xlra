@@ -30,10 +30,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJBException;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -51,6 +53,11 @@ public class CreateQuotationController {
 
   @Inject
   private CountryService countryService;
+
+  @ManagedProperty("#{msg}")
+  private ResourceBundle messageBundle;
+
+  private MessageUtil messageUtil;
 
   private TranslationUtil translationUtil;
 
@@ -77,6 +84,7 @@ public class CreateQuotationController {
    */
   @PostConstruct
   public void init() {
+    messageUtil = MessageUtil.getInstance(messageBundle);
     controllerDelegate = new QuotationControllerDelegate();
     allCountries = countryService.getAllCountries();
     initializeNewQuotationQuery();
@@ -129,11 +137,11 @@ public class CreateQuotationController {
     try {
       getQuotationQuery().setCustomer(
           getCustomerService().createCustomerAndReturnManaged(customerToAdd));
-      MessageUtil.addMessage("Customer created", "Created customer " + customerToAdd.getName());
+      messageUtil.addMessage("Customer created", "Created customer " + customerToAdd.getName());
       renderAddCustomerGrid = false;
       customerToAdd = new Customer();
     } catch (XlraValidationException exc) {
-      MessageUtil.addErrorMessage("Invalid customer data", exc.getBusinessException());
+      messageUtil.addErrorMessage("Invalid customer data", exc.getBusinessException());
     }
   }
 
@@ -201,7 +209,7 @@ public class CreateQuotationController {
         RateFileException re = (RateFileException) e.getCausedByException();
         showRateFileError(re);
       } else {
-        MessageUtil.addErrorMessage("Unknown exception",
+        messageUtil.addErrorMessage("Unknown exception",
             "An unexpected exception occurred, please contact the system admin.");
       }
     }
@@ -269,7 +277,7 @@ public class CreateQuotationController {
       QuotationUtil.getInstance().setCustomerContactsForOfferte(customerContacts.getTarget(),
           quotationResult);
       quotationService.submitQuotationResult(quotationResult);
-      MessageUtil.addMessage("Offerte successfully send", "The offerte was successfully send to "
+      messageUtil.addMessage("Offerte successfully send", "The offerte was successfully send to "
           + quotationResult.getEmailResult().getRecipientsAsString());
       showResultPanel();
     } catch (RateFileException re2) {
@@ -279,14 +287,14 @@ public class CreateQuotationController {
         RateFileException re = (RateFileException) e.getCausedByException();
         showRateFileError(re);
       } else {
-        MessageUtil.addErrorMessage("Unknown exception",
+        messageUtil.addErrorMessage("Unknown exception",
             "An unexpected exception occurred, please contact the system admin.");
       }
     }
   }
 
   private void showRateFileError(RateFileException re) {
-    MessageUtil.addErrorMessage("Unexpected error whilst processing quotation request.",
+    messageUtil.addErrorMessage("Unexpected error whilst processing quotation request.",
         re.getBusinessException());
   }
 
@@ -451,5 +459,21 @@ public class CreateQuotationController {
 
   public void setCustomerService(CustomerService customerService) {
     this.customerService = customerService;
+  }
+
+  public MessageUtil getMessageUtil() {
+    return messageUtil;
+  }
+
+  public void setMessageUtil(MessageUtil messageUtil) {
+    this.messageUtil = messageUtil;
+  }
+
+  public ResourceBundle getMessageBundle() {
+    return messageBundle;
+  }
+
+  public void setMessageBundle(ResourceBundle messageBundle) {
+    this.messageBundle = messageBundle;
   }
 }

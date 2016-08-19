@@ -101,8 +101,9 @@ public class UserServiceImpl implements UserService {
           + user.getEmail());
       getEmailService().sendUserCreatedEmail(user);
     } catch (MessagingException e) {
-      MessageUtil.addErrorMessage("Failed to send email",
-          "Failed to send out account created email to " + user.getEmail());
+      // TODO refactor this...cant call frontend code from the backend silly...
+      // MessageUtil.addErrorMessage("Failed to send email",
+      // "Failed to send out account created email to " + user.getEmail());
     }
   }
 

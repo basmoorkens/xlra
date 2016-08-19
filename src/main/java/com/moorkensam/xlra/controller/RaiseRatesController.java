@@ -11,9 +11,11 @@ import org.primefaces.model.DualListModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 
@@ -26,6 +28,11 @@ public class RaiseRatesController {
 
   @Inject
   private RaiseRateFileService raiseRatesService;
+
+  @ManagedProperty("#{msg}")
+  private ResourceBundle messageBundle;
+
+  private MessageUtil messageUtil;
 
   private List<RateFile> allRateFiles;
 
@@ -43,6 +50,7 @@ public class RaiseRatesController {
    */
   @PostConstruct
   public void initializeController() {
+    messageUtil = MessageUtil.getInstance(messageBundle);
     resetState();
     rateFiles.setTarget(selectedRateFiles);
   }
@@ -85,7 +93,7 @@ public class RaiseRatesController {
     if (validRaise()) {
       raiseRatesService.raiseRateFileRateLinesWithPercentage(rateFiles.getTarget(), percentage);
       hideAddDialog();
-      MessageUtil.addMessage("Rates raised", "Succesfully raised rates for");
+      messageUtil.addMessage("Rates raised", "Succesfully raised rates for");
       resetState();
     } else {
       showAddDialog();
@@ -94,11 +102,11 @@ public class RaiseRatesController {
 
   private boolean validRaise() {
     if (rateFiles.getTarget() == null || rateFiles.getTarget().size() == 0) {
-      MessageUtil.addErrorMessage("No rates selected", "Please select ratefiles to raise.");
+      messageUtil.addErrorMessage("No rates selected", "Please select ratefiles to raise.");
       return false;
     }
     if (percentage == 0.00d) {
-      MessageUtil.addErrorMessage("0.00 is an invalid percentage",
+      messageUtil.addErrorMessage("0.00 is an invalid percentage",
           "A raise of 0.00 doesnt do anything.");
       return false;
     }
@@ -111,7 +119,7 @@ public class RaiseRatesController {
   public void undoLatestRaiseRates() {
     raiseRatesService.undoLatestRatesRaise();
     refreshLogs();
-    MessageUtil.addMessage("Rates raised", "Succesfully undid latest rates raise.");
+    messageUtil.addMessage("Rates raised", "Succesfully undid latest rates raise.");
   }
 
   public List<RateFile> getAllRateFiles() {
@@ -152,5 +160,21 @@ public class RaiseRatesController {
 
   public void setLogRecords(List<RaiseRatesRecord> logRecords) {
     this.logRecords = logRecords;
+  }
+
+  public ResourceBundle getMessageBundle() {
+    return messageBundle;
+  }
+
+  public void setMessageBundle(ResourceBundle messageBundle) {
+    this.messageBundle = messageBundle;
+  }
+
+  public MessageUtil getMessageUtil() {
+    return messageUtil;
+  }
+
+  public void setMessageUtil(MessageUtil messageUtil) {
+    this.messageUtil = messageUtil;
   }
 }

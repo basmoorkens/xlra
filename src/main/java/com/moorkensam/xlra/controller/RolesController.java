@@ -10,9 +10,11 @@ import org.primefaces.model.DualListModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 
@@ -22,6 +24,11 @@ public class RolesController {
 
   @Inject
   private RolePermissionService roleService;
+
+  @ManagedProperty("#{msg}")
+  private ResourceBundle messageBundle;
+
+  private MessageUtil messageUtil;
 
   private Role selectedRole;
 
@@ -36,6 +43,7 @@ public class RolesController {
    */
   @PostConstruct
   public void initialize() {
+    messageUtil = MessageUtil.getInstance(messageBundle);
     permissions = new DualListModel<Permission>();
     refreshRoles();
     allPermissions = roleService.getAllPermissions();
@@ -57,11 +65,11 @@ public class RolesController {
     selectedRole.setPermissions(permissions.getTarget());
     if (selectedRole.getId() == 0) {
       roleService.createRole(selectedRole);
-      MessageUtil.addMessage("Role created", "The role " + selectedRole.getName()
+      messageUtil.addMessage("Role created", "The role " + selectedRole.getName()
           + " was successfully created.");
       setupNewRole();
     } else {
-      MessageUtil.addMessage("Role updated", "The role " + selectedRole.getName()
+      messageUtil.addMessage("Role updated", "The role " + selectedRole.getName()
           + " was successfully updated.");
       roleService.updateRole(selectedRole);
     }
@@ -141,6 +149,22 @@ public class RolesController {
 
   public void setPermissions(DualListModel<Permission> permissions) {
     this.permissions = permissions;
+  }
+
+  public ResourceBundle getMessageBundle() {
+    return messageBundle;
+  }
+
+  public void setMessageBundle(ResourceBundle messageBundle) {
+    this.messageBundle = messageBundle;
+  }
+
+  public MessageUtil getMessageUtil() {
+    return messageUtil;
+  }
+
+  public void setMessageUtil(MessageUtil messageUtil) {
+    this.messageUtil = messageUtil;
   }
 
 }

@@ -16,9 +16,12 @@ import org.primefaces.model.DualListModel;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
@@ -35,6 +38,11 @@ public class ManageUsersController {
 
   @Inject
   private UserSessionService userSessionService;
+
+  @ManagedProperty("#{msg}")
+  private ResourceBundle messageBundle;
+
+  private MessageUtil messageUtil;
 
   private List<User> users;
 
@@ -53,6 +61,7 @@ public class ManageUsersController {
    */
   @PostConstruct
   public void initialize() {
+    messageUtil = MessageUtil.getInstance(messageBundle);
     setCreateTitle();
     roles = new DualListModel<Role>();
     refreshUsers();
@@ -60,11 +69,12 @@ public class ManageUsersController {
   }
 
   private void setUpdateTitle() {
-    crudPopupTitle = "Edit user " + selectedUser.getUserName();
+    crudPopupTitle =
+        messageBundle.getString("usermanagement.popup.title.edit") + selectedUser.getUserName();
   }
 
   private void setCreateTitle() {
-    crudPopupTitle = "Create new user";
+    crudPopupTitle = messageBundle.getString("usermanagement.popup.title.create");
   }
 
   private void fillInAvailableRoles() {
@@ -96,7 +106,7 @@ public class ManageUsersController {
    */
   public void deleteUser(User user) {
     userService.deleteUser(user);
-    MessageUtil.addMessage("User deleted", "The user " + user.getName()
+    messageUtil.addMessage("User deleted", "The user " + user.getName()
         + " was successfully deleted.");
     refreshUsers();
 
@@ -109,18 +119,18 @@ public class ManageUsersController {
     if (getCanResetPassword()) {
       try {
         userService.resetUserPassword(selectedUser);
-        MessageUtil.addMessage("Password reset",
+        messageUtil.addMessage("Password reset",
             "Password reset email was sent to " + selectedUser.getEmail());
         refreshUsers();
       } catch (MessagingException e) {
-        MessageUtil.addErrorMessage(
+        messageUtil.addErrorMessage(
             "Failed to send email to user",
             "There was a problem sending out the password reset email to "
                 + selectedUser.getUserName()
                 + ". Please try again or of this errors persists contact the system "
                 + "administrator.");
       } catch (XlraValidationException e2) {
-        MessageUtil.addErrorMessage("Error resetting user password", e2.getBusinessException());
+        messageUtil.addErrorMessage("Error resetting user password", e2.getBusinessException());
       }
     }
   }
@@ -133,10 +143,10 @@ public class ManageUsersController {
   public void enableUser(User user) {
     try {
       userService.enableUser(user);
-      MessageUtil.addMessage("User enabled", "Enabled user " + user.getUserName());
+      messageUtil.addMessage("User enabled", "Enabled user " + user.getUserName());
       refreshUsers();
     } catch (XlraValidationException e) {
-      MessageUtil.addErrorMessage("Can not enable user", e.getBusinessException());
+      messageUtil.addErrorMessage("Can not enable user", e.getBusinessException());
     }
   }
 
@@ -148,10 +158,10 @@ public class ManageUsersController {
   public void disableUser(User user) {
     try {
       userService.disableUser(user);
-      MessageUtil.addMessage("User disabled", "Disabled user " + user.getUserName());
+      messageUtil.addMessage("User disabled", "Disabled user " + user.getUserName());
       refreshUsers();
     } catch (XlraValidationException e) {
-      MessageUtil.addErrorMessage("Can not disable user", e.getBusinessException());
+      messageUtil.addErrorMessage("Can not disable user", e.getBusinessException());
     }
   }
 
@@ -177,7 +187,11 @@ public class ManageUsersController {
     selectedUser = user;
     roles.setTarget(user.getRoles());
     roles.setSource(getSourceRoles(user));
-    setUpdateTitle();
+    if (user.getId() > 0) {
+      setUpdateTitle();
+    } else {
+      setCreateTitle();
+    }
     editMode = true;
     showAddDialog();
   }
@@ -193,6 +207,9 @@ public class ManageUsersController {
     return sourceRole;
   }
 
+  /**
+   * Cancel the add of a new user.
+   */
   public void cancelAddNewUser() {
     selectedUser = null;
     hideAddDialog();
@@ -224,18 +241,18 @@ public class ManageUsersController {
   private void createUser() {
     try {
       userService.createUser(selectedUser);
-      MessageUtil.addMessage("User created", "The user " + selectedUser.getUserName()
+      messageUtil.addMessage("User created", "The user " + selectedUser.getUserName()
           + " was successfully created.");
       refreshUsers();
       hideAddDialog();
     } catch (UserException e) {
       showAddDialog();
-      MessageUtil.addErrorMessage("Error creating user", e.getBusinessException());
+      messageUtil.addErrorMessage("Error creating user", e.getBusinessException());
     }
   }
 
   private void updateUser() {
-    MessageUtil.addMessage("User updated", "The user " + selectedUser.getUserName()
+    messageUtil.addMessage("User updated", "The user " + selectedUser.getUserName()
         + " was successfully updated.");
     userService.updateUser(selectedUser, false);
     refreshUsers();
@@ -246,8 +263,8 @@ public class ManageUsersController {
     return !UserStatusUtil.canEnableUser(user);
   }
 
-  public boolean canUserResetPassword(User user) {
-    return !UserStatusUtil.canResetPassword(user);
+  public boolean canUserResetPassword() {
+    return !UserStatusUtil.canResetPassword(selectedUser);
   }
 
   public boolean canUserBeDisabled(User user) {
@@ -322,5 +339,21 @@ public class ManageUsersController {
 
   public void setCrudPopupTitle(String crudPopupTitle) {
     this.crudPopupTitle = crudPopupTitle;
+  }
+
+  public ResourceBundle getMessageBundle() {
+    return messageBundle;
+  }
+
+  public void setMessageBundle(ResourceBundle messageBundle) {
+    this.messageBundle = messageBundle;
+  }
+
+  public MessageUtil getMessageUtil() {
+    return messageUtil;
+  }
+
+  public void setMessageUtil(MessageUtil messageUtil) {
+    this.messageUtil = messageUtil;
   }
 }

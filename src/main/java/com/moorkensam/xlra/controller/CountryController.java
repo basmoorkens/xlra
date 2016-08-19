@@ -7,9 +7,11 @@ import com.moorkensam.xlra.service.CountryService;
 import org.primefaces.context.RequestContext;
 
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 
@@ -19,6 +21,11 @@ public class CountryController {
 
   @Inject
   private CountryService countryService;
+
+  @ManagedProperty("#{msg}")
+  private ResourceBundle messageBundle;
+
+  private MessageUtil messageUtil;
 
   private List<Country> countries;
 
@@ -40,7 +47,7 @@ public class CountryController {
    */
   public void saveEditedCountry() {
     selectedCountry = countryService.updateCountry(selectedCountry);
-    MessageUtil.addMessage("Country updated", "Country " + selectedCountry.getEnglishName()
+    messageUtil.addMessage("Country updated", "Country " + selectedCountry.getEnglishName()
         + " was successfully");
     refreshCountries();
     hideAddDialog();
@@ -54,7 +61,7 @@ public class CountryController {
   public void deleteCountry(Country country) {
     countryService.deleteCountry(country);
     refreshCountries();
-    MessageUtil.addMessage("Country deleted",
+    messageUtil.addMessage("Country deleted",
         "Successfully deleted the country " + country.getEnglishName());
   }
 
@@ -115,5 +122,21 @@ public class CountryController {
 
   public void setDetailGridTitle(String detailGridTitle) {
     this.detailGridTitle = detailGridTitle;
+  }
+
+  public MessageUtil getMessageUtil() {
+    return messageUtil;
+  }
+
+  public void setMessageUtil(MessageUtil messageUtil) {
+    this.messageUtil = messageUtil;
+  }
+
+  public ResourceBundle getMessageBundle() {
+    return messageBundle;
+  }
+
+  public void setMessageBundle(ResourceBundle messageBundle) {
+    this.messageBundle = messageBundle;
   }
 }

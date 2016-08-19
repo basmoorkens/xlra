@@ -13,9 +13,11 @@ import org.primefaces.context.RequestContext;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 
@@ -28,6 +30,11 @@ public class ChfController {
 
   @Inject
   private CurrencyService currencyService;
+
+  @ManagedProperty("#{msg}")
+  private ResourceBundle messageBundle;
+
+  private MessageUtil messageUtil;
 
   private List<CurrencyRate> chfRates;
 
@@ -44,6 +51,7 @@ public class ChfController {
   @PostConstruct
   public void initPage() {
     refreshCurrencyRates();
+    messageUtil = MessageUtil.getInstance(messageBundle);
   }
 
   private void refreshCurrencyRates() {
@@ -90,21 +98,21 @@ public class ChfController {
   private void persistNewRate() {
     try {
       currencyService.createCurrencyRate(selectedChfRate);
-      MessageUtil.addMessage("Swiss franc rate created",
+      messageUtil.addMessage("Swiss franc rate created",
           "Successfully created swiss franc rate for " + selectedChfRate.getInterval()
               + " with surcharge percentage " + selectedChfRate.getSurchargePercentage());
       refreshCurrencyRates();
       selectedChfRate = null;
       hideAddDialog();
     } catch (IntervalOverlapException e) {
-      MessageUtil.addErrorMessage("Illegal interval", e.getBusinessException());
+      messageUtil.addErrorMessage("Illegal interval", e.getBusinessException());
       showAddDialog();
     }
   }
 
   private void updateSelectedRate() {
     currencyService.updateCurrencyRate(selectedChfRate);
-    MessageUtil.addMessage("Swiss franc rate updated", "Updated swiss franc rate for "
+    messageUtil.addMessage("Swiss franc rate updated", "Updated swiss franc rate for "
         + selectedChfRate.getInterval() + " to " + selectedChfRate.getSurchargePercentage());
     refreshCurrencyRates();
   }
@@ -127,7 +135,7 @@ public class ChfController {
   public void deleteChfRate(CurrencyRate rate) {
     currencyService.deleteCurrencyRate(rate);
     refreshCurrencyRates();
-    MessageUtil.addMessage("Successfully deleted rate", "Sucessfully deleted Swiss franc rate.");
+    messageUtil.addMessage("Successfully deleted rate", "Sucessfully deleted Swiss franc rate.");
   }
 
   public void cancelAddNewCurrencyRate() {
@@ -139,15 +147,25 @@ public class ChfController {
    * Update the currenctly selected chf rate.
    */
   public void updateCurrentChfRate() {
-    if (configuration.getCurrentChfValue() != getCurrentChfValue()) {
+    if (isValidCurrentChfValue()) {
       currencyService.updateCurrentChfValue(getCurrentChfValue());
-      MessageUtil.addMessage("Current swiss franc price", "Updated current swiss franc price to "
+      messageUtil.addMessage("message.current.chf.price", "message.chf.updated.to"
           + getCurrentChfValue());
       setupCurrentRates();
-    } else {
-      MessageUtil.addMessage("Current swiss franc price",
-          "The new price is the same as the old, not updating.");
     }
+  }
+
+  private boolean isValidCurrentChfValue() {
+    if (getCurrentChfValue() == null) {
+      messageUtil.addErrorMessage("message.empty.value", "message.chf.currentvalue.null");
+      return false;
+    }
+    if (configuration.getCurrentChfValue() == getCurrentChfValue()) {
+      messageUtil.addMessage("message.current.chf.price", "message.price.same.as.old");
+      return false;
+    }
+    return true;
+
   }
 
   private void setupCurrentRates() {
@@ -200,5 +218,21 @@ public class ChfController {
 
   public void setEditMode(boolean editMode) {
     this.editMode = editMode;
+  }
+
+  public MessageUtil getMessageUtil() {
+    return messageUtil;
+  }
+
+  public void setMessageUtil(MessageUtil messageUtil) {
+    this.messageUtil = messageUtil;
+  }
+
+  public ResourceBundle getMessageBundle() {
+    return messageBundle;
+  }
+
+  public void setMessageBundle(ResourceBundle messageBundle) {
+    this.messageBundle = messageBundle;
   }
 }

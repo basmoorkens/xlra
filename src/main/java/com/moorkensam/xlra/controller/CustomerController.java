@@ -16,9 +16,11 @@ import org.primefaces.model.SortOrder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 
@@ -28,6 +30,11 @@ public class CustomerController {
 
   @Inject
   private CustomerService customerService;
+
+  @ManagedProperty("#{msg}")
+  private ResourceBundle messageBundle;
+
+  private MessageUtil messageUtil;
 
   private Customer selectedCustomer;
 
@@ -43,6 +50,7 @@ public class CustomerController {
 
   @PostConstruct
   public void initializeController() {
+    messageUtil = MessageUtil.getInstance(messageBundle);
     reInitializePage();
     initModel();
   }
@@ -76,14 +84,14 @@ public class CustomerController {
     if (selectedCustomer.getId() == 0) {
       try {
         customerService.createCustomer(selectedCustomer);
-        MessageUtil.addMessage("Customer added", "Customer " + selectedCustomer.getName()
+        messageUtil.addMessage("Customer added", "Customer " + selectedCustomer.getName()
             + " was successfully added.");
       } catch (XlraValidationException e) {
-        MessageUtil.addErrorMessage("Invalid customer data", e.getBusinessException());
+        messageUtil.addErrorMessage("Invalid customer data", e.getBusinessException());
       }
     } else {
       selectedCustomer = customerService.updateCustomer(selectedCustomer);
-      MessageUtil.addMessage("Customer updated", "Customer " + selectedCustomer.getName()
+      messageUtil.addMessage("Customer updated", "Customer " + selectedCustomer.getName()
           + " was successfully updated.");
     }
   }
@@ -94,7 +102,7 @@ public class CustomerController {
    */
   public void deleteCustomer(Customer customer) {
     customerService.deleteCustomer(customer);
-    MessageUtil.addMessage("Customer removed", "Successfully removed customer.");
+    messageUtil.addMessage("Customer removed", "Successfully removed customer.");
   }
 
   private void hideAddDialog() {
@@ -276,6 +284,22 @@ public class CustomerController {
 
   public void setSaveContactButtonTitle(String saveContactButtonTitle) {
     this.saveContactButtonTitle = saveContactButtonTitle;
+  }
+
+  public ResourceBundle getMessageBundle() {
+    return messageBundle;
+  }
+
+  public void setMessageBundle(ResourceBundle messageBundle) {
+    this.messageBundle = messageBundle;
+  }
+
+  public MessageUtil getMessageUtil() {
+    return messageUtil;
+  }
+
+  public void setMessageUtil(MessageUtil messageUtil) {
+    this.messageUtil = messageUtil;
   }
 
 }

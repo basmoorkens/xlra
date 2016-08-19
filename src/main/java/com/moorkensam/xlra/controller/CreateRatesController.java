@@ -25,9 +25,11 @@ import org.primefaces.event.CellEditEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
@@ -41,6 +43,11 @@ public class CreateRatesController {
 
   @Inject
   private CountryService countryService;
+
+  @ManagedProperty("#{msg}")
+  private ResourceBundle messageBundle;
+
+  private MessageUtil messageUtil;
 
   @Inject
   private CustomerService customerService;
@@ -87,6 +94,7 @@ public class CreateRatesController {
    */
   @PostConstruct
   public void init() {
+    messageUtil = MessageUtil.getInstance(messageBundle);
     filter = new RateFileSearchFilter();
     setRateFile(new RateFile());
     countries = countryService.getAllCountries();
@@ -108,7 +116,7 @@ public class CreateRatesController {
       translationUtil.fillInTranslations(rateFile.getConditions());
       showRateLineEditor();
     } catch (RateFileException e) {
-      MessageUtil.addErrorMessage("Could not create ratefile", e.getBusinessException());
+      messageUtil.addErrorMessage("Could not create ratefile", e.getBusinessException());
     }
   }
 
@@ -153,7 +161,12 @@ public class CreateRatesController {
   }
 
   public void onRateLineCellEdit(CellEditEvent event) {
-    RateUtil.onRateLineCellEdit(event);
+    Object newValue = event.getNewValue();
+    Object oldValue = event.getOldValue();
+
+    if (newValue != null && !newValue.equals(oldValue)) {
+      messageUtil.addMessage("Rate updated", "Rate value updated to " + newValue);
+    }
   }
 
   /**
@@ -162,7 +175,7 @@ public class CreateRatesController {
    * @param condition The condition to delete.
    */
   public void deleteCondition(Condition condition) {
-    MessageUtil.addMessage("condition removed", condition.getTranslatedKey()
+    messageUtil.addMessage("condition removed", condition.getTranslatedKey()
         + " was successfully removed.");
     rateFile.getConditions().remove(condition);
     condition.setRateFile(null);
@@ -248,7 +261,7 @@ public class CreateRatesController {
   public String saveNewRateFile() {
     markCustomerRateFile();
     rateFileService.createRateFile(rateFile);
-    MessageUtil.addMessage("Rates created", "Succesfully created rates for " + rateFile.getName());
+    messageUtil.addMessage("Rates created", "Succesfully created rates for " + rateFile.getName());
     return "views/rate/admin/manageRates.xhtml";
   }
 
@@ -305,21 +318,21 @@ public class CreateRatesController {
   public void saveEditCondition() {
     if (selectedCondition.getConditionKey() != null) {
       if (editMode) {
-        MessageUtil.addMessage("Condition updated",
+        messageUtil.addMessage("Condition updated",
             "Updated " + selectedCondition.getTranslatedKey() + ".");
       } else {
         addConditionToRateFile();
       }
     } else {
       showConditionDetailDialog();
-      MessageUtil.addErrorMessage("Empty condition", "You can not save an empty condition.");
+      messageUtil.addErrorMessage("Empty condition", "You can not save an empty condition.");
     }
 
   }
 
   private void addConditionToRateFile() {
     rateFile.addCondition(selectedCondition);
-    MessageUtil.addMessage("Condition added",
+    messageUtil.addMessage("Condition added",
         "Added condition " + selectedCondition.getTranslatedKey());
   }
 
@@ -433,6 +446,22 @@ public class CreateRatesController {
 
   public void setConditionDialogHeader(String conditionDialogHeader) {
     this.conditionDialogHeader = conditionDialogHeader;
+  }
+
+  public ResourceBundle getMessageBundle() {
+    return messageBundle;
+  }
+
+  public void setMessageBundle(ResourceBundle messageBundle) {
+    this.messageBundle = messageBundle;
+  }
+
+  public MessageUtil getMessageUtil() {
+    return messageUtil;
+  }
+
+  public void setMessageUtil(MessageUtil messageUtil) {
+    this.messageUtil = messageUtil;
   }
 
 }

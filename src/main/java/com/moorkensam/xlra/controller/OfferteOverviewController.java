@@ -22,9 +22,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -44,6 +46,11 @@ public class OfferteOverviewController {
   @Inject
   private EmailService emailService;
 
+  @ManagedProperty("#{msg}")
+  private ResourceBundle messageBundle;
+
+  private MessageUtil messageUtil;
+
   private FileService fileService;
 
   private LazyDataModel<QuotationResult> model;
@@ -57,6 +64,7 @@ public class OfferteOverviewController {
    */
   @PostConstruct
   public void initialize() {
+    messageUtil = MessageUtil.getInstance(messageBundle);
     fileService = new FileServiceImpl();
     allCountrys = countryService.getAllCountriesFullLoad();
     checkAndLoadOfferteIfPresent();
@@ -89,7 +97,7 @@ public class OfferteOverviewController {
         selectedOfferte = quotationService.getOfferteByOfferteKey(offerteKey);
         showDetailDialog();
       } catch (UnAuthorizedAccessException e) {
-        MessageUtil.addErrorMessage("Unauthorized offerte access", e.getBusinessException());
+        messageUtil.addErrorMessage("Unauthorized offerte access", e.getBusinessException());
       }
     }
   }
@@ -104,7 +112,7 @@ public class OfferteOverviewController {
       selectedOfferte = quotationService.getFullOfferteById(quotationResult.getId());
       showDetailDialog();
     } catch (UnAuthorizedAccessException e) {
-      MessageUtil.addErrorMessage("Unauthorized offerte access", e.getBusinessException());
+      messageUtil.addErrorMessage("Unauthorized offerte access", e.getBusinessException());
     }
   }
 
@@ -151,12 +159,12 @@ public class OfferteOverviewController {
     try {
       emailService.sendOfferteMail(selectedOfferte);
       selectedOfferte = quotationService.getFullOfferteById(selectedOfferte.getId());
-      MessageUtil.addMessage("Email resend", "Successfully sent email");
+      messageUtil.addMessage("Email resend", "Successfully sent email");
     } catch (MessagingException e) {
-      MessageUtil.addErrorMessage("Could not send email",
+      messageUtil.addErrorMessage("Could not send email",
           "Error sending email! Contact the system admin if this error persists.");
     } catch (UnAuthorizedAccessException e) {
-      MessageUtil.addErrorMessage("Unauthorized offerte access", e.getBusinessException());
+      messageUtil.addErrorMessage("Unauthorized offerte access", e.getBusinessException());
     }
   }
 
@@ -198,5 +206,21 @@ public class OfferteOverviewController {
 
   public void setModel(LazyDataModel<QuotationResult> model) {
     this.model = model;
+  }
+
+  public ResourceBundle getMessageBundle() {
+    return messageBundle;
+  }
+
+  public void setMessageBundle(ResourceBundle messageBundle) {
+    this.messageBundle = messageBundle;
+  }
+
+  public MessageUtil getMessageUtil() {
+    return messageUtil;
+  }
+
+  public void setMessageUtil(MessageUtil messageUtil) {
+    this.messageUtil = messageUtil;
   }
 }

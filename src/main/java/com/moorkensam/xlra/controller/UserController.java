@@ -5,8 +5,11 @@ import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.UserSessionService;
 
+import java.util.ResourceBundle;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 
@@ -26,8 +29,14 @@ public class UserController {
   @Inject
   private UserSessionService userSessionService;
 
+  @ManagedProperty("#{msg}")
+  private ResourceBundle messageBundle;
+
+  private MessageUtil messageUtil;
+
   @PostConstruct
   public void initialize() {
+    messageUtil = MessageUtil.getInstance(messageBundle);
     user = userSessionService.getLoggedInUser();
   }
 
@@ -76,15 +85,30 @@ public class UserController {
         user.setPassword(newPassword);
       } else {
         if (!skippws) {
-          MessageUtil.addErrorMessage("Passwords do not match",
+          messageUtil.addErrorMessage("Passwords do not match",
               "The new password and the retyped new password should be the same!");
           return;
         }
       }
     }
     user = userService.updateUser(user, !skippws);
-    MessageUtil.addMessage("Profile updated", "Your profile was successfully updated.");
+    messageUtil.addMessage("Profile updated", "Your profile was successfully updated.");
+  }
 
+  public MessageUtil getMessageUtil() {
+    return messageUtil;
+  }
+
+  public void setMessageUtil(MessageUtil messageUtil) {
+    this.messageUtil = messageUtil;
+  }
+
+  public ResourceBundle getMessageBundle() {
+    return messageBundle;
+  }
+
+  public void setMessageBundle(ResourceBundle messageBundle) {
+    this.messageBundle = messageBundle;
   }
 
 }

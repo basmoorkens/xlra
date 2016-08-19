@@ -30,30 +30,30 @@
 					<p:column headerText="#{msg['usermanagement.roles.list']}">
 						#{user.rolesAsString}
 					</p:column>
-					<p:column style="width:200px;">
+					<p:column style="width:250px;">
 						<p:commandButton style="margin-top:5px;margin-bottom:5px;"
 							icon="ui-icon-pencil" update=":addUserForm" id="editButton"
-							styleClass="navButton" ajax="true"
+							styleClass="navButton small" ajax="true"
 							actionListener="#{manageUsersController.selectUserForEdit(user)}" />
 						<p:tooltip id="editTip" for="editButton"
 							value="#{msg['usermanagement.user.edit']}" />
 						<p:commandButton icon="ui-icon-locked"
 							update=":usersForm :addUserForm" id="disableButton"
-							styleClass="navButton"
+							styleClass="navButton small"
 							disabled="#{manageUsersController.canUserBeDisabled(user)}"
 							actionListener="#{manageUsersController.disableUser(user)}" />
 						<p:tooltip id="disabletip" for="disableButton"
 							value="#{msg['usermanagement.user.disable']}" />
 						<p:commandButton icon="ui-icon-unlocked"
 							update=":usersForm :addUserForm" id="enableButton"
-							styleClass="navButton"
+							styleClass="navButton small"
 							disabled="#{manageUsersController.canUserBeEnabled(user)}"
 							actionListener="#{manageUsersController.enableUser(user)}" />
 						<p:tooltip id="enabletip" for="enableButton"
 							value="#{msg['usermanagement.user.enable']}" />
 						<p:commandButton icon="ui-icon-trash" title="Delete"
 							actionListener="#{manageUsersController.deleteUser(user)}"
-							styleClass="navButton" ajax="true" immediate="true"
+							styleClass="navButton small" ajax="true" immediate="true"
 							update=":usersForm" id="deleteButton">
 							<p:confirm header="#{msg['dialog.confirm.delete.title']}"
 								message="#{msg['usermanagement.confirm.delete.message']}"
@@ -104,7 +104,7 @@
 						<p:inputText value="#{manageUsersController.selectedUser.email}"
 							required="true"
 							requiredMessage="#{msg['usermanagement.user.email.required']}"
-							validatorMessage="#{msg['usermanagement.user.email.invalid']}"
+							validatorMessage="#{msg['message.email.invalid.message']}"
 							style="width:100%;" id="emailInput"
 							disabled="#{manageUsersController.editMode}">
 							<f:validateRegex
@@ -147,7 +147,7 @@
 							id="resetPasswordButton"
 							actionListener="#{manageUsersController.resetUserPassword}"
 							update=":usersForm :addUserForm" styleClass="navButton"
-							disabled="#{manageUsersController.canUserResetPassword(user)}"
+							disabled="#{manageUsersController.canUserResetPassword()}"
 							style="margin-right:20px;" />
 						<p:commandButton value="#{msg['button.save']}"
 							update=":usersForm :addUserForm" ajax="true"

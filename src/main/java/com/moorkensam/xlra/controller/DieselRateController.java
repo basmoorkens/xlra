@@ -12,9 +12,11 @@ import org.primefaces.context.RequestContext;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 
@@ -24,6 +26,11 @@ public class DieselRateController {
 
   @Inject
   private ApplicationConfigurationService applicationConfigurationService;
+
+  @ManagedProperty("#{msg}")
+  private ResourceBundle messageBundle;
+
+  private MessageUtil messageUtil;
 
   @Inject
   private DieselService dieselService;
@@ -45,6 +52,7 @@ public class DieselRateController {
    */
   @PostConstruct
   public void initPage() {
+    messageUtil = MessageUtil.getInstance(messageBundle);
     refreshDieselRates();
     configuration = getApplicationConfigurationService().getConfiguration();
     setupCurrentRates();
@@ -114,7 +122,7 @@ public class DieselRateController {
 
   private void updateExistingDieselRate() {
     updateDieselRate(selectedDieselRate);
-    MessageUtil.addMessage(
+    messageUtil.addMessage(
         "Diesel rate updated",
         "Updated diesel rate for " + selectedDieselRate.getInterval() + " to "
             + selectedDieselRate.getSurchargePercentage());
@@ -125,12 +133,12 @@ public class DieselRateController {
     try {
       dieselService.createDieselRate(selectedDieselRate);
       refreshDieselRates();
-      MessageUtil.addMessage("New diesel rate created",
+      messageUtil.addMessage("New diesel rate created",
           "successfully created diesel rate for " + selectedDieselRate.getInterval()
               + " with surcharge percentage " + selectedDieselRate.getSurchargePercentage());
       selectedDieselRate = null;
     } catch (IntervalOverlapException exc) {
-      MessageUtil.addErrorMessage("Illegal interval", exc.getBusinessException());
+      messageUtil.addErrorMessage("Illegal interval", exc.getBusinessException());
       showAddDialog();
     }
   }
@@ -143,7 +151,7 @@ public class DieselRateController {
   public void deleteDieselRate(DieselRate rate) {
     dieselService.deleteDieselRate(rate);
     refreshDieselRates();
-    MessageUtil.addMessage("Successfully deleted rate", "Sucessfully deleted diesel rate.");
+    messageUtil.addMessage("Successfully deleted rate", "Sucessfully deleted diesel rate.");
   }
 
   /**
@@ -152,11 +160,11 @@ public class DieselRateController {
   public void updateCurrentDieselRate() {
     if (configuration.getCurrentDieselPrice() != getCurrentDieselValue()) {
       dieselService.updateCurrentDieselValue(getCurrentDieselValue());
-      MessageUtil.addMessage("Current diesel price", "Updated current diesel price to "
+      messageUtil.addMessage("Current diesel price", "Updated current diesel price to "
           + getCurrentDieselValue());
       setupCurrentRates();
     } else {
-      MessageUtil.addMessage("Current diesel price",
+      messageUtil.addMessage("Current diesel price",
           "The new price is the same as the old, not updating.");
     }
   }
@@ -216,5 +224,21 @@ public class DieselRateController {
 
   public void setEditMode(boolean editMode) {
     this.editMode = editMode;
+  }
+
+  public MessageUtil getMessageUtil() {
+    return messageUtil;
+  }
+
+  public void setMessageUtil(MessageUtil messageUtil) {
+    this.messageUtil = messageUtil;
+  }
+
+  public ResourceBundle getMessageBundle() {
+    return messageBundle;
+  }
+
+  public void setMessageBundle(ResourceBundle messageBundle) {
+    this.messageBundle = messageBundle;
   }
 }
