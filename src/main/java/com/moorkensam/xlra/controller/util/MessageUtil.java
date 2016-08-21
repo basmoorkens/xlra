@@ -1,10 +1,10 @@
 package com.moorkensam.xlra.controller.util;
 
+import java.text.MessageFormat;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.context.FacesContext;
 
 /**
@@ -37,13 +37,40 @@ public class MessageUtil {
     return instance;
   }
 
-  public void addMessage(String summary, String detail) {
-    FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, summary, detail);
+  /**
+   * Add a message to the facescontext.
+   * 
+   * @param summary Summary of the message
+   * @param detail Detail of the message
+   * @param arguments The arguments to inject into the message
+   */
+  public void addMessage(final String summary, final String detail, final String... arguments) {
+    FacesMessage message =
+        new FacesMessage(FacesMessage.SEVERITY_INFO, lookupI8nStringAndInjectParams(summary,
+            arguments), lookupI8nStringAndInjectParams(detail, arguments));
     FacesContext.getCurrentInstance().addMessage(null, message);
   }
 
-  public void addErrorMessage(String summary, String detail) {
-    FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, summary, detail);
+  private String lookupI8nStringAndInjectParams(final String key, final Object... params) {
+    String unformattedString = messageBundle.getString(key);
+    if (params != null) {
+      String formattedResult = MessageFormat.format(unformattedString, params);
+      return formattedResult;
+    }
+    return unformattedString;
+  }
+
+  /**
+   * Add an error message to the facescontext.
+   * 
+   * @param summary Summary of the error message
+   * @param detail Detailed message
+   * @param arguments The arguments to pass along
+   */
+  public void addErrorMessage(final String summary, final String detail, final String... arguments) {
+    FacesMessage message =
+        new FacesMessage(FacesMessage.SEVERITY_ERROR, lookupI8nStringAndInjectParams(summary,
+            arguments), lookupI8nStringAndInjectParams(detail, arguments));
     FacesContext.getCurrentInstance().addMessage(null, message);
   }
 

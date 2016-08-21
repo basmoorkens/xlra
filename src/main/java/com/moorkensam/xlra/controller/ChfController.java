@@ -98,22 +98,21 @@ public class ChfController {
   private void persistNewRate() {
     try {
       currencyService.createCurrencyRate(selectedChfRate);
-      messageUtil.addMessage("Swiss franc rate created",
-          "Successfully created swiss franc rate for " + selectedChfRate.getInterval()
-              + " with surcharge percentage " + selectedChfRate.getSurchargePercentage());
+      messageUtil.addMessage("message.chf.rate.created.title", selectedChfRate.getInterval() + "",
+          selectedChfRate.getSurchargePercentage() + "");
       refreshCurrencyRates();
       selectedChfRate = null;
       hideAddDialog();
     } catch (IntervalOverlapException e) {
-      messageUtil.addErrorMessage("Illegal interval", e.getBusinessException());
+      messageUtil.addErrorMessage("message.chf.illegal.interval.title", e.getBusinessException());
       showAddDialog();
     }
   }
 
   private void updateSelectedRate() {
     currencyService.updateCurrencyRate(selectedChfRate);
-    messageUtil.addMessage("Swiss franc rate updated", "Updated swiss franc rate for "
-        + selectedChfRate.getInterval() + " to " + selectedChfRate.getSurchargePercentage());
+    messageUtil.addMessage("message.chf.rate.updated.title", "message.chf.rate.updated.detail"
+        + selectedChfRate.getInterval() + "", selectedChfRate.getSurchargePercentage() + "");
     refreshCurrencyRates();
   }
 
@@ -135,7 +134,8 @@ public class ChfController {
   public void deleteChfRate(CurrencyRate rate) {
     currencyService.deleteCurrencyRate(rate);
     refreshCurrencyRates();
-    messageUtil.addMessage("Successfully deleted rate", "Sucessfully deleted Swiss franc rate.");
+    messageUtil.addMessage("message.chf.delete.title", "message.chf.delete.detail", rate
+        .getInterval().toIntString());
   }
 
   public void cancelAddNewCurrencyRate() {
@@ -149,8 +149,8 @@ public class ChfController {
   public void updateCurrentChfRate() {
     if (isValidCurrentChfValue()) {
       currencyService.updateCurrentChfValue(getCurrentChfValue());
-      messageUtil.addMessage("message.current.chf.price", "message.chf.updated.to"
-          + getCurrentChfValue());
+      messageUtil.addMessage("message.current.chf.price", "message.chf.updated.to",
+          getCurrentChfValue() + "");
       setupCurrentRates();
     }
   }

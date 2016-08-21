@@ -12,7 +12,6 @@ import com.moorkensam.xlra.service.ExcelService;
 import com.moorkensam.xlra.service.RateFileService;
 import com.moorkensam.xlra.service.UserSessionService;
 import com.moorkensam.xlra.service.util.ConditionFactory;
-import com.moorkensam.xlra.service.util.RateUtil;
 import com.moorkensam.xlra.service.util.TranslationUtil;
 import com.moorkensam.xlra.service.util.ZoneUtil;
 
@@ -158,7 +157,8 @@ public class ManageRatesController {
     Object oldValue = event.getOldValue();
 
     if (newValue != null && !newValue.equals(oldValue)) {
-      messageUtil.addMessage("Rate updated", "Rate value updated to " + newValue);
+      messageUtil.addMessage("message.ratefile.update.title", "message.ratefile.update.detail",
+          newValue + "");
     }
     updateRateFile();
   }
@@ -242,11 +242,13 @@ public class ManageRatesController {
     if (selectedCondition.getConditionKey() != null) {
       selectedRateFile.addCondition(selectedCondition);
       updateRateFile();
-      messageUtil.addMessage("Condition updated", "Your changes were saved.");
+      messageUtil.addMessage("message.ratefile.condition.updated.title",
+          "message.ratefile.condition.updated.detail", selectedCondition.getTranslatedKey());
       selectedCondition = null;
     } else {
       showConditionDetailDialog();
-      messageUtil.addErrorMessage("Empty condition", "You can not save an empty condition.");
+      messageUtil.addErrorMessage("message.ratefile.condition.empty",
+          "message.ratefile.condition.empty.detail");
     }
   }
 
@@ -282,7 +284,8 @@ public class ManageRatesController {
       originalSelectedZone.fillInValuesFromZone(selectedZone);
       updateRateFile();
       resetZoneEdit();
-      messageUtil.addMessage("Zone update", selectedZone.getName() + " successfully updated.");
+      messageUtil.addMessage("message.ratefile.zone.updated",
+          "message.ratefile.zone.updated.detail", selectedZone.getName());
     } else {
       showZoneDetailDialog();
     }
@@ -298,8 +301,8 @@ public class ManageRatesController {
    * @param condition The condition to delete.
    */
   public void deleteCondition(Condition condition) {
-    messageUtil.addMessage("condition removed", condition.getTranslatedKey()
-        + " was successfully removed.");
+    messageUtil.addMessage("message.ratefile.condition.removed",
+        "message.ratefile.condition.removed.detail", condition.getTranslatedKey());
     selectedRateFile.getConditions().remove(condition);
     condition.setRateFile(null);
     updateRateFile();
@@ -335,7 +338,8 @@ public class ManageRatesController {
     hasRateFileSelected = true;
     refreshRateLineColumns();
     translationUtil.fillInTranslations(selectedRateFile.getConditions());
-    messageUtil.addMessage("Loaded rates", "Displaying rates for " + selectedRateFile.getName());
+    messageUtil.addMessage("message.ratefile.rates.loaded", "message.ratefile.rates.loaded.detail",
+        selectedRateFile.getName());
   }
 
   /**
@@ -356,7 +360,7 @@ public class ManageRatesController {
       responseOutputStream.close();
     } catch (IOException e) {
       logger.error(e);
-      messageUtil.addErrorMessage("Unexpected error", "Could not generate excel");
+      messageUtil.addErrorMessage("message.unexpected.error", "message.unexpected.excel.error");
     }
     facesContext.responseComplete();
 
@@ -463,9 +467,8 @@ public class ManageRatesController {
       zoneUtil.convertNumericalPostalCodeStringToList(numericalPostalCodeString);
       return true;
     } catch (Exception e) {
-      messageUtil.addErrorMessage("Postal codes not valid",
-          "The given postal codes are not valid, make sure its a ','"
-              + " seperated list of numerical postcode intervals START-STOP,START-STOP,...");
+      messageUtil.addErrorMessage("message.invalid.postal.codes",
+          "message.invalid.postal.codes.numeric.detail");
     }
     return false;
   }
@@ -475,9 +478,8 @@ public class ManageRatesController {
       zoneUtil.convertAlphaNumericPostalCodeStringToList(alphaNumericalPostalCodeString);
       return true;
     } catch (Exception e) {
-      messageUtil.addErrorMessage("Postal codes not valid",
-          "The given postal codes are not valid, make sure its a ','"
-              + " seperated list of alphanumerical postal codes.");
+      messageUtil.addErrorMessage("message.invalid.postal.codes",
+          "message.invalid.postal.codes.alphanumeric.detail");
       showZoneDetailDialog();
     }
     return false;
@@ -615,5 +617,4 @@ public class ManageRatesController {
   public void setMessageUtil(MessageUtil messageUtil) {
     this.messageUtil = messageUtil;
   }
-
 }

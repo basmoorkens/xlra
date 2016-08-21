@@ -6,6 +6,8 @@ import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.AuthorizationService;
 import com.moorkensam.xlra.service.UserSessionService;
 
+import java.util.Arrays;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -20,8 +22,9 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     User user = getUserSessionService().getLoggedInUser();
     if (!getUserSessionService().doesLoggedInUserHaveAdminRights()) {
       if (!user.getUserName().equalsIgnoreCase(offerte.getCreatedUserName())) {
-        throw new UnAuthorizedAccessException("User " + user.getUserName()
-            + " is not authorized to access this offerte.");
+        UnAuthorizedAccessException exc =
+            new UnAuthorizedAccessException("message.offerte.unauthorized.access.detail");
+        exc.setExtraArguments(Arrays.asList(user.getUserName()));
       }
     }
   }

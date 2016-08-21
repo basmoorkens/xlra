@@ -19,6 +19,7 @@ import com.moorkensam.xlra.service.util.UserStatusUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -69,14 +70,16 @@ public class UserServiceImpl implements UserService {
   }
 
   private void validateUserIsUnique(final User user) throws UserException {
-    validateUserEmail(user);
-    validateUserUsername(user);
+    validateUserEmailUnique(user);
+    validateUserUsernameUnique(user);
   }
 
-  private void validateUserUsername(final User user) throws UserException {
+  private void validateUserUsernameUnique(final User user) throws UserException {
     try {
       userDao.getUserByUserName(user.getUserName());
-      throw new UserException("A user with this username already exists");
+      UserException exc = new UserException("message.user.created.username.exists");
+      exc.setExtraArguments(Arrays.asList(user.getUserName()));
+      throw exc;
     } catch (NoResultException nre) {
       if (logger.isDebugEnabled()) {
         logger.debug("User with username " + user.getUserName() + " was not found");
@@ -84,10 +87,12 @@ public class UserServiceImpl implements UserService {
     }
   }
 
-  private void validateUserEmail(final User user) throws UserException {
+  private void validateUserEmailUnique(final User user) throws UserException {
     try {
       userDao.getUserByEmail(user.getEmail());
-      throw new UserException("A user with this email adres already exists");
+      UserException exc = new UserException("message.user.created.email.exists");
+      exc.setExtraArguments(Arrays.asList(user.getEmail()));
+      throw exc;
     } catch (NoResultException nre) {
       if (logger.isDebugEnabled()) {
         logger.debug("User with username " + user.getUserName() + " was not found");
@@ -144,9 +149,7 @@ public class UserServiceImpl implements UserService {
 
   private void validateResetRequest(final User user) throws XlraValidationException {
     if (!UserStatusUtil.canResetPassword(user)) {
-      String businessException =
-          "Can not change the user status to PASSWORD_RESET for user " + user.getUserName()
-              + " which has status " + user.getUserStatus();
+      String businessException = "message.user.status.to.password.reset.invalid";
       logger.error(businessException);
       throw new XlraValidationException(businessException);
     }
@@ -223,8 +226,7 @@ public class UserServiceImpl implements UserService {
 
   private void validateDisableRequest(final User user) throws XlraValidationException {
     if (!UserStatusUtil.canDisableUser(user)) {
-      String businessException =
-          "Can not disable user " + user.getUserName() + " with status " + user.getUserStatus();
+      String businessException = "message.user.disabled.failed.detail";
       logger.error(businessException);
       throw new XlraValidationException(businessException);
     }
@@ -239,8 +241,7 @@ public class UserServiceImpl implements UserService {
 
   private void validateEnableRequest(final User user) throws XlraValidationException {
     if (!UserStatusUtil.canEnableUser(user)) {
-      String businessException =
-          "Can not enable user " + user.getUserName() + " with status " + user.getUserStatus();
+      String businessException = "message.user.enabled.failed.detail";
       logger.error(businessException);
       throw new XlraValidationException(businessException);
     }

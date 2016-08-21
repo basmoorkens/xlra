@@ -160,9 +160,8 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
       throws RateFileException {
     try {
       rateFileDao.getFullRateFileForFilter(filter);
-      String businessException = "A ratefile already exists for this customer and these options.";
-      logger.error(businessException);
-      throw new RateFileException(businessException);
+      logger.error("A ratefile already exists for this customer and these options.");
+      throw new RateFileException("message.ratefile.create.failed.ratefile.exists");
     } catch (NoResultException e) {
       try {
         Customer customer = filter.getCustomer();
@@ -173,9 +172,8 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
         filter.setCustomer(customer);
         return copy;
       } catch (NoResultException nre2) {
-        String businessException = "Could not find a ratefile to copy from for this filter.";
-        logger.error(businessException);
-        throw new RateFileException(businessException);
+        logger.error("Could not find a ratefile to copy from for this filter.");
+        throw new RateFileException("message.ratefile.create.failed.base.file.not.exists");
       }
     }
   }

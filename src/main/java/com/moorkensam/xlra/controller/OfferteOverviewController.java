@@ -97,7 +97,8 @@ public class OfferteOverviewController {
         selectedOfferte = quotationService.getOfferteByOfferteKey(offerteKey);
         showDetailDialog();
       } catch (UnAuthorizedAccessException e) {
-        messageUtil.addErrorMessage("Unauthorized offerte access", e.getBusinessException());
+        messageUtil.addErrorMessage("message.offerte.unauthorized.access.title",
+            e.getBusinessException(), e.getExtraArguments().get(0));
       }
     }
   }
@@ -112,7 +113,8 @@ public class OfferteOverviewController {
       selectedOfferte = quotationService.getFullOfferteById(quotationResult.getId());
       showDetailDialog();
     } catch (UnAuthorizedAccessException e) {
-      messageUtil.addErrorMessage("Unauthorized offerte access", e.getBusinessException());
+      messageUtil.addErrorMessage("message.offerte.unauthorized.access.title",
+          e.getBusinessException(), e.getExtraArguments().get(0));
     }
   }
 
@@ -159,12 +161,13 @@ public class OfferteOverviewController {
     try {
       emailService.sendOfferteMail(selectedOfferte);
       selectedOfferte = quotationService.getFullOfferteById(selectedOfferte.getId());
-      messageUtil.addMessage("Email resend", "Successfully sent email");
+      messageUtil.addMessage("message.email.resend.title", "message.email.resend.detail");
     } catch (MessagingException e) {
-      messageUtil.addErrorMessage("Could not send email",
-          "Error sending email! Contact the system admin if this error persists.");
+      messageUtil.addErrorMessage("message.email.resend.failed.title",
+          "message.email.resend.failed.detail");
     } catch (UnAuthorizedAccessException e) {
-      messageUtil.addErrorMessage("Unauthorized offerte access", e.getBusinessException());
+      messageUtil.addErrorMessage("message.offerte.unauthorized.access.title",
+          e.getBusinessException(), e.getExtraArguments().get(0));
     }
   }
 

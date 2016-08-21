@@ -84,15 +84,15 @@ public class CustomerController {
     if (selectedCustomer.getId() == 0) {
       try {
         customerService.createCustomer(selectedCustomer);
-        messageUtil.addMessage("Customer added", "Customer " + selectedCustomer.getName()
-            + " was successfully added.");
+        messageUtil.addMessage("", "message.customer.created.detail", selectedCustomer.getName());
       } catch (XlraValidationException e) {
-        messageUtil.addErrorMessage("Invalid customer data", e.getBusinessException());
+        messageUtil.addErrorMessage("message.customer.invalid.data", e.getBusinessException(), e
+            .getExtraArguments().get(0));
       }
     } else {
       selectedCustomer = customerService.updateCustomer(selectedCustomer);
-      messageUtil.addMessage("Customer updated", "Customer " + selectedCustomer.getName()
-          + " was successfully updated.");
+      messageUtil.addMessage("message.customer.updated.title", "message.customer.updated.detail",
+          selectedCustomer.getName());
     }
   }
 
@@ -102,7 +102,8 @@ public class CustomerController {
    */
   public void deleteCustomer(Customer customer) {
     customerService.deleteCustomer(customer);
-    messageUtil.addMessage("Customer removed", "Successfully removed customer.");
+    messageUtil.addMessage("message.customer.deleted.title", "message.customer.deleted.detail",
+        customer.getName());
   }
 
   private void hideAddDialog() {

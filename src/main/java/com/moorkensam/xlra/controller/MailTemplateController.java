@@ -73,7 +73,8 @@ public class MailTemplateController {
    */
   public void saveActiveTemplate() {
     mailTemplateService.updateEmailTemplate(selectedTemplate);
-    messageUtil.addMessage("Saved successfull", "The mail template was successfully saved");
+    messageUtil.addMessage("message.email.template.update.title",
+        "message.email.template.update.detail");
     selectedTemplate = null;
     refreshTemplates();
   }

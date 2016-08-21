@@ -46,7 +46,8 @@ public class PermissionController {
    */
   public void onPermissionRowEdit(RowEditEvent event) {
     Permission permission = (Permission) event.getObject();
-    messageUtil.addMessage("Permission updated", "Updated " + permission.getKey() + " to ");
+    messageUtil.addMessage("message.permission.updated.title", "message.permission.updated.detail",
+        permission.getKey());
     rolePermissionService.updatePermission(permission);
     refreshPermissions();
   }
@@ -60,7 +61,8 @@ public class PermissionController {
    */
   public void saveNewPermission() {
     rolePermissionService.createPermission(newPermission);
-    messageUtil.addMessage("Permission created", "Created permission" + newPermission.getKey());
+    messageUtil.addMessage("message.permission.created.title", "message.permission.created.detail",
+        newPermission.getKey());
     newPermission = new Permission();
     refreshPermissions();
   }

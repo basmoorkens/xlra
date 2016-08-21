@@ -47,8 +47,8 @@ public class CountryController {
    */
   public void saveEditedCountry() {
     selectedCountry = countryService.updateCountry(selectedCountry);
-    messageUtil.addMessage("Country updated", "Country " + selectedCountry.getEnglishName()
-        + " was successfully");
+    messageUtil.addMessage("message.country.update.title", "message.country.update.detail",
+        selectedCountry.getEnglishName() + "");
     refreshCountries();
     hideAddDialog();
   }
@@ -61,8 +61,8 @@ public class CountryController {
   public void deleteCountry(Country country) {
     countryService.deleteCountry(country);
     refreshCountries();
-    messageUtil.addMessage("Country deleted",
-        "Successfully deleted the country " + country.getEnglishName());
+    messageUtil.addMessage("message.country.delete.title", "message.country.delete.detail",
+        country.getEnglishName() + "");
   }
 
   public void cancel() {

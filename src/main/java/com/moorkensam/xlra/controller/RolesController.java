@@ -65,12 +65,12 @@ public class RolesController {
     selectedRole.setPermissions(permissions.getTarget());
     if (selectedRole.getId() == 0) {
       roleService.createRole(selectedRole);
-      messageUtil.addMessage("Role created", "The role " + selectedRole.getName()
-          + " was successfully created.");
+      messageUtil.addMessage("message.role.created.title", "message.role.created.detail",
+          selectedRole.getName());
       setupNewRole();
     } else {
-      messageUtil.addMessage("Role updated", "The role " + selectedRole.getName()
-          + " was successfully updated.");
+      messageUtil.addMessage("message.role.updated.title", "message.role.updated.detail",
+          selectedRole.getName());
       roleService.updateRole(selectedRole);
     }
     refreshRoles();

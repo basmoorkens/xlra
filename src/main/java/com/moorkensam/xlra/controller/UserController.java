@@ -85,14 +85,15 @@ public class UserController {
         user.setPassword(newPassword);
       } else {
         if (!skippws) {
-          messageUtil.addErrorMessage("Passwords do not match",
-              "The new password and the retyped new password should be the same!");
+          messageUtil.addErrorMessage("message.user.profile.password.mismatch",
+              "message.user.profile.password.mismatch.detail");
           return;
         }
       }
     }
     user = userService.updateUser(user, !skippws);
-    messageUtil.addMessage("Profile updated", "Your profile was successfully updated.");
+    messageUtil.addMessage("message.user.profile.updated.title",
+        "message.user.profile.updated.detail");
   }
 
   public MessageUtil getMessageUtil() {

@@ -93,7 +93,7 @@ public class RaiseRatesController {
     if (validRaise()) {
       raiseRatesService.raiseRateFileRateLinesWithPercentage(rateFiles.getTarget(), percentage);
       hideAddDialog();
-      messageUtil.addMessage("Rates raised", "Succesfully raised rates for");
+      messageUtil.addMessage("message.rates.raise.title", "message.rates.raise.detail");
       resetState();
     } else {
       showAddDialog();
@@ -102,12 +102,13 @@ public class RaiseRatesController {
 
   private boolean validRaise() {
     if (rateFiles.getTarget() == null || rateFiles.getTarget().size() == 0) {
-      messageUtil.addErrorMessage("No rates selected", "Please select ratefiles to raise.");
+      messageUtil.addErrorMessage("message.rates.raise.no.rates.selected.title",
+          "message.rates.raise.no.rates.selected.detail");
       return false;
     }
     if (percentage == 0.00d) {
-      messageUtil.addErrorMessage("0.00 is an invalid percentage",
-          "A raise of 0.00 doesnt do anything.");
+      messageUtil.addErrorMessage("message.rates.raise.nul.percentage",
+          "message.rates.raise.nul.percentage.detail");
       return false;
     }
     return true;
@@ -119,7 +120,7 @@ public class RaiseRatesController {
   public void undoLatestRaiseRates() {
     raiseRatesService.undoLatestRatesRaise();
     refreshLogs();
-    messageUtil.addMessage("Rates raised", "Succesfully undid latest rates raise.");
+    messageUtil.addMessage("message.rates.raise.title", "message.rates.raise.undo.latest.detail");
   }
 
   public List<RateFile> getAllRateFiles() {

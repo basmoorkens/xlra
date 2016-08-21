@@ -105,19 +105,19 @@ public class TemplateParseServiceImpl implements TemplateParseService {
       template.process(dataModel, writer);
     } catch (TemplateNotFoundException e) {
       logger.error(e);
-      throw new TemplatingException("Template not found internaly", e);
+      throw new TemplatingException("message.template.not.found", e);
     } catch (MalformedTemplateNameException e) {
       logger.error(e);
-      throw new TemplatingException("Template malformated", e);
+      throw new TemplatingException("message.template.malformed", e);
     } catch (ParseException e) {
       logger.error(e);
-      throw new TemplatingException("Failed to parse template", e);
+      throw new TemplatingException("message.template.parse.failed", e);
     } catch (IOException e) {
       logger.error(e);
-      throw new TemplatingException("Could not write template", e);
+      throw new TemplatingException("message.template.write.failed", e);
     } catch (TemplateException e) {
       logger.error(e);
-      throw new TemplatingException("General templating exception", e);
+      throw new TemplatingException("message.template.general.exception", e);
     }
     return writer.toString();
   }
@@ -140,10 +140,10 @@ public class TemplateParseServiceImpl implements TemplateParseService {
       template.process(parameters, writer);
     } catch (IOException e) {
       logger.error(e);
-      throw new TemplatingException("Could not write template", e);
+      throw new TemplatingException("message.template.write.failed", e);
     } catch (TemplateException e) {
       logger.error(e);
-      throw new TemplatingException("General templating exception", e);
+      throw new TemplatingException("message.template.general.exception", e);
     }
     return writer.toString();
   }
@@ -166,10 +166,10 @@ public class TemplateParseServiceImpl implements TemplateParseService {
       template.process(dataModel, writer);
     } catch (IOException e) {
       logger.error(e);
-      throw new TemplatingException("Could not write template", e);
+      throw new TemplatingException("message.template.write.failed", e);
     } catch (TemplateException e) {
       logger.error(e);
-      throw new TemplatingException("General templating exception", e);
+      throw new TemplatingException("message.template.general.exception", e);
     }
 
     return writer.toString();
@@ -220,10 +220,10 @@ public class TemplateParseServiceImpl implements TemplateParseService {
       template.process(dataModel, writer);
     } catch (IOException e) {
       logger.error(e);
-      throw new TemplatingException("Could not write template", e);
+      throw new TemplatingException("message.template.write.failed", e);
     } catch (TemplateException e) {
       logger.error(e);
-      throw new TemplatingException("General templating exception", e);
+      throw new TemplatingException("message.template.general.exception", e);
     }
 
     return writer.toString();
@@ -235,16 +235,16 @@ public class TemplateParseServiceImpl implements TemplateParseService {
       return freemarkerConfiguration.getTemplate(templateName);
     } catch (TemplateNotFoundException e) {
       logger.error(e);
-      throw new TemplatingException("Template not found internaly", e);
+      throw new TemplatingException("message.template.not.found", e);
     } catch (MalformedTemplateNameException e) {
       logger.error(e);
-      throw new TemplatingException("Template malformated", e);
+      throw new TemplatingException("message.template.malformed", e);
     } catch (ParseException e) {
       logger.error(e);
-      throw new TemplatingException("Failed to parse template", e);
+      throw new TemplatingException("message.template.parse.failed", e);
     } catch (IOException e) {
       logger.error(e);
-      throw new TemplatingException("Could not write template", e);
+      throw new TemplatingException("message.template.write.failed", e);
     }
   }
 

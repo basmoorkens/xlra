@@ -122,10 +122,9 @@ public class DieselRateController {
 
   private void updateExistingDieselRate() {
     updateDieselRate(selectedDieselRate);
-    messageUtil.addMessage(
-        "Diesel rate updated",
-        "Updated diesel rate for " + selectedDieselRate.getInterval() + " to "
-            + selectedDieselRate.getSurchargePercentage());
+    messageUtil.addMessage("message.diesel.rate.updated.title",
+        "message.diesel.rate.updated.detail" + selectedDieselRate.getInterval() + "",
+        selectedDieselRate.getSurchargePercentage() + "");
     refreshDieselRates();
   }
 
@@ -133,12 +132,12 @@ public class DieselRateController {
     try {
       dieselService.createDieselRate(selectedDieselRate);
       refreshDieselRates();
-      messageUtil.addMessage("New diesel rate created",
-          "successfully created diesel rate for " + selectedDieselRate.getInterval()
-              + " with surcharge percentage " + selectedDieselRate.getSurchargePercentage());
+      messageUtil.addMessage("message.diesel.rate.create.title",
+          "message.diesel.rate.create.detail", selectedDieselRate.getInterval() + "",
+          selectedDieselRate.getSurchargePercentage() + "");
       selectedDieselRate = null;
     } catch (IntervalOverlapException exc) {
-      messageUtil.addErrorMessage("Illegal interval", exc.getBusinessException());
+      messageUtil.addErrorMessage("message.chf.illegal.interval.title", exc.getBusinessException());
       showAddDialog();
     }
   }
@@ -151,7 +150,8 @@ public class DieselRateController {
   public void deleteDieselRate(DieselRate rate) {
     dieselService.deleteDieselRate(rate);
     refreshDieselRates();
-    messageUtil.addMessage("Successfully deleted rate", "Sucessfully deleted diesel rate.");
+    messageUtil.addMessage("message.diesel.delete.title", "message.diesel.delete.detail", rate
+        .getInterval().toIntString());
   }
 
   /**
@@ -160,12 +160,11 @@ public class DieselRateController {
   public void updateCurrentDieselRate() {
     if (configuration.getCurrentDieselPrice() != getCurrentDieselValue()) {
       dieselService.updateCurrentDieselValue(getCurrentDieselValue());
-      messageUtil.addMessage("Current diesel price", "Updated current diesel price to "
-          + getCurrentDieselValue());
+      messageUtil.addMessage("message.current.diesel.price.title",
+          "message.current.diesel.price.detail" + getCurrentDieselValue());
       setupCurrentRates();
     } else {
-      messageUtil.addMessage("Current diesel price",
-          "The new price is the same as the old, not updating.");
+      messageUtil.addMessage("message.current.diesel.price.title", "message.price.same.as.old");
     }
   }
 

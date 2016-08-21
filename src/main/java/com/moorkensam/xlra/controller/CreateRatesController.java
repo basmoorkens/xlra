@@ -116,7 +116,7 @@ public class CreateRatesController {
       translationUtil.fillInTranslations(rateFile.getConditions());
       showRateLineEditor();
     } catch (RateFileException e) {
-      messageUtil.addErrorMessage("Could not create ratefile", e.getBusinessException());
+      messageUtil.addErrorMessage("message.ratefile.create.failed", e.getBusinessException());
     }
   }
 
@@ -160,12 +160,18 @@ public class CreateRatesController {
     collapseSummary = true;
   }
 
+  /**
+   * Launched when a rate cell is updated.
+   * 
+   * @param event The update event.
+   */
   public void onRateLineCellEdit(CellEditEvent event) {
     Object newValue = event.getNewValue();
     Object oldValue = event.getOldValue();
 
     if (newValue != null && !newValue.equals(oldValue)) {
-      messageUtil.addMessage("Rate updated", "Rate value updated to " + newValue);
+      messageUtil.addMessage("message.ratefile.update.title", "message.ratefile.update.detail",
+          newValue + "");
     }
   }
 
@@ -175,8 +181,8 @@ public class CreateRatesController {
    * @param condition The condition to delete.
    */
   public void deleteCondition(Condition condition) {
-    messageUtil.addMessage("condition removed", condition.getTranslatedKey()
-        + " was successfully removed.");
+    messageUtil.addMessage("message.ratefile.condition.removed",
+        "message.ratefile.condition.removed.detail", condition.getTranslatedKey());
     rateFile.getConditions().remove(condition);
     condition.setRateFile(null);
   }
@@ -261,7 +267,8 @@ public class CreateRatesController {
   public String saveNewRateFile() {
     markCustomerRateFile();
     rateFileService.createRateFile(rateFile);
-    messageUtil.addMessage("Rates created", "Succesfully created rates for " + rateFile.getName());
+    messageUtil.addMessage("message.ratefile.created.title", "message.ratefile.created.detail",
+        rateFile.getName());
     return "views/rate/admin/manageRates.xhtml";
   }
 
@@ -318,22 +325,24 @@ public class CreateRatesController {
   public void saveEditCondition() {
     if (selectedCondition.getConditionKey() != null) {
       if (editMode) {
-        messageUtil.addMessage("Condition updated",
-            "Updated " + selectedCondition.getTranslatedKey() + ".");
+        messageUtil.addMessage("message.ratefile.condition.updated.title",
+            "message.ratefile.condition.updated.detail", selectedCondition.getTranslatedKey());
       } else {
         addConditionToRateFile();
       }
     } else {
       showConditionDetailDialog();
-      messageUtil.addErrorMessage("Empty condition", "You can not save an empty condition.");
+      messageUtil.addErrorMessage("message.ratefile.condition.empty",
+          "message.ratefile.condition.empty.detail");
     }
 
   }
 
   private void addConditionToRateFile() {
     rateFile.addCondition(selectedCondition);
-    messageUtil.addMessage("Condition added",
-        "Added condition " + selectedCondition.getTranslatedKey());
+    messageUtil.addMessage("message.ratefile.condition.added",
+        "message.ratefile.condition.added.detail", selectedCondition.getTranslatedKey(),
+        rateFile.getName());
   }
 
   public List<Language> getLanguages() {

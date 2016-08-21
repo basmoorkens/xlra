@@ -45,18 +45,16 @@ public class RateUtil {
   public static void validateRateInterval(AbstractRate rate,
       List<? extends AbstractRate> existingRates) throws IntervalOverlapException {
     if (rate.getInterval().getStart() >= rate.getInterval().getEnd()) {
-      throw new IntervalOverlapException(
-          "The start value of the rate should be smaller then the end value.");
+      throw new IntervalOverlapException("message.invalid.interval.start.smaller.end");
     }
     for (AbstractRate existing : existingRates) {
       if (rate.getInterval().getStart() >= existing.getInterval().getStart()
           && rate.getInterval().getStart() < existing.getInterval().getEnd()) {
-        throw new IntervalOverlapException(
-            "The start value of this rate is already in another rate.");
+        throw new IntervalOverlapException("message.invalid.interval.start.already.in.other");
       }
       if (rate.getInterval().getEnd() >= existing.getInterval().getStart()
           && rate.getInterval().getEnd() < existing.getInterval().getEnd()) {
-        throw new IntervalOverlapException("The end value of the rate is already in another rate.");
+        throw new IntervalOverlapException("message.invalid.interval.end.already.in.other");
       }
     }
   }

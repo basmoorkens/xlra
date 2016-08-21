@@ -176,10 +176,10 @@ public class QuotationServiceImpl implements QuotationService {
       offerte.setQuotationResultStatus(QuotationResultStatus.PROCESSED_OPTIONS);
     } catch (TemplatingException e) {
       logger.error("Failed to parse Template" + e.getMessage());
-      throw new RateFileException("Failed to parse email template.");
+      throw new RateFileException("message.email.template.parse");
     } catch (FileNotFoundException | DocumentException e) {
       logger.error("Failed to create PDF." + e.getMessage());
-      throw new RateFileException("Failed to generate pdf");
+      throw new RateFileException("message.pdf.generate.failed");
     }
     return offerte;
   }
@@ -222,7 +222,7 @@ public class QuotationServiceImpl implements QuotationService {
       getEmailService().sendOfferteMail(result);
     } catch (MessagingException e) {
       logger.error("Failed to send offerte email");
-      throw new RateFileException("Failed to send email");
+      throw new RateFileException("message.email.sent.failed");
     } catch (PdfException e) {
       throw new RateFileException(e.getBusinessException());
     }

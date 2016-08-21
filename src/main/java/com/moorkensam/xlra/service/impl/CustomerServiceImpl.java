@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.primefaces.model.SortOrder;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -43,8 +44,10 @@ public class CustomerServiceImpl implements CustomerService {
       customerDao.getCustomerByName(customer.getName());
       logger.info("Validate customer failed, customer with name " + customer.getName()
           + " already exists.");
-      throw new XlraValidationException("Customer with name " + customer.getName()
-          + " already exists.");
+      XlraValidationException exc =
+          new XlraValidationException("message.customer.create.name.already.exists");
+      exc.setExtraArguments(Arrays.asList(customer.getName()));
+      throw exc;
     } catch (NoResultException nre) {
       // nothing needed here
     }

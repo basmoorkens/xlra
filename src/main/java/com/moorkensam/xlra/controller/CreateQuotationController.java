@@ -137,11 +137,13 @@ public class CreateQuotationController {
     try {
       getQuotationQuery().setCustomer(
           getCustomerService().createCustomerAndReturnManaged(customerToAdd));
-      messageUtil.addMessage("Customer created", "Created customer " + customerToAdd.getName());
+      messageUtil.addMessage("message.customer.created.title", "message.customer.created.detail",
+          customerToAdd.getName());
       renderAddCustomerGrid = false;
       customerToAdd = new Customer();
     } catch (XlraValidationException exc) {
-      messageUtil.addErrorMessage("Invalid customer data", exc.getBusinessException());
+      messageUtil.addErrorMessage("message.customer.invalid.data", exc.getBusinessException(), exc
+          .getExtraArguments().get(0));
     }
   }
 
@@ -209,8 +211,8 @@ public class CreateQuotationController {
         RateFileException re = (RateFileException) e.getCausedByException();
         showRateFileError(re);
       } else {
-        messageUtil.addErrorMessage("Unknown exception",
-            "An unexpected exception occurred, please contact the system admin.");
+        messageUtil
+            .addErrorMessage("message.unknown.exception", "message.unknown.exception.detail");
       }
     }
   }
@@ -277,8 +279,8 @@ public class CreateQuotationController {
       QuotationUtil.getInstance().setCustomerContactsForOfferte(customerContacts.getTarget(),
           quotationResult);
       quotationService.submitQuotationResult(quotationResult);
-      messageUtil.addMessage("Offerte successfully send", "The offerte was successfully send to "
-          + quotationResult.getEmailResult().getRecipientsAsString());
+      messageUtil.addMessage("message.offerte.sent.title", "message.offerte.sent.detail",
+          quotationResult.getEmailResult().getRecipientsAsString());
       showResultPanel();
     } catch (RateFileException re2) {
       showRateFileError(re2);
@@ -287,15 +289,15 @@ public class CreateQuotationController {
         RateFileException re = (RateFileException) e.getCausedByException();
         showRateFileError(re);
       } else {
-        messageUtil.addErrorMessage("Unknown exception",
-            "An unexpected exception occurred, please contact the system admin.");
+        messageUtil
+            .addErrorMessage("message.unknown.exception", "message.unknown.exception.detail");
       }
     }
   }
 
   private void showRateFileError(RateFileException re) {
-    messageUtil.addErrorMessage("Unexpected error whilst processing quotation request.",
-        re.getBusinessException());
+    messageUtil
+        .addErrorMessage("message.processing.unexecptected.error", re.getBusinessException());
   }
 
   private void setupFiltersFromExistingCustomer() {

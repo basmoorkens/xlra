@@ -104,12 +104,11 @@ public class ManageUsersController {
    * 
    * @param user The user to delete.
    */
-  public void deleteUser(User user) {
+  public void deleteUser(final User user) {
     userService.deleteUser(user);
-    messageUtil.addMessage("User deleted", "The user " + user.getName()
-        + " was successfully deleted.");
+    messageUtil.addMessage("message.user.deleted.title", "message.user.deleted.detail",
+        user.getName() + "");
     refreshUsers();
-
   }
 
   /**
@@ -119,18 +118,16 @@ public class ManageUsersController {
     if (getCanResetPassword()) {
       try {
         userService.resetUserPassword(selectedUser);
-        messageUtil.addMessage("Password reset",
-            "Password reset email was sent to " + selectedUser.getEmail());
+        messageUtil.addMessage("message.user.password.reset.title",
+            "message.user.password.reset.detail", selectedUser.getEmail() + "");
         refreshUsers();
       } catch (MessagingException e) {
-        messageUtil.addErrorMessage(
-            "Failed to send email to user",
-            "There was a problem sending out the password reset email to "
-                + selectedUser.getUserName()
-                + ". Please try again or of this errors persists contact the system "
-                + "administrator.");
+        messageUtil.addErrorMessage("message.user.password.reset.failed.email.title",
+            "message.user.password.reset.failed.email.detail", selectedUser.getUserName());
       } catch (XlraValidationException e2) {
-        messageUtil.addErrorMessage("Error resetting user password", e2.getBusinessException());
+        messageUtil.addErrorMessage("message.user.password.reset.error.title", e2
+            .getBusinessException(), selectedUser.getUserName(), selectedUser.getUserStatus()
+            .toString());
       }
     }
   }
@@ -143,10 +140,12 @@ public class ManageUsersController {
   public void enableUser(User user) {
     try {
       userService.enableUser(user);
-      messageUtil.addMessage("User enabled", "Enabled user " + user.getUserName());
+      messageUtil.addMessage("message.user.enabled.title", "message.user.enabled.detail",
+          user.getUserName());
       refreshUsers();
     } catch (XlraValidationException e) {
-      messageUtil.addErrorMessage("Can not enable user", e.getBusinessException());
+      messageUtil.addErrorMessage("message.user.enabled.failed.title", e.getBusinessException(),
+          user.getUserName(), user.getUserStatus().toString());
     }
   }
 
@@ -158,10 +157,12 @@ public class ManageUsersController {
   public void disableUser(User user) {
     try {
       userService.disableUser(user);
-      messageUtil.addMessage("User disabled", "Disabled user " + user.getUserName());
+      messageUtil.addMessage("message.user.disabled.title", "message.user.disabled.detail",
+          user.getUserName());
       refreshUsers();
     } catch (XlraValidationException e) {
-      messageUtil.addErrorMessage("Can not disable user", e.getBusinessException());
+      messageUtil.addErrorMessage("message.user.disabled.failed.title", e.getBusinessException(),
+          user.getUserName(), user.getUserStatus().toString());
     }
   }
 
@@ -241,19 +242,20 @@ public class ManageUsersController {
   private void createUser() {
     try {
       userService.createUser(selectedUser);
-      messageUtil.addMessage("User created", "The user " + selectedUser.getUserName()
-          + " was successfully created.");
+      messageUtil.addMessage("message.user.created.title", "message.user.created.detail",
+          selectedUser.getUserName());
       refreshUsers();
       hideAddDialog();
     } catch (UserException e) {
       showAddDialog();
-      messageUtil.addErrorMessage("Error creating user", e.getBusinessException());
+      messageUtil.addErrorMessage("message.user.created.error.title", e.getBusinessException(), e
+          .getExtraArguments().get(0));
     }
   }
 
   private void updateUser() {
-    messageUtil.addMessage("User updated", "The user " + selectedUser.getUserName()
-        + " was successfully updated.");
+    messageUtil.addMessage("message.user.updated.title", "message.user.updated.detail",
+        selectedUser.getUserName());
     userService.updateUser(selectedUser, false);
     refreshUsers();
     hideAddDialog();
