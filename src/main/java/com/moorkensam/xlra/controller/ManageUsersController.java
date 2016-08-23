@@ -256,7 +256,7 @@ public class ManageUsersController {
   private void updateUser() {
     messageUtil.addMessage("message.user.updated.title", "message.user.updated.detail",
         selectedUser.getUserName());
-    userService.updateUser(selectedUser, false);
+    userService.updateUser(selectedUser);
     refreshUsers();
     hideAddDialog();
   }

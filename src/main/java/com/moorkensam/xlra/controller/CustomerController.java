@@ -130,6 +130,7 @@ public class CustomerController {
     hideAddDialog();
     detailGridTitle = "Details selected customer";
     selectedCustomer = new Customer();
+    selectedContact = new CustomerContact();
   }
 
   public List<Language> getAllLanguages() {

@@ -14,7 +14,9 @@ public interface UserService {
 
   public void createUser(User user) throws UserException;
 
-  public User updateUser(User user, boolean updatePw);
+  public User updateUser(User user);
+
+  public User updateUserPassword(User user);
 
   public void deleteUser(User user);
 

@@ -39,6 +39,41 @@
 						<p:inputText style="width:100%;"
 							value="#{userController.user.name}" />
 
+						<h:outputText value="#{msg['userprofile.locale']}" />
+						<p:selectOneMenu value="#{userController.languageForUser}"
+							style="width:100%;">
+							<f:selectItems value="#{userController.supportedLanguages}"
+								var="language" itemValue="#{language}"
+								itemLabel="#{language.description}" />
+						</p:selectOneMenu>
+					</p:panelGrid>
+				</p:panel>
+
+				<p:panel style="margin-top:20px;">
+					<p:commandButton
+						actionListener="#{userController.showPasswordDialog}"
+						immediate="true" update=":passwordForm" styleClass="navButton"
+						value="#{msg['user.change.password.title']}"
+						style="margin-right:20px;" id="newPwButton" />
+					<p:tooltip id="newPwTip" for="newPwButton"
+						value="#{msg['userprofile.new.password.tooltip']}" />
+					<p:commandButton value="#{msg['userprofile.save.edited.profile']}"
+						id="saveButton" styleClass="navButton"
+						actionListener="#{userController.saveUser}" update=":userForm" />
+					<p:tooltip id="saveTip" for="saveButton"
+						value="#{msg['userprofile.save.tooltip']}" />
+				</p:panel>
+			</p:panel>
+		</h:form>
+
+		<h:form id="passwordForm">
+			<p:dialog header="#{msg['user.change.password.title']}"
+				widgetVar="changePasswordDialog" height="280px" width="90%"
+				dynamic="true">
+				<p:growl showDetail="true" id="messages" sticky="false" />
+
+				<p:panel title="#{msg['user.change.password.new.password']}">
+					<p:panelGrid columns="2" style="width:100%;">
 						<h:outputText value="#{msg['userprofile.password.new']}" />
 						<p:password style="width:100%;"
 							value="#{userController.newPassword}" />
@@ -50,13 +85,15 @@
 				</p:panel>
 
 				<p:panel style="margin-top:20px;">
-					<p:commandButton value="#{msg['userprofile.save.edited.profile']}"
-						id="saveButton" styleClass="navButton"
-						actionListener="#{userController.saveUser}" update=":userForm" />
-					<p:tooltip id="saveTip" for="saveButton"
-						value="#{msg['userprofile.save.tooltip']}" />
+					<p:commandButton value="#{msg['button.cancel']}"
+						style="margin-right:20px;" immediate="true" id="cancelButton"
+						styleClass="navButton" />
+					<p:commandButton value="#{msg['button.save']}" id="saveButton"
+						styleClass="navButton"
+						actionListener="#{userController.savePassword}"
+						update=":userForm :passwordForm" />
 				</p:panel>
-			</p:panel>
+			</p:dialog>
 		</h:form>
 	</ui:define>
 </ui:composition>

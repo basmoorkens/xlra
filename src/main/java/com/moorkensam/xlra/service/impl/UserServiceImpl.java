@@ -1,6 +1,5 @@
 package com.moorkensam.xlra.service.impl;
 
-import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.dao.LogDao;
 import com.moorkensam.xlra.dao.UserDao;
 import com.moorkensam.xlra.model.error.UserException;
@@ -22,7 +21,6 @@ import org.apache.logging.log4j.Logger;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
@@ -113,10 +111,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public User updateUser(final User user, boolean updatedPw) {
-    if (updatedPw) {
-      user.setPassword(PasswordUtil.makePasswordHash(user.getPassword()));
-    }
+  public User updateUser(final User user) {
     return getUserDao().updateUser(user);
   }
 
@@ -221,7 +216,7 @@ public class UserServiceImpl implements UserService {
   public void disableUser(final User user) throws XlraValidationException {
     validateDisableRequest(user);
     user.setUserStatus(UserStatus.DISABLED);
-    updateUser(user, false);
+    updateUser(user);
   }
 
   private void validateDisableRequest(final User user) throws XlraValidationException {
@@ -236,7 +231,7 @@ public class UserServiceImpl implements UserService {
   public void enableUser(final User user) throws XlraValidationException {
     validateEnableRequest(user);
     user.setUserStatus(UserStatus.IN_OPERATION);
-    updateUser(user, false);
+    updateUser(user);
   }
 
   private void validateEnableRequest(final User user) throws XlraValidationException {
@@ -258,5 +253,11 @@ public class UserServiceImpl implements UserService {
 
   public void setLogRecordFactoryService(LogRecordFactoryService logRecordFactoryService) {
     this.logRecordFactoryService = logRecordFactoryService;
+  }
+
+  @Override
+  public User updateUserPassword(User user) {
+    user.setPassword(PasswordUtil.makePasswordHash(user.getPassword()));
+    return getUserDao().updateUser(user);
   }
 }

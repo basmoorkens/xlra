@@ -51,7 +51,14 @@ public class MessageUtil {
     FacesContext.getCurrentInstance().addMessage(null, message);
   }
 
-  private String lookupI8nStringAndInjectParams(final String key, final Object... params) {
+  /**
+   * Lookup a key and get the translation for the correct locale.
+   * 
+   * @param key The key to lookup
+   * @param params Arguments to inject
+   * @return The translated value.
+   */
+  public String lookupI8nStringAndInjectParams(final String key, final Object... params) {
     String unformattedString = messageBundle.getString(key);
     if (params != null) {
       String formattedResult = MessageFormat.format(unformattedString, params);

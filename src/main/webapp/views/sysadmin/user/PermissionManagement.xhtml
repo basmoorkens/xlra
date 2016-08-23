@@ -61,9 +61,9 @@
 			</p:panel>
 		</h:form>
 
-		<p:dialog header="#{msg['permissionmanagement.create']}"
-			widgetVar="addPermissionDialog" height="280px" width="90%"
-			dynamic="true">
+		<p:dialog header="#{msg['permissionmanagement.create']}" modal="true"
+			appendTo="@(body)" widgetVar="addPermissionDialog" height="280px"
+			width="90%" dynamic="true">
 			<p:growl showDetail="true" id="messages" sticky="false" />
 			<h:form id="addPermissionsForm">
 

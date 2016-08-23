@@ -25,6 +25,13 @@ public class UserSessionServiceImpl implements UserSessionService {
 
   @PostConstruct
   public void initialize() {
+    refreshUser();
+  }
+
+  /**
+   * Refresh the user. This can be called if the entity in memory is suspected to be dirty.
+   */
+  public void refreshUser() {
     Principal callerPrincipal = sessionContext.getCallerPrincipal();
     loggedInUser = userService.getUserByUserName(callerPrincipal.getName());
   }

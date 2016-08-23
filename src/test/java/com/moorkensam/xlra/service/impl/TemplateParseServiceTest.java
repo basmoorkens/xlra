@@ -4,12 +4,14 @@ import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Address;
 import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.TemplatingException;
+import com.moorkensam.xlra.model.generator.UserGenerator;
 import com.moorkensam.xlra.model.offerte.PriceCalculation;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Kind;
 import com.moorkensam.xlra.model.rate.Measurement;
+import com.moorkensam.xlra.model.security.TokenInfo;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.util.ConfigurationLoader;
@@ -48,7 +50,7 @@ public class TemplateParseServiceTest extends UnitilsJUnit4 {
 
   @Test
   public void testParseUSerCreatedTemplate() throws TemplatingException {
-    User user = new User();
+    User user = UserGenerator.getStandardUser();
     user.setFirstName("bas");
     user.setName("moorkens");
     user.setUserName("bmoork");
@@ -123,12 +125,11 @@ public class TemplateParseServiceTest extends UnitilsJUnit4 {
 
   @Test
   public void testParseUserResetPasswordEmail() throws TemplatingException {
-    User user = new User();
+    User user = UserGenerator.getStandardUser();
     user.setFirstName("bas");
-    user.setName("mo");
-    user.setUserName("bmo");
+    user.setName("moorkens");
     String result = templateEngine.parseUserResetPasswordEmail(user);
-    Assert.assertTrue(result.contains("bas mo"));
+    Assert.assertTrue(result.contains("bas moorkens"));
   }
 
 }

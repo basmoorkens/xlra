@@ -54,7 +54,10 @@ public class MailTemplateController {
    */
   public void setupPageForEdit(MailTemplate mailTemplate) {
     selectedTemplate = mailTemplate;
-    popupHeader = "Edit " + mailTemplate.getLanguage().getDescription() + " template";
+    popupHeader =
+        "Edit "
+            + messageUtil.lookupI8nStringAndInjectParams(mailTemplate.getLanguage()
+                .getDescription()) + " template";
     showEditDialog();
   }
 

@@ -1,5 +1,7 @@
 package com.moorkensam.xlra.model.generator;
 
+import com.moorkensam.xlra.model.configuration.Language;
+import com.moorkensam.xlra.model.security.TokenInfo;
 import com.moorkensam.xlra.model.security.User;
 
 public class UserGenerator {
@@ -21,6 +23,8 @@ public class UserGenerator {
     user.setUserName(STANDARD_USERNAME);
     user.setFirstName(FIRST_NAME);
     user.setName(STANDARD_LAST_NAME);
+    user.setTokenInfo(new TokenInfo());
+    user.setLanguage(Language.EN);
     return user;
   }
 
