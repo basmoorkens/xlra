@@ -3,14 +3,11 @@ package com.moorkensam.xlra.model.security;
 import com.moorkensam.xlra.model.BaseEntity;
 import com.moorkensam.xlra.model.Person;
 import com.moorkensam.xlra.model.configuration.Language;
-import com.moorkensam.xlra.service.util.UserUtil;
 
 import org.hibernate.annotations.BatchSize;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import javax.persistence.Column;

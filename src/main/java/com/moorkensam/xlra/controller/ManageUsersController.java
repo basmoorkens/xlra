@@ -4,7 +4,10 @@ import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.error.UserException;
 import com.moorkensam.xlra.model.error.XlraValidationException;
 import com.moorkensam.xlra.model.security.Role;
+import com.moorkensam.xlra.model.security.TokenInfo;
 import com.moorkensam.xlra.model.security.User;
+import com.moorkensam.xlra.model.security.UserStatus;
+import com.moorkensam.xlra.service.LocaleService;
 import com.moorkensam.xlra.service.RolePermissionService;
 import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.UserSessionService;
@@ -38,6 +41,9 @@ public class ManageUsersController {
 
   @Inject
   private UserSessionService userSessionService;
+
+  @Inject
+  private LocaleService localeService;
 
   @ManagedProperty("#{msg}")
   private ResourceBundle messageBundle;
@@ -170,10 +176,24 @@ public class ManageUsersController {
    * Sets up a new user.
    */
   public void setupNewUser() {
-    selectedUser = new User();
+    selectedUser = getNewUser();
     selectUserForEdit(selectedUser);
     editMode = false;
     showAddDialog();
+  }
+
+  /**
+   * Create a empty new user with preloaded defaults.
+   * 
+   * @return The created user.
+   */
+  private User getNewUser() {
+    User user = new User();
+    user.setTokenInfo(new TokenInfo());
+    user.setUserStatus(UserStatus.FIRST_TIME_LOGIN);
+    user.setRoles(new ArrayList<Role>());
+    user.setLanguage(localeService.getDefaultUserLanguage());
+    return user;
   }
 
   /**
@@ -357,5 +377,13 @@ public class ManageUsersController {
 
   public void setMessageUtil(MessageUtil messageUtil) {
     this.messageUtil = messageUtil;
+  }
+
+  public LocaleService getLocaleService() {
+    return localeService;
+  }
+
+  public void setLocaleService(LocaleService localeService) {
+    this.localeService = localeService;
   }
 }

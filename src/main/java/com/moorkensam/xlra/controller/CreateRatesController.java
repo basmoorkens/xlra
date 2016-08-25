@@ -44,6 +44,9 @@ public class CreateRatesController {
   @Inject
   private CountryService countryService;
 
+  @ManagedProperty("#{localeController}")
+  private LocaleController localeController;
+
   @ManagedProperty("#{msg}")
   private ResourceBundle messageBundle;
 
@@ -99,8 +102,8 @@ public class CreateRatesController {
     setRateFile(new RateFile());
     countries = countryService.getAllCountries();
     fullCustomers = customerService.getAllFullCustomers();
-    measurements = Arrays.asList(Measurement.values());
-    kindOfRates = Arrays.asList(Kind.values());
+    measurements = getLocaleController().getMeasurements();
+    kindOfRates = getLocaleController().getKinds();
     conditionFactory = new ConditionFactory();
     translationUtil = new TranslationUtil();
   }
@@ -471,6 +474,14 @@ public class CreateRatesController {
 
   public void setMessageUtil(MessageUtil messageUtil) {
     this.messageUtil = messageUtil;
+  }
+
+  public LocaleController getLocaleController() {
+    return localeController;
+  }
+
+  public void setLocaleController(LocaleController localeController) {
+    this.localeController = localeController;
   }
 
 }

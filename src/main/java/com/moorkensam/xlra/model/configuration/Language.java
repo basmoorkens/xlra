@@ -1,7 +1,9 @@
 package com.moorkensam.xlra.model.configuration;
 
+import com.moorkensam.xlra.model.rate.I8nEnum;
 
-public enum Language {
+
+public enum Language implements I8nEnum {
 
   NL("message.language.nl"), EN("message.language.en"), FR("message.language.fr"), DE(
       "message.language.de");

@@ -25,7 +25,9 @@
 					converter="#{countryConverter}" required="true"
 					requiredMessage="#{msg['message.country.required']}"
 					value="#{createQuotationController.quotationQuery.country}">
-					<f:selectItems value="#{createQuotationController.allCountries}" />
+					<f:selectItems value="#{createQuotationController.allCountries}"
+						var="country" itemLabel="#{country.i8nCountryName}"
+						itemValue="#{country}" />
 				</p:selectOneMenu>
 
 				<h:outputText value="#{msg['label.measurement']}:" />
@@ -33,21 +35,25 @@
 					id="measurementSelect"
 					requiredMessage="#{msg['message.measurement.required']}"
 					value="#{createQuotationController.quotationQuery.measurement}">
-					<f:selectItems value="#{createQuotationController.allMeasurements}" />
+					<f:selectItems value="#{createQuotationController.allMeasurements}"
+						var="measurement" itemLabel="#{measurement.description}"
+						itemValue="#{measurement}" />
 				</p:selectOneMenu>
 
 				<h:outputText value="#{msg['label.type']}:" />
 				<p:selectOneMenu style="width:100%;" required="true"
 					requiredMessage="#{msg['message.type.required']}" id="typeSelect"
 					value="#{createQuotationController.quotationQuery.kindOfRate}">
-					<f:selectItems value="#{createQuotationController.allKinds}" />
+					<f:selectItems value="#{createQuotationController.allKinds}"
+						var="type" itemLabel="#{type.description}" itemValue="#{type}" />
 				</p:selectOneMenu>
 
 				<h:outputText value="#{msg['label.language']}:" />
 				<p:selectOneMenu style="width:100%;" required="false"
 					id="languageSelect"
 					value="#{createQuotationController.quotationQuery.language}">
-					<f:selectItems value="#{createQuotationController.allLanguages}" />
+					<f:selectItems value="#{createQuotationController.allLanguages}"
+						var="lang" itemLabel="#{lang.description}" itemValue="#{lang}" />
 				</p:selectOneMenu>
 
 				<h:outputText value="#{msg['label.quantity']}:" />

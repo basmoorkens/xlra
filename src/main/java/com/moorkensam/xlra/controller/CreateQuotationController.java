@@ -21,6 +21,7 @@ import com.moorkensam.xlra.service.QuotationService;
 import com.moorkensam.xlra.service.impl.FileServiceImpl;
 import com.moorkensam.xlra.service.util.CustomerUtil;
 import com.moorkensam.xlra.service.util.FileUtil;
+import com.moorkensam.xlra.service.util.LocaleUtil;
 import com.moorkensam.xlra.service.util.QuotationUtil;
 import com.moorkensam.xlra.service.util.TranslationUtil;
 
@@ -54,8 +55,13 @@ public class CreateQuotationController {
   @Inject
   private CountryService countryService;
 
+  @ManagedProperty("#{localeController}")
+  private LocaleController localeController;
+
   @ManagedProperty("#{msg}")
   private ResourceBundle messageBundle;
+
+  private LocaleUtil localeUtil;
 
   private MessageUtil messageUtil;
 
@@ -93,6 +99,7 @@ public class CreateQuotationController {
     translationUtil = new TranslationUtil();
     showCustomerPanel();
     customerContacts = new DualListModel<CustomerContact>();
+    localeUtil = new LocaleUtil();
   }
 
   public void resetPage() {
@@ -148,7 +155,9 @@ public class CreateQuotationController {
   }
 
   public List<Language> getAllLanguages() {
-    return Arrays.asList(Language.values());
+    List<Language> supportedLanguages = localeController.getSupportedLanguages();
+    localeUtil.fillInLanguageTranslations(supportedLanguages, getMessageBundle());
+    return supportedLanguages;
   }
 
   /**
@@ -315,12 +324,26 @@ public class CreateQuotationController {
     return customers;
   }
 
+  /**
+   * Get all the measurements and fill in the translation for the frontend.
+   * 
+   * @return List of translated measurements
+   */
   public List<Measurement> getAllMeasurements() {
-    return Arrays.asList(Measurement.values());
+    List<Measurement> measurements = Arrays.asList(Measurement.values());
+    localeUtil.fillInMeasurementTranslations(measurements, messageBundle);
+    return measurements;
   }
 
+  /**
+   * Get all the rateskinds and fill in the translation for the frontend
+   * 
+   * @return The list of translated ratekinds.
+   */
   public List<Kind> getAllKinds() {
-    return Arrays.asList(Kind.values());
+    List<Kind> kinds = Arrays.asList(Kind.values());
+    localeUtil.fillInRateKindTranslations(kinds, messageBundle);
+    return kinds;
   }
 
   public Customer getCustomerToAdd() {
@@ -340,6 +363,7 @@ public class CreateQuotationController {
   }
 
   public List<Country> getAllCountries() {
+    localeUtil.fillInCountryi8nNameByLanguage(allCountries, localeController.getLanguage());
     return allCountries;
   }
 
@@ -387,8 +411,15 @@ public class CreateQuotationController {
     controllerDelegate.setCollapseFiltersPanel(collapseFiltersPanel);
   }
 
+  /**
+   * Get all the transporttypes translated in the correct language.
+   * 
+   * @return The list of transporttypes.
+   */
   public List<TransportType> getAllTransportTypes() {
-    return Arrays.asList(TransportType.values());
+    List<TransportType> transportTypes = Arrays.asList(TransportType.values());
+    localeUtil.fillInTransportTypeTranslations(transportTypes, messageBundle);
+    return transportTypes;
   }
 
   public boolean isCollapseResultPanel() {
@@ -477,5 +508,21 @@ public class CreateQuotationController {
 
   public void setMessageBundle(ResourceBundle messageBundle) {
     this.messageBundle = messageBundle;
+  }
+
+  public LocaleController getLocaleController() {
+    return localeController;
+  }
+
+  public void setLocaleController(LocaleController localeController) {
+    this.localeController = localeController;
+  }
+
+  public LocaleUtil getLocaleUtil() {
+    return localeUtil;
+  }
+
+  public void setLocaleUtil(LocaleUtil localeUtil) {
+    this.localeUtil = localeUtil;
   }
 }

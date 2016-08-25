@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.controller;
 
+
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Kind;
@@ -17,9 +18,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 
@@ -33,15 +36,21 @@ public class ExcelUploadController {
   @Inject
   private CountryService countryService;
 
+  @ManagedProperty("#{localeController}")
+  private LocaleController localeController;
+
+  @ManagedProperty("#{msg}")
+  private ResourceBundle messageBundle;
+
   private List<Country> countries;
 
   private RateFile ratefile;
 
   private FileUploadEvent event;
 
-  private List<Measurement> measurements = Arrays.asList(Measurement.values());
+  private List<Measurement> measurements;
 
-  private List<Kind> kindOfRates = Arrays.asList(Kind.values());
+  private List<Kind> kindOfRates;
 
   private boolean showUpload = false;
 
@@ -53,6 +62,8 @@ public class ExcelUploadController {
     ratefile = new RateFile();
     ratefile.setTransportType(TransportType.EXPORT);
     setCountries(countryService.getAllCountries());
+    measurements = getLocaleController().getMeasurements();
+    kindOfRates = getLocaleController().getKinds();
   }
 
   /**
@@ -127,6 +138,22 @@ public class ExcelUploadController {
 
   public void setEvent(FileUploadEvent event) {
     this.event = event;
+  }
+
+  public ResourceBundle getMessageBundle() {
+    return messageBundle;
+  }
+
+  public void setMessageBundle(ResourceBundle messageBundle) {
+    this.messageBundle = messageBundle;
+  }
+
+  public LocaleController getLocaleController() {
+    return localeController;
+  }
+
+  public void setLocaleController(LocaleController localeController) {
+    this.localeController = localeController;
   }
 
 }

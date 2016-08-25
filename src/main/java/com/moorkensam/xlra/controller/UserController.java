@@ -5,10 +5,10 @@ import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.UserSessionService;
-import com.moorkensam.xlra.service.util.UserUtil;
 
 import org.primefaces.context.RequestContext;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -16,6 +16,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
 @ManagedBean
@@ -88,7 +89,7 @@ public class UserController {
   }
 
   public List<Language> getSupportedLanguages() {
-    return UserUtil.getInstance(messageBundle).getSupportedLanguages();
+    return localeController.getSupportedLanguages();
   }
 
   /**
@@ -101,10 +102,14 @@ public class UserController {
       updatedLocale = true;
     }
     user = userService.updateUser(user);
-    messageUtil.addMessage("message.user.profile.updated.title",
-        "message.user.profile.updated.detail");
+
     if (updatedLocale) {
       notifyLocaleController();
+      messageUtil.addMessage("message.user.profile.updated.title",
+          "message.user.profile.updated.detail.locale");
+    } else {
+      messageUtil.addMessage("message.user.profile.updated.title",
+          "message.user.profile.updated.detail");
     }
   }
 
@@ -129,6 +134,21 @@ public class UserController {
     } else {
       showPasswordDialog();
     }
+  }
+
+  /**
+   * Redirect to the current page to force refresh the entire page so the menu and header gets
+   * refreshed aswell.
+   * 
+   * @throws IOException
+   */
+  public void refreshFullPage() throws IOException {
+    FacesContext
+        .getCurrentInstance()
+        .getExternalContext()
+        .redirect(
+            FacesContext.getCurrentInstance().getExternalContext().getApplicationContextPath()
+                + "/views/user/editProfile.xhtml");
   }
 
   private boolean validatePasswords() {

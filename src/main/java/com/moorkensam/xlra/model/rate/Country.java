@@ -23,6 +23,7 @@ import javax.persistence.MapKeyEnumerated;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Cacheable
@@ -44,6 +45,9 @@ public class Country extends BaseEntity {
 
   @Enumerated(EnumType.STRING)
   private ZoneType zoneType;
+
+  @Transient
+  private String i8nCountryName;
 
   public String getShortName() {
     return shortName;
@@ -138,6 +142,14 @@ public class Country extends BaseEntity {
 
   public String getNameForLanguage(Language language) {
     return names.get(language);
+  }
+
+  public String getI8nCountryName() {
+    return i8nCountryName;
+  }
+
+  public void setI8nCountryName(String i8nCountryName) {
+    this.i8nCountryName = i8nCountryName;
   }
 
 }
