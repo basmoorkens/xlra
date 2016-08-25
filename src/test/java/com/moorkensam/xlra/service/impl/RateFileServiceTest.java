@@ -165,6 +165,7 @@ public class RateFileServiceTest extends UnitilsJUnit4 {
     filter.getCountry().setNames(new HashMap<Language, String>());
     filter.getCountry().setEnglishName("be");
     filter.setMeasurement(Measurement.KILO);
+    Measurement.KILO.setDescription("Kilo");
     filter.setCustomer(customer);
     EasyMock.expect(rfDao.getFullRateFileForFilter(filter)).andThrow(new NoResultException());
     EasyMock.expect(rfDao.getFullRateFileForFilter(EasyMock.isA(RateFileSearchFilter.class)))

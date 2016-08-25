@@ -10,6 +10,7 @@ import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Kind;
 import com.moorkensam.xlra.model.rate.Measurement;
+import com.moorkensam.xlra.model.rate.TransportType;
 import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.FileService;
 import com.moorkensam.xlra.service.util.ConfigurationLoader;
@@ -63,13 +64,17 @@ public class PdfServiceTest extends UnitilsJUnit4 {
     offerte.setQuery(query);
     query.setQuotationDate(new Date());
     query.setCountry(new Country());
+    query.setTransportType(TransportType.EXPORT);
+    TransportType.EXPORT.setDescription("Export");
     query.getCountry().setNames(new HashMap<Language, String>());
     query.getCountry().setDutchName("Belgie");
     query.getCountry().setEnglishName("Belgium");
     query.setPostalCode("2222");
     query.setQuantity(10d);
     query.setMeasurement(Measurement.PALET);
+    Measurement.PALET.setDescription("Paletten");
     query.setKindOfRate(Kind.EXPRES);
+    Kind.EXPRES.setDescription("Expres");
     PriceCalculation calculation = new PriceCalculation();
     calculation.setAppliedOperations(Arrays.asList(TranslationKey.DIESEL_SURCHARGE,
         TranslationKey.EXPORT_FORM, TranslationKey.IMPORT_FORM, TranslationKey.CHF_SURCHARGE,

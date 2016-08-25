@@ -56,7 +56,7 @@
 				<p:selectOneMenu value="#{customer.language}" id="languageField"
 					style="width:100%;">
 					<f:selectItem value="#{null}" itemLabel=" " />
-					<f:selectItems value="#{customerController.allLanguages}"></f:selectItems>
+					<f:selectItems value="#{customerController.allLanguages}" var="language" itemLabel="#{language.description}" itemValue="#{language}"></f:selectItems>
 				</p:selectOneMenu>
 			</p:panelGrid>
 

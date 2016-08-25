@@ -53,9 +53,7 @@ public class QuotationUtil {
     RateFileSearchFilter filter = new RateFileSearchFilter();
     fillInBaseFilterProperties(query, filter);
     if (!ignoreFullCustomerIfPresent) {
-      if (query.getCustomer().isHasOwnRateFile()) {
-        filter.setCustomer(query.getCustomer());
-      }
+      filter.setCustomer(query.getCustomer());
     }
     return filter;
   }
