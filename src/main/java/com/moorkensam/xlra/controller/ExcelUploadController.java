@@ -66,6 +66,7 @@ public class ExcelUploadController {
     localeUtil = new LocaleUtil();
     ratefile.setTransportType(TransportType.EXPORT);
     setCountries(countryService.getAllCountries());
+    localeUtil.fillInCountryi8nNameByLanguage(countries, localeController.getLanguage());
     measurements = getLocaleController().getMeasurements();
     kindOfRates = getLocaleController().getKinds();
   }

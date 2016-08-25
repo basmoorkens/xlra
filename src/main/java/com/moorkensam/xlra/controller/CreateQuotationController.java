@@ -61,6 +61,8 @@ public class CreateQuotationController {
   @ManagedProperty("#{msg}")
   private ResourceBundle messageBundle;
 
+  private String usedRateFileMessage;
+
   private LocaleUtil localeUtil;
 
   private MessageUtil messageUtil;
@@ -102,9 +104,13 @@ public class CreateQuotationController {
     localeUtil = new LocaleUtil();
   }
 
+  /**
+   * Reset the state of the controller.
+   */
   public void resetPage() {
     initializeNewQuotationQuery();
     showCustomerPanel();
+    usedRateFileMessage = "";
   }
 
   /**
@@ -231,6 +237,9 @@ public class CreateQuotationController {
 
   private void fillInOptionTranslations() {
     translationUtil.fillInTranslations(quotationResult.getSelectableOptions());
+    usedRateFileMessage =
+        messageUtil.lookupI8nStringAndInjectParams("message.used.ratefile", "<strong>"
+            + quotationResult.getUsedRateFileName() + "</strong>");
   }
 
   public void selectAllOptions() {
@@ -528,5 +537,13 @@ public class CreateQuotationController {
 
   public void setLocaleUtil(LocaleUtil localeUtil) {
     this.localeUtil = localeUtil;
+  }
+
+  public String getUsedRateFileMessage() {
+    return usedRateFileMessage;
+  }
+
+  public void setUsedRateFileMessage(String usedRateFileMessage) {
+    this.usedRateFileMessage = usedRateFileMessage;
   }
 }
