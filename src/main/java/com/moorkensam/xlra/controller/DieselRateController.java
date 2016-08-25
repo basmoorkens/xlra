@@ -161,7 +161,7 @@ public class DieselRateController {
     if (configuration.getCurrentDieselPrice() != getCurrentDieselValue()) {
       dieselService.updateCurrentDieselValue(getCurrentDieselValue());
       messageUtil.addMessage("message.current.diesel.price.title",
-          "message.current.diesel.price.detail" + getCurrentDieselValue());
+          "message.current.diesel.price.detail", getCurrentDieselValue() + "");
       setupCurrentRates();
     } else {
       messageUtil.addMessage("message.current.diesel.price.title", "message.price.same.as.old");

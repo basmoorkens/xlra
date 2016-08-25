@@ -90,16 +90,13 @@ public class CalculationServiceImpl implements CalculationService {
 
   private void calculateVariableOptions(List<OfferteOptionDto> options, PriceCalculation calc)
       throws RateFileException {
+    boolean adrCalculated = false;
     for (OfferteOptionDto option : options) {
       switch (option.getKey()) {
         case ADR_SURCHARGE:
           if (option.isSelected()) {
             calculateAddressSurcharge(calc, option);
-          }
-          break;
-        case ADR_MINIMUM:
-          if (option.isSelected()) {
-            calculateAddressSurchargeMinimum(calc, option);
+            adrCalculated = true;
           }
           break;
         case IMPORT_FORM:
@@ -114,6 +111,20 @@ public class CalculationServiceImpl implements CalculationService {
           break;
         default:
           break;
+      }
+    }
+
+    if (adrCalculated) {
+      setupBaseAdr(options, calc);
+    }
+  }
+
+  private void setupBaseAdr(List<OfferteOptionDto> options, PriceCalculation calc)
+      throws RateFileException {
+    for (OfferteOptionDto option : options) {
+      if (TranslationKey.ADR_MINIMUM.equals(option.getKey())) {
+        calculateAddressSurchargeMinimum(calc, option);
+        break;
       }
     }
   }
@@ -181,17 +192,19 @@ public class CalculationServiceImpl implements CalculationService {
    * 
    * @param priceCalculation The pricecalculation
    */
-  protected void applyAfterConditionLogic(PriceCalculation priceCalculation) {
+  protected void applyAfterConditionLogic(PriceCalculation priceCalculation)
+      throws RateFileException {
     if (priceCalculation.getCalculatedAdrSurcharge() != null) {
+      if (priceCalculation.getAdrSurchargeMinimum() == null) {
+        throw new RateFileException("message.adr.calculated.no.minimum");
+      }
       if (priceCalculation.getAdrSurchargeMinimum().doubleValue() > priceCalculation
           .getCalculatedAdrSurcharge().doubleValue()) {
         priceCalculation.setResultingPriceSurcharge(priceCalculation.getAdrSurchargeMinimum());
       } else {
         priceCalculation.setResultingPriceSurcharge(priceCalculation.getCalculatedAdrSurcharge());
       }
-
     }
-
   }
 
   /**
@@ -209,8 +222,9 @@ public class CalculationServiceImpl implements CalculationService {
       result = getCalcUtil().roundBigDecimal(result);
       priceCalculation.setCalculatedAdrSurcharge(result);
     } catch (NumberFormatException exc) {
-      throw new RateFileException("Invalid value for " + option.getKey() + ": " + ""
-          + option.getValue());
+      RateFileException rfe = new RateFileException("message.adr.parse.error");
+      rfe.addExtraArgument(option.getValue());
+      throw rfe;
     }
   }
 

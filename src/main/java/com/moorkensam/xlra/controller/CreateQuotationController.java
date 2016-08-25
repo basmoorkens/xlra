@@ -305,8 +305,9 @@ public class CreateQuotationController {
   }
 
   private void showRateFileError(RateFileException re) {
-    messageUtil
-        .addErrorMessage("message.processing.unexecptected.error", re.getBusinessException());
+    messageUtil.addErrorMessage("message.processing.unexecptected.error",
+        re.getBusinessException(), re.getExtraArguments() != null ? re.getExtraArguments().get(0)
+            : "");
   }
 
   private void setupFiltersFromExistingCustomer() {

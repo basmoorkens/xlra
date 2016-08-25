@@ -16,8 +16,8 @@
 				<p:selectOneMenu style="width:100%;" id="selectTransportType"
 					value="#{createQuotationController.quotationQuery.transportType}">
 					<f:selectItems
-						value="#{createQuotationController.allTransportTypes}"
-						itemDescription="description" />
+						value="#{createQuotationController.allTransportTypes}" var="tt"
+						itemValue="#{tt}" itemLabel="#{tt.description}" />
 				</p:selectOneMenu>
 
 				<h:outputText value="#{msg['label.country']}:" />

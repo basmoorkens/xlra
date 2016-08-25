@@ -51,7 +51,7 @@
 						<f:selectItem itemValue="#{null}" itemLabel="" />
 						<f:selectItems value="#{createRatesController.allTransportTypes}"
 							var="transportationType" itemValue="#{transportationType}"
-							itemDescription="#{transportationType.description}" />
+							itemLabel="#{transportationType.description}" />
 					</p:selectOneMenu>
 
 					<h:outputText value="#{msg['label.country']}:" />

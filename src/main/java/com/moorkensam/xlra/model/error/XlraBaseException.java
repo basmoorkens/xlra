@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.model.error;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,6 +28,18 @@ public abstract class XlraBaseException extends Exception {
 
   public XlraBaseException(String businessException) {
     this.businessException = businessException;
+  }
+
+  /**
+   * Add an extra argument to the exception.
+   * 
+   * @param argument The argument to add.
+   */
+  public void addExtraArgument(String argument) {
+    if (extraArguments == null) {
+      extraArguments = new ArrayList<String>();
+    }
+    extraArguments.add(argument);
   }
 
   public String getBusinessException() {
