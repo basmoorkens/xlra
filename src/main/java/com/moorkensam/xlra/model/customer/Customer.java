@@ -89,8 +89,6 @@ public class Customer extends BaseEntity {
   @Length(max = 100)
   private String btwNumber;
 
-  private boolean hasOwnRateFile;
-
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "standard_contact_id")
   @NotNull
@@ -139,14 +137,6 @@ public class Customer extends BaseEntity {
 
   public void setBtwNumber(String btwNumber) {
     this.btwNumber = btwNumber;
-  }
-
-  public boolean isHasOwnRateFile() {
-    return hasOwnRateFile;
-  }
-
-  public void setHasOwnRateFile(boolean hasOwnRateFile) {
-    this.hasOwnRateFile = hasOwnRateFile;
   }
 
   public List<CustomerContact> getContacts() {

@@ -61,7 +61,7 @@
 						value="#{createRatesController.filter.country}">
 						<f:selectItem itemValue="#{null}" itemLabel="" />
 						<f:selectItems value="#{createRatesController.countries}"
-							var="country" itemLabel="#{country.englishName}"
+							var="country" itemLabel="#{country.i8nCountryName}"
 							itemValue="#{country}" />
 					</p:selectOneMenu>
 

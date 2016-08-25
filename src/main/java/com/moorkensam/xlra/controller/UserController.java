@@ -117,6 +117,11 @@ public class UserController {
     localeController.loadUserLocale(true);
   }
 
+  public void hidePasswordDialog() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    context.execute("PF('changePasswordDialog').hide();");
+  }
+
   public void showPasswordDialog() {
     RequestContext context = RequestContext.getCurrentInstance();
     context.execute("PF('changePasswordDialog').show();");

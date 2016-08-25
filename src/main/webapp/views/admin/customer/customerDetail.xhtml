@@ -56,7 +56,9 @@
 				<p:selectOneMenu value="#{customer.language}" id="languageField"
 					style="width:100%;">
 					<f:selectItem value="#{null}" itemLabel=" " />
-					<f:selectItems value="#{customerController.allLanguages}" var="language" itemLabel="#{language.description}" itemValue="#{language}"></f:selectItems>
+					<f:selectItems value="#{customerController.allLanguages}"
+						var="language" itemLabel="#{language.description}"
+						itemValue="#{language}"></f:selectItems>
 				</p:selectOneMenu>
 			</p:panelGrid>
 
@@ -71,7 +73,7 @@
 					<f:facet name="header">
 						#{msg['label.department']}
 					</f:facet>
-					#{contact.department}
+					#{contact.department.description}
 				</p:column>
 				<p:column>
 					<f:facet name="header">

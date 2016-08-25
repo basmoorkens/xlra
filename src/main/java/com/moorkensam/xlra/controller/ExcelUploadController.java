@@ -9,6 +9,7 @@ import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.TransportType;
 import com.moorkensam.xlra.service.CountryService;
 import com.moorkensam.xlra.service.ExcelService;
+import com.moorkensam.xlra.service.util.LocaleUtil;
 import com.moorkensam.xlra.service.util.RateUtil;
 
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -42,6 +43,8 @@ public class ExcelUploadController {
   @ManagedProperty("#{msg}")
   private ResourceBundle messageBundle;
 
+  private LocaleUtil localeUtil;
+
   private List<Country> countries;
 
   private RateFile ratefile;
@@ -60,6 +63,7 @@ public class ExcelUploadController {
   @PostConstruct
   public void init() {
     ratefile = new RateFile();
+    localeUtil = new LocaleUtil();
     ratefile.setTransportType(TransportType.EXPORT);
     setCountries(countryService.getAllCountries());
     measurements = getLocaleController().getMeasurements();
@@ -128,10 +132,6 @@ public class ExcelUploadController {
     this.showUpload = showUpload;
   }
 
-  public List<TransportType> getAllTransportTypes() {
-    return Arrays.asList(TransportType.values());
-  }
-
   public FileUploadEvent getEvent() {
     return event;
   }
@@ -154,6 +154,48 @@ public class ExcelUploadController {
 
   public void setLocaleController(LocaleController localeController) {
     this.localeController = localeController;
+  }
+
+  /**
+   * Get all the rateskinds and fill in the translation for the frontend
+   * 
+   * @return The list of translated ratekinds.
+   */
+  public List<Kind> getAllKinds() {
+    List<Kind> kinds = Arrays.asList(Kind.values());
+    getLocaleUtil().fillInRateKindTranslations(kinds, messageBundle);
+    return kinds;
+  }
+
+  /**
+   * Get all the measurements and fill in the translation for the frontend.
+   * 
+   * @return List of translated measurements
+   */
+  public List<Measurement> getAllMeasurements() {
+    List<Measurement> measurements = Arrays.asList(Measurement.values());
+    getLocaleUtil().fillInMeasurementTranslations(measurements, messageBundle);
+    return measurements;
+  }
+
+
+  /**
+   * Get all the transport types with description filled in in the user locale.
+   * 
+   * @return The list of transport types.
+   */
+  public List<TransportType> getAllTransportTypes() {
+    List<TransportType> transportTypes = Arrays.asList(TransportType.values());
+    getLocaleUtil().fillInTransportTypeTranslations(transportTypes, messageBundle);
+    return transportTypes;
+  }
+
+  public LocaleUtil getLocaleUtil() {
+    return localeUtil;
+  }
+
+  public void setLocaleUtil(LocaleUtil localeUtil) {
+    this.localeUtil = localeUtil;
   }
 
 }

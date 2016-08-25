@@ -371,6 +371,11 @@ public class CreateRatesController {
     return kinds;
   }
 
+  /**
+   * Get all the transport types with description filled in in the user locale.
+   * 
+   * @return The list of transport types.
+   */
   public List<TransportType> getAllTransportTypes() {
     List<TransportType> transportTypes = Arrays.asList(TransportType.values());
     getLocaleUtil().fillInTransportTypeTranslations(transportTypes, messageBundle);

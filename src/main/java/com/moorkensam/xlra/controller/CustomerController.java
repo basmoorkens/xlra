@@ -63,6 +63,7 @@ public class CustomerController {
   }
 
   private void initModel() {
+    fillInLocales();
     model = new LazyDataModel<Customer>() {
 
       private static final long serialVersionUID = -7346727256149263406L;
@@ -153,7 +154,6 @@ public class CustomerController {
   public void setupPageForNewCustomer() {
     detailGridTitle = "New customer";
     selectedCustomer = new Customer();
-    selectedCustomer.setHasOwnRateFile(false);
     showAddDialog();
   }
 
@@ -244,6 +244,11 @@ public class CustomerController {
     customer = customerService.getCustomerById(customer.getId());
     CustomerUtil.getInstance().promoteToFullCustomer(customer);
     selectedCustomer = customer;
+  }
+
+  private void fillInLocales() {
+    localeUtil.fillInLanguageTranslations(Arrays.asList(Language.values()), messageBundle);
+    localeUtil.fillInDepartmentTranslations(Arrays.asList(Department.values()), messageBundle);
   }
 
   public String getDetailGridTitle() {

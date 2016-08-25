@@ -87,7 +87,8 @@
 				<p:panel style="margin-top:20px;">
 					<p:commandButton value="#{msg['button.cancel']}"
 						style="margin-right:20px;" immediate="true" id="cancelButton"
-						styleClass="navButton" />
+						styleClass="navButton"
+						actionListener="#{userController.hidePasswordDialog}" />
 					<p:commandButton value="#{msg['button.save']}" id="saveButton"
 						styleClass="navButton"
 						actionListener="#{userController.savePassword}"

@@ -42,14 +42,7 @@
 					</p:column>
 					<p:column filterBy="#{customer.language}" filterStyle="width:100%;">
 						<f:facet name="header">#{msg['label.language']}</f:facet>
-						#{customer.language}
-					</p:column>
-					<p:column styleClass="myHeader">
-						<f:facet name="header">#{msg['customermanagement.ratefile.types']}</f:facet>
-						<p:selectBooleanButton offLabel="Standard ratefile"
-							disabled="true" onLabel="Own ratefile"
-							value="#{customer.hasOwnRateFile}" onIcon="ui-icon-check"
-							offIcon="ui-icon-close" />
+						#{customer.language.description}
 					</p:column>
 					<p:column style="width:110px;text-align: center">
 						<p:commandButton id="editButton"

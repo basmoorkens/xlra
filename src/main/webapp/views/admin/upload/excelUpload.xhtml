@@ -21,30 +21,57 @@
 						required="true" requiredMessage="Name is required"
 						style="width:80%" />
 
-					<h:outputText value="Transport type:" />
-					<p:selectOneRadio
+					<h:outputText value="#{msg['label.customer']}:" />
+					<p:autoComplete size="" id="customerSelector" dropdown="true"
+						value="#{createRatesController.filter.customer}"
+						completeMethod="#{createRatesController.completeCustomerName}"
+						var="customer" itemLabel="#{customer.name}"
+						itemValue="#{customer}" converter="#{customerConverter}"
+						required="true"
+						requiredMessage="#{msg['message.customer.required']}">
+					</p:autoComplete>
+
+					<h:outputText value="#{msg['label.transport.type']}:" />
+					<p:selectOneMenu style="width:100%;" required="true"
+						id="selectImportExport"
+						requiredMessage="#{msg['message.import.export.required']}"
 						value="#{excelUploadController.ratefile.transportType}">
+						<f:selectItem itemValue="#{null}" itemLabel="" />
 						<f:selectItems value="#{excelUploadController.allTransportTypes}"
-							itemDescription="description" />
-					</p:selectOneRadio>
+							var="transportationType" itemValue="#{transportationType}"
+							itemLabel="#{transportationType.description}" />
+					</p:selectOneMenu>
 
-					<h:outputText value="Country:" />
-					<p:selectOneRadio converter="#{countryConverter}"
+					<h:outputText value="#{msg['label.country']}:" />
+					<p:selectOneMenu style="width:100%;"
+						converter="#{countryConverter}" id="selectCountry" required="true"
+						requiredMessage="#{msg['message.country.required']}"
 						value="#{excelUploadController.ratefile.country}">
-						<f:selectItems value="#{excelUploadController.countries}" />
-					</p:selectOneRadio>
+						<f:selectItem itemValue="#{null}" itemLabel="" />
+						<f:selectItems value="#{excelUploadController.countries}"
+							var="country" itemLabel="#{country.i8nCountryName}"
+							itemValue="#{country}" />
+					</p:selectOneMenu>
 
-					<h:outputText value="Measurement: " />
-					<p:selectOneRadio
+					<h:outputText value="#{msg['label.measurement']}:" />
+					<p:selectOneMenu style="width:100%;" id="selectMeasurement"
+						required="true" requiredMessage=""
 						value="#{excelUploadController.ratefile.measurement}">
-						<f:selectItems value="#{excelUploadController.measurements}" />
-					</p:selectOneRadio>
+						<f:selectItem itemValue="#{null}" itemLabel="" />
+						<f:selectItems value="#{excelUploadController.allMeasurements}"
+							var="measurement" itemLabel="#{measurement.description}"
+							itemValue="#{measurement}" />
+					</p:selectOneMenu>
 
-					<h:outputText value="Type of rate: " />
-					<p:selectOneRadio
+					<h:outputText value="#{msg['label.type.of.transport']}:" />
+					<p:selectOneMenu style="width:100%;" id="selectTypeOfTransport"
+						requiredMessage="#{msg['message.transport.type.required']}"
+						required="true"
 						value="#{excelUploadController.ratefile.kindOfRate}">
-						<f:selectItems value="#{excelUploadController.kindOfRates}" />
-					</p:selectOneRadio>
+						<f:selectItem itemValue="#{null}" itemLabel="" />
+						<f:selectItems value="#{excelUploadController.allKinds}"
+							var="kind" itemLabel="#{kind.description}" itemValue="#{kind}" />
+					</p:selectOneMenu>
 				</p:panelGrid>
 			</p:panel>
 			<p:commandButton value="Save basic info" ajax="false"
