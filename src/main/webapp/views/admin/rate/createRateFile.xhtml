@@ -70,7 +70,7 @@
 						required="true" requiredMessage=""
 						value="#{createRatesController.filter.measurement}">
 						<f:selectItem itemValue="#{null}" itemLabel="" />
-						<f:selectItems value="#{createRatesController.measurements}"
+						<f:selectItems value="#{createRatesController.allMeasurements}"
 							var="measurement" itemLabel="#{measurement.description}"
 							itemValue="#{measurement}" />
 					</p:selectOneMenu>
@@ -80,7 +80,7 @@
 						requiredMessage="#{msg['message.transport.type.required']}"
 						required="true" value="#{createRatesController.filter.rateKind}">
 						<f:selectItem itemValue="#{null}" itemLabel="" />
-						<f:selectItems value="#{createRatesController.kindOfRates}"
+						<f:selectItems value="#{createRatesController.allKinds}"
 							var="kind" itemLabel="#{kind.description}" itemValue="#{kind}" />
 					</p:selectOneMenu>
 				</p:panelGrid>

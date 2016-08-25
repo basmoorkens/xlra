@@ -59,11 +59,6 @@ public class CustomerServiceImpl implements CustomerService {
   }
 
   @Override
-  public List<Customer> getAllFullCustomers() {
-    return getCustomerDao().getAllFullCustomers();
-  }
-
-  @Override
   public void deleteCustomer(Customer customer) {
     logger.info("Deleting customer with id " + customer.getId());
     getCustomerDao().deleteCustomer(customer);

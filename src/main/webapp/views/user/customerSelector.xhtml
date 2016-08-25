@@ -76,13 +76,13 @@
 						id="phoneField" />
 
 					<h:outputLabel for="languageField">#{msg['label.language']}</h:outputLabel>
-					<p:selectOneRadio
+					<p:selectOneMenu
 						value="#{createQuotationController.customerToAdd.language}"
-						required="true"
-						requiredMessage="#{msg['message.language.required']}"
-						id="languageField">
-						<f:selectItems value="#{createQuotationController.allLanguages}"></f:selectItems>
-					</p:selectOneRadio>
+						id="languageField" style="width:100%;">
+						<f:selectItems value="#{createQuotationController.allLanguages}"
+							var="language" itemLabel="#{language.description}"
+							itemValue="#{language}"></f:selectItems>
+					</p:selectOneMenu>
 				</p:panelGrid>
 				<p:panel style="margin-top:20px;">
 					<p:commandButton value="#{msg['button.cancel']}" immediate="true"

@@ -154,6 +154,11 @@ public class CreateQuotationController {
     }
   }
 
+  /**
+   * Get all languages and fill in translation by user locale.
+   * 
+   * @return The transated langauges
+   */
   public List<Language> getAllLanguages() {
     List<Language> supportedLanguages = localeController.getSupportedLanguages();
     localeUtil.fillInLanguageTranslations(supportedLanguages, getMessageBundle());
@@ -164,9 +169,7 @@ public class CreateQuotationController {
    * Proces the customer section.
    */
   public void procesCustomer() {
-    if (getQuotationQuery().getCustomer().isHasOwnRateFile()) {
-      setupFiltersFromExistingCustomer();
-    }
+    setupFiltersFromExistingCustomer();
     showRateFilterPanel();
   }
 
@@ -311,7 +314,7 @@ public class CreateQuotationController {
   }
 
   private void setupFiltersFromExistingCustomer() {
-    // TODO implements loading of filters based on customer ratefile present
+    quotationQuery.setLanguage(quotationQuery.getCustomer().getLanguage());
   }
 
   /**

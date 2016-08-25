@@ -8,6 +8,7 @@ import com.moorkensam.xlra.model.customer.Department;
 import com.moorkensam.xlra.model.error.XlraValidationException;
 import com.moorkensam.xlra.service.CustomerService;
 import com.moorkensam.xlra.service.util.CustomerUtil;
+import com.moorkensam.xlra.service.util.LocaleUtil;
 
 import org.primefaces.context.RequestContext;
 import org.primefaces.model.LazyDataModel;
@@ -34,6 +35,11 @@ public class CustomerController {
   @ManagedProperty("#{msg}")
   private ResourceBundle messageBundle;
 
+  @ManagedProperty("#{localeController}")
+  private LocaleController localeController;
+
+  private LocaleUtil localeUtil;
+
   private MessageUtil messageUtil;
 
   private Customer selectedCustomer;
@@ -51,6 +57,7 @@ public class CustomerController {
   @PostConstruct
   public void initializeController() {
     messageUtil = MessageUtil.getInstance(messageBundle);
+    localeUtil = new LocaleUtil();
     reInitializePage();
     initModel();
   }
@@ -84,7 +91,8 @@ public class CustomerController {
     if (selectedCustomer.getId() == 0) {
       try {
         customerService.createCustomer(selectedCustomer);
-        messageUtil.addMessage("", "message.customer.created.detail", selectedCustomer.getName());
+        messageUtil.addMessage("message.customer.created.title", "message.customer.created.detail",
+            selectedCustomer.getName());
       } catch (XlraValidationException e) {
         messageUtil.addErrorMessage("message.customer.invalid.data", e.getBusinessException(), e
             .getExtraArguments().get(0));
@@ -134,7 +142,9 @@ public class CustomerController {
   }
 
   public List<Language> getAllLanguages() {
-    return Arrays.asList(Language.values());
+    List<Language> supportedLanguages = getLocaleController().getSupportedLanguages();
+    getLocaleUtil().fillInLanguageTranslations(supportedLanguages, getMessageBundle());
+    return supportedLanguages;
   }
 
   /**
@@ -302,6 +312,22 @@ public class CustomerController {
 
   public void setMessageUtil(MessageUtil messageUtil) {
     this.messageUtil = messageUtil;
+  }
+
+  public LocaleController getLocaleController() {
+    return localeController;
+  }
+
+  public void setLocaleController(LocaleController localeController) {
+    this.localeController = localeController;
+  }
+
+  public LocaleUtil getLocaleUtil() {
+    return localeUtil;
+  }
+
+  public void setLocaleUtil(LocaleUtil localeUtil) {
+    this.localeUtil = localeUtil;
   }
 
 }

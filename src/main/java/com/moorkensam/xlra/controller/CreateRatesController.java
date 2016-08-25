@@ -16,6 +16,7 @@ import com.moorkensam.xlra.service.CountryService;
 import com.moorkensam.xlra.service.CustomerService;
 import com.moorkensam.xlra.service.RateFileService;
 import com.moorkensam.xlra.service.util.ConditionFactory;
+import com.moorkensam.xlra.service.util.LocaleUtil;
 import com.moorkensam.xlra.service.util.RateUtil;
 import com.moorkensam.xlra.service.util.TranslationUtil;
 
@@ -50,6 +51,8 @@ public class CreateRatesController {
   @ManagedProperty("#{msg}")
   private ResourceBundle messageBundle;
 
+  private LocaleUtil localeUtil;
+
   private MessageUtil messageUtil;
 
   @Inject
@@ -61,15 +64,9 @@ public class CreateRatesController {
 
   private List<Country> countries;
 
-  private List<Measurement> measurements;
-
   private TranslationKey keyToAdd;
 
-  private List<Kind> kindOfRates;
-
   private RateFile rateFile;
-
-  private List<Customer> fullCustomers;
 
   private RateFileSearchFilter filter;
 
@@ -97,13 +94,11 @@ public class CreateRatesController {
    */
   @PostConstruct
   public void init() {
+    localeUtil = new LocaleUtil();
     messageUtil = MessageUtil.getInstance(messageBundle);
     filter = new RateFileSearchFilter();
     setRateFile(new RateFile());
     countries = countryService.getAllCountries();
-    fullCustomers = customerService.getAllFullCustomers();
-    measurements = getLocaleController().getMeasurements();
-    kindOfRates = getLocaleController().getKinds();
     conditionFactory = new ConditionFactory();
     translationUtil = new TranslationUtil();
   }
@@ -229,22 +224,6 @@ public class CreateRatesController {
     this.countries = countries;
   }
 
-  public List<Measurement> getMeasurements() {
-    return measurements;
-  }
-
-  public void setMeasurements(List<Measurement> measurements) {
-    this.measurements = measurements;
-  }
-
-  public List<Kind> getKindOfRates() {
-    return kindOfRates;
-  }
-
-  public void setKindOfRates(List<Kind> kindOfRates) {
-    this.kindOfRates = kindOfRates;
-  }
-
   /**
    * Auto complete method for the customer name.
    * 
@@ -252,14 +231,8 @@ public class CreateRatesController {
    * @return A list of customers whose names match the input.
    */
   public List<Customer> completeCustomerName(String input) {
-    List<Customer> filteredCustomers = new ArrayList<Customer>();
-
-    for (Customer fc : fullCustomers) {
-      if (fc.getName().toLowerCase().contains(input.toLowerCase())) {
-        filteredCustomers.add(fc);
-      }
-    }
-    return filteredCustomers;
+    List<Customer> customers = customerService.findCustomersLikeName(input);
+    return customers;
   }
 
   /**
@@ -352,14 +325,6 @@ public class CreateRatesController {
     return RateUtil.getLanguages();
   }
 
-  public List<Customer> getFullCustomers() {
-    return fullCustomers;
-  }
-
-  public void setFullCustomers(List<Customer> fullCustomers) {
-    this.fullCustomers = fullCustomers;
-  }
-
   public RateFileSearchFilter getFilter() {
     return filter;
   }
@@ -384,8 +349,32 @@ public class CreateRatesController {
     this.collapseConditionsDetailGrid = collapseConditionsDetailGrid;
   }
 
+  /**
+   * Get all the measurements and fill in the translation for the frontend.
+   * 
+   * @return List of translated measurements
+   */
+  public List<Measurement> getAllMeasurements() {
+    List<Measurement> measurements = Arrays.asList(Measurement.values());
+    localeUtil.fillInMeasurementTranslations(measurements, messageBundle);
+    return measurements;
+  }
+
+  /**
+   * Get all the rateskinds and fill in the translation for the frontend
+   * 
+   * @return The list of translated ratekinds.
+   */
+  public List<Kind> getAllKinds() {
+    List<Kind> kinds = Arrays.asList(Kind.values());
+    localeUtil.fillInRateKindTranslations(kinds, messageBundle);
+    return kinds;
+  }
+
   public List<TransportType> getAllTransportTypes() {
-    return Arrays.asList(TransportType.values());
+    List<TransportType> transportTypes = Arrays.asList(TransportType.values());
+    getLocaleUtil().fillInTransportTypeTranslations(transportTypes, messageBundle);
+    return transportTypes;
   }
 
   public boolean isCollapseRateLineEditor() {
@@ -482,6 +471,14 @@ public class CreateRatesController {
 
   public void setLocaleController(LocaleController localeController) {
     this.localeController = localeController;
+  }
+
+  public LocaleUtil getLocaleUtil() {
+    return localeUtil;
+  }
+
+  public void setLocaleUtil(LocaleUtil localeUtil) {
+    this.localeUtil = localeUtil;
   }
 
 }

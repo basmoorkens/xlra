@@ -39,8 +39,6 @@ import javax.validation.constraints.NotNull;
 @NamedQueries({
     @NamedQuery(name = "Customer.findAll",
         query = "SELECT b FROM Customer b where b.deleted = false"),
-    @NamedQuery(name = "Customer.findAllFullCustomers",
-        query = "SELECT c FROM Customer c where c.deleted = false AND c.hasOwnRateFile = true"),
     @NamedQuery(name = "Customer.countCustomers",
         query = "SELECT count(c.id) FROM Customer c where c.deleted = false"),
     @NamedQuery(name = "Customer.findByName",
