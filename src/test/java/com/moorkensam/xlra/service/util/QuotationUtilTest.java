@@ -44,7 +44,6 @@ public class QuotationUtilTest extends UnitilsJUnit4 {
   public void testCreateRateFileSearchFilterForQueryForFullCustomer() {
     Customer fc = new Customer();
     fc.setName("basfull");
-    fc.setHasOwnRateFile(true);
     quotationQuery.setCustomer(fc);
 
     RateFileSearchFilter filter =
