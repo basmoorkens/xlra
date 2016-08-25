@@ -10,7 +10,7 @@
 		<h:outputText value="XLRA - Create rates" />
 	</ui:define>
 	<ui:define name="pageTitle">
-		<h:outputText value="#{msg['createrates.title']}" />
+		<h:outputText value="#{msg['createrates.from.existing.title']}" />
 	</ui:define>
 	<ui:define name="body">
 		<h:form id="createRatesForm">
@@ -293,7 +293,7 @@
 		<h:form id="summaryForm">
 			<p:growl id="message" showDetail="true" />
 			<p:panel collapsed="#{createRatesController.collapseSummary}"
-				header="Summary">
+				header="#{msg['offertesummary.title']}">
 				<ui:include src="/views/user/rateSummary.xhtml" />
 
 				<p:panel style="margin-top:10px;padding:0px;border:0px;">

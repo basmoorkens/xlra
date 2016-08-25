@@ -20,12 +20,8 @@
 			<h:form prependId="false">
 				<p:menubar id="xlraMenu">
 					<p:submenu
-						rendered="#{templateController.hasNonePermissions(['EDIT_RATEFILE', 'CREATE_RATEFILE', 'RAISE_RATES', 'VIEW_RATEFILE', 'EXCEL_UPLOAD'])}"
+						rendered="#{templateController.hasNonePermissions(['EDIT_RATEFILE', 'RAISE_RATES', 'VIEW_RATEFILE', 'EXCEL_UPLOAD'])}"
 						label="#{msg['menu.ratefile.rates']}" icon="ui-icon-document">
-						<p:menuitem
-							rendered="#{templateController.hasPermission('CREATE_RATEFILE')}"
-							value="#{msg['menu.ratefile.create']}"
-							url="/views/admin/rate/createRateFile.xhtml" />
 						<p:menuitem
 							rendered="#{templateController.hasPermission('EDIT_RATEFILE')}"
 							value="#{msg['menu.ratefile.managerates']}"

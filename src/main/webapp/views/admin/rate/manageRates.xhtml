@@ -13,9 +13,20 @@
 	</ui:define>
 	<ui:define name="body">
 		<h:form id="ratesForm">
-			<h3>#{msg['managerates.search.options']}</h3>
 
-			<p:panel id="ratesOverviewPanel"
+			<p:panel
+				rendered="#{templateController.hasPermission('CREATE_RATEFILE')}">
+				<p:commandButton id="createFromExistingButton"
+					styleClass="navButton"
+					actionListener="#{manageRatesController.goToCreateRatesFromExistingRates}"
+					value="#{msg['button.rates.create.from.existing']}"
+					immediate="true" />
+				<p:commandButton id="freeCreateRatesButton" styleClass="navButton"
+					actionListener="#{manageRatesController.goToFreeCreateRates}"
+					value="#{msg['button.rates.create.freestyle']}" immediate="true" />
+			</p:panel>
+
+			<p:panel id="ratesOverviewPanel" style="margin-top:20px;"
 				header="#{msg['managerates.header.title']}">
 				<p:dataTable value="#{manageRatesController.model}" var="rateFile"
 					emptyMessage="#{msg['message.rates.empty']}" lazy="true"
@@ -25,21 +36,36 @@
 					rowsPerPageTemplate="10,25,50,100" paginatorPosition="top">
 
 					<p:column sortBy="#{rateFile.name}" filterBy="#{rateFile.name}"
-						filterStyle="width:100%;">
+						width="20%;" filterStyle="width:100%;">
 						<f:facet name="header">#{msg['label.name']}</f:facet>
 						#{rateFile.name}
 					</p:column>
 
-					<p:column sortBy="#{rateFile.customer.name}"
+					<p:column sortBy="#{rateFile.customer.name}" width="20%;"
 						filterBy="#{rateFile.customer.name}" filterStyle="width:100%;">
 						<f:facet name="header">#{msg['label.customer.name']}</f:facet>
 						#{rateFile.customer.name}
 					</p:column>
 
-					<p:column sortBy="#{rateFile.country.shortName}"
+					<p:column sortBy="#{rateFile.country.shortName}" width="10%;"
 						filterBy="#{rateFile.country.shortName}" filterStyle="width:100%;">
 						<f:facet name="header">#{msg['label.country']}</f:facet>
 						#{rateFile.country.shortName}
+					</p:column>
+
+					<p:column sortBy="#{rateFile.measurement}">
+						<f:facet name="header">#{msg['label.measurement']}</f:facet>
+						#{rateFile.measurement.description}
+					</p:column>
+
+					<p:column sortBy="#{rateFile.transportType}">
+						<f:facet name="header">#{msg['label.transport.type']}</f:facet>
+						#{rateFile.transportType.description}
+					</p:column>
+
+					<p:column sortBy="#{rateFile.kindOfRate}">
+						<f:facet name="header">#{msg['label.kind.of.rate']}</f:facet>
+						#{rateFile.kindOfRate.description}
 					</p:column>
 					<p:column style="width:50px;text-align: center">
 						<p:commandButton id="editButton" styleClass="navButton"
@@ -54,38 +80,39 @@
 			</p:panel>
 		</h:form>
 
-		<h3>#{msg['label.details']}</h3>
-		<ui:include src="/views/user/rateBasicInfo.xhtml">
-			<ui:param name="rateFile"
-				value="#{manageRatesController.selectedRateFile}" />
-		</ui:include>
-
-		<ui:include src="/views/user/zoneDetail.xhtml">
-			<ui:param name="zones"
-				value="#{manageRatesController.selectedRateFile.zones}" />
-			<ui:param name="controller" value="#{manageRatesController}" />
-			<ui:param name="controllerName" value="manageRatesController" />
-			<ui:param name="canEdit" value="#{manageRatesController.canEdit}"></ui:param>
-		</ui:include>
-		<h:form id="rateLinesDetailForm" prependId="false">
-			<p:growl id="message" showDetail="true" />
-			<ui:include src="/views/user/rateLinesDetail.xhtml">
+		<p:panel header="#{msg['label.details']}" style="margin-top:20px;">
+			<ui:include src="/views/user/rateBasicInfo.xhtml">
 				<ui:param name="rateFile"
 					value="#{manageRatesController.selectedRateFile}" />
+			</ui:include>
+
+			<ui:include src="/views/user/zoneDetail.xhtml">
+				<ui:param name="zones"
+					value="#{manageRatesController.selectedRateFile.zones}" />
 				<ui:param name="controller" value="#{manageRatesController}" />
 				<ui:param name="controllerName" value="manageRatesController" />
 				<ui:param name="canEdit" value="#{manageRatesController.canEdit}"></ui:param>
-				<ui:param name="sticky" value="false"></ui:param>
 			</ui:include>
-		</h:form>
+			<h:form id="rateLinesDetailForm" prependId="false">
+				<p:growl id="message" showDetail="true" />
+				<ui:include src="/views/user/rateLinesDetail.xhtml">
+					<ui:param name="rateFile"
+						value="#{manageRatesController.selectedRateFile}" />
+					<ui:param name="controller" value="#{manageRatesController}" />
+					<ui:param name="controllerName" value="manageRatesController" />
+					<ui:param name="canEdit" value="#{manageRatesController.canEdit}"></ui:param>
+					<ui:param name="sticky" value="false"></ui:param>
+				</ui:include>
+			</h:form>
 
-		<ui:include src="/views/user/conditionsDetail.xhtml">
-			<ui:param name="conditions"
-				value="#{manageRatesController.selectedRateFile.conditions}" />
-			<ui:param name="controller" value="#{manageRatesController}" />
-			<ui:param name="controllerName" value="manageRatesController" />
-			<ui:param name="canEdit" value="#{manageRatesController.canEdit}" />
-		</ui:include>
+			<ui:include src="/views/user/conditionsDetail.xhtml">
+				<ui:param name="conditions"
+					value="#{manageRatesController.selectedRateFile.conditions}" />
+				<ui:param name="controller" value="#{manageRatesController}" />
+				<ui:param name="controllerName" value="manageRatesController" />
+				<ui:param name="canEdit" value="#{manageRatesController.canEdit}" />
+			</ui:include>
+		</p:panel>
 	</ui:define>
 </ui:composition>
 </html>

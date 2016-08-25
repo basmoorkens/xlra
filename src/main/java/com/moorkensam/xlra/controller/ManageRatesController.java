@@ -180,6 +180,34 @@ public class ManageRatesController {
   }
 
   /**
+   * Redirect to the create rates based on existing rates screen. This is for customer rates only.
+   * 
+   * @throws IOException thrown when the response cant be redirected
+   */
+  public void goToCreateRatesFromExistingRates() throws IOException {
+    FacesContext
+        .getCurrentInstance()
+        .getExternalContext()
+        .redirect(
+            FacesContext.getCurrentInstance().getExternalContext().getApplicationContextPath()
+                + "/views/admin/rate/createRateFileFromExisting.xhtml");
+  }
+
+  /**
+   * Redirect to the create rates based on existing rates screen. This is for customer rates only.
+   * 
+   * @throws IOException thrown when the response cant be redirected
+   */
+  public void goToFreeCreateRates() throws IOException {
+    FacesContext
+        .getCurrentInstance()
+        .getExternalContext()
+        .redirect(
+            FacesContext.getCurrentInstance().getExternalContext().getApplicationContextPath()
+                + "/views/admin/rate/createRateFile.xhtml");
+  }
+
+  /**
    * Setup the page to edit a zone.
    * 
    * @param zone The zone to edit.

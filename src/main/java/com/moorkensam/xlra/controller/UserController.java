@@ -5,6 +5,7 @@ import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.UserService;
 import com.moorkensam.xlra.service.UserSessionService;
+import com.moorkensam.xlra.service.util.LocaleUtil;
 
 import org.primefaces.context.RequestContext;
 
@@ -26,6 +27,8 @@ public class UserController {
   @Inject
   private UserService userService;
 
+  private LocaleUtil localeUtil;
+
   private User user;
 
   private String newPassword;
@@ -45,9 +48,13 @@ public class UserController {
 
   private MessageUtil messageUtil;
 
+  /**
+   * Initialise the controller with predefined data.
+   */
   @PostConstruct
   public void initialize() {
     messageUtil = MessageUtil.getInstance(messageBundle);
+    localeUtil = new LocaleUtil();
     loadUserForEdit();
   }
 
@@ -88,8 +95,15 @@ public class UserController {
     this.retypedPassword = retypedPassword;
   }
 
+  /**
+   * Get all supported languages and fill in translation by user locale.
+   * 
+   * @return The transated langauges
+   */
   public List<Language> getSupportedLanguages() {
-    return localeController.getSupportedLanguages();
+    List<Language> supportedLanguages = localeController.getSupportedLanguages();
+    localeUtil.fillInLanguageTranslations(supportedLanguages, getMessageBundle());
+    return supportedLanguages;
   }
 
   /**
