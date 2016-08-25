@@ -1,6 +1,7 @@
 package com.moorkensam.xlra.service.util;
 
 import com.moorkensam.xlra.model.configuration.Language;
+import com.moorkensam.xlra.model.customer.Department;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Kind;
 import com.moorkensam.xlra.model.rate.Measurement;
@@ -41,6 +42,19 @@ public class LocaleUtil {
   private void fillInDutchName(List<Country> countries) {
     for (Country c : countries) {
       c.setI8nCountryName(c.getDutchName());
+    }
+  }
+
+  /**
+   * Fill in the translations for the departments.
+   * 
+   * @param departments The departments to fill in
+   * @param messageBundle The messagebundle to use for translations
+   */
+  public void fillInDepartmentTranslations(List<Department> departments,
+      ResourceBundle messageBundle) {
+    for (Department dep : departments) {
+      dep.setDescription(messageBundle.getString(dep.getI8nKey()));
     }
   }
 

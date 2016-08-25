@@ -11,7 +11,8 @@
 				<h:outputText value="#{msg['label.department']}" />
 				<p:selectOneMenu style="width:100%;" value="#{contact.department}">
 					<f:selectItem itemLabel="" itemValue="" />
-					<f:selectItems value="#{customerController.allDepartments}" />
+					<f:selectItems value="#{customerController.allDepartments}"
+						var="dep" itemLabel="#{dep.description}" itemValue="#{dep}" />
 				</p:selectOneMenu>
 
 				<h:outputText value="#{msg['label.email']}" />

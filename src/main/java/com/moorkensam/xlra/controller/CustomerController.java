@@ -278,8 +278,15 @@ public class CustomerController {
     this.selectedContact = selectedContact;
   }
 
+  /**
+   * Get the departments to display and translate them.
+   * 
+   * @return The list of translated departments
+   */
   public List<Department> getAllDepartments() {
-    return CustomerUtil.getInstance().getDisplayDepartments();
+    List<Department> departments = CustomerUtil.getInstance().getDisplayDepartments();
+    localeUtil.fillInDepartmentTranslations(departments, messageBundle);
+    return departments;
   }
 
   public String getContactHeader() {
