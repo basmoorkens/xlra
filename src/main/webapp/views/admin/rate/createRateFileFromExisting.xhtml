@@ -101,7 +101,8 @@
 			<p:panel header="#{msg['label.rates.edit']}"
 				collapsed="#{createRatesController.collapseRateLineEditor}">
 				<ui:include src="/views/user/rateLinesDetail.xhtml">
-					<ui:param name="rateFile" value="#{createRatesController.rateFile}" />
+					<ui:param name="rateFile"
+						value="#{createRatesController.selectedRateFile}" />
 					<ui:param name="controller" value="#{createRatesController}" />
 					<ui:param name="controllerName" value="createRatesController" />
 					<ui:param name="canEdit" value="true"></ui:param>
@@ -127,150 +128,14 @@
 			</p:panel>
 		</h:form>
 
-		<h:form id="conditionsDetailForm">
-			<p:growl id="message" showDetail="true" />
-			<p:panel id="conditionsDetailPanel"
-				collapsed="#{createRatesController.collapseConditionsDetailGrid}"
-				header="#{msg['label.terms.and.conditions.title']}">
+		<ui:include src="/views/user/conditionsDetail.xhtml">
+			<ui:param name="rateFile"
+				value="#{createRatesController.selectedRateFile}" />
+			<ui:param name="controller" value="#{createRatesController}" />
+			<ui:param name="controllerName" value="createRatesController" />
+			<ui:param name="canEdit" value="true" />
+		</ui:include>
 
-				<p:dataTable value="#{createRatesController.rateFile.conditions}"
-					editable="true" var="condition" editMode="row"
-					emptyMessage="#{msg['message.conditions.empty']}"
-					id="conditionTable">
-					<p:column headerText="#{msg['label.key']}" width="15%">
-						<h:outputText value="#{condition.translatedKey}" />
-					</p:column>
-					<p:column headerText="#{msg['label.condition.type']}" width="15%">
-						<h:outputText value="#{condition.conditionType}" />
-					</p:column>
-					<p:column headerText="#{msg['label.value']}">
-						<p:outputPanel rendered="#{condition.calculationCondition}">
-							<h:outputText
-								value="#{condition.value} #{condition.calculationValueType.suffix}" />
-						</p:outputPanel>
-						<p:outputPanel rendered="#{!condition.calculationCondition}">
-							<h:outputText
-								value="EN: #{condition.englishTranslation.translation}" />
-							<br />
-							<h:outputText
-								value="NL: #{condition.dutchTranslation.translation}" />
-							<br />
-							<h:outputText
-								value="FR: #{condition.frenchTranslation.translation}" />
-							<br />
-							<h:outputText
-								value="DE: #{condition.germanTranslation.translation}" />
-							<br />
-						</p:outputPanel>
-					</p:column>
-					<p:column headerText="#{msg['label.standard.option']}"
-						style="width:128px;">
-						<p:selectBooleanCheckbox value="#{condition.standardSelected}"
-							disabled="true" />
-					</p:column>
-					<p:column style="width:105px;">
-						<p:commandButton icon="ui-icon-pencil" title="Edit"
-							id="editButton" styleClass="navButton"
-							actionListener="#{createRatesController.setupEditCondition(condition)}"
-							ajax="true" immediate="true" update=":editConditionForm" />
-						<p:tooltip id="editTip" for="editButton"
-							value="#{msg['message.edit.condition.tip']}" />
-						<p:commandButton style="margin-left:5px;" icon="ui-icon-trash"
-							title="Delete" id="deleteButton" styleClass="navButton"
-							actionListener="#{createRatesController.deleteCondition(condition)}"
-							ajax="true" immediate="true" update=":conditionsDetailForm">
-							<p:confirm
-								header="#{msg['createrates.delete.condition.confirm']}"
-								message="#{msg['createrates.delete.condition.tip']}"
-								icon="ui-icon-alert" />
-						</p:commandButton>
-						<p:tooltip id="deleteTip" for="deleteButton"
-							value="#{msg['createrates.delete.condition.tip']}" />
-					</p:column>
-				</p:dataTable>
-
-				<p:panel style="margin-top:10px;">
-					<p:commandButton value="#{msg['createrates.add.condition.title']}"
-						icon="ui-icon-pencil" title="Add" id="addConditionButton"
-						actionListener="#{createRatesController.setupAddCondition}"
-						ajax="true" immediate="true" update=":editConditionForm"
-						styleClass="navButton" />
-					<p:tooltip id="addConditionTip" for="addConditionButton"
-						value="#{msg['createrates.add.condition.tip']}" />
-				</p:panel>
-
-				<p:panel style="margin-top:10px;padding:0px;border:0px;">
-					<p:commandButton value="#{msg['button.back']}"
-						actionListener="#{createRatesController.showRateLineEditor}"
-						update=":rateLinesDetailForm :conditionsDetailForm"
-						styleClass="navButton" />
-					<p:commandButton value="#{msg['button.next']}"
-						actionListener="#{createRatesController.showSummary}"
-						update=":conditionsDetailForm :summaryForm" styleClass="navButton" />
-				</p:panel>
-			</p:panel>
-		</h:form>
-
-		<h:form id="editConditionForm">
-			<p:dialog id="editDialog"
-				header="#{createRatesController.conditionDialogHeader}"
-				widgetVar="editConditionDialog" width="80%" height="50%"
-				dynamic="true">
-				<p:panel header="#{msg['createrates.condition.info.header']}">
-					<p:panelGrid columns="2" style="width:100%;margin-top:10px;"
-						columnClasses="labelColumn,valuesColumn">
-						<h:outputLabel value="#{msg['label.selected.key']}" />
-						<h:outputLabel style="font-weight:bold;"
-							rendered="#{createRatesController.editMode}"
-							value="#{createRatesController.selectedCondition.translatedKey}" />
-						<p:selectOneMenu
-							value="#{createRatesController.selectedCondition.conditionKey}"
-							rendered="#{!createRatesController.editMode}"
-							style="width:200px;">
-							<f:selectItem itemValue="#{null}"
-								itemLabel="#{msg['label.select.key']}" />
-							<f:selectItems
-								value="#{createRatesController.availableTranslationKeysForSelectedRateFile}" />
-							<p:ajax
-								listener="#{createRatesController.loadConditionBasedOnKey}"
-								update=":editConditionForm" />
-						</p:selectOneMenu>
-
-						<h:outputLabel value="#{msg['label.new.value']}:"
-							rendered="#{createRatesController.selectedCondition.calculationCondition}" />
-						<p:inputText style="width:100%;"
-							value="#{createRatesController.selectedCondition.value}"
-							rendered="#{createRatesController.selectedCondition.calculationCondition}" />
-
-						<c:forEach
-							items="#{createRatesController.selectedCondition.translations}"
-							var="translation">
-							<h:outputText value="#{translation.language}" />
-							<p:inputText style="width:100%;"
-								value="#{translation.translation}" />
-						</c:forEach>
-
-						<h:outputLabel value="#{msg['label.standard.selected']}:" />
-						<p:selectBooleanCheckbox
-							value="#{createRatesController.selectedCondition.standardSelected}" />
-					</p:panelGrid>
-					<p:panel style="margin-top:20px;">
-						<p:commandButton value="#{msg['button.cancel']}" id="cancelButton"
-							onclick="PF('editConditionDialog').hide();"
-							styleClass="navButton" />
-						<p:tooltip id="cancelTip" for="cancelButton"
-							value="#{msg['createrates.condition.edit.cancel.tip']}" />
-						<p:commandButton value="#{msg['button.save']}" id="saveButton"
-							styleClass="navButton"
-							oncomplete="handleEditConditionRequest(xhr, status, args)"
-							actionListener="#{createRatesController.saveEditCondition}"
-							update=":conditionsDetailForm :editConditionForm" />
-						<p:tooltip id="saveTip" for="saveButton"
-							value="#{msg['createrates.condition.edit.save.tip']}" />
-					</p:panel>
-				</p:panel>
-			</p:dialog>
-		</h:form>
 
 		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
 			<p:commandButton value="#{msg['button.yes']}" type="button"

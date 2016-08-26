@@ -12,7 +12,7 @@
 			collapsed="#{controller.collapseConditionsDetailGrid}"
 			header="#{msg['label.terms.and.conditions.title']}">
 
-			<p:dataTable editable="#{canEdit}" value="#{conditions}"
+			<p:dataTable editable="#{canEdit}" value="#{rateFile.conditions}"
 				var="condition" editMode="row"
 				emptyMessage="#{msg['message.conditions.empty']}"
 				id="conditionTable">
@@ -81,18 +81,18 @@
 	</h:form>
 
 	<h:form id="editConditionForm">
-		<p:dialog id="editDialog" header="#{msg['label.condition.edit']}"
+		<p:dialog id="editDialog" header="#{controller.conditionDialogTitle}"
 			widgetVar="editConditionDialog" width="50%" height="50%"
 			dynamic="true">
 			<p:panel style="width:100%; margin:auto;">
 				<p:panelGrid columns="2" style="width:100%;margin-top:10px;">
 					<h:outputLabel value="#{msg['label.selected.key']}" />
 					<h:outputLabel style="font-weight:bold;"
-						rendered="#{controller.editMode}"
+						rendered="#{controller.editConditionMode}"
 						value="#{controller.selectedCondition.translatedKey}" />
 					<p:selectOneMenu
 						value="#{controller.selectedCondition.conditionKey}"
-						rendered="#{!controller.editMode}" style="width:200px;">
+						rendered="#{!controller.editConditionMode}" style="width:200px;">
 						<f:selectItem itemValue="#{null}"
 							itemLabel="#{msg['label.select.key']}" />
 						<f:selectItems
@@ -122,17 +122,12 @@
 					<p:commandButton value="#{msg['button.cancel']}"
 						id="cancelEditConditionButton"
 						onclick="PF('editConditionDialog').hide();" styleClass="navButton" />
-					<p:tooltip id="cancelEditConditionButtonTip"
-						for="cancelEditConditionButton"
-						value="#{msg['message.condition.edit.cancel']}" />
 					<p:commandButton style="margin-left:20px;"
 						value="#{msg['button.save']}"
 						oncomplete="handleEditConditionRequest(xhr, status, args)"
 						actionListener="#{controller.saveEditCondition}"
 						styleClass="navButton" id="saveEditConditionButton"
 						update=":conditionsDetailForm :editConditionForm" />
-					<p:tooltip id="saveEditConditionButtonTip"
-						for="saveEditConditionButton" value="#{msg['button.save']}" />
 				</p:panel>
 			</p:panel>
 		</p:dialog>

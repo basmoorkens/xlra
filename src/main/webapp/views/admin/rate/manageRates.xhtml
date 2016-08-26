@@ -106,8 +106,8 @@
 			</h:form>
 
 			<ui:include src="/views/user/conditionsDetail.xhtml">
-				<ui:param name="conditions"
-					value="#{manageRatesController.selectedRateFile.conditions}" />
+				<ui:param name="rateFile"
+					value="#{manageRatesController.selectedRateFile}" />
 				<ui:param name="controller" value="#{manageRatesController}" />
 				<ui:param name="controllerName" value="manageRatesController" />
 				<ui:param name="canEdit" value="#{manageRatesController.canEdit}" />

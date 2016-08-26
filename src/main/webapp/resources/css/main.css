@@ -53,7 +53,7 @@ body {
 
 #xlraMenu {
 	margin-top: 120px;
-	padding-bottom:10px;
+	padding-bottom: 10px;
 }
 
 #version {
@@ -70,8 +70,17 @@ body {
 	font-weight: bold;
 }
 
+.largeLabelColumn {
+	width: 33%;
+	font-weight: bold;
+}
+
 .valuesColumn {
 	width: 80%;
+}
+
+.smallValuesColumn {
+	width: 67%;
 }
 
 .ui-row-editor {

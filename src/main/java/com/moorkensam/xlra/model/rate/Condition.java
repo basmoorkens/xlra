@@ -116,7 +116,7 @@ public class Condition extends BaseEntity implements Translatable {
       return false;
     }
     Condition other = (Condition) obj;
-    if (other.getId() == id) {
+    if (conditionKey.equals(other.getConditionKey())) {
       return true;
     }
     return false;

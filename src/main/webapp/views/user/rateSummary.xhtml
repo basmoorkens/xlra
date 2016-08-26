@@ -10,33 +10,33 @@
 			<p:panelGrid columns="2" style="width:100%;"
 				columnClasses="labelColumn,valuesColumn">
 				<h:outputText value="#{msg['label.name']}:" />
-				<h:outputText value="#{createRatesController.rateFile.name}" />
+				<h:outputText value="#{createRatesController.selectedRateFile.name}" />
 
 				<h:outputText value="#{msg['label.customer']}:" />
 				<h:outputText
-					value="#{createRatesController.rateFile.customer.name}" />
+					value="#{createRatesController.selectedRateFile.customer.name}" />
 
 				<h:outputText value="#{msg['label.country']}:" />
 				<h:outputText
-					value="#{createRatesController.rateFile.country.shortName}" />
+					value="#{createRatesController.selectedRateFile.country.shortName}" />
 
 				<h:outputText value="#{msg['label.measurement']}:" />
 				<h:outputText
-					value="#{createRatesController.rateFile.measurement.description}" />
+					value="#{createRatesController.selectedRateFile.measurement.description}" />
 
 				<h:outputText value="#{msg['label.type.of.transport']}:" />
 				<h:outputText
-					value="#{createRatesController.rateFile.kindOfRate.description}" />
+					value="#{createRatesController.selectedRateFile.kindOfRate.description}" />
 
 				<h:outputText value="#{msg['label.transport.type']}:" />
 				<h:outputText
-					value="#{createRatesController.rateFile.transportType}" />
+					value="#{createRatesController.selectedRateFile.transportType}" />
 			</p:panelGrid>
 		</p:panel>
 
 		<p:panel header="#{msg['label.rates']}">
 			<p:dataTable
-				value="#{createRatesController.rateFile.relationalRateLines}"
+				value="#{createRatesController.selectedRateFile.relationalRateLines}"
 				var="rateLine" emptyMessage="#{msg['message.rates.empty']}"
 				id="rateLineSummaryTable" rows="50" editable="false">
 
@@ -44,12 +44,12 @@
 				<f:facet name="header">
 					<h:outputText value="#{msg['label.zone']}" />
 				</f:facet>
-				<c:forEach items="#{createRatesController.rateFile.columns}"
+				<c:forEach items="#{createRatesController.selectedRateFile.columns}"
 					var="column" varStatus="colLoopStatus">
 					<p:column rendered="#{colLoopStatus.index==0}">
 						<f:facet name="header">
 							<h:outputText
-								value="#{createRatesController.rateFile.measurement.description}" />
+								value="#{createRatesController.selectedRateFile.measurement.description}" />
 						</f:facet>
 						<h:outputText value="#{rateLine[colLoopStatus.index].measurement}" />
 					</p:column>
@@ -62,8 +62,8 @@
 
 		<p:panel header="#{msg['label.terms.and.conditions.title']}">
 			<p:dataTable editable="false"
-				value="#{createRatesController.rateFile.conditions}" var="condition"
-				emptyMessage="#{msg['message.conditions.empty']}"
+				value="#{createRatesController.selectedRateFile.conditions}"
+				var="condition" emptyMessage="#{msg['message.conditions.empty']}"
 				id="conditionSummaryTable">
 				<p:column headerText="#{msg['label.key']}" width="15%">
 					<h:outputText value="#{condition.translatedKey}" />

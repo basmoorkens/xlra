@@ -23,7 +23,6 @@ import com.moorkensam.xlra.service.util.TranslationUtil;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.CellEditEvent;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -37,7 +36,7 @@ import javax.inject.Inject;
 
 @ViewScoped
 @ManagedBean
-public class CreateRatesController {
+public class CreateRatesController extends AbstractRateController {
 
   @Inject
   private RateFileService rateFileService;
@@ -66,16 +65,20 @@ public class CreateRatesController {
 
   private TranslationKey keyToAdd;
 
-  private RateFile rateFile;
-
   private RateFileSearchFilter filter;
 
   private boolean hasRateFileSelected = false;
 
+  private double startQuantity;
+
+  private double endQuantity;
+
+  private double increment;
+
   /** Collapsed for panels of the create rates page. */
   private boolean collapseBasicInfoGrid = false;
 
-  private boolean collapseConditionsDetailGrid = true;
+  private boolean collapseGenerateRatesGrid = true;
 
   private boolean collapseRateLinesDetailGrid = false;
 
@@ -83,11 +86,7 @@ public class CreateRatesController {
 
   private boolean collapseSummary = true;
 
-  private Condition selectedCondition;
-
   private boolean editMode = false;
-
-  private String conditionDialogHeader;
 
   /**
    * The init method for this controller.
@@ -97,10 +96,12 @@ public class CreateRatesController {
     localeUtil = new LocaleUtil();
     messageUtil = MessageUtil.getInstance(messageBundle);
     filter = new RateFileSearchFilter();
-    setRateFile(new RateFile());
+    selectedRateFile = new RateFile();
     countries = countryService.getAllCountries();
+    localeUtil.fillInCountryi8nNameByLanguage(countries, localeController.getLanguage());
     conditionFactory = new ConditionFactory();
     translationUtil = new TranslationUtil();
+    hasRateFileSelected = true;
   }
 
   /**
@@ -110,8 +111,8 @@ public class CreateRatesController {
     RateFile copiedFile;
     try {
       copiedFile = rateFileService.generateCustomerRateFileForFilterAndCustomer(filter);
-      rateFile = copiedFile;
-      translationUtil.fillInTranslations(rateFile.getConditions());
+      selectedRateFile = copiedFile;
+      translationUtil.fillInTranslations(selectedRateFile.getConditions());
       showRateLineEditor();
     } catch (RateFileException e) {
       messageUtil.addErrorMessage("message.ratefile.create.failed", e.getBusinessException());
@@ -119,22 +120,45 @@ public class CreateRatesController {
   }
 
   /**
+   * Reset the generateFRee rates panel and show the basic info panel.
+   */
+  public void backToBasicInfoFromGenerateFreeRates() {
+    startQuantity = 0.0d;
+    endQuantity = 0.0d;
+    increment = 0.0d;
+    showBasicInfoGrid();
+  }
+
+  public void generateFreeCreateRateFile() {
+    // TODO generate rates based on given quantitys and zones.
+  }
+
+  public void showGenerateRatesPanel() {
+    collapseAll();
+    collapseGenerateRatesGrid = false;
+  }
+
+  private void collapseAll() {
+    collapseBasicInfoGrid = true;
+    collapseGenerateRatesGrid = true;
+    collapseRateLineEditor = true;
+    collapseConditionsDetailGrid = true;
+    collapseSummary = true;
+  }
+
+  /**
    * Show the rateline editor.
    */
   public void showRateLineEditor() {
-    collapseBasicInfoGrid = true;
+    collapseAll();
     collapseRateLineEditor = false;
-    collapseConditionsDetailGrid = true;
-    collapseSummary = true;
   }
 
   /**
    * Show the summary grid.
    */
   public void showSummary() {
-    collapseBasicInfoGrid = true;
-    collapseRateLineEditor = true;
-    collapseConditionsDetailGrid = true;
+    collapseAll();
     collapseSummary = false;
   }
 
@@ -142,20 +166,16 @@ public class CreateRatesController {
    * Show basic info grid.
    */
   public void showBasicInfoGrid() {
+    collapseAll();
     collapseBasicInfoGrid = false;
-    collapseRateLineEditor = true;
-    collapseConditionsDetailGrid = true;
-    collapseSummary = true;
   }
 
   /**
    * Show conditions editor.
    */
   public void goToConditionsEditor() {
-    collapseBasicInfoGrid = true;
-    collapseRateLineEditor = true;
+    collapseAll();
     collapseConditionsDetailGrid = false;
-    collapseSummary = true;
   }
 
   /**
@@ -181,12 +201,8 @@ public class CreateRatesController {
   public void deleteCondition(Condition condition) {
     messageUtil.addMessage("message.ratefile.condition.removed",
         "message.ratefile.condition.removed.detail", condition.getTranslatedKey());
-    rateFile.getConditions().remove(condition);
+    getSelectedRateFile().getConditions().remove(condition);
     condition.setRateFile(null);
-  }
-
-  public List<TranslationKey> getAvailableTranslationKeysForSelectedRateFile() {
-    return translationUtil.getAvailableTranslationKeysForSelectedRateFile(rateFile);
   }
 
   /**
@@ -196,7 +212,7 @@ public class CreateRatesController {
    */
   public void createConditionForSelectedTranslationKey(ActionEvent event) {
     Condition createCondition = conditionFactory.createCondition(getKeyToAdd(), "");
-    rateFile.addCondition(createCondition);
+    selectedRateFile.addCondition(createCondition);
     setKeyToAdd(null);
   }
 
@@ -206,14 +222,6 @@ public class CreateRatesController {
 
   public void setRateFileService(RateFileService rateFileService) {
     this.rateFileService = rateFileService;
-  }
-
-  public RateFile getRateFile() {
-    return rateFile;
-  }
-
-  public void setRateFile(RateFile rateFile) {
-    this.rateFile = rateFile;
   }
 
   public List<Country> getCountries() {
@@ -241,50 +249,24 @@ public class CreateRatesController {
    * @return The page to redirect to.
    */
   public String saveNewRateFile() {
-    rateFileService.createRateFile(rateFile);
+    rateFileService.createRateFile(selectedRateFile);
     messageUtil.addMessage("message.ratefile.created.title", "message.ratefile.created.detail",
-        rateFile.getName());
+        selectedRateFile.getName());
     return "views/rate/admin/manageRates.xhtml";
   }
 
-
-  /**
-   * Setup the page to edit a condition.
-   * 
-   * @param condition The condition to edit.
-   */
-  public void setupEditCondition(Condition condition) {
-    this.setSelectedCondition(condition);
-    editMode = true;
-    conditionDialogHeader = "Edit condition " + condition.getTranslatedKey();
-    showConditionDetailDialog();
-  }
-
-  private void showConditionDetailDialog() {
+  protected void showConditionDetailDialog() {
+    if (editConditionMode) {
+      conditionDialogTitle =
+          messageUtil.lookupI8nStringAndInjectParams("label.terms.and.conditions.title.edit",
+              selectedCondition.getTranslatedKey());
+    } else {
+      conditionDialogTitle =
+          messageUtil.lookupI8nStringAndInjectParams("label.terms.and.conditions.title.create",
+              null);
+    }
     RequestContext context = RequestContext.getCurrentInstance();
     context.execute("PF('editConditionDialog').show();");
-  }
-
-  /**
-   * Setup the page to add a new condition.
-   */
-  public void setupAddCondition() {
-    selectedCondition = new Condition();
-    editMode = false;
-    conditionDialogHeader = "Add a new condition";
-    showConditionDetailDialog();
-  }
-
-  /**
-   * Load a condition based on the key that was selected.
-   */
-  public void loadConditionBasedOnKey() {
-    if (selectedCondition.getConditionKey() == null) {
-      selectedCondition = conditionFactory.createEmptyCondition();
-    } else {
-      selectedCondition = conditionFactory.createCondition(selectedCondition.getConditionKey(), "");
-    }
-    showConditionDetailDialog();
   }
 
   /**
@@ -292,7 +274,7 @@ public class CreateRatesController {
    */
   public void saveEditCondition() {
     if (selectedCondition.getConditionKey() != null) {
-      if (editMode) {
+      if (editConditionMode) {
         messageUtil.addMessage("message.ratefile.condition.updated.title",
             "message.ratefile.condition.updated.detail", selectedCondition.getTranslatedKey());
       } else {
@@ -307,10 +289,10 @@ public class CreateRatesController {
   }
 
   private void addConditionToRateFile() {
-    rateFile.addCondition(selectedCondition);
+    selectedRateFile.addCondition(selectedCondition);
     messageUtil.addMessage("message.ratefile.condition.added",
         "message.ratefile.condition.added.detail", selectedCondition.getTranslatedKey(),
-        rateFile.getName());
+        selectedRateFile.getName());
   }
 
   public List<Language> getLanguages() {
@@ -323,22 +305,6 @@ public class CreateRatesController {
 
   public void setFilter(RateFileSearchFilter filter) {
     this.filter = filter;
-  }
-
-  public boolean isHasRateFileSelected() {
-    return hasRateFileSelected;
-  }
-
-  public void setHasRateFileSelected(boolean hasRateFileSelected) {
-    this.hasRateFileSelected = hasRateFileSelected;
-  }
-
-  public boolean isCollapseConditionsDetailGrid() {
-    return collapseConditionsDetailGrid;
-  }
-
-  public void setCollapseConditionsDetailGrid(boolean collapseConditionsDetailGrid) {
-    this.collapseConditionsDetailGrid = collapseConditionsDetailGrid;
   }
 
   /**
@@ -414,14 +380,6 @@ public class CreateRatesController {
     this.conditionFactory = conditionFactory;
   }
 
-  public Condition getSelectedCondition() {
-    return selectedCondition;
-  }
-
-  public void setSelectedCondition(Condition selectedCondition) {
-    this.selectedCondition = selectedCondition;
-  }
-
   public boolean isEditMode() {
     return editMode;
   }
@@ -436,14 +394,6 @@ public class CreateRatesController {
 
   public void setCollapseRateLinesDetailGrid(boolean collapseRateLinesDetailGrid) {
     this.collapseRateLinesDetailGrid = collapseRateLinesDetailGrid;
-  }
-
-  public String getConditionDialogHeader() {
-    return conditionDialogHeader;
-  }
-
-  public void setConditionDialogHeader(String conditionDialogHeader) {
-    this.conditionDialogHeader = conditionDialogHeader;
   }
 
   public ResourceBundle getMessageBundle() {
@@ -476,6 +426,38 @@ public class CreateRatesController {
 
   public void setLocaleUtil(LocaleUtil localeUtil) {
     this.localeUtil = localeUtil;
+  }
+
+  public double getStartQuantity() {
+    return startQuantity;
+  }
+
+  public void setStartQuantity(double startQuantity) {
+    this.startQuantity = startQuantity;
+  }
+
+  public double getEndQuantity() {
+    return endQuantity;
+  }
+
+  public void setEndQuantity(double endQuantity) {
+    this.endQuantity = endQuantity;
+  }
+
+  public double getIncrement() {
+    return increment;
+  }
+
+  public void setIncrement(double increment) {
+    this.increment = increment;
+  }
+
+  public boolean isCollapseGenerateRatesGrid() {
+    return collapseGenerateRatesGrid;
+  }
+
+  public void setCollapseGenerateRatesGrid(boolean collapseGenerateRatesGrid) {
+    this.collapseGenerateRatesGrid = collapseGenerateRatesGrid;
   }
 
 }

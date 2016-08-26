@@ -8,6 +8,8 @@ public class RateFileSearchFilter implements Serializable {
 
   private static final long serialVersionUID = -6601295471333940331L;
 
+  private String name;
+
   private Kind rateKind;
 
   private Measurement measurement;
@@ -80,5 +82,13 @@ public class RateFileSearchFilter implements Serializable {
 
   public void setTransportationType(TransportType transportationType) {
     this.transportationType = transportationType;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 }

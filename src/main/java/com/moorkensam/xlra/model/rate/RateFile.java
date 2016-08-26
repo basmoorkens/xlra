@@ -104,6 +104,7 @@ public class RateFile extends BaseEntity {
       zones = new ArrayList<Zone>();
     }
     zones.add(zone);
+    zone.setRateFile(this);
   }
 
   private String name;
