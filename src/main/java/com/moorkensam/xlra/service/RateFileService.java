@@ -110,4 +110,7 @@ public interface RateFileService {
       Map<String, Object> filters);
 
   public int countRateFiles();
+
+  RateFile generateFreeCreateRateFile(final RateFile rateFile, double start, double end,
+      double interval);
 }

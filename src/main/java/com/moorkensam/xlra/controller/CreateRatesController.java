@@ -49,7 +49,7 @@ public class CreateRatesController extends AbstractRateController {
   @Inject
   private CountryService countryService;
 
-  @ManagedProperty("#{localeController}") 
+  @ManagedProperty("#{localeController}")
   private LocaleController localeController;
 
   @ManagedProperty("#{msg}")
@@ -148,20 +148,10 @@ public class CreateRatesController extends AbstractRateController {
    * Generates the ratelines for given input.
    *
    */
-  // TODO refactor this to service
   public void generateFreeCreateRateFile() {
-    RateLine rateLine;
-    for (Zone zone : selectedRateFile.getZones()) {
-      for (double d = startQuantity; d <= endQuantity; d += increment) {
-        rateLine = new RateLine();
-        rateLine.setZone(zone);
-        rateLine.setMeasurement(d);
-        rateLine.setValue(new BigDecimal(0.0d));
-        selectedRateFile.addRateLine(rateLine);
-      }
-    }
-    selectedRateFile.fillUpRelationalProperties();
-    selectedRateFile.fillUpRateLineRelationalMap();
+    selectedRateFile =
+        rateFileService.generateFreeCreateRateFile(selectedRateFile, startQuantity, endQuantity,
+            increment);
     showRateLineEditor();
   }
 
