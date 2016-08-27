@@ -37,13 +37,21 @@
 			<ui:param name="rateFile"
 				value="#{manageRatesController.selectedRateFile}" />
 		</ui:include>
-		<ui:include src="/views/user/zoneDetail.xhtml">
-			<ui:param name="zones"
-				value="#{manageRatesController.selectedRateFile.zones}" />
-			<ui:param name="controller" value="#{manageRatesController}" />
-			<ui:param name="controllerName" value="manageRatesController" />
-			<ui:param name="canEdit" value="false"></ui:param>
-		</ui:include>
+
+		<h:form id="zoneDetailForm">
+			<p:growl id="message" showDetail="true" />
+			<p:panel id="zonesDetailPanel" toggleable="false" style="width:100%;"
+				collapsed="#{manageRatesController.collapseZonesDetailGrid}"
+				header="#{msg['zonedetail.title']}">
+				<ui:include src="/views/user/zoneDetail.xhtml">
+					<ui:param name="zones"
+						value="#{manageRatesController.selectedRateFile.zones}" />
+					<ui:param name="controller" value="#{manageRatesController}" />
+					<ui:param name="controllerName" value="manageRatesController" />
+					<ui:param name="canEdit" value="false"></ui:param>
+				</ui:include>
+			</p:panel>
+		</h:form>
 		<h:form id="rateLinesDetailForm">
 			<p:growl id="message" showDetail="true" />
 			<ui:include src="/views/user/rateLinesDetail.xhtml">
@@ -55,13 +63,22 @@
 				<ui:param name="sticky" value="false"></ui:param>
 			</ui:include>
 		</h:form>
-		<ui:include src="/views/user/conditionsDetail.xhtml">
-			<ui:param name="rateFile"
-				value="#{manageRatesController.selectedRateFile}" />
-			<ui:param name="controller" value="#{manageRatesController}" />
-			<ui:param name="controllerName" value="manageRatesController" />
-			<ui:param name="canEdit" value="false"></ui:param>
-		</ui:include>
+
+		<h:form id="conditionsDetailForm">
+			<p:panel id="conditionsDetailPanel" style="width:100%;"
+				toggleable="#{manageRatesController.hasRateFileSelected}"
+				collapsed="#{manageRatesController.collapseConditionsDetailGrid}"
+				header="#{msg['label.terms.and.conditions.title']}">
+				<ui:include src="/views/user/conditionsDetail.xhtml">
+					<ui:param name="rateFile"
+						value="#{manageRatesController.selectedRateFile}" />
+					<ui:param name="controller" value="#{manageRatesController}" />
+					<ui:param name="controllerName" value="manageRatesController" />
+					<ui:param name="canEdit" value="false"></ui:param>
+				</ui:include>
+			</p:panel>
+		</h:form>
+
 	</ui:define>
 </ui:composition>
 </html>

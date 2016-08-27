@@ -59,11 +59,7 @@ public class ManageRatesController extends AbstractRateController {
 
   private MessageUtil messageUtil;
 
-  private ZoneUtil zoneUtil;
-
   private boolean collapseRateLinesDetailGrid = true;
-
-  private boolean collapseZonesDetailGrid = true;
 
   private List<String> columnHeaders = new ArrayList<String>();
 
@@ -71,17 +67,9 @@ public class ManageRatesController extends AbstractRateController {
 
   private boolean editable;
 
-  private Zone selectedZone;
-
-  private Zone originalSelectedZone;
-
   private List<RateFileIdNameDto> autoCompleteItems;
 
-  private boolean editZoneMode = false;
-
   private LazyDataModel<RateFile> model;
-
-  private String zoneDialogTitle;
 
   /**
    * Logic to initialize the controller.
@@ -91,7 +79,7 @@ public class ManageRatesController extends AbstractRateController {
     messageUtil = MessageUtil.getInstance(messageBundle);
     editable = userSessionService.isLoggedInUserAdmin();
     resetSelectedRateFile();
-    zoneUtil = new ZoneUtil();
+    setZoneUtil(new ZoneUtil());
     autoCompleteItems = rateFileService.getRateFilesIdAndNamesForAutoComplete();
     initModel();
   }
@@ -190,57 +178,16 @@ public class ManageRatesController extends AbstractRateController {
                 + "/views/admin/rate/freeCreateRateFile.xhtml");
   }
 
-  /**
-   * Setup the page to edit a zone.
-   * 
-   * @param zone The zone to edit.
-   */
-  public void setupEditZone(Zone zone) {
-    this.originalSelectedZone = zone;
-    this.selectedZone = zone.deepCopy();
-    editZoneMode = true;
-    showZoneDetailDialog();
-  }
-
-  /**
-   * Cancels the editing of a zone.
-   */
-  public void cancelEditZone() {
-    resetZoneEdit();
-    hideZoneDetailDialog();
-  }
-
-  private void resetZoneEdit() {
-    selectedZone = null;
-    originalSelectedZone = null;
-  }
-
-  private void showZoneDetailDialog() {
-    if (editZoneMode) {
-      zoneDialogTitle =
-          messageUtil.lookupI8nStringAndInjectParams("zonedetail.edit.header.edit",
-              selectedZone.getName());
+  protected void showZoneDetailDialog() {
+    if (isEditZoneMode()) {
+      setZoneDialogTitle(messageUtil.lookupI8nStringAndInjectParams("zonedetail.edit.header.edit",
+          getSelectedZone().getName()));
     } else {
-      zoneDialogTitle =
-          messageUtil.lookupI8nStringAndInjectParams("zonedetail.edit.header.create", null);
+      setZoneDialogTitle(messageUtil.lookupI8nStringAndInjectParams(
+          "zonedetail.edit.header.create", ""));
     }
     RequestContext context = RequestContext.getCurrentInstance();
     context.execute("PF('editZoneDialog').show();");
-  }
-
-  private void hideZoneDetailDialog() {
-    RequestContext context = RequestContext.getCurrentInstance();
-    context.execute("PF('editZoneDialog').hide();");
-  }
-
-  /**
-   * Setup the page to add a new condition.
-   */
-  public void setupAddZone() {
-    selectedZone = new Zone();
-    selectedZone.setZoneType(getSelectedRateFile().getCountry().getZoneType());
-    editZoneMode = false;
-    showZoneDetailDialog();
   }
 
   /**
@@ -263,42 +210,18 @@ public class ManageRatesController extends AbstractRateController {
   }
 
   /**
-   * Check if the selected ratefile has numericalzones.
-   * 
-   * @return True when numerical, false otherwise.
-   */
-  public boolean isNumericRateFileZone() {
-    if (getSelectedRateFile() != null) {
-      return getSelectedRateFile().isNumericalZoneRateFile();
-    }
-    return false;
-  }
-
-  /**
-   * Check if the selected ratefile has alpha numericalzones.
-   * 
-   * @return True when alphanumerical, false otherwise.
-   */
-  public boolean isAlphaNumericRateFileZone() {
-    if (getSelectedRateFile() != null) {
-      return getSelectedRateFile().isAlphaNumericalZoneRateFile();
-    }
-    return false;
-  }
-
-  /**
    * Check if the postal codes in the zone are valid, if so save it.
    */
   public void saveZone() {
     if (isSelectedZoneIsValid()) {
-      if (selectedZone.getId() > 0) {
-        originalSelectedZone.fillInValuesFromZone(selectedZone);
+      if (!editZoneMode) {
+        getSelectedRateFile().addZone(getSelectedZone());
       } else {
-        getSelectedRateFile().addZone(selectedZone);
+        getOriginalSelectedZone().fillInValuesFromZone(getSelectedZone());
       }
       updateRateFile();
       messageUtil.addMessage("message.ratefile.zone.updated",
-          "message.ratefile.zone.updated.detail", selectedZone.getName());
+          "message.ratefile.zone.updated.detail", getSelectedZone().getName());
       resetZoneEdit();
     } else {
       showZoneDetailDialog();
@@ -439,22 +362,9 @@ public class ManageRatesController extends AbstractRateController {
     }
   }
 
-  private boolean isSelectedZoneIsValid() {
-    if (selectedZone == null) {
-      return false;
-    }
-    if (getSelectedRateFile().isAlphaNumericalZoneRateFile()) {
-      return validateAlphanumericalPostalCodes(selectedZone.getAlphaNumericPostalCodesAsString());
-    }
-    if (getSelectedRateFile().isNumericalZoneRateFile()) {
-      return validateNumericalPostalCodes(selectedZone.getNumericalPostalCodesAsString());
-    }
-    return false;
-  }
-
-  private boolean validateNumericalPostalCodes(String numericalPostalCodeString) {
+  protected boolean validateNumericalPostalCodes(String numericalPostalCodeString) {
     try {
-      zoneUtil.convertNumericalPostalCodeStringToList(numericalPostalCodeString);
+      getZoneUtil().convertNumericalPostalCodeStringToList(numericalPostalCodeString);
       return true;
     } catch (Exception e) {
       messageUtil.addErrorMessage("message.invalid.postal.codes",
@@ -463,9 +373,9 @@ public class ManageRatesController extends AbstractRateController {
     return false;
   }
 
-  private boolean validateAlphanumericalPostalCodes(String alphaNumericalPostalCodeString) {
+  protected boolean validateAlphanumericalPostalCodes(String alphaNumericalPostalCodeString) {
     try {
-      zoneUtil.convertAlphaNumericPostalCodeStringToList(alphaNumericalPostalCodeString);
+      getZoneUtil().convertAlphaNumericPostalCodeStringToList(alphaNumericalPostalCodeString);
       return true;
     } catch (Exception e) {
       messageUtil.addErrorMessage("message.invalid.postal.codes",
@@ -512,14 +422,6 @@ public class ManageRatesController extends AbstractRateController {
     return translationUtil.getAvailableTranslationKeysForSelectedRateFile(getSelectedRateFile());
   }
 
-  public boolean isCollapseZonesDetailGrid() {
-    return collapseZonesDetailGrid;
-  }
-
-  public void setCollapseZonesDetailGrid(boolean collapseZonesDetailGrid) {
-    this.collapseZonesDetailGrid = collapseZonesDetailGrid;
-  }
-
   public boolean isCanEdit() {
     return editable;
   }
@@ -536,36 +438,12 @@ public class ManageRatesController extends AbstractRateController {
     this.autoCompleteItems = autoCompleteItems;
   }
 
-  public Zone getSelectedZone() {
-    return selectedZone;
-  }
-
-  public void setSelectedZone(Zone selectedZone) {
-    this.selectedZone = selectedZone;
-  }
-
-  public boolean isEditZoneMode() {
-    return editZoneMode;
-  }
-
-  public void setEditZoneMode(boolean editZoneMode) {
-    this.editZoneMode = editZoneMode;
-  }
-
   public LazyDataModel<RateFile> getModel() {
     return model;
   }
 
   public void setModel(LazyDataModel<RateFile> model) {
     this.model = model;
-  }
-
-  public Zone getOriginalSelectedZone() {
-    return originalSelectedZone;
-  }
-
-  public void setOriginalSelectedZone(Zone originalSelectedZone) {
-    this.originalSelectedZone = originalSelectedZone;
   }
 
   public UserSessionService getUserSessionService() {

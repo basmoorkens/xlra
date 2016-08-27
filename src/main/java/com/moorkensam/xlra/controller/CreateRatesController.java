@@ -10,7 +10,9 @@ import com.moorkensam.xlra.model.rate.Kind;
 import com.moorkensam.xlra.model.rate.Measurement;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
+import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.TransportType;
+import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.CountryService;
 import com.moorkensam.xlra.service.CustomerService;
@@ -23,7 +25,10 @@ import com.moorkensam.xlra.service.util.TranslationUtil;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.CellEditEvent;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -44,7 +49,7 @@ public class CreateRatesController extends AbstractRateController {
   @Inject
   private CountryService countryService;
 
-  @ManagedProperty("#{localeController}")
+  @ManagedProperty("#{localeController}") 
   private LocaleController localeController;
 
   @ManagedProperty("#{msg}")
@@ -59,15 +64,11 @@ public class CreateRatesController extends AbstractRateController {
 
   private TranslationUtil translationUtil;
 
-  private ConditionFactory conditionFactory;
-
   private List<Country> countries;
 
   private TranslationKey keyToAdd;
 
   private RateFileSearchFilter filter;
-
-  private boolean hasRateFileSelected = false;
 
   private double startQuantity;
 
@@ -81,6 +82,8 @@ public class CreateRatesController extends AbstractRateController {
   private boolean collapseGenerateRatesGrid = true;
 
   private boolean collapseRateLinesDetailGrid = false;
+
+  private boolean collapseZonesEditor = true;
 
   private boolean collapseRateLineEditor = true;
 
@@ -97,11 +100,13 @@ public class CreateRatesController extends AbstractRateController {
     messageUtil = MessageUtil.getInstance(messageBundle);
     filter = new RateFileSearchFilter();
     selectedRateFile = new RateFile();
+    selectedRateFile.setConditions(new ArrayList<Condition>());
     countries = countryService.getAllCountries();
     localeUtil.fillInCountryi8nNameByLanguage(countries, localeController.getLanguage());
     conditionFactory = new ConditionFactory();
     translationUtil = new TranslationUtil();
     hasRateFileSelected = true;
+    showBasicInfoGrid();
   }
 
   /**
@@ -129,8 +134,40 @@ public class CreateRatesController extends AbstractRateController {
     showBasicInfoGrid();
   }
 
+  public void backToGenerateRatesScreen() {
+    selectedRateFile.setZones(new ArrayList<Zone>());
+    showGenerateRatesPanel();
+  }
+
+  public void showZonesEditor() {
+    collapseAll();
+    collapseZonesEditor = false;
+  }
+
+  /**
+   * Generates the ratelines for given input.
+   *
+   */
+  // TODO refactor this to service
   public void generateFreeCreateRateFile() {
-    // TODO generate rates based on given quantitys and zones.
+    RateLine rateLine;
+    for (Zone zone : selectedRateFile.getZones()) {
+      for (double d = startQuantity; d <= endQuantity; d += increment) {
+        rateLine = new RateLine();
+        rateLine.setZone(zone);
+        rateLine.setMeasurement(d);
+        rateLine.setValue(new BigDecimal(0.0d));
+        selectedRateFile.addRateLine(rateLine);
+      }
+    }
+    selectedRateFile.fillUpRelationalProperties();
+    selectedRateFile.fillUpRateLineRelationalMap();
+    showRateLineEditor();
+  }
+
+  public void processBasicInfo() {
+    // TODO implement logic here to make sure that the ratefile does not yet exist.
+    showGenerateRatesPanel();
   }
 
   public void showGenerateRatesPanel() {
@@ -144,6 +181,7 @@ public class CreateRatesController extends AbstractRateController {
     collapseRateLineEditor = true;
     collapseConditionsDetailGrid = true;
     collapseSummary = true;
+    collapseZonesEditor = true;
   }
 
   /**
@@ -293,6 +331,70 @@ public class CreateRatesController extends AbstractRateController {
     messageUtil.addMessage("message.ratefile.condition.added",
         "message.ratefile.condition.added.detail", selectedCondition.getTranslatedKey(),
         selectedRateFile.getName());
+  }
+
+  @Override
+  protected void showZoneDetailDialog() {
+    if (isEditZoneMode()) {
+      setZoneDialogTitle(messageUtil.lookupI8nStringAndInjectParams("zonedetail.edit.header.edit",
+          getSelectedZone().getName()));
+    } else {
+      setZoneDialogTitle(messageUtil.lookupI8nStringAndInjectParams(
+          "zonedetail.edit.header.create", ""));
+    }
+    RequestContext context = RequestContext.getCurrentInstance();
+    context.execute("PF('editZoneDialog').show();");
+  }
+
+  @Override
+  public void deleteZone(Zone zone) {
+    Iterator<Zone> iterator = selectedRateFile.getZones().iterator();
+    while (iterator.hasNext()) {
+      Zone iteratingZone = iterator.next();
+      if (iteratingZone.equals(zone)) {
+        iterator.remove();
+        break;
+      }
+    }
+  }
+
+  protected boolean validateNumericalPostalCodes(String numericalPostalCodeString) {
+    try {
+      getZoneUtil().convertNumericalPostalCodeStringToList(numericalPostalCodeString);
+      return true;
+    } catch (Exception e) {
+      messageUtil.addErrorMessage("message.invalid.postal.codes",
+          "message.invalid.postal.codes.numeric.detail");
+    }
+    return false;
+  }
+
+  protected boolean validateAlphanumericalPostalCodes(String alphaNumericalPostalCodeString) {
+    try {
+      getZoneUtil().convertAlphaNumericPostalCodeStringToList(alphaNumericalPostalCodeString);
+      return true;
+    } catch (Exception e) {
+      messageUtil.addErrorMessage("message.invalid.postal.codes",
+          "message.invalid.postal.codes.alphanumeric.detail");
+      showZoneDetailDialog();
+    }
+    return false;
+  }
+
+  @Override
+  public void saveZone() {
+    if (isSelectedZoneIsValid()) {
+      if (!editZoneMode) {
+        getSelectedRateFile().addZone(getSelectedZone());
+      } else {
+        getOriginalSelectedZone().fillInValuesFromZone(getSelectedZone());
+      }
+      messageUtil.addMessage("message.ratefile.zone.updated",
+          "message.ratefile.zone.updated.detail", getSelectedZone().getName());
+      resetZoneEdit();
+    } else {
+      showZoneDetailDialog();
+    }
   }
 
   public List<Language> getLanguages() {
@@ -460,4 +562,11 @@ public class CreateRatesController extends AbstractRateController {
     this.collapseGenerateRatesGrid = collapseGenerateRatesGrid;
   }
 
+  public boolean isCollapseZonesEditor() {
+    return collapseZonesEditor;
+  }
+
+  public void setCollapseZonesEditor(boolean collapseZonesEditor) {
+    this.collapseZonesEditor = collapseZonesEditor;
+  }
 }

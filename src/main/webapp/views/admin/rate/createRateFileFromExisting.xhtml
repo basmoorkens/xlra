@@ -128,32 +128,31 @@
 			</p:panel>
 		</h:form>
 
-		<ui:include src="/views/user/conditionsDetail.xhtml">
-			<ui:param name="rateFile"
-				value="#{createRatesController.selectedRateFile}" />
-			<ui:param name="controller" value="#{createRatesController}" />
-			<ui:param name="controllerName" value="createRatesController" />
-			<ui:param name="canEdit" value="true" />
-		</ui:include>
+		<h:form id="conditionsDetailForm">
+			<p:growl id="message" showDetail="true" />
+			<p:panel id="conditionsDetailPanel"
+				collapsed="#{createRatesController.collapseConditionsDetailGrid}"
+				header="#{msg['label.terms.and.conditions.title']}">
+				<ui:include src="/views/user/conditionsDetail.xhtml">
+					<ui:param name="rateFile"
+						value="#{createRatesController.selectedRateFile}" />
+					<ui:param name="controller" value="#{createRatesController}" />
+					<ui:param name="controllerName" value="createRatesController" />
+					<ui:param name="canEdit" value="true" />
+				</ui:include>
 
-
-		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-			<p:commandButton value="#{msg['button.yes']}" type="button"
-				styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-			<p:commandButton value="#{msg['button.no']}" type="button"
-				styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-		</p:confirmDialog>
-		<script type="text/javascript">
-			function handleEditConditionRequest(xhr, status, args) {
-				if (args.validationFailed) {
-					PF('editConditionDialog').jq.effect("shake", {
-						times : 5
-					}, 100);
-				} else {
-					PF('editConditionDialog').hide();
-				}
-			}
-		</script>
+				<p:panel style="margin-top:10px;padding:0px;border:0px;">
+					<p:commandButton value="Back"
+						actionListener="#{createRatesController.showRateLineEditor}"
+						update=":rateLinesDetailForm :conditionsDetailForm"
+						styleClass="navButton" immediate="true" />
+					<p:commandButton value="Next"
+						actionListener="#{createRatesController.showSummary}"
+						immediate="true" update=":conditionsDetailForm :summaryForm"
+						styleClass="navButton" />
+				</p:panel>
+			</p:panel>
+		</h:form>
 
 		<h:form id="summaryForm">
 			<p:growl id="message" showDetail="true" />
@@ -177,16 +176,16 @@
 						value="#{msg['createrates.condition.next.tip']}" />
 				</p:panel>
 			</p:panel>
-			<p:ajaxStatus onstart="showStatusDialog();"
-				onsuccess="hideStatusDialog();" />
-
-			<p:dialog id="statusDialog" widgetVar="statusDialog"
-				draggable="false" closable="false" resizable="false"
-				showHeader="false">
-				<p:graphicImage url="/resources/images/ajax-loader.gif" />
-			</p:dialog>
-
 		</h:form>
+
+		<p:ajaxStatus onstart="showStatusDialog();"
+			onsuccess="hideStatusDialog();" />
+
+		<p:dialog id="statusDialog" widgetVar="statusDialog" draggable="false"
+			closable="false" resizable="false" showHeader="false">
+			<p:graphicImage url="/resources/images/ajax-loader.gif" />
+		</p:dialog>
+
 	</ui:define>
 </ui:composition>
 </html>

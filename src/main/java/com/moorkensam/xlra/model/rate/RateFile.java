@@ -271,6 +271,9 @@ public class RateFile extends BaseEntity {
     if (getZones() != null && !getZones().isEmpty()) {
       return getZones().get(0).getZoneType() == ZoneType.NUMERIC_CODES;
     }
+    if (country != null) {
+      return ZoneType.NUMERIC_CODES == country.getZoneType();
+    }
     return false;
   }
 
@@ -282,6 +285,9 @@ public class RateFile extends BaseEntity {
   public boolean isAlphaNumericalZoneRateFile() {
     if (getZones() != null && !getZones().isEmpty()) {
       return getZones().get(0).getZoneType() == ZoneType.ALPHANUMERIC_LIST;
+    }
+    if (country != null) {
+      return ZoneType.ALPHANUMERIC_LIST == country.getZoneType();
     }
     return false;
   }
@@ -457,5 +463,17 @@ public class RateFile extends BaseEntity {
       return getCustomer().getName();
     }
     return "Base ratefile";
+  }
+
+  /**
+   * Add a rateline to the ratefile.
+   * 
+   * @param rateLine The rateline to add.
+   */
+  public void addRateLine(RateLine rateLine) {
+    if (rateLines == null) {
+      rateLines = new ArrayList<RateLine>();
+    }
+    rateLines.add(rateLine);
   }
 }
