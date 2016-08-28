@@ -304,7 +304,8 @@ public class RateFile extends BaseEntity {
       throws RateFileException {
     CalcUtil calcUtil = CalcUtil.getInstance();
     BigDecimal quantityBd = new BigDecimal(quantity);
-    quantityBd = calcUtil.roundBigDecimal(quantityBd);
+    quantityBd =
+        calcUtil.roundQuantityToUpperIfExactQuantityNotFound(rateLines, new BigDecimal(quantity));
     if (rateLines != null) {
       List<RateLine> rlsWithCorrectQuantity =
           findRateLinesWithCorrectQuantity(calcUtil, quantityBd);
@@ -335,7 +336,6 @@ public class RateFile extends BaseEntity {
         + quantity + " Postal code: " + postalCode);
   }
 
-
   /**
    * find the rateline with the correct quantity.
    * 
@@ -343,7 +343,8 @@ public class RateFile extends BaseEntity {
    * @param quantityBd the quantity
    * @return the list of found ratelines.
    */
-  private List<RateLine> findRateLinesWithCorrectQuantity(CalcUtil calcUtil, BigDecimal quantityBd) {
+  private List<RateLine> findRateLinesWithCorrectQuantity(final CalcUtil calcUtil,
+      final BigDecimal quantityBd) {
     List<RateLine> rlsWithCorrectQuantity = new ArrayList<RateLine>();
     for (RateLine rl : getRateLines()) {
       BigDecimal roundBigDecimal = calcUtil.roundBigDecimal(new BigDecimal(rl.getMeasurement()));
