@@ -3,6 +3,7 @@ package com.moorkensam.xlra.service.impl;
 import com.moorkensam.xlra.dao.BaseDao;
 import com.moorkensam.xlra.dao.ConditionDao;
 import com.moorkensam.xlra.dao.RateFileDao;
+import com.moorkensam.xlra.dto.QuantityGeneratorDto;
 import com.moorkensam.xlra.dto.RateFileIdNameDto;
 import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.RateFileException;
@@ -320,23 +321,5 @@ public class RateFileServiceImpl extends BaseDao implements RateFileService {
 
   public void setLogRecordFactoryService(LogRecordFactoryService logRecordFactoryService) {
     this.logRecordFactoryService = logRecordFactoryService;
-  }
-
-  @Override
-  public RateFile generateFreeCreateRateFile(RateFile rateFile, double start, double end,
-      double interval) {
-    RateLine rateLine;
-    for (Zone zone : rateFile.getZones()) {
-      for (double d = start; d <= end; d += interval) {
-        rateLine = new RateLine();
-        rateLine.setZone(zone);
-        rateLine.setMeasurement(d);
-        rateLine.setValue(new BigDecimal(0.0d));
-        rateFile.addRateLine(rateLine);
-      }
-    }
-    rateFile.fillUpRelationalProperties();
-    rateFile.fillUpRateLineRelationalMap();
-    return rateFile;
   }
 }

@@ -1,6 +1,7 @@
 package com.moorkensam.xlra.controller;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
+import com.moorkensam.xlra.dto.QuantityGeneratorDto;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.RateFileException;
@@ -17,6 +18,7 @@ import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.CountryService;
 import com.moorkensam.xlra.service.CustomerService;
 import com.moorkensam.xlra.service.RateFileService;
+import com.moorkensam.xlra.service.RatesGeneratorService;
 import com.moorkensam.xlra.service.util.ConditionFactory;
 import com.moorkensam.xlra.service.util.LocaleUtil;
 import com.moorkensam.xlra.service.util.RateUtil;
@@ -52,15 +54,18 @@ public class CreateRatesController extends AbstractRateController {
   @ManagedProperty("#{localeController}")
   private LocaleController localeController;
 
+  @Inject
+  private CustomerService customerService;
+
+  @Inject
+  private RatesGeneratorService ratesGeneratorService;
+
   @ManagedProperty("#{msg}")
   private ResourceBundle messageBundle;
 
   private LocaleUtil localeUtil;
 
   private MessageUtil messageUtil;
-
-  @Inject
-  private CustomerService customerService;
 
   private TranslationUtil translationUtil;
 
@@ -69,12 +74,6 @@ public class CreateRatesController extends AbstractRateController {
   private TranslationKey keyToAdd;
 
   private RateFileSearchFilter filter;
-
-  private double startQuantity;
-
-  private double endQuantity;
-
-  private double increment;
 
   /** Collapsed for panels of the create rates page. */
   private boolean collapseBasicInfoGrid = false;
@@ -127,16 +126,8 @@ public class CreateRatesController extends AbstractRateController {
   /**
    * Reset the generateFRee rates panel and show the basic info panel.
    */
-  public void backToBasicInfoFromGenerateFreeRates() {
-    startQuantity = 0.0d;
-    endQuantity = 0.0d;
-    increment = 0.0d;
+  public void backToBasicInfo() {
     showBasicInfoGrid();
-  }
-
-  public void backToGenerateRatesScreen() {
-    selectedRateFile.setZones(new ArrayList<Zone>());
-    showGenerateRatesPanel();
   }
 
   public void showZonesEditor() {
@@ -149,9 +140,7 @@ public class CreateRatesController extends AbstractRateController {
    *
    */
   public void generateFreeCreateRateFile() {
-    selectedRateFile =
-        rateFileService.generateFreeCreateRateFile(selectedRateFile, startQuantity, endQuantity,
-            increment);
+    selectedRateFile = ratesGeneratorService.generateFreeCreateRateFile(selectedRateFile);
     showRateLineEditor();
   }
 
@@ -520,30 +509,6 @@ public class CreateRatesController extends AbstractRateController {
     this.localeUtil = localeUtil;
   }
 
-  public double getStartQuantity() {
-    return startQuantity;
-  }
-
-  public void setStartQuantity(double startQuantity) {
-    this.startQuantity = startQuantity;
-  }
-
-  public double getEndQuantity() {
-    return endQuantity;
-  }
-
-  public void setEndQuantity(double endQuantity) {
-    this.endQuantity = endQuantity;
-  }
-
-  public double getIncrement() {
-    return increment;
-  }
-
-  public void setIncrement(double increment) {
-    this.increment = increment;
-  }
-
   public boolean isCollapseGenerateRatesGrid() {
     return collapseGenerateRatesGrid;
   }
@@ -558,5 +523,13 @@ public class CreateRatesController extends AbstractRateController {
 
   public void setCollapseZonesEditor(boolean collapseZonesEditor) {
     this.collapseZonesEditor = collapseZonesEditor;
+  }
+
+  public RatesGeneratorService getRatesGeneratorService() {
+    return ratesGeneratorService;
+  }
+
+  public void setRatesGeneratorService(RatesGeneratorService ratesGeneratorService) {
+    this.ratesGeneratorService = ratesGeneratorService;
   }
 }

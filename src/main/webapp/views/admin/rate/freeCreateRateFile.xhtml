@@ -87,58 +87,16 @@
 				</p:panelGrid>
 
 				<p:panel style="margin-top:20px;">
-					<p:commandButton value="#{msg['button.next']}" id="nextToEditRates"
-						actionListener="#{createRatesController.processBasicInfo}"
-						update=":createRatesForm :generateNewRatesForm"
-						styleClass="navButton" />
-					<p:tooltip id="nextToEditTip" for="nextToEditRates"
-						value="#{msg['createrates.next.to.generate.free.rates.tip']}" />
-				</p:panel>
-			</p:panel>
-		</h:form>
-
-		<h:form id="generateNewRatesForm">
-			<p:panel header="#{msg['label.generate.rates']}"
-				collapsed="#{createRatesController.collapseGenerateRatesGrid}">
-				<p:panel
-					header="#{msg['createrates.generate.free.rates.quantity.title']}">
-					<p:panelGrid columns="2" style="margin:0; width:100%"
-						columnClasses="labelColumn,valuesColumn">
-						<h:outputText value="#{msg['label.quantity.start.value']}" />
-						<p:inputText value="#{createRatesController.startQuantity}"
-							style="width:100%;" required="true"
-							requiredMessage="#{msg['msg.quantity.start.required']}" />
-
-						<h:outputText value="#{msg['label.quantity.end.value']}" />
-						<p:inputText value="#{createRatesController.endQuantity}"
-							style="width:100%;" required="true"
-							requiredMessage="#{msg['msg.quantity.end.required']}" />
-
-						<h:outputText value="#{msg['label.quantity.increment']}" />
-						<p:inputText value="#{createRatesController.increment}"
-							style="width:100%;" required="true"
-							requiredMessage="#{msg['msg.quantity.increment.required']}" />
-					</p:panelGrid>
-				</p:panel>
-
-				<p:panel style="margin-top:20px;">
-					<p:commandButton value="#{msg['button.back']}"
-						id="backToBasicInfoButton"
-						actionListener="#{createRatesController.backToBasicInfoFromGenerateFreeRates}"
-						update=":createRatesForm :generateNewRatesForm"
-						styleClass="navButton" />
-					<p:tooltip id="backToBasicInfoTip" for="backToBasicInfoButton"
-						value="#{msg['createrates.back.to.basic.screen']}" />
 					<p:commandButton value="#{msg['button.next']}"
 						id="nextTozoneEditor"
 						actionListener="#{createRatesController.showZonesEditor}"
-						update=":generateNewRatesForm :zoneDetailForm "
-						styleClass="navButton" />
+						update=":createRatesForm :zoneDetailForm " styleClass="navButton" />
 					<p:tooltip id="nextTozoneEditorTip" for="nextTozoneEditor"
 						value="#{msg['createrates.next.to.edit.rates.tip']}" />
 				</p:panel>
 			</p:panel>
 		</h:form>
+
 
 		<h:form id="zoneDetailForm">
 			<p:growl id="message" showDetail="true" />
@@ -155,12 +113,11 @@
 
 				<p:panel style="margin-top:20px;">
 					<p:commandButton value="#{msg['button.back']}"
-						id="backToGenerateRates"
-						actionListener="#{createRatesController.backToBasicInfoFromGenerateFreeRates}"
-						update=":zoneDetailForm :generateNewRatesForm"
-						styleClass="navButton" />
-					<p:tooltip id="backToGenerateRatesTip" for="backToGenerateRates"
-						value="#{msg['createrates.back.to.generate.rates.tip']}" />
+						id="backToBasicInfoButton"
+						actionListener="#{createRatesController.backToBasicInfo}"
+						update=":createRatesForm :createRatesForm" styleClass="navButton" />
+					<p:tooltip id="backToBasicInfoTip" for="backToBasicInfoButton"
+						value="#{msg['createrates.back.to.basic.screen']}" />
 					<p:commandButton value="#{msg['button.next']}"
 						id="nextToEditRatesButton"
 						actionListener="#{createRatesController.generateFreeCreateRateFile}"
@@ -191,7 +148,7 @@
 				<p:panel style="margin-top:20px;">
 					<p:commandButton value="#{msg['button.back']}"
 						id="backToBasicInfoButton"
-						actionListener="#{createRatesController.showBasicInfoGrid}"
+						actionListener="#{createRatesController.showZonesEditor}"
 						update=":createRatesForm :rateLinesDetailForm"
 						styleClass="navButton" />
 					<p:tooltip id="backToBasicInfoTip" for="backToBasicInfoButton"

@@ -474,6 +474,7 @@ public class RateFile extends BaseEntity {
     if (rateLines == null) {
       rateLines = new ArrayList<RateLine>();
     }
+    rateLine.setRateFile(this);
     rateLines.add(rateLine);
   }
 }

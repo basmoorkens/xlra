@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.service;
 
+import com.moorkensam.xlra.dto.QuantityGeneratorDto;
 import com.moorkensam.xlra.dto.RateFileIdNameDto;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
@@ -110,7 +111,4 @@ public interface RateFileService {
       Map<String, Object> filters);
 
   public int countRateFiles();
-
-  RateFile generateFreeCreateRateFile(final RateFile rateFile, double start, double end,
-      double interval);
 }
