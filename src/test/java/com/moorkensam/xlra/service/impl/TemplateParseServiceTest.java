@@ -73,6 +73,7 @@ public class TemplateParseServiceTest extends UnitilsJUnit4 {
     query.setPostalCode("2222");
     query.setQuantity(10d);
     query.setMeasurement(Measurement.PALET);
+    Kind.EXPRES.setDescription("Expres");
     query.setKindOfRate(Kind.EXPRES);
     Customer customer = new Customer();
     query.setCustomer(customer);
