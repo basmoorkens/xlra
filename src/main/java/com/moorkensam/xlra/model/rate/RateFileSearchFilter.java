@@ -48,22 +48,22 @@ public class RateFileSearchFilter implements Serializable {
   public String toString() {
     String result = "";
     if (rateKind != null) {
-      result += "Ratekind: " + rateKind;
+      result += " " + rateKind;
     }
     if (measurement != null) {
-      result += " Measurement: " + measurement;
+      result += "  " + measurement;
     }
     if (country != null) {
-      result += " Country: " + country;
+      result += " " + country;
     }
     if (getCustomer() != null) {
-      result += " Customer: " + getCustomer().getName();
+      result += " " + getCustomer().getName();
     }
     if (getTransportationType() != null) {
-      result += "TransportationType: " + getTransportationType();
+      result += " " + getTransportationType();
     }
     if (result.equals("")) {
-      result = "Empty filter";
+      result = "";
     }
     return result;
   }

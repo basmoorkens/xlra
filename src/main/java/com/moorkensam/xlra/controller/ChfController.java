@@ -25,214 +25,226 @@ import javax.inject.Inject;
 @ViewScoped
 public class ChfController {
 
-  @Inject
-  private ApplicationConfigurationService applicationConfigurationService;
+	@Inject
+	private ApplicationConfigurationService applicationConfigurationService;
 
-  @Inject
-  private CurrencyService currencyService;
+	@Inject
+	private CurrencyService currencyService;
 
-  @ManagedProperty("#{msg}")
-  private ResourceBundle messageBundle;
+	@ManagedProperty("#{msg}")
+	private ResourceBundle messageBundle;
 
-  private MessageUtil messageUtil;
+	private MessageUtil messageUtil;
 
-  private List<CurrencyRate> chfRates;
+	private List<CurrencyRate> chfRates;
 
-  private CurrencyRate selectedChfRate;
+	private CurrencyRate selectedChfRate;
 
-  private BigDecimal currentChfValue;
+	private BigDecimal currentChfValue;
 
-  private Configuration configuration;
+	private Configuration configuration;
 
-  private String detailTitle;
+	private String detailTitle;
 
-  private boolean editMode = false;
+	private boolean editMode = false;
 
-  @PostConstruct
-  public void initPage() {
-    refreshCurrencyRates();
-    messageUtil = MessageUtil.getInstance(messageBundle);
-  }
+	@PostConstruct
+	public void initPage() {
+		refreshCurrencyRates();
+		messageUtil = MessageUtil.getInstance(messageBundle);
+	}
 
-  private void refreshCurrencyRates() {
-    chfRates = currencyService.getAllChfRates();
-    configuration = applicationConfigurationService.getConfiguration();
-    setupCurrentRates();
-  }
+	private void refreshCurrencyRates() {
+		chfRates = currencyService.getAllChfRates();
+		configuration = applicationConfigurationService.getConfiguration();
+		setupCurrentRates();
+	}
 
-  /**
-   * Setup the page for a new currency rate.
-   */
-  public void setupPageForNewCurrencyRate() {
-    selectedChfRate = new CurrencyRate();
-    selectedChfRate.setCurrencyType(XlraCurrency.CHF);
-    selectedChfRate.setInterval(new Interval());
-    detailTitle = "Create new Chf rate";
-    editMode = false;
-    showAddDialog();
-  }
+	/**
+	 * Setup the page for a new currency rate.
+	 */
+	public void setupPageForNewCurrencyRate() {
+		selectedChfRate = new CurrencyRate();
+		selectedChfRate.setCurrencyType(XlraCurrency.CHF);
+		selectedChfRate.setInterval(new Interval());
+		detailTitle = messageUtil.lookupI8nStringAndInjectParams(
+				"chfrates.create.popup.title", "");
+		editMode = false;
+		showAddDialog();
+	}
 
-  /**
-   * Set up the page to edit a chf rate.
-   * 
-   * @param currencyRate The chf rate to edit.
-   */
-  public void setupPageForEditChfRate(CurrencyRate currencyRate) {
-    selectedChfRate = currencyRate;
-    detailTitle = "Edit chf rate " + currencyRate.getInterval().toString();
-    editMode = true;
-    showAddDialog();
-  }
+	/**
+	 * Set up the page to edit a chf rate.
+	 * 
+	 * @param currencyRate
+	 *            The chf rate to edit.
+	 */
+	public void setupPageForEditChfRate(CurrencyRate currencyRate) {
+		selectedChfRate = currencyRate;
+		detailTitle = messageUtil.lookupI8nStringAndInjectParams(
+				"chfrates.edit.popup.title", currencyRate.getInterval()
+						.toString());
+		editMode = true;
+		showAddDialog();
+	}
 
-  /**
-   * Save a new currency rate.
-   */
-  public void saveNewCurrencyRate() {
-    if (selectedChfRate.getId() > 0) {
-      updateSelectedRate();
-    } else {
-      persistNewRate();
-    }
-  }
+	/**
+	 * Save a new currency rate.
+	 */
+	public void saveNewCurrencyRate() {
+		if (selectedChfRate.getId() > 0) {
+			updateSelectedRate();
+		} else {
+			persistNewRate();
+		}
+	}
 
-  private void persistNewRate() {
-    try {
-      currencyService.createCurrencyRate(selectedChfRate);
-      messageUtil.addMessage("message.chf.rate.created.title", selectedChfRate.getInterval() + "",
-          selectedChfRate.getSurchargePercentage() + "");
-      refreshCurrencyRates();
-      selectedChfRate = null;
-      hideAddDialog();
-    } catch (IntervalOverlapException e) {
-      messageUtil.addErrorMessage("message.chf.illegal.interval.title", e.getBusinessException());
-      showAddDialog();
-    }
-  }
+	private void persistNewRate() {
+		try {
+			currencyService.createCurrencyRate(selectedChfRate);
+			messageUtil.addMessage("message.chf.rate.created.title",
+					selectedChfRate.getInterval() + "",
+					selectedChfRate.getSurchargePercentage() + "");
+			refreshCurrencyRates();
+			selectedChfRate = null;
+			hideAddDialog();
+		} catch (IntervalOverlapException e) {
+			messageUtil.addErrorMessage("message.chf.illegal.interval.title",
+					e.getBusinessException());
+			showAddDialog();
+		}
+	}
 
-  private void updateSelectedRate() {
-    currencyService.updateCurrencyRate(selectedChfRate);
-    messageUtil.addMessage("message.chf.rate.updated.title", "message.chf.rate.updated.detail"
-        + selectedChfRate.getInterval() + "", selectedChfRate.getSurchargePercentage() + "");
-    refreshCurrencyRates();
-  }
+	private void updateSelectedRate() {
+		currencyService.updateCurrencyRate(selectedChfRate);
+		messageUtil.addMessage(
+				"message.chf.rate.updated.title",
+				"message.chf.rate.updated.detail"
+						+ selectedChfRate.getInterval() + "",
+				selectedChfRate.getSurchargePercentage() + "");
+		refreshCurrencyRates();
+	}
 
-  private void hideAddDialog() {
-    RequestContext context = RequestContext.getCurrentInstance();
-    context.execute("PF('addChfDialog').hide();");
-  }
+	private void hideAddDialog() {
+		RequestContext context = RequestContext.getCurrentInstance();
+		context.execute("PF('addChfDialog').hide();");
+	}
 
-  private void showAddDialog() {
-    RequestContext context = RequestContext.getCurrentInstance();
-    context.execute("PF('addChfDialog').show();");
-  }
+	private void showAddDialog() {
+		RequestContext context = RequestContext.getCurrentInstance();
+		context.execute("PF('addChfDialog').show();");
+	}
 
-  /**
-   * Delete a currency rate.
-   * 
-   * @param rate The rate to delete.
-   */
-  public void deleteChfRate(CurrencyRate rate) {
-    currencyService.deleteCurrencyRate(rate);
-    refreshCurrencyRates();
-    messageUtil.addMessage("message.chf.delete.title", "message.chf.delete.detail", rate
-        .getInterval().toIntString());
-  }
+	/**
+	 * Delete a currency rate.
+	 * 
+	 * @param rate
+	 *            The rate to delete.
+	 */
+	public void deleteChfRate(CurrencyRate rate) {
+		currencyService.deleteCurrencyRate(rate);
+		refreshCurrencyRates();
+		messageUtil.addMessage("message.chf.delete.title",
+				"message.chf.delete.detail", rate.getInterval().toIntString());
+	}
 
-  public void cancelAddNewCurrencyRate() {
-    selectedChfRate = null;
-    hideAddDialog();
-  }
+	public void cancelAddNewCurrencyRate() {
+		selectedChfRate = null;
+		hideAddDialog();
+	}
 
-  /**
-   * Update the currenctly selected chf rate.
-   */
-  public void updateCurrentChfRate() {
-    if (isValidCurrentChfValue()) {
-      currencyService.updateCurrentChfValue(getCurrentChfValue());
-      messageUtil.addMessage("message.current.chf.price", "message.chf.updated.to",
-          getCurrentChfValue() + "");
-      setupCurrentRates();
-    }
-  }
+	/**
+	 * Update the currenctly selected chf rate.
+	 */
+	public void updateCurrentChfRate() {
+		if (isValidCurrentChfValue()) {
+			currencyService.updateCurrentChfValue(getCurrentChfValue());
+			messageUtil.addMessage("message.current.chf.price",
+					"message.chf.updated.to", getCurrentChfValue() + "");
+			setupCurrentRates();
+		}
+	}
 
-  private boolean isValidCurrentChfValue() {
-    if (getCurrentChfValue() == null) {
-      messageUtil.addErrorMessage("message.empty.value", "message.chf.currentvalue.null");
-      return false;
-    }
-    if (configuration.getCurrentChfValue() == getCurrentChfValue()) {
-      messageUtil.addMessage("message.current.chf.price", "message.price.same.as.old");
-      return false;
-    }
-    return true;
+	private boolean isValidCurrentChfValue() {
+		if (getCurrentChfValue() == null) {
+			messageUtil.addErrorMessage("message.empty.value",
+					"message.chf.currentvalue.null");
+			return false;
+		}
+		if (configuration.getCurrentChfValue() == getCurrentChfValue()) {
+			messageUtil.addMessage("message.current.chf.price",
+					"message.price.same.as.old");
+			return false;
+		}
+		return true;
 
-  }
+	}
 
-  private void setupCurrentRates() {
-    currentChfValue = configuration.getCurrentChfValue();
-  }
+	private void setupCurrentRates() {
+		currentChfValue = configuration.getCurrentChfValue();
+	}
 
-  public List<CurrencyRate> getChfRates() {
-    return chfRates;
-  }
+	public List<CurrencyRate> getChfRates() {
+		return chfRates;
+	}
 
-  public CurrencyRate getSelectedChfRate() {
-    return selectedChfRate;
-  }
+	public CurrencyRate getSelectedChfRate() {
+		return selectedChfRate;
+	}
 
-  public void setSelectedChfRate(CurrencyRate selectedChfRate) {
-    this.selectedChfRate = selectedChfRate;
-  }
+	public void setSelectedChfRate(CurrencyRate selectedChfRate) {
+		this.selectedChfRate = selectedChfRate;
+	}
 
-  public Configuration getConfiguration() {
-    return configuration;
-  }
+	public Configuration getConfiguration() {
+		return configuration;
+	}
 
-  public BigDecimal getCurrentChfValue() {
-    return currentChfValue;
-  }
+	public BigDecimal getCurrentChfValue() {
+		return currentChfValue;
+	}
 
-  public void setCurrentChfValue(BigDecimal currentChfValue) {
-    this.currentChfValue = currentChfValue;
-  }
+	public void setCurrentChfValue(BigDecimal currentChfValue) {
+		this.currentChfValue = currentChfValue;
+	}
 
-  public CurrencyService getCurrencyService() {
-    return currencyService;
-  }
+	public CurrencyService getCurrencyService() {
+		return currencyService;
+	}
 
-  public void setCurrencyService(CurrencyService currencyService) {
-    this.currencyService = currencyService;
-  }
+	public void setCurrencyService(CurrencyService currencyService) {
+		this.currencyService = currencyService;
+	}
 
-  public String getDetailTitle() {
-    return detailTitle;
-  }
+	public String getDetailTitle() {
+		return detailTitle;
+	}
 
-  public void setDetailTitle(String detailTitle) {
-    this.detailTitle = detailTitle;
-  }
+	public void setDetailTitle(String detailTitle) {
+		this.detailTitle = detailTitle;
+	}
 
-  public boolean isEditMode() {
-    return editMode;
-  }
+	public boolean isEditMode() {
+		return editMode;
+	}
 
-  public void setEditMode(boolean editMode) {
-    this.editMode = editMode;
-  }
+	public void setEditMode(boolean editMode) {
+		this.editMode = editMode;
+	}
 
-  public MessageUtil getMessageUtil() {
-    return messageUtil;
-  }
+	public MessageUtil getMessageUtil() {
+		return messageUtil;
+	}
 
-  public void setMessageUtil(MessageUtil messageUtil) {
-    this.messageUtil = messageUtil;
-  }
+	public void setMessageUtil(MessageUtil messageUtil) {
+		this.messageUtil = messageUtil;
+	}
 
-  public ResourceBundle getMessageBundle() {
-    return messageBundle;
-  }
+	public ResourceBundle getMessageBundle() {
+		return messageBundle;
+	}
 
-  public void setMessageBundle(ResourceBundle messageBundle) {
-    this.messageBundle = messageBundle;
-  }
+	public void setMessageBundle(ResourceBundle messageBundle) {
+		this.messageBundle = messageBundle;
+	}
 }

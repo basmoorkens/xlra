@@ -24,220 +24,231 @@ import javax.inject.Inject;
 @ViewScoped
 public class DieselRateController {
 
-  @Inject
-  private ApplicationConfigurationService applicationConfigurationService;
+	@Inject
+	private ApplicationConfigurationService applicationConfigurationService;
 
-  @ManagedProperty("#{msg}")
-  private ResourceBundle messageBundle;
+	@ManagedProperty("#{msg}")
+	private ResourceBundle messageBundle;
 
-  private MessageUtil messageUtil;
+	private MessageUtil messageUtil;
 
-  @Inject
-  private DieselService dieselService;
+	@Inject
+	private DieselService dieselService;
 
-  private List<DieselRate> dieselRates;
+	private List<DieselRate> dieselRates;
 
-  private DieselRate selectedDieselRate;
+	private DieselRate selectedDieselRate;
 
-  private Configuration configuration;
+	private Configuration configuration;
 
-  private BigDecimal currentDieselValue;
+	private BigDecimal currentDieselValue;
 
-  private String detailTitle;
+	private String detailTitle;
 
-  private boolean editMode;
+	private boolean editMode;
 
-  /**
-   * Initialize logic for the controller.
-   */
-  @PostConstruct
-  public void initPage() {
-    messageUtil = MessageUtil.getInstance(messageBundle);
-    refreshDieselRates();
-    configuration = getApplicationConfigurationService().getConfiguration();
-    setupCurrentRates();
-  }
+	/**
+	 * Initialize logic for the controller.
+	 */
+	@PostConstruct
+	public void initPage() {
+		messageUtil = MessageUtil.getInstance(messageBundle);
+		refreshDieselRates();
+		configuration = getApplicationConfigurationService().getConfiguration();
+		setupCurrentRates();
+	}
 
-  private void setupCurrentRates() {
-    currentDieselValue = configuration.getCurrentDieselPrice();
-  }
+	private void setupCurrentRates() {
+		currentDieselValue = configuration.getCurrentDieselPrice();
+	}
 
-  private void refreshDieselRates() {
-    dieselRates = dieselService.getAllDieselRates();
-  }
+	private void refreshDieselRates() {
+		dieselRates = dieselService.getAllDieselRates();
+	}
 
-  private void updateDieselRate(DieselRate rate) {
-    dieselService.updateDieselRate(rate);
-  }
+	private void updateDieselRate(DieselRate rate) {
+		dieselService.updateDieselRate(rate);
+	}
 
-  /**
-   * Sets up the page for a new rate.
-   */
-  public void setupPageForNewRate() {
-    selectedDieselRate = new DieselRate();
-    selectedDieselRate.setInterval(new Interval());
-    detailTitle = "Create new diesel rate";
-    editMode = false;
-    showAddDialog();
-  }
+	/**
+	 * Sets up the page for a new rate.
+	 */
+	public void setupPageForNewRate() {
+		selectedDieselRate = new DieselRate();
+		selectedDieselRate.setInterval(new Interval());
+		detailTitle = messageUtil.lookupI8nStringAndInjectParams(
+				"diesel.create.popup.title", "");
+		editMode = false;
+		showAddDialog();
+	}
 
-  /**
-   * Setup the page to display the add dieselrate dialog. Load in the clicked rate and set the
-   * dialog in edit mode.
-   * 
-   * @param dieselRate The rate to load.
-   */
-  public void setupPageForEditRate(DieselRate dieselRate) {
-    selectedDieselRate = dieselRate;
-    detailTitle = "Edit rate " + dieselRate.getInterval().toString();
-    setEditMode(true);
-    showAddDialog();
-  }
+	/**
+	 * Setup the page to display the add dieselrate dialog. Load in the clicked
+	 * rate and set the dialog in edit mode.
+	 * 
+	 * @param dieselRate
+	 *            The rate to load.
+	 */
+	public void setupPageForEditRate(DieselRate dieselRate) {
+		selectedDieselRate = dieselRate;
+		detailTitle = messageUtil.lookupI8nStringAndInjectParams(
+				"diesel.edit.popup.title", dieselRate.getInterval().toString());
+		setEditMode(true);
+		showAddDialog();
+	}
 
-  public void cancelAddNewRate() {
-    selectedDieselRate = null;
-    hideAddDialog();
-  }
+	public void cancelAddNewRate() {
+		selectedDieselRate = null;
+		hideAddDialog();
+	}
 
-  private void hideAddDialog() {
-    RequestContext context = RequestContext.getCurrentInstance();
-    context.execute("PF('addDieselDialog').hide();");
-  }
+	private void hideAddDialog() {
+		RequestContext context = RequestContext.getCurrentInstance();
+		context.execute("PF('addDieselDialog').hide();");
+	}
 
-  private void showAddDialog() {
-    RequestContext context = RequestContext.getCurrentInstance();
-    context.execute("PF('addDieselDialog').show();");
-  }
+	private void showAddDialog() {
+		RequestContext context = RequestContext.getCurrentInstance();
+		context.execute("PF('addDieselDialog').show();");
+	}
 
-  /**
-   * Save a new diesel rate.
-   */
-  public void saveNewDieselRate() {
-    if (selectedDieselRate.getId() > 0) {
-      updateExistingDieselRate();
-    } else {
-      persistNewDieselRate();
-    }
-  }
+	/**
+	 * Save a new diesel rate.
+	 */
+	public void saveNewDieselRate() {
+		if (selectedDieselRate.getId() > 0) {
+			updateExistingDieselRate();
+		} else {
+			persistNewDieselRate();
+		}
+	}
 
-  private void updateExistingDieselRate() {
-    updateDieselRate(selectedDieselRate);
-    messageUtil.addMessage("message.diesel.rate.updated.title",
-        "message.diesel.rate.updated.detail" + selectedDieselRate.getInterval() + "",
-        selectedDieselRate.getSurchargePercentage() + "");
-    refreshDieselRates();
-  }
+	private void updateExistingDieselRate() {
+		updateDieselRate(selectedDieselRate);
+		messageUtil.addMessage(
+				"message.diesel.rate.updated.title",
+				"message.diesel.rate.updated.detail"
+						+ selectedDieselRate.getInterval() + "",
+				selectedDieselRate.getSurchargePercentage() + "");
+		refreshDieselRates();
+	}
 
-  private void persistNewDieselRate() {
-    try {
-      dieselService.createDieselRate(selectedDieselRate);
-      refreshDieselRates();
-      messageUtil.addMessage("message.diesel.rate.create.title",
-          "message.diesel.rate.create.detail", selectedDieselRate.getInterval() + "",
-          selectedDieselRate.getSurchargePercentage() + "");
-      selectedDieselRate = null;
-    } catch (IntervalOverlapException exc) {
-      messageUtil.addErrorMessage("message.chf.illegal.interval.title", exc.getBusinessException());
-      showAddDialog();
-    }
-  }
+	private void persistNewDieselRate() {
+		try {
+			dieselService.createDieselRate(selectedDieselRate);
+			refreshDieselRates();
+			messageUtil.addMessage("message.diesel.rate.create.title",
+					"message.diesel.rate.create.detail",
+					selectedDieselRate.getInterval() + "",
+					selectedDieselRate.getSurchargePercentage() + "");
+			selectedDieselRate = null;
+		} catch (IntervalOverlapException exc) {
+			messageUtil.addErrorMessage("message.chf.illegal.interval.title",
+					exc.getBusinessException());
+			showAddDialog();
+		}
+	}
 
-  /**
-   * Deletes the given dieselrate.
-   * 
-   * @param rate The rate to delete.
-   */
-  public void deleteDieselRate(DieselRate rate) {
-    dieselService.deleteDieselRate(rate);
-    refreshDieselRates();
-    messageUtil.addMessage("message.diesel.delete.title", "message.diesel.delete.detail", rate
-        .getInterval().toIntString());
-  }
+	/**
+	 * Deletes the given dieselrate.
+	 * 
+	 * @param rate
+	 *            The rate to delete.
+	 */
+	public void deleteDieselRate(DieselRate rate) {
+		dieselService.deleteDieselRate(rate);
+		refreshDieselRates();
+		messageUtil.addMessage("message.diesel.delete.title",
+				"message.diesel.delete.detail", rate.getInterval()
+						.toIntString());
+	}
 
-  /**
-   * Updates the current selected diesel rate.
-   */
-  public void updateCurrentDieselRate() {
-    if (configuration.getCurrentDieselPrice() != getCurrentDieselValue()) {
-      dieselService.updateCurrentDieselValue(getCurrentDieselValue());
-      messageUtil.addMessage("message.current.diesel.price.title",
-          "message.current.diesel.price.detail", getCurrentDieselValue() + "");
-      setupCurrentRates();
-    } else {
-      messageUtil.addMessage("message.current.diesel.price.title", "message.price.same.as.old");
-    }
-  }
+	/**
+	 * Updates the current selected diesel rate.
+	 */
+	public void updateCurrentDieselRate() {
+		if (configuration.getCurrentDieselPrice() != getCurrentDieselValue()) {
+			dieselService.updateCurrentDieselValue(getCurrentDieselValue());
+			messageUtil.addMessage("message.current.diesel.price.title",
+					"message.current.diesel.price.detail",
+					getCurrentDieselValue() + "");
+			setupCurrentRates();
+		} else {
+			messageUtil.addMessage("message.current.diesel.price.title",
+					"message.price.same.as.old");
+		}
+	}
 
-  public List<DieselRate> getDieselRates() {
-    return dieselRates;
-  }
+	public List<DieselRate> getDieselRates() {
+		return dieselRates;
+	}
 
-  public void setDieselRates(List<DieselRate> dieselRates) {
-    this.dieselRates = dieselRates;
-  }
+	public void setDieselRates(List<DieselRate> dieselRates) {
+		this.dieselRates = dieselRates;
+	}
 
-  public DieselRate getSelectedDieselRate() {
-    return selectedDieselRate;
-  }
+	public DieselRate getSelectedDieselRate() {
+		return selectedDieselRate;
+	}
 
-  public void setSelectedDieselRate(DieselRate selectedDieselRate) {
-    this.selectedDieselRate = selectedDieselRate;
-  }
+	public void setSelectedDieselRate(DieselRate selectedDieselRate) {
+		this.selectedDieselRate = selectedDieselRate;
+	}
 
-  public BigDecimal getCurrentDieselValue() {
-    return currentDieselValue;
-  }
+	public BigDecimal getCurrentDieselValue() {
+		return currentDieselValue;
+	}
 
-  public void setCurrentDieselValue(BigDecimal currentDieselValue) {
-    this.currentDieselValue = currentDieselValue;
-  }
+	public void setCurrentDieselValue(BigDecimal currentDieselValue) {
+		this.currentDieselValue = currentDieselValue;
+	}
 
-  public ApplicationConfigurationService getApplicationConfigurationService() {
-    return applicationConfigurationService;
-  }
+	public ApplicationConfigurationService getApplicationConfigurationService() {
+		return applicationConfigurationService;
+	}
 
-  public void setApplicationConfigurationService(
-      ApplicationConfigurationService applicationConfigurationService) {
-    this.applicationConfigurationService = applicationConfigurationService;
-  }
+	public void setApplicationConfigurationService(
+			ApplicationConfigurationService applicationConfigurationService) {
+		this.applicationConfigurationService = applicationConfigurationService;
+	}
 
-  public DieselService getDieselService() {
-    return dieselService;
-  }
+	public DieselService getDieselService() {
+		return dieselService;
+	}
 
-  public void setDieselService(DieselService dieselService) {
-    this.dieselService = dieselService;
-  }
+	public void setDieselService(DieselService dieselService) {
+		this.dieselService = dieselService;
+	}
 
-  public String getDetailTitle() {
-    return detailTitle;
-  }
+	public String getDetailTitle() {
+		return detailTitle;
+	}
 
-  public void setDetailTitle(String detailTitle) {
-    this.detailTitle = detailTitle;
-  }
+	public void setDetailTitle(String detailTitle) {
+		this.detailTitle = detailTitle;
+	}
 
-  public boolean isEditMode() {
-    return editMode;
-  }
+	public boolean isEditMode() {
+		return editMode;
+	}
 
-  public void setEditMode(boolean editMode) {
-    this.editMode = editMode;
-  }
+	public void setEditMode(boolean editMode) {
+		this.editMode = editMode;
+	}
 
-  public MessageUtil getMessageUtil() {
-    return messageUtil;
-  }
+	public MessageUtil getMessageUtil() {
+		return messageUtil;
+	}
 
-  public void setMessageUtil(MessageUtil messageUtil) {
-    this.messageUtil = messageUtil;
-  }
+	public void setMessageUtil(MessageUtil messageUtil) {
+		this.messageUtil = messageUtil;
+	}
 
-  public ResourceBundle getMessageBundle() {
-    return messageBundle;
-  }
+	public ResourceBundle getMessageBundle() {
+		return messageBundle;
+	}
 
-  public void setMessageBundle(ResourceBundle messageBundle) {
-    this.messageBundle = messageBundle;
-  }
+	public void setMessageBundle(ResourceBundle messageBundle) {
+		this.messageBundle = messageBundle;
+	}
 }
