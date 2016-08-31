@@ -17,13 +17,13 @@
 			<p:panel>
 				<p:dataTable emptyMessage="#{msg['rolemanagement.roles.empty']}"
 					id="rolesTable" value="#{rolesController.allRoles}" var="role">
-					<p:column headerText="#{msg['label.name']}" width="200">
+					<p:column headerText="#{msg['label.name']}" width="15%;">
 						<h:outputText value="#{role.name}" />
 					</p:column>
 					<p:column headerText="#{msg['rolemanagement.permission.list']}">
 						#{role.permissionsString}
 					</p:column>
-					<p:column width="170">
+					<p:column width="16%;">
 						<p:commandButton value="#{msg['rolemanagement.role.edit']}"
 							id="editRoleButton" update=":rolesForm :addRolesForm"
 							styleClass="navButton"
@@ -47,8 +47,7 @@
 		</h:form>
 
 		<p:dialog header="#{msg['rolemanagement.role.adddialog.title']}"
-			widgetVar="addRoleDialog" height="650px" style="width:80%;"
-			dynamic="true">
+			widgetVar="addRoleDialog" height="650px" width="80%" dynamic="true">
 			<h:form id="addRolesForm">
 				<p:panel
 					header="#{msg['rolemanagement.role.adddialog.role.information']}">
