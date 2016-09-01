@@ -25,6 +25,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         UnAuthorizedAccessException exc =
             new UnAuthorizedAccessException("message.offerte.unauthorized.access.detail");
         exc.setExtraArguments(Arrays.asList(user.getUserName()));
+        throw exc;
       }
     }
   }
