@@ -103,6 +103,7 @@ public class ChfController {
 		try {
 			currencyService.createCurrencyRate(selectedChfRate);
 			messageUtil.addMessage("message.chf.rate.created.title",
+					"message.chf.rate.created.detail",
 					selectedChfRate.getInterval() + "",
 					selectedChfRate.getSurchargePercentage() + "");
 			refreshCurrencyRates();
