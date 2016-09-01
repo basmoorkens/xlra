@@ -3,13 +3,14 @@ package com.moorkensam.xlra.service.impl;
 import com.moorkensam.xlra.dao.LogDao;
 import com.moorkensam.xlra.dao.UserDao;
 import com.moorkensam.xlra.model.error.UserException;
+import com.moorkensam.xlra.model.error.XlraValidationException;
 import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.model.log.LogType;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.model.security.UserLogRecord;
 import com.moorkensam.xlra.model.security.UserStatus;
 import com.moorkensam.xlra.service.EmailService;
-import com.moorkensam.xlra.service.util.LogRecordFactory;
+import com.moorkensam.xlra.service.LogRecordFactoryService;
 
 import org.easymock.EasyMock;
 import org.junit.Assert;
@@ -26,6 +27,9 @@ import javax.persistence.NoResultException;
 
 public class UserServiceImplTest extends UnitilsJUnit4 {
 
+  private static final String xlraHash =
+      "c05e198412a3608e7a626e473180472d170f0f9c95c158eb0a43583e286799f3";
+
   @TestedObject
   private UserServiceImpl service;
 
@@ -41,11 +45,8 @@ public class UserServiceImplTest extends UnitilsJUnit4 {
   @Mock
   private User userMock;
 
-  private static final String xlraHash =
-      "c05e198412a3608e7a626e473180472d170f0f9c95c158eb0a43583e286799f3";
-
   @Mock
-  private LogRecordFactory logRecordFactory;
+  private LogRecordFactoryService logRecordFactory;
 
   /**
    * Initializes the test.
@@ -53,16 +54,10 @@ public class UserServiceImplTest extends UnitilsJUnit4 {
   @Before
   public void init() {
     service = new UserServiceImpl();
-    service.setLogRecordFactory(logRecordFactory);
     service.setUserDao(userDao);
     service.setLogDao(logDao);
     service.setEmailService(emailService);
-  }
-
-  @Test
-  public void testGetPasswordHash() {
-    String result = service.makePasswordHash("xlra");
-    Assert.assertEquals(xlraHash, result);
+    service.setLogRecordFactoryService(logRecordFactory);
   }
 
   @Test(expected = UserException.class)
@@ -132,5 +127,62 @@ public class UserServiceImplTest extends UnitilsJUnit4 {
 
     Assert.assertEquals(xlraHash, user.getPassword());
     Assert.assertEquals(UserStatus.IN_OPERATION, user.getUserStatus());
+  }
+
+  @Test
+  public void testEnableUserSucces() throws XlraValidationException {
+    User user = new User();
+    user.setUserName("bmoork");
+    user.setUserStatus(UserStatus.DISABLED);
+    EasyMock.expect(userDao.updateUser(user)).andReturn(user);
+    EasyMockUnitils.replay();
+    service.enableUser(user);
+
+  }
+
+  @Test(expected = XlraValidationException.class)
+  public void testEnableUserFailedValidation() throws XlraValidationException {
+    User user = new User();
+    user.setUserName("bmoork");
+    user.setUserStatus(UserStatus.IN_OPERATION);
+    service.enableUser(user);
+  }
+
+  @Test(expected = XlraValidationException.class)
+  public void testResetPwFailedValidation() throws XlraValidationException, MessagingException {
+    User user = new User();
+    user.setUserName("bmoork");
+    user.setUserStatus(UserStatus.PASSWORD_RESET);
+    service.resetUserPassword(user);
+  }
+
+  @Test
+  public void testResetPwSucces() throws XlraValidationException, MessagingException {
+    User user = new User();
+    user.setUserName("bmoork");
+    user.setUserStatus(UserStatus.IN_OPERATION);
+    emailService.sendResetPasswordEmail(user);
+    EasyMock.expectLastCall();
+    EasyMock.expect(userDao.updateUser(user)).andReturn(user);
+    EasyMockUnitils.replay();
+    service.resetUserPassword(user);
+  }
+
+  @Test(expected = XlraValidationException.class)
+  public void testDisableUserFailedValidation() throws XlraValidationException {
+    User user = new User();
+    user.setUserName("bmoork");
+    user.setUserStatus(UserStatus.DISABLED);
+    service.disableUser(user);
+  }
+
+  @Test
+  public void testDisableUserSucces() throws XlraValidationException {
+    User user = new User();
+    user.setUserName("bmoork");
+    user.setUserStatus(UserStatus.IN_OPERATION);
+    EasyMock.expect(userDao.updateUser(user)).andReturn(user);
+    EasyMockUnitils.replay();
+    service.disableUser(user);
   }
 }

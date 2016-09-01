@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<ui:composition template="/views/template.xhtml">
+	<ui:define name="title">
+		<h:outputText value="XLRA - Create rates" />
+	</ui:define>
+	<ui:define name="pageTitle">
+		<h:outputText value="#{msg['createrates.from.existing.title']}" />
+	</ui:define>
+	<ui:define name="body">
+		<h:form id="createRatesForm">
+			<p:growl id="growl" showDetail="true" />
+
+			<p:tooltip id="customerTip" for="customerSelector"
+				value="#{msg['createrates.customer.tip']}" />
+			<p:tooltip id="selectCountryTip" for="selectCountry"
+				value="#{msg['createrates.country.tip']}" />
+			<p:tooltip id="selectMeasurementTip" for="selectMeasurement"
+				value="#{msg['createrates.measurement.tip']}" />
+			<p:tooltip id="selectTypeOfTransportTip" for="selectTypeOfTransport"
+				value="#{msg['createrates.type.of.transport.tip']}" />
+			<p:tooltip id="selectImportExportTip" for="selectImportExport"
+				value="#{msg['createrates.import.export.tip']}" />
+			<p:panel header="#{msg['label.basic.information']}"
+				collapsed="#{createRatesController.collapseBasicInfoGrid}">
+				<p:panelGrid columns="2" style="margin:0; width:100%"
+					columnClasses="labelColumn,valuesColumn">
+					<h:outputText value="#{msg['label.name']}:" />
+					<h:outputText value="#{msg['label.auto.generated']}" />
+
+					<h:outputText value="#{msg['label.customer']}:" />
+					<p:autoComplete size="" id="customerSelector" dropdown="true"
+						value="#{createRatesController.filter.customer}"
+						completeMethod="#{createRatesController.completeCustomerName}"
+						var="customer" itemLabel="#{customer.name}"
+						itemValue="#{customer}" converter="#{customerConverter}"
+						required="true"
+						requiredMessage="#{msg['message.customer.required']}">
+					</p:autoComplete>
+
+					<h:outputText value="#{msg['label.transport.type']}:" />
+					<p:selectOneMenu style="width:100%;" required="true"
+						id="selectImportExport"
+						requiredMessage="#{msg['message.import.export.required']}"
+						value="#{createRatesController.filter.transportationType}">
+						<f:selectItem itemValue="#{null}" itemLabel="" />
+						<f:selectItems value="#{createRatesController.allTransportTypes}"
+							var="transportationType" itemValue="#{transportationType}"
+							itemLabel="#{transportationType.description}" />
+					</p:selectOneMenu>
+
+					<h:outputText value="#{msg['label.country']}:" />
+					<p:selectOneMenu style="width:100%;"
+						converter="#{countryConverter}" id="selectCountry" required="true"
+						requiredMessage="#{msg['message.country.required']}"
+						value="#{createRatesController.filter.country}">
+						<f:selectItem itemValue="#{null}" itemLabel="" />
+						<f:selectItems value="#{createRatesController.countries}"
+							var="country" itemLabel="#{country.i8nCountryName}"
+							itemValue="#{country}" />
+					</p:selectOneMenu>
+
+					<h:outputText value="#{msg['label.measurement']}:" />
+					<p:selectOneMenu style="width:100%;" id="selectMeasurement"
+						required="true" requiredMessage=""
+						value="#{createRatesController.filter.measurement}">
+						<f:selectItem itemValue="#{null}" itemLabel="" />
+						<f:selectItems value="#{createRatesController.allMeasurements}"
+							var="measurement" itemLabel="#{measurement.description}"
+							itemValue="#{measurement}" />
+					</p:selectOneMenu>
+
+					<h:outputText value="#{msg['label.type.of.transport']}:" />
+					<p:selectOneMenu style="width:100%;" id="selectTypeOfTransport"
+						requiredMessage="#{msg['message.transport.type.required']}"
+						required="true" value="#{createRatesController.filter.rateKind}">
+						<f:selectItem itemValue="#{null}" itemLabel="" />
+						<f:selectItems value="#{createRatesController.allKinds}"
+							var="kind" itemLabel="#{kind.description}" itemValue="#{kind}" />
+					</p:selectOneMenu>
+				</p:panelGrid>
+
+				<p:panel style="margin-top:20px;">
+					<p:commandButton value="#{msg['button.next']}" id="nextToEditRates"
+						actionListener="#{createRatesController.generateCopyOfRateFileForFilter}"
+						update=":createRatesForm :rateLinesDetailForm"
+						styleClass="navButton" />
+					<p:tooltip id="nextToEditTip" for="nextToEditRates"
+						value="#{msg['createrates.next.to.edit.rates.tip']}" />
+				</p:panel>
+			</p:panel>
+		</h:form>
+
+		<h:form id="rateLinesDetailForm">
+			<p:growl id="message" showDetail="true" />
+			<p:panel header="#{msg['label.rates.edit']}"
+				collapsed="#{createRatesController.collapseRateLineEditor}">
+				<ui:include src="/views/user/rateLinesDetail.xhtml">
+					<ui:param name="rateFile"
+						value="#{createRatesController.selectedRateFile}" />
+					<ui:param name="controller" value="#{createRatesController}" />
+					<ui:param name="controllerName" value="createRatesController" />
+					<ui:param name="canEdit" value="true"></ui:param>
+					<ui:param name="sticky" value="false"></ui:param>
+				</ui:include>
+
+				<p:panel style="margin-top:20px;">
+					<p:commandButton value="#{msg['button.back']}"
+						id="backToBasicInfoButton"
+						actionListener="#{createRatesController.showBasicInfoGrid}"
+						update=":createRatesForm :rateLinesDetailForm"
+						styleClass="navButton" />
+					<p:tooltip id="backToBasicInfoTip" for="backToBasicInfoButton"
+						value="#{msg['createrates.back.to.basic.screen']}" />
+					<p:commandButton value="#{msg['button.next']}"
+						id="nextToConditionsEditor"
+						actionListener="#{createRatesController.goToConditionsEditor}"
+						update=":rateLinesDetailForm :conditionsDetailForm"
+						styleClass="navButton" />
+					<p:tooltip id="nextToConditionsTip" for="nextToConditionsEditor"
+						value="#{msg['createrates.next.to.edit.conditions.tip']}" />
+				</p:panel>
+			</p:panel>
+		</h:form>
+
+		<h:form id="conditionsDetailForm">
+			<p:growl id="message" showDetail="true" />
+			<p:panel id="conditionsDetailPanel"
+				collapsed="#{createRatesController.collapseConditionsDetailGrid}"
+				header="#{msg['label.terms.and.conditions.title']}">
+				<ui:include src="/views/user/conditionsDetail.xhtml">
+					<ui:param name="rateFile"
+						value="#{createRatesController.selectedRateFile}" />
+					<ui:param name="controller" value="#{createRatesController}" />
+					<ui:param name="controllerName" value="createRatesController" />
+					<ui:param name="canEdit" value="true" />
+				</ui:include>
+
+				<p:panel style="margin-top:10px;padding:0px;border:0px;">
+					<p:commandButton value="Back"
+						actionListener="#{createRatesController.showRateLineEditor}"
+						update=":rateLinesDetailForm :conditionsDetailForm"
+						styleClass="navButton" immediate="true" />
+					<p:commandButton value="Next"
+						actionListener="#{createRatesController.showSummary}"
+						immediate="true" update=":conditionsDetailForm :summaryForm"
+						styleClass="navButton" />
+				</p:panel>
+			</p:panel>
+		</h:form>
+
+		<h:form id="summaryForm">
+			<p:growl id="message" showDetail="true" />
+			<p:panel collapsed="#{createRatesController.collapseSummary}"
+				header="#{msg['offertesummary.title']}">
+				<ui:include src="/views/user/rateSummary.xhtml" />
+
+				<p:panel style="margin-top:10px;padding:0px;border:0px;">
+					<p:commandButton value="#{msg['button.back']}"
+						actionListener="#{createRatesController.goToConditionsEditor}"
+						id="backToConditionsButton"
+						update=":createRatesForm :rateLinesDetailForm :conditionsDetailForm :summaryForm"
+						styleClass="navButton" />
+					<p:tooltip id="backToConditionsTip" for="backToConditionsButton"
+						value="#{msg['createrates.condition.back.tip']}" />
+					<p:commandButton value="#{msg['button.save']}"
+						id="createRatesButton"
+						action="#{createRatesController.saveNewRateFile}"
+						update=":summaryForm:message" styleClass="navButton" />
+					<p:tooltip id="createRatesTip" for="createRatesButton"
+						value="#{msg['createrates.condition.next.tip']}" />
+				</p:panel>
+			</p:panel>
+		</h:form>
+
+		<p:ajaxStatus onstart="showStatusDialog();"
+			onsuccess="hideStatusDialog();" />
+
+		<p:dialog id="statusDialog" widgetVar="statusDialog" draggable="false"
+			closable="false" resizable="false" showHeader="false">
+			<p:graphicImage url="/resources/images/ajax-loader.gif" />
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
+</html>

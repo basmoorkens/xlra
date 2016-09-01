@@ -1,6 +1,5 @@
 package com.moorkensam.xlra.model.mail;
 
-import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.customer.CustomerContact;
 
 import java.util.ArrayList;

@@ -7,14 +7,15 @@ import com.moorkensam.xlra.service.RaiseRateFileService;
 import com.moorkensam.xlra.service.RateFileService;
 
 import org.primefaces.context.RequestContext;
-import org.primefaces.event.FlowEvent;
 import org.primefaces.model.DualListModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 
@@ -27,6 +28,11 @@ public class RaiseRatesController {
 
   @Inject
   private RaiseRateFileService raiseRatesService;
+
+  @ManagedProperty("#{msg}")
+  private ResourceBundle messageBundle;
+
+  private MessageUtil messageUtil;
 
   private List<RateFile> allRateFiles;
 
@@ -44,6 +50,7 @@ public class RaiseRatesController {
    */
   @PostConstruct
   public void initializeController() {
+    messageUtil = MessageUtil.getInstance(messageBundle);
     resetState();
     rateFiles.setTarget(selectedRateFiles);
   }
@@ -86,7 +93,7 @@ public class RaiseRatesController {
     if (validRaise()) {
       raiseRatesService.raiseRateFileRateLinesWithPercentage(rateFiles.getTarget(), percentage);
       hideAddDialog();
-      MessageUtil.addMessage("Rates raised", "Succesfully raised rates for");
+      messageUtil.addMessage("message.rates.raise.title", "message.rates.raise.detail");
       resetState();
     } else {
       showAddDialog();
@@ -95,12 +102,13 @@ public class RaiseRatesController {
 
   private boolean validRaise() {
     if (rateFiles.getTarget() == null || rateFiles.getTarget().size() == 0) {
-      MessageUtil.addErrorMessage("No rates selected", "Please select ratefiles to raise.");
+      messageUtil.addErrorMessage("message.rates.raise.no.rates.selected.title",
+          "message.rates.raise.no.rates.selected.detail");
       return false;
     }
     if (percentage == 0.00d) {
-      MessageUtil.addErrorMessage("0.00 is an invalid percentage",
-          "A raise of 0.00 doesnt do anything.");
+      messageUtil.addErrorMessage("message.rates.raise.nul.percentage",
+          "message.rates.raise.nul.percentage.detail");
       return false;
     }
     return true;
@@ -112,7 +120,7 @@ public class RaiseRatesController {
   public void undoLatestRaiseRates() {
     raiseRatesService.undoLatestRatesRaise();
     refreshLogs();
-    MessageUtil.addMessage("Rates raised", "Succesfully undid latest rates raise.");
+    messageUtil.addMessage("message.rates.raise.title", "message.rates.raise.undo.latest.detail");
   }
 
   public List<RateFile> getAllRateFiles() {
@@ -153,5 +161,21 @@ public class RaiseRatesController {
 
   public void setLogRecords(List<RaiseRatesRecord> logRecords) {
     this.logRecords = logRecords;
+  }
+
+  public ResourceBundle getMessageBundle() {
+    return messageBundle;
+  }
+
+  public void setMessageBundle(ResourceBundle messageBundle) {
+    this.messageBundle = messageBundle;
+  }
+
+  public MessageUtil getMessageUtil() {
+    return messageUtil;
+  }
+
+  public void setMessageUtil(MessageUtil messageUtil) {
+    this.messageUtil = messageUtil;
   }
 }

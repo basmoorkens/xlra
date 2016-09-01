@@ -2,16 +2,19 @@ package com.moorkensam.xlra.service.impl;
 
 import com.moorkensam.xlra.dao.ConfigurationDao;
 import com.moorkensam.xlra.dao.DieselRateDao;
-import com.moorkensam.xlra.dao.LogDao;
 import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.DieselRate;
 import com.moorkensam.xlra.model.configuration.Interval;
 import com.moorkensam.xlra.model.error.IntervalOverlapException;
 import com.moorkensam.xlra.model.error.RateFileException;
+import com.moorkensam.xlra.model.generator.UserGenerator;
 import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.model.log.RateLogRecord;
+import com.moorkensam.xlra.model.security.User;
+import com.moorkensam.xlra.service.LogRecordFactoryService;
+import com.moorkensam.xlra.service.LogService;
 import com.moorkensam.xlra.service.UserService;
-import com.moorkensam.xlra.service.util.LogRecordFactory;
+import com.moorkensam.xlra.service.UserSessionService;
 
 import junit.framework.Assert;
 
@@ -34,19 +37,19 @@ public class DieselServiceImplTest extends UnitilsJUnit4 {
   private DieselServiceImpl service;
 
   @Mock
-  private UserService userService;
+  private UserSessionService userSessionService;
 
   @Mock
   private DieselRateDao dieselRateDao;
 
   @Mock
-  private LogRecordFactory logFactory;
+  private LogRecordFactoryService logFactory;
 
   @Mock
   private ConfigurationDao configDao;
 
   @Mock
-  private LogDao logDao;
+  private LogService logService;
 
   private List<DieselRate> rates;
 
@@ -67,9 +70,9 @@ public class DieselServiceImplTest extends UnitilsJUnit4 {
     existing1 = new DieselRate(1.0d, 2.0d);
     existing2 = new DieselRate(2.0d, 3.0d);
     service.setDieselRateDao(dieselRateDao);
-    service.setUserService(userService);
-    service.setLogRecordFactory(logFactory);
-    service.setLogDao(logDao);
+    service.setUserSessionService(userSessionService);
+    service.setLogRecordFactoryService(logFactory);
+    service.setLogService(logService);
     service.setXlraConfigurationDao(configDao);
     r1 = new DieselRate();
     r1.setInterval(new Interval("1.20", "1.30"));
@@ -120,15 +123,17 @@ public class DieselServiceImplTest extends UnitilsJUnit4 {
 
   @Test
   public void testDieselUpdateCurrent() {
+    User user = UserGenerator.getStandardUser();
+    user.setUserName("bmoork");
     Configuration config = new Configuration();
     config.setCurrentDieselPrice(new BigDecimal(1.50d));
     EasyMock.expect(configDao.getXlraConfiguration()).andReturn(config);
     LogRecord log = new RateLogRecord();
-    EasyMock.expect(userService.getCurrentUsername()).andReturn("bas");
+    EasyMock.expect(userSessionService.getLoggedInUser()).andReturn(user);
     EasyMock.expect(
-        logFactory.createDieselLogRecord(config.getCurrentDieselPrice(), BigDecimal.valueOf(2d),
-            "bas")).andReturn(log);
-    logDao.createLogRecord(log);
+        logFactory.createDieselLogRecord(config.getCurrentDieselPrice(), BigDecimal.valueOf(2d)))
+        .andReturn(log);
+    logService.createLogRecord(log);
     EasyMock.expectLastCall();
     configDao.updateXlraConfiguration(config);
     EasyMock.expectLastCall();

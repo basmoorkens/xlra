@@ -104,6 +104,7 @@ public class RateFile extends BaseEntity {
       zones = new ArrayList<Zone>();
     }
     zones.add(zone);
+    zone.setRateFile(this);
   }
 
   private String name;
@@ -270,6 +271,9 @@ public class RateFile extends BaseEntity {
     if (getZones() != null && !getZones().isEmpty()) {
       return getZones().get(0).getZoneType() == ZoneType.NUMERIC_CODES;
     }
+    if (country != null) {
+      return ZoneType.NUMERIC_CODES == country.getZoneType();
+    }
     return false;
   }
 
@@ -281,6 +285,9 @@ public class RateFile extends BaseEntity {
   public boolean isAlphaNumericalZoneRateFile() {
     if (getZones() != null && !getZones().isEmpty()) {
       return getZones().get(0).getZoneType() == ZoneType.ALPHANUMERIC_LIST;
+    }
+    if (country != null) {
+      return ZoneType.ALPHANUMERIC_LIST == country.getZoneType();
     }
     return false;
   }
@@ -297,7 +304,8 @@ public class RateFile extends BaseEntity {
       throws RateFileException {
     CalcUtil calcUtil = CalcUtil.getInstance();
     BigDecimal quantityBd = new BigDecimal(quantity);
-    quantityBd = calcUtil.roundBigDecimal(quantityBd);
+    quantityBd =
+        calcUtil.roundQuantityToUpperIfExactQuantityNotFound(rateLines, new BigDecimal(quantity));
     if (rateLines != null) {
       List<RateLine> rlsWithCorrectQuantity =
           findRateLinesWithCorrectQuantity(calcUtil, quantityBd);
@@ -328,7 +336,6 @@ public class RateFile extends BaseEntity {
         + quantity + " Postal code: " + postalCode);
   }
 
-
   /**
    * find the rateline with the correct quantity.
    * 
@@ -336,7 +343,8 @@ public class RateFile extends BaseEntity {
    * @param quantityBd the quantity
    * @return the list of found ratelines.
    */
-  private List<RateLine> findRateLinesWithCorrectQuantity(CalcUtil calcUtil, BigDecimal quantityBd) {
+  private List<RateLine> findRateLinesWithCorrectQuantity(final CalcUtil calcUtil,
+      final BigDecimal quantityBd) {
     List<RateLine> rlsWithCorrectQuantity = new ArrayList<RateLine>();
     for (RateLine rl : getRateLines()) {
       BigDecimal roundBigDecimal = calcUtil.roundBigDecimal(new BigDecimal(rl.getMeasurement()));
@@ -456,5 +464,18 @@ public class RateFile extends BaseEntity {
       return getCustomer().getName();
     }
     return "Base ratefile";
+  }
+
+  /**
+   * Add a rateline to the ratefile.
+   * 
+   * @param rateLine The rateline to add.
+   */
+  public void addRateLine(RateLine rateLine) {
+    if (rateLines == null) {
+      rateLines = new ArrayList<RateLine>();
+    }
+    rateLine.setRateFile(this);
+    rateLines.add(rateLine);
   }
 }

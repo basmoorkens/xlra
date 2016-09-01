@@ -15,7 +15,6 @@ import java.io.IOException;
 
 public class PoiUtilTest extends UnitilsJUnit4 {
 
-  private Poiutil poiUtil;
 
   private XSSFWorkbook wb;
 

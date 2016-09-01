@@ -3,6 +3,7 @@ package com.moorkensam.xlra.service.impl;
 import com.moorkensam.xlra.dao.BaseDao;
 import com.moorkensam.xlra.dao.ConditionDao;
 import com.moorkensam.xlra.dao.RateFileDao;
+import com.moorkensam.xlra.dto.QuantityGeneratorDto;
 import com.moorkensam.xlra.dto.RateFileIdNameDto;
 import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.RateFileException;
@@ -12,9 +13,10 @@ import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.Zone;
+import com.moorkensam.xlra.model.security.User;
+import com.moorkensam.xlra.service.LogRecordFactoryService;
 import com.moorkensam.xlra.service.RateFileService;
-import com.moorkensam.xlra.service.UserService;
-import com.moorkensam.xlra.service.util.LogRecordFactory;
+import com.moorkensam.xlra.service.UserSessionService;
 import com.moorkensam.xlra.service.util.QuotationUtil;
 import com.moorkensam.xlra.service.util.RateUtil;
 import com.moorkensam.xlra.service.util.TranslationKeyToi8nMapper;
@@ -24,6 +26,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.primefaces.model.SortOrder;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -42,271 +46,308 @@ import javax.persistence.NoResultException;
 @Stateless
 public class RateFileServiceImpl extends BaseDao implements RateFileService {
 
-  private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger();
 
-  @Inject
-  private ConditionDao conditionDao;
+	@Inject
+	private ConditionDao conditionDao;
 
-  @Inject
-  private RateFileDao rateFileDao;
+	@Inject
+	private RateFileDao rateFileDao;
 
-  @Inject
-  private UserService userService;
+	@Inject
+	private UserSessionService userSessionService;
 
-  private TranslationKeyToi8nMapper translationMapper;
+	@Inject
+	private LogRecordFactoryService logRecordFactoryService;
 
-  private QuotationUtil quotationUtil;
+	private TranslationKeyToi8nMapper translationMapper;
 
-  private LogRecordFactory logRecordFactory;
+	private QuotationUtil quotationUtil;
 
-  private ZoneUtil zoneUtil;
+	private ZoneUtil zoneUtil;
 
-  /**
-   * Inits for the service.
-   */
-  @PostConstruct
-  public void init() {
-    setLogRecordFactory(LogRecordFactory.getInstance());
-    quotationUtil = QuotationUtil.getInstance();
-    translationMapper = new TranslationKeyToi8nMapper();
-    zoneUtil = new ZoneUtil();
-  }
+	/**
+	 * Inits for the service.
+	 */
+	@PostConstruct
+	public void init() {
+		quotationUtil = QuotationUtil.getInstance();
+		translationMapper = new TranslationKeyToi8nMapper();
+		zoneUtil = new ZoneUtil();
+	}
 
-  @Override
-  public List<RateFile> getAllRateFiles() {
-    return getRateFileDao().getAllRateFiles();
-  }
+	@Override
+	public List<RateFile> getAllRateFiles() {
+		return getRateFileDao().getAllRateFiles();
+	}
 
-  @Override
-  public void createRateFile(final RateFile rateFile) {
-    logger.info("Creating ratefile for " + rateFile.getName());
-    rateFile.setLastEditedBy(userService.getCurrentUsername());
-    convertStringCodesToObjects(rateFile);
-    getRateFileDao().createRateFile(rateFile);
-  }
+	@Override
+	public void createRateFile(final RateFile rateFile) {
+		logger.info("Creating ratefile for " + rateFile.getName());
+		rateFile.setLastEditedBy(userSessionService.getLoggedInUser()
+				.getUserName());
+		convertStringCodesToObjects(rateFile);
+		getRateFileDao().createRateFile(rateFile);
+	}
 
-  private void convertStringCodesToObjects(final RateFile rateFile) {
-    for (Zone zone : rateFile.getZones()) {
-      zone.setAlphaNumericalPostalCodes(zoneUtil.convertAlphaNumericPostalCodeStringToList(zone
-          .getAlphaNumericPostalCodesAsString()));
-      zone.setNumericalPostalCodes(zoneUtil.convertNumericalPostalCodeStringToList(zone
-          .getNumericalPostalCodesAsString()));
-    }
-  }
+	private void convertStringCodesToObjects(final RateFile rateFile) {
+		for (Zone zone : rateFile.getZones()) {
+			zone.setAlphaNumericalPostalCodes(zoneUtil
+					.convertAlphaNumericPostalCodeStringToList(zone
+							.getAlphaNumericPostalCodesAsString()));
+			zone.setNumericalPostalCodes(zoneUtil
+					.convertNumericalPostalCodeStringToList(zone
+							.getNumericalPostalCodesAsString()));
+		}
+	}
 
-  @Override
-  public RateFile updateRateFile(final RateFile rateFile) {
-    convertStringCodesToObjects(rateFile);
-    rateFile.setLastEditedBy(userService.getCurrentUsername());
-    RateFile updateRateFile = getRateFileDao().updateRateFile(rateFile);
-    fillInConditionKeyTranslations(updateRateFile);
-    return updateRateFile;
-  }
+	@Override
+	public RateFile updateRateFile(final RateFile rateFile) {
+		User loggedInUser = userSessionService.getLoggedInUser();
+		convertStringCodesToObjects(rateFile);
+		rateFile.setLastEditedBy(loggedInUser.getUserName());
+		RateFile updateRateFile = getRateFileDao().updateRateFile(rateFile);
+		fillInConditionKeyTranslations(updateRateFile);
+		logRateFileUpdate(updateRateFile, loggedInUser);
+		return updateRateFile;
+	}
 
-  @Override
-  public List<RateFile> getRateFilesForFilter(final RateFileSearchFilter filter) {
-    if (logger.isDebugEnabled()) {
-      logger.debug("Fetch ratefiles for filter " + filter);
-    }
-    return getRateFileDao().getRateFilesForFilter(filter);
-  }
+	private void logRateFileUpdate(final RateFile rateFile, final User user) {
+		logger.info(user.getUserName() + " updated ratefile "
+				+ rateFile.getName() + " with id " + rateFile.getId());
+	}
 
-  @Override
-  public void deleteRateFile(final RateFile rateFile) {
-    logger.info("Deleting ratefile " + rateFile.getId());
-    getRateFileDao().deleteRateFile(rateFile);
-  }
+	@Override
+	public List<RateFile> getRateFilesForFilter(
+			final RateFileSearchFilter filter) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("Fetch ratefiles for filter " + filter);
+		}
+		return getRateFileDao().getRateFilesForFilter(filter);
+	}
 
-  @Override
-  public RateFile getFullRateFile(long id) {
-    if (logger.isDebugEnabled()) {
-      logger.debug("Fetching details for ratefile with id " + id);
-    }
-    RateFile rateFile = getRateFileDao().getFullRateFile(id);
-    fillInConditionKeyTranslations(rateFile);
-    return rateFile;
-  }
+	@Override
+	public void deleteRateFile(final RateFile rateFile) {
+		logger.info(userSessionService.getLoggedInUser().getUserName()
+				+ " deleted ratefile " + rateFile.getName() + " with id "
+				+ rateFile.getId());
+		getRateFileDao().deleteRateFile(rateFile);
+	}
 
-  protected void fillInConditionKeyTranslations(final RateFile rf) {
-    if (rf.getConditions() != null && !rf.getConditions().isEmpty()) {
-      for (Condition condition : rf.getConditions()) {
-        condition.setI8nKey(translationMapper.map(condition.getConditionKey()));
-      }
-    }
-  }
+	@Override
+	public RateFile getFullRateFile(long id) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("Fetching details for ratefile with id " + id);
+		}
+		RateFile rateFile = getRateFileDao().getFullRateFile(id);
+		fillInConditionKeyTranslations(rateFile);
+		return rateFile;
+	}
 
-  @Override
-  public RateFile getRateFileWithoutLazyLoad(Long id) {
-    List<RateFile> rfs = getRateFileDao().getAllRateFiles();
-    for (RateFile rf : rfs) {
-      if (rf.getId() == id) {
-        return rf;
-      }
-    }
-    return null;
-  }
+	protected void fillInConditionKeyTranslations(final RateFile rf) {
+		if (rf.getConditions() != null && !rf.getConditions().isEmpty()) {
+			for (Condition condition : rf.getConditions()) {
+				condition.setI8nKey(translationMapper.map(condition
+						.getConditionKey()));
+			}
+		}
+	}
 
-  @Override
-  public RateFile generateCustomerRateFileForFilterAndCustomer(RateFileSearchFilter filter)
-      throws RateFileException {
-    try {
-      rateFileDao.getFullRateFileForFilter(filter);
-      String businessException = "A ratefile already exists for this customer and these options.";
-      logger.error(businessException);
-      throw new RateFileException(businessException);
-    } catch (NoResultException e) {
-      try {
-        Customer customer = filter.getCustomer();
-        filter.setCustomer(null);
-        RateFile baseRateFile = getRateFileDao().getFullRateFileForFilter(filter);
-        fillInConditionKeyTranslations(baseRateFile);
-        RateFile copy = copyRateFile(filter, customer, baseRateFile);
-        filter.setCustomer(customer);
-        return copy;
-      } catch (NoResultException nre2) {
-        String businessException = "Could not find a ratefile to copy from for this filter.";
-        logger.error(businessException);
-        throw new RateFileException(businessException);
-      }
-    }
-  }
+	@Override
+	public RateFile getRateFileWithoutLazyLoad(Long id) {
+		List<RateFile> rfs = getRateFileDao().getAllRateFiles();
+		for (RateFile rf : rfs) {
+			if (rf.getId() == id) {
+				return rf;
+			}
+		}
+		return null;
+	}
 
-  private RateFile copyRateFile(RateFileSearchFilter filter, Customer customer,
-      RateFile baseRateFile) {
-    RateFile copy = baseRateFile.deepCopy();
-    copy.setName(RateUtil.generateNameForCustomerRateFile(filter, customer));
-    copy.setCustomer(customer);
-    return copy;
-  }
+	@Override
+	public RateFile generateCustomerRateFileForFilterAndCustomer(
+			RateFileSearchFilter filter) throws RateFileException {
+		try {
+			rateFileDao.getFullRateFileForFilter(filter);
+			logger.error("A ratefile already exists for this customer and these options.");
+			throw new RateFileException(
+					"message.ratefile.create.failed.ratefile.exists");
+		} catch (NoResultException e) {
+			try {
+				Customer customer = filter.getCustomer();
+				filter.setCustomer(null);
+				RateFile baseRateFile = getRateFileDao()
+						.getFullRateFileForFilter(filter);
+				fillInConditionKeyTranslations(baseRateFile);
+				RateFile copy = copyRateFile(filter, customer, baseRateFile);
+				filter.setCustomer(customer);
+				return copy;
+			} catch (NoResultException nre2) {
+				logger.error("Could not find a ratefile to copy from for this filter.");
+				throw new RateFileException(
+						"message.ratefile.create.failed.base.file.not.exists");
+			}
+		}
+	}
 
-  @Override
-  public RateFile deleteZone(Zone zone) {
-    logger.info("Deleting zone " + zone.getName());
-    RateFile rf = zone.getRateFile();
-    rf.getZones().remove(zone);
-    zone.setRateFile(null);
-    Iterator<RateLine> iterator = rf.getRateLines().iterator();
-    RateLine rl;
-    while (iterator.hasNext()) {
-      rl = iterator.next();
-      if (rl.getZone().getId() == zone.getId()) {
-        iterator.remove();
-        rl.setRateFile(null);
-        break;
-      }
-    }
-    rf = updateRateFile(rf);
-    getRateFileDao().getFullRateFile(rf.getId());
-    return rf;
-  }
+	private RateFile copyRateFile(RateFileSearchFilter filter,
+			Customer customer, RateFile baseRateFile) {
+		RateFile copy = baseRateFile.deepCopy();
+		copy.setName(RateUtil.generateNameForCustomerRateFile(filter, customer));
+		copy.setCustomer(customer);
+		return copy;
+	}
 
-  @Override
-  public RateFile getFullRateFileForFilter(RateFileSearchFilter filter) {
-    RateFile rf = getRateFileDao().getFullRateFileForFilter(filter);
-    fillInConditionKeyTranslations(rf);
-    return rf;
-  }
+	@Override
+	public RateFile deleteZone(Zone zone) {
+		logger.info("Deleting zone " + zone.getName());
+		RateFile rf = zone.getRateFile();
+		removeZoneFromRateFile(zone, rf);
+		rf = updateRateFile(rf);
+		getRateFileDao().getFullRateFile(rf.getId());
+		return rf;
+	}
 
-  @Override
-  public Condition updateCondition(Condition condition) {
-    return conditionDao.updateCondition(condition);
-  }
+	private void removeZoneFromRateFile(Zone zone, RateFile rf) {
+		rf.getZones().remove(zone);
+		zone.setRateFile(null);
+		Iterator<RateLine> iterator = rf.getRateLines().iterator();
+		RateLine rl;
+		while (iterator.hasNext()) {
+			rl = iterator.next();
+			if (rl.getZone().getId() == zone.getId()) {
+				iterator.remove();
+				rl.setRateFile(null);
+				break;
+			}
+		}
+	}
 
-  public LogRecordFactory getLogRecordFactory() {
-    return logRecordFactory;
-  }
+	@Override
+	public RateFile getFullRateFileForFilter(RateFileSearchFilter filter) {
+		RateFile rf = getRateFileDao().getFullRateFileForFilter(filter);
+		fillInConditionKeyTranslations(rf);
+		return rf;
+	}
 
-  public void setLogRecordFactory(LogRecordFactory logRecordFactory) {
-    this.logRecordFactory = logRecordFactory;
-  }
+	@Override
+	public Condition updateCondition(Condition condition) {
+		return conditionDao.updateCondition(condition);
+	}
 
-  @Override
-  public RateFile getRateFileById(long id) {
-    RateFile fullRateFile = getRateFileDao().getFullRateFile(id);
-    fillInConditionKeyTranslations(fullRateFile);
-    return fullRateFile;
-  }
+	@Override
+	public RateFile getRateFileById(long id) {
+		RateFile fullRateFile = getRateFileDao().getFullRateFile(id);
+		fillInConditionKeyTranslations(fullRateFile);
+		return fullRateFile;
+	}
 
-  @Override
-  public RateFile getRateFileForQuery(QuotationQuery query) throws RateFileException {
-    RateFileSearchFilter firstFilter =
-        quotationUtil.createRateFileSearchFilterForQuery(query, false);
-    RateFile rf = null;
-    try {
-      rf = getRateFileDao().getFullRateFileForFilter(firstFilter);
-      fillInConditionKeyTranslations(rf);
-    } catch (NoResultException nre) {
-      try {
-        logger.warn("Could not find specific ratefile for fullcustomer, "
-            + "falling back on standard filter properties.");
-        RateFileSearchFilter fallBackFilter =
-            quotationUtil.createRateFileSearchFilterForQuery(query, true);
-        rf = getRateFileDao().getFullRateFileForFilter(fallBackFilter);
-      } catch (NoResultException nre2) {
-        throw new RateFileException("Could not find ratefile for searchfilter " + firstFilter);
-      }
-    }
-    return rf;
-  }
+	@Override
+	public RateFile getRateFileForQuery(QuotationQuery query)
+			throws RateFileException {
+		RateFileSearchFilter firstFilter = quotationUtil
+				.createRateFileSearchFilterForQuery(query, false);
+		RateFile rf = null;
+		try {
+			rf = getRateFileDao().getFullRateFileForFilter(firstFilter);
+			fillInConditionKeyTranslations(rf);
+		} catch (NoResultException nre) {
+			try {
+				logger.warn("Could not find specific ratefile for fullcustomer, "
+						+ "falling back on standard filter properties.");
+				RateFileSearchFilter fallBackFilter = quotationUtil
+						.createRateFileSearchFilterForQuery(query, true);
+				rf = getRateFileDao().getFullRateFileForFilter(fallBackFilter);
+			} catch (NoResultException nre2) {
+				RateFileException rfex = new RateFileException(
+						"message.ratefile.by.filter.not.found");
+				rfex.setExtraArguments(Arrays
+						.asList(translateFilterToErorArgument(firstFilter)));
+				throw rfex;
+			}
+		}
+		return rf;
+	}
 
-  public QuotationUtil getQuotationUtil() {
-    return quotationUtil;
-  }
+	private String translateFilterToErorArgument(
+			final RateFileSearchFilter filter) {
+		StringBuilder builder = new StringBuilder();
+		builder.append(filter.getTransportationType().getDescription() + " ");
+		builder.append(filter.getCountry().getI8nCountryName() + " ");
+		builder.append(filter.getMeasurement().getDescription() + " ");
+		builder.append(filter.getRateKind().getDescription() + " ");
+		builder.append(filter.getCustomer().getName() + " ");
+		return builder.toString();
+	}
 
-  public void setQuotationUtil(QuotationUtil quotationUtil) {
-    this.quotationUtil = quotationUtil;
-  }
+	public QuotationUtil getQuotationUtil() {
+		return quotationUtil;
+	}
 
-  public RateFileDao getRateFileDao() {
-    return rateFileDao;
-  }
+	public void setQuotationUtil(QuotationUtil quotationUtil) {
+		this.quotationUtil = quotationUtil;
+	}
 
-  public void setRateFileDao(RateFileDao rateFileDao) {
-    this.rateFileDao = rateFileDao;
-  }
+	public RateFileDao getRateFileDao() {
+		return rateFileDao;
+	}
 
-  public TranslationKeyToi8nMapper getTranslationMapper() {
-    return translationMapper;
-  }
+	public void setRateFileDao(RateFileDao rateFileDao) {
+		this.rateFileDao = rateFileDao;
+	}
 
-  public void setTranslationMapper(TranslationKeyToi8nMapper translationMapper) {
-    this.translationMapper = translationMapper;
-  }
+	public TranslationKeyToi8nMapper getTranslationMapper() {
+		return translationMapper;
+	}
 
-  @Override
-  public List<RateFileIdNameDto> getRateFilesIdAndNamesForAutoComplete() {
-    return rateFileDao.getRateFilesIdAndNamesForAutoComplete();
-  }
+	public void setTranslationMapper(TranslationKeyToi8nMapper translationMapper) {
+		this.translationMapper = translationMapper;
+	}
 
-  @Override
-  public List<RateFile> getRateFilesByIdList(List<Long> ids) {
-    return rateFileDao.getRateFilesById(ids);
-  }
+	@Override
+	public List<RateFileIdNameDto> getRateFilesIdAndNamesForAutoComplete() {
+		return rateFileDao.getRateFilesIdAndNamesForAutoComplete();
+	}
 
-  public UserService getUserService() {
-    return userService;
-  }
+	@Override
+	public List<RateFile> getRateFilesByIdList(List<Long> ids) {
+		return rateFileDao.getRateFilesById(ids);
+	}
 
-  public void setUserService(UserService userService) {
-    this.userService = userService;
-  }
+	public ZoneUtil getZoneUtil() {
+		return zoneUtil;
+	}
 
-  public ZoneUtil getZoneUtil() {
-    return zoneUtil;
-  }
+	public void setZoneUtil(ZoneUtil zoneUtil) {
+		this.zoneUtil = zoneUtil;
+	}
 
-  public void setZoneUtil(ZoneUtil zoneUtil) {
-    this.zoneUtil = zoneUtil;
-  }
+	@Override
+	public List<RateFile> getLazyRateFiles(int first, int pageSize,
+			String sortField, SortOrder sortOrder, Map<String, Object> filters) {
+		return rateFileDao.getLazyRateFiles(first, pageSize, sortField,
+				sortOrder, filters);
+	}
 
-  @Override
-  public List<RateFile> getLazyRateFiles(int first, int pageSize, String sortField,
-      SortOrder sortOrder, Map<String, Object> filters) {
-    return rateFileDao.getLazyRateFiles(first, pageSize, sortField, sortOrder, filters);
-  }
+	@Override
+	public int countRateFiles() {
+		return rateFileDao.countRateFiles();
+	}
 
-  @Override
-  public int countRateFiles() {
-    return rateFileDao.countRateFiles();
-  }
+	public UserSessionService getUserSessionService() {
+		return userSessionService;
+	}
+
+	public void setUserSessionService(UserSessionService userSessionService) {
+		this.userSessionService = userSessionService;
+	}
+
+	public LogRecordFactoryService getLogRecordFactoryService() {
+		return logRecordFactoryService;
+	}
+
+	public void setLogRecordFactoryService(
+			LogRecordFactoryService logRecordFactoryService) {
+		this.logRecordFactoryService = logRecordFactoryService;
+	}
 }

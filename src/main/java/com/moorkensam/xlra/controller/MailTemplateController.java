@@ -7,8 +7,11 @@ import com.moorkensam.xlra.service.MailTemplateService;
 
 import org.primefaces.context.RequestContext;
 
+import java.util.ResourceBundle;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 
@@ -19,6 +22,11 @@ public class MailTemplateController {
   @Inject
   private MailTemplateService mailTemplateService;
 
+  @ManagedProperty("#{msg}")
+  private ResourceBundle messageBundle;
+
+  private MessageUtil messageUtil;
+
   private MailTemplatesForForLanguages mailTemplateDto;
 
   private MailTemplate selectedTemplate;
@@ -27,6 +35,7 @@ public class MailTemplateController {
 
   @PostConstruct
   public void init() {
+    messageUtil = MessageUtil.getInstance(messageBundle);
     refreshTemplates();
   }
 
@@ -45,7 +54,10 @@ public class MailTemplateController {
    */
   public void setupPageForEdit(MailTemplate mailTemplate) {
     selectedTemplate = mailTemplate;
-    popupHeader = "Edit " + mailTemplate.getLanguage().getDescription() + " template";
+    popupHeader =
+        "Edit "
+            + messageUtil.lookupI8nStringAndInjectParams(mailTemplate.getLanguage().getI8nKey())
+            + " template";
     showEditDialog();
   }
 
@@ -64,7 +76,8 @@ public class MailTemplateController {
    */
   public void saveActiveTemplate() {
     mailTemplateService.updateEmailTemplate(selectedTemplate);
-    MessageUtil.addMessage("Saved successfull", "The mail template was successfully saved");
+    messageUtil.addMessage("message.email.template.update.title",
+        "message.email.template.update.detail");
     selectedTemplate = null;
     refreshTemplates();
   }
@@ -103,5 +116,21 @@ public class MailTemplateController {
 
   public void setSelectedTemplate(MailTemplate selectedTemplate) {
     this.selectedTemplate = selectedTemplate;
+  }
+
+  public ResourceBundle getMessageBundle() {
+    return messageBundle;
+  }
+
+  public void setMessageBundle(ResourceBundle messageBundle) {
+    this.messageBundle = messageBundle;
+  }
+
+  public MessageUtil getMessageUtil() {
+    return messageUtil;
+  }
+
+  public void setMessageUtil(MessageUtil messageUtil) {
+    this.messageUtil = messageUtil;
   }
 }

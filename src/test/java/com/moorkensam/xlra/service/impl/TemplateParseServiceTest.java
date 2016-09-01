@@ -4,18 +4,21 @@ import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Address;
 import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.TemplatingException;
+import com.moorkensam.xlra.model.generator.UserGenerator;
 import com.moorkensam.xlra.model.offerte.PriceCalculation;
 import com.moorkensam.xlra.model.offerte.QuotationQuery;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Kind;
 import com.moorkensam.xlra.model.rate.Measurement;
+import com.moorkensam.xlra.model.security.TokenInfo;
 import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.util.ConfigurationLoader;
 
 import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Configuration;
+import freemarker.template.Version;
 
 import junit.framework.Assert;
 
@@ -41,13 +44,13 @@ public class TemplateParseServiceTest extends UnitilsJUnit4 {
   public void setup() {
     templateEngine = TemplateParseServiceImpl.getInstance();
     templateEngine.setStringTemplateLoader(new StringTemplateLoader());
-    templateEngine.setConfiguration(new Configuration());
+    templateEngine.setConfiguration(new Configuration(new Version("2.3.22")));
     templateEngine.setConfigLoader(ConfigurationLoader.getInstance());
   }
 
   @Test
   public void testParseUSerCreatedTemplate() throws TemplatingException {
-    User user = new User();
+    User user = UserGenerator.getStandardUser();
     user.setFirstName("bas");
     user.setName("moorkens");
     user.setUserName("bmoork");
@@ -70,6 +73,7 @@ public class TemplateParseServiceTest extends UnitilsJUnit4 {
     query.setPostalCode("2222");
     query.setQuantity(10d);
     query.setMeasurement(Measurement.PALET);
+    Kind.EXPRES.setDescription("Expres");
     query.setKindOfRate(Kind.EXPRES);
     Customer customer = new Customer();
     query.setCustomer(customer);
@@ -122,12 +126,11 @@ public class TemplateParseServiceTest extends UnitilsJUnit4 {
 
   @Test
   public void testParseUserResetPasswordEmail() throws TemplatingException {
-    User user = new User();
+    User user = UserGenerator.getStandardUser();
     user.setFirstName("bas");
-    user.setName("mo");
-    user.setUserName("bmo");
+    user.setName("moorkens");
     String result = templateEngine.parseUserResetPasswordEmail(user);
-    Assert.assertTrue(result.contains("bas mo"));
+    Assert.assertTrue(result.contains("bas moorkens"));
   }
 
 }

@@ -8,6 +8,7 @@ import com.moorkensam.xlra.model.customer.Department;
 import com.moorkensam.xlra.model.error.XlraValidationException;
 import com.moorkensam.xlra.service.CustomerService;
 import com.moorkensam.xlra.service.util.CustomerUtil;
+import com.moorkensam.xlra.service.util.LocaleUtil;
 
 import org.primefaces.context.RequestContext;
 import org.primefaces.model.LazyDataModel;
@@ -16,9 +17,11 @@ import org.primefaces.model.SortOrder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 
@@ -28,6 +31,16 @@ public class CustomerController {
 
   @Inject
   private CustomerService customerService;
+
+  @ManagedProperty("#{msg}")
+  private ResourceBundle messageBundle;
+
+  @ManagedProperty("#{localeController}")
+  private LocaleController localeController;
+
+  private LocaleUtil localeUtil;
+
+  private MessageUtil messageUtil;
 
   private Customer selectedCustomer;
 
@@ -43,11 +56,14 @@ public class CustomerController {
 
   @PostConstruct
   public void initializeController() {
+    messageUtil = MessageUtil.getInstance(messageBundle);
+    localeUtil = new LocaleUtil();
     reInitializePage();
     initModel();
   }
 
   private void initModel() {
+    fillInLocales();
     model = new LazyDataModel<Customer>() {
 
       private static final long serialVersionUID = -7346727256149263406L;
@@ -76,15 +92,16 @@ public class CustomerController {
     if (selectedCustomer.getId() == 0) {
       try {
         customerService.createCustomer(selectedCustomer);
-        MessageUtil.addMessage("Customer added", "Customer " + selectedCustomer.getName()
-            + " was successfully added.");
+        messageUtil.addMessage("message.customer.created.title", "message.customer.created.detail",
+            selectedCustomer.getName());
       } catch (XlraValidationException e) {
-        MessageUtil.addErrorMessage("Invalid customer data", e.getBusinessException());
+        messageUtil.addErrorMessage("message.customer.invalid.data", e.getBusinessException(), e
+            .getExtraArguments().get(0));
       }
     } else {
       selectedCustomer = customerService.updateCustomer(selectedCustomer);
-      MessageUtil.addMessage("Customer updated", "Customer " + selectedCustomer.getName()
-          + " was successfully updated.");
+      messageUtil.addMessage("message.customer.updated.title", "message.customer.updated.detail",
+          selectedCustomer.getName());
     }
   }
 
@@ -94,7 +111,8 @@ public class CustomerController {
    */
   public void deleteCustomer(Customer customer) {
     customerService.deleteCustomer(customer);
-    MessageUtil.addMessage("Customer removed", "Successfully removed customer.");
+    messageUtil.addMessage("message.customer.deleted.title", "message.customer.deleted.detail",
+        customer.getName());
   }
 
   private void hideAddDialog() {
@@ -121,10 +139,13 @@ public class CustomerController {
     hideAddDialog();
     detailGridTitle = "Details selected customer";
     selectedCustomer = new Customer();
+    selectedContact = new CustomerContact();
   }
 
   public List<Language> getAllLanguages() {
-    return Arrays.asList(Language.values());
+    List<Language> supportedLanguages = getLocaleController().getSupportedLanguages();
+    getLocaleUtil().fillInLanguageTranslations(supportedLanguages, getMessageBundle());
+    return supportedLanguages;
   }
 
   /**
@@ -133,7 +154,6 @@ public class CustomerController {
   public void setupPageForNewCustomer() {
     detailGridTitle = "New customer";
     selectedCustomer = new Customer();
-    selectedCustomer.setHasOwnRateFile(false);
     showAddDialog();
   }
 
@@ -226,6 +246,11 @@ public class CustomerController {
     selectedCustomer = customer;
   }
 
+  private void fillInLocales() {
+    localeUtil.fillInLanguageTranslations(Arrays.asList(Language.values()), messageBundle);
+    localeUtil.fillInDepartmentTranslations(Arrays.asList(Department.values()), messageBundle);
+  }
+
   public String getDetailGridTitle() {
     return detailGridTitle;
   }
@@ -258,8 +283,15 @@ public class CustomerController {
     this.selectedContact = selectedContact;
   }
 
+  /**
+   * Get the departments to display and translate them.
+   * 
+   * @return The list of translated departments
+   */
   public List<Department> getAllDepartments() {
-    return CustomerUtil.getInstance().getDisplayDepartments();
+    List<Department> departments = CustomerUtil.getInstance().getDisplayDepartments();
+    localeUtil.fillInDepartmentTranslations(departments, messageBundle);
+    return departments;
   }
 
   public String getContactHeader() {
@@ -276,6 +308,38 @@ public class CustomerController {
 
   public void setSaveContactButtonTitle(String saveContactButtonTitle) {
     this.saveContactButtonTitle = saveContactButtonTitle;
+  }
+
+  public ResourceBundle getMessageBundle() {
+    return messageBundle;
+  }
+
+  public void setMessageBundle(ResourceBundle messageBundle) {
+    this.messageBundle = messageBundle;
+  }
+
+  public MessageUtil getMessageUtil() {
+    return messageUtil;
+  }
+
+  public void setMessageUtil(MessageUtil messageUtil) {
+    this.messageUtil = messageUtil;
+  }
+
+  public LocaleController getLocaleController() {
+    return localeController;
+  }
+
+  public void setLocaleController(LocaleController localeController) {
+    this.localeController = localeController;
+  }
+
+  public LocaleUtil getLocaleUtil() {
+    return localeUtil;
+  }
+
+  public void setLocaleUtil(LocaleUtil localeUtil) {
+    this.localeUtil = localeUtil;
   }
 
 }

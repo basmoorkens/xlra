@@ -1,6 +1,8 @@
 package com.moorkensam.xlra.dao;
 
+import com.moorkensam.xlra.dto.RateFileDto;
 import com.moorkensam.xlra.dto.RateFileIdNameDto;
+import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
 import com.moorkensam.xlra.model.rate.RateLine;
@@ -38,4 +40,6 @@ public interface RateFileDao {
       Map<String, Object> filters);
 
   public int countRateFiles();
+
+  public List<RateFileDto> getRateFileDtosForCustomer(Customer customer);
 }

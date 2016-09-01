@@ -39,8 +39,6 @@ import javax.validation.constraints.NotNull;
 @NamedQueries({
     @NamedQuery(name = "Customer.findAll",
         query = "SELECT b FROM Customer b where b.deleted = false"),
-    @NamedQuery(name = "Customer.findAllFullCustomers",
-        query = "SELECT c FROM Customer c where c.deleted = false AND c.hasOwnRateFile = true"),
     @NamedQuery(name = "Customer.countCustomers",
         query = "SELECT count(c.id) FROM Customer c where c.deleted = false"),
     @NamedQuery(name = "Customer.findByName",
@@ -91,8 +89,6 @@ public class Customer extends BaseEntity {
   @Length(max = 100)
   private String btwNumber;
 
-  private boolean hasOwnRateFile;
-
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "standard_contact_id")
   @NotNull
@@ -141,14 +137,6 @@ public class Customer extends BaseEntity {
 
   public void setBtwNumber(String btwNumber) {
     this.btwNumber = btwNumber;
-  }
-
-  public boolean isHasOwnRateFile() {
-    return hasOwnRateFile;
-  }
-
-  public void setHasOwnRateFile(boolean hasOwnRateFile) {
-    this.hasOwnRateFile = hasOwnRateFile;
   }
 
   public List<CustomerContact> getContacts() {

@@ -1,7 +1,6 @@
 package com.moorkensam.xlra.service.impl;
 
 import com.moorkensam.xlra.dao.EmailTemplateDao;
-import com.moorkensam.xlra.dao.LogDao;
 import com.moorkensam.xlra.dao.PriceCalculationDao;
 import com.moorkensam.xlra.dao.QuotationQueryDao;
 import com.moorkensam.xlra.dao.QuotationResultDao;
@@ -10,6 +9,7 @@ import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.PdfException;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.error.TemplatingException;
+import com.moorkensam.xlra.model.generator.UserGenerator;
 import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.model.log.QuotationLogRecord;
 import com.moorkensam.xlra.model.mail.EmailResult;
@@ -26,11 +26,13 @@ import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.CalculationService;
 import com.moorkensam.xlra.service.EmailService;
 import com.moorkensam.xlra.service.FileService;
+import com.moorkensam.xlra.service.LogRecordFactoryService;
+import com.moorkensam.xlra.service.LogService;
 import com.moorkensam.xlra.service.MailTemplateService;
 import com.moorkensam.xlra.service.PdfService;
 import com.moorkensam.xlra.service.RateFileService;
 import com.moorkensam.xlra.service.UserService;
-import com.moorkensam.xlra.service.util.LogRecordFactory;
+import com.moorkensam.xlra.service.UserSessionService;
 import com.moorkensam.xlra.service.util.QuotationUtil;
 
 import com.itextpdf.text.DocumentException;
@@ -102,13 +104,13 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
   private PriceCalculationDao calculationDao;
 
   @Mock
-  private UserService userService;
+  private UserSessionService userSessionService;
 
   @Mock
-  private LogRecordFactory logRecordFactory;
+  private LogRecordFactoryService logRecordFactory;
 
   @Mock
-  private LogDao logDao;
+  private LogService logService;
 
   private QuotationQuery query;
 
@@ -130,6 +132,7 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
     template.setTemplate("test template + ${detailCalculation}");
     template.setSubject("SUBJECT");
     quotationService.setPriceCalculationDao(calculationDao);
+    quotationService.setUserSessionService(userSessionService);
     quotationService.setQuotationDao(quotationDao);
     quotationService.setQuotationResultDao(quotationResultDao);
     quotationService.setEmailService(mailService);
@@ -140,10 +143,9 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
     quotationService.setRateFileService(rateFileService);
     quotationService.setFileService(fileService);
     quotationService.setPdfService(pdfService);
-    quotationService.setUserService(userService);
     quotationService.setQuotationUtil(quotationUtil);
-    quotationService.setLogDao(logDao);
-    quotationService.setLogFactory(logRecordFactory);
+    quotationService.setLogService(logService);
+    quotationService.setLogFactoryService(logRecordFactory);
   }
 
   @Test
@@ -165,6 +167,7 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
 
   @Test
   public void testSubmitOfferte() throws RateFileException, MessagingException, PdfException {
+    User user = UserGenerator.getStandardUser();
     QuotationResult result = new QuotationResult();
     result.setOfferteUniqueIdentifier("uq123");
     PriceCalculation calculation = new PriceCalculation();
@@ -176,10 +179,12 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
     EasyMock.expect(calculationDao.createCalculation(calculation)).andReturn(calculation);
     quotationResultDao.createQuotationResult(result);
     EasyMock.expectLastCall();
+    EasyMock.expect(userSessionService.getLoggedInUser())
+        .andReturn(UserGenerator.getStandardUser());
     EasyMock.expect(fileService.convertTransientOfferteToFinal("uq123")).andReturn("uq123.pdf");
     LogRecord log = new QuotationLogRecord();
     EasyMock.expect(logRecordFactory.createOfferteLogRecord(result)).andReturn(log);
-    logDao.createLogRecord(log);
+    logService.createLogRecord(log);
     EasyMock.expectLastCall();
     mailService.sendOfferteMail(result);
     EasyMock.expectLastCall();
@@ -197,10 +202,6 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
     result.setQuery(query);
     query.setLanguage(Language.NL);
     result.setOfferteUniqueIdentifier(uqId);
-    User user = new User();
-    user.setName("moorkens");
-    user.setFirstName("bas");
-    user.setUserName("bmoork");
     RateLine rl = new RateLine();
     rl.setValue(new BigDecimal(100d));
     OfferteOptionDto option = new OfferteOptionDto();
@@ -208,8 +209,8 @@ public class QuotationServiceImplTest extends UnitilsJUnit4 {
     option.setSelected(true);
     option.setValue("200d");
     EasyMock.expect(idService.getNextIdentifier()).andReturn(uqId);
-    EasyMock.expect(userService.getCurrentUsername()).andReturn("bmoork");
-    EasyMock.expect(userService.getUserByUserName("bmoork")).andReturn(user);
+    User user = UserGenerator.getStandardUser();
+    EasyMock.expect(userSessionService.getLoggedInUser()).andReturn(user);
     EasyMock.expect(rateFileService.getRateFileForQuery(query)).andReturn(rfMock);
     EasyMock.expect(
         rfMock.getRateLineForQuantityAndPostalCode(query.getQuantity(), query.getPostalCode()))

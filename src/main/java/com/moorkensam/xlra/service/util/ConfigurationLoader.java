@@ -31,6 +31,10 @@ public class ConfigurationLoader {
 
   public static final String EMAIL_ENABLED = "email.enabled";
 
+  public static final String DEFAULT_LOCALE = "default.locale";
+
+  public static final String SUPPORTED_LOCALES = "supported.locales";
+
   public static ConfigurationLoader instance;
 
   private Properties properties;

@@ -9,35 +9,44 @@
 		<h:outputText value="XLRA - Configuration - Overview logs" />
 	</ui:define>
 	<ui:define name="pageTitle">
-		<h:outputText value="Overview log files" />
+		<h:outputText value="#{msg['logs.title']}" />
 	</ui:define>
 	<ui:define name="body">
 		<h:form id="ratesLogsForm">
-			<p:panel header="Offerte logs">
+			<p:panel header="#{msg['logs.offerte.title']}">
 				<p:dataTable value="#{logOverviewController.quotationLogRecords}"
-					var="log" emptyMessage="No offerte  logs found." id="offerteLogs">
+					var="log" emptyMessage="#{msg['logs.offerte.empty']}"
+					id="offerteLogs">
 					<p:column>
-						<f:facet name="header">offerteKey</f:facet>
-						#{log.offerteKey}
+						<f:facet name="header">#{msg['label.date.time']}</f:facet>
+						#{log.logDate}
 					</p:column>
 					<p:column>
-						<f:facet name="header">createdUserName</f:facet>
+						<f:facet name="header">#{msg['label.username']}</f:facet>
 						#{log.userName}
 					</p:column>
 					<p:column>
-						<f:facet name="header">customerName</f:facet>
+						<f:facet name="header">#{msg['label.offerte.key']}</f:facet>
+						#{log.offerteKey}
+					</p:column>
+					<p:column>
+						<f:facet name="header">#{msg['label.customer.name']}</f:facet>
 						#{log.customerName}
 					</p:column>
 				</p:dataTable>
 			</p:panel>
 
-			<p:panel header="Diesel / Chf  logs">
+			<p:panel header="#{msg['logs.diesel.chf.logs.title']}">
 				<p:dataTable value="#{logOverviewController.rateLogRecords}"
-					var="log" emptyMessage="No chf / diesel logs found.." id="rateLogs"
-					rows="10">
+					var="log" emptyMessage="#{msg['logs.diesel.chf.empty']}"
+					id="rateLogs" rows="10">
 					<p:column>
-						<f:facet name="header">Date time</f:facet>
+						<f:facet name="header">#{msg['label.date.time']}</f:facet>
 						#{log.logDate}
+					</p:column>
+					<p:column>
+						<f:facet name="header">Username</f:facet>
+						#{log.userName}
 					</p:column>
 					<p:column>
 						<f:facet name="header">Type</f:facet>
@@ -61,6 +70,10 @@
 					<p:column>
 						<f:facet name="header">Date time</f:facet>
 						#{log.logDate}
+					</p:column>
+					<p:column>
+						<f:facet name="header">Username</f:facet>
+						#{log.userName}
 					</p:column>
 					<p:column>
 						<f:facet name="header">Operation</f:facet>

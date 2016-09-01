@@ -1,7 +1,6 @@
 package com.moorkensam.xlra.service.util;
 
 import com.moorkensam.xlra.model.configuration.Interval;
-import com.moorkensam.xlra.model.rate.Zone;
 
 import java.util.ArrayList;
 import java.util.Arrays;

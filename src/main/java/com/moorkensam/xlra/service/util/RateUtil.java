@@ -1,46 +1,16 @@
 package com.moorkensam.xlra.service.util;
 
-import com.moorkensam.xlra.controller.util.MessageUtil;
+
 import com.moorkensam.xlra.model.configuration.AbstractRate;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.error.IntervalOverlapException;
 import com.moorkensam.xlra.model.rate.RateFileSearchFilter;
 
-import org.primefaces.event.CellEditEvent;
-
 import java.util.Arrays;
 import java.util.List;
 
 public class RateUtil {
-
-  /**
-   * Handles a rateline cell edit event.
-   * 
-   * @param event The evnet that triggered this.
-   */
-  public static void onRateLineCellEdit(CellEditEvent event) {
-    Object newValue = event.getNewValue();
-    Object oldValue = event.getOldValue();
-
-    if (newValue != null && !newValue.equals(oldValue)) {
-      MessageUtil.addMessage("Rate updated", "Rate value updated to " + newValue);
-    }
-  }
-
-  /**
-   * Handles a condition cell edit event.
-   * 
-   * @param event The triggering event.
-   */
-  public static void onConditionCellEdit(CellEditEvent event) {
-    Object newValue = event.getNewValue();
-    Object oldValue = event.getOldValue();
-
-    if (newValue != null && !newValue.equals(oldValue)) {
-      MessageUtil.addMessage("Condition updated", "Condition updated to" + newValue);
-    }
-  }
 
   public static List<Language> getLanguages() {
     return Arrays.asList(Language.values());
@@ -75,18 +45,16 @@ public class RateUtil {
   public static void validateRateInterval(AbstractRate rate,
       List<? extends AbstractRate> existingRates) throws IntervalOverlapException {
     if (rate.getInterval().getStart() >= rate.getInterval().getEnd()) {
-      throw new IntervalOverlapException(
-          "The start value of the rate should be smaller then the end value.");
+      throw new IntervalOverlapException("message.invalid.interval.start.smaller.end");
     }
     for (AbstractRate existing : existingRates) {
       if (rate.getInterval().getStart() >= existing.getInterval().getStart()
           && rate.getInterval().getStart() < existing.getInterval().getEnd()) {
-        throw new IntervalOverlapException(
-            "The start value of this rate is already in another rate.");
+        throw new IntervalOverlapException("message.invalid.interval.start.already.in.other");
       }
       if (rate.getInterval().getEnd() >= existing.getInterval().getStart()
           && rate.getInterval().getEnd() < existing.getInterval().getEnd()) {
-        throw new IntervalOverlapException("The end value of the rate is already in another rate.");
+        throw new IntervalOverlapException("message.invalid.interval.end.already.in.other");
       }
     }
   }

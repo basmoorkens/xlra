@@ -1,6 +1,7 @@
 package com.moorkensam.xlra.controller;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
+import com.moorkensam.xlra.model.error.UnAuthorizedAccessException;
 import com.moorkensam.xlra.model.offerte.QuotationResult;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.service.CountryService;
@@ -21,9 +22,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -43,6 +46,11 @@ public class OfferteOverviewController {
   @Inject
   private EmailService emailService;
 
+  @ManagedProperty("#{msg}")
+  private ResourceBundle messageBundle;
+
+  private MessageUtil messageUtil;
+
   private FileService fileService;
 
   private LazyDataModel<QuotationResult> model;
@@ -56,6 +64,7 @@ public class OfferteOverviewController {
    */
   @PostConstruct
   public void initialize() {
+    messageUtil = MessageUtil.getInstance(messageBundle);
     fileService = new FileServiceImpl();
     allCountrys = countryService.getAllCountriesFullLoad();
     checkAndLoadOfferteIfPresent();
@@ -84,8 +93,13 @@ public class OfferteOverviewController {
         FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap()
             .get("offerteKey");
     if (StringUtils.isNotBlank(offerteKey)) {
-      selectedOfferte = quotationService.getOfferteByOfferteKey(offerteKey);
-      showDetailDialog();
+      try {
+        selectedOfferte = quotationService.getOfferteByOfferteKey(offerteKey);
+        showDetailDialog();
+      } catch (UnAuthorizedAccessException e) {
+        messageUtil.addErrorMessage("message.offerte.unauthorized.access.title",
+            e.getBusinessException(), e.getExtraArguments().get(0));
+      }
     }
   }
 
@@ -95,8 +109,13 @@ public class OfferteOverviewController {
    * @param quotationResult The offerte to view the details of.
    */
   public void setupOfferteDetail(QuotationResult quotationResult) {
-    selectedOfferte = quotationService.getFullOfferteById(quotationResult.getId());
-    showDetailDialog();
+    try {
+      selectedOfferte = quotationService.getFullOfferteById(quotationResult.getId());
+      showDetailDialog();
+    } catch (UnAuthorizedAccessException e) {
+      messageUtil.addErrorMessage("message.offerte.unauthorized.access.title",
+          e.getBusinessException(), e.getExtraArguments().get(0));
+    }
   }
 
   public void hideDetailDialog() {
@@ -142,10 +161,13 @@ public class OfferteOverviewController {
     try {
       emailService.sendOfferteMail(selectedOfferte);
       selectedOfferte = quotationService.getFullOfferteById(selectedOfferte.getId());
-      MessageUtil.addMessage("Email resend", "Successfully sent email");
+      messageUtil.addMessage("message.email.resend.title", "message.email.resend.detail");
     } catch (MessagingException e) {
-      MessageUtil.addErrorMessage("Could not send email",
-          "Error sending email! Contact the system admin if this error persists.");
+      messageUtil.addErrorMessage("message.email.resend.failed.title",
+          "message.email.resend.failed.detail");
+    } catch (UnAuthorizedAccessException e) {
+      messageUtil.addErrorMessage("message.offerte.unauthorized.access.title",
+          e.getBusinessException(), e.getExtraArguments().get(0));
     }
   }
 
@@ -187,5 +209,21 @@ public class OfferteOverviewController {
 
   public void setModel(LazyDataModel<QuotationResult> model) {
     this.model = model;
+  }
+
+  public ResourceBundle getMessageBundle() {
+    return messageBundle;
+  }
+
+  public void setMessageBundle(ResourceBundle messageBundle) {
+    this.messageBundle = messageBundle;
+  }
+
+  public MessageUtil getMessageUtil() {
+    return messageUtil;
+  }
+
+  public void setMessageUtil(MessageUtil messageUtil) {
+    this.messageUtil = messageUtil;
   }
 }

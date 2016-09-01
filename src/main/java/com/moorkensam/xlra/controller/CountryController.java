@@ -3,15 +3,15 @@ package com.moorkensam.xlra.controller;
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.service.CountryService;
-import com.moorkensam.xlra.service.util.CustomerUtil;
 
 import org.primefaces.context.RequestContext;
-import org.primefaces.event.RowEditEvent;
 
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 
@@ -19,103 +19,127 @@ import javax.inject.Inject;
 @ViewScoped
 public class CountryController {
 
-  @Inject
-  private CountryService countryService;
+	@Inject
+	private CountryService countryService;
 
-  private List<Country> countries;
+	@ManagedProperty("#{msg}")
+	private ResourceBundle messageBundle;
 
-  private Country selectedCountry;
+	private MessageUtil messageUtil;
 
-  private String detailGridTitle;
+	private List<Country> countries;
 
-  @PostConstruct
-  public void init() {
-    refreshCountries();
-  }
+	private Country selectedCountry;
 
-  private void refreshCountries() {
-    countries = countryService.getAllCountriesFullLoad();
-  }
+	private String detailGridTitle;
 
-  /**
-   * Saves the country that was edited.
-   */
-  public void saveEditedCountry() {
-    selectedCountry = countryService.updateCountry(selectedCountry);
-    MessageUtil.addMessage("Country updated", "Country " + selectedCountry.getEnglishName()
-        + " was successfully");
-    refreshCountries();
-    hideAddDialog();
-  }
+	@PostConstruct
+	public void init() {
+		refreshCountries();
+		messageUtil = MessageUtil.getInstance(messageBundle);
+	}
 
-  /**
-   * Delete a country
-   * 
-   * @param country the country to delete.
-   */
-  public void deleteCountry(Country country) {
-    countryService.deleteCountry(country);
-    refreshCountries();
-    MessageUtil.addMessage("Country deleted",
-        "Successfully deleted the country " + country.getEnglishName());
-  }
+	private void refreshCountries() {
+		countries = countryService.getAllCountriesFullLoad();
+	}
 
-  public void cancel() {
-    selectedCountry = null;
-    hideAddDialog();
-  }
+	/**
+	 * Saves the country that was edited.
+	 */
+	public void saveEditedCountry() {
+		selectedCountry = countryService.updateCountry(selectedCountry);
+		messageUtil.addMessage("message.country.update.title",
+				"message.country.update.detail",
+				selectedCountry.getEnglishName() + "");
+		refreshCountries();
+		hideAddDialog();
+	}
 
-  /**
-   * Setup the page to edit a country.
-   * 
-   * @param country The country to edit.
-   */
-  public void setupPageForEdit(Country country) {
-    selectedCountry = country;
-    detailGridTitle = "Edit country " + country.getEnglishName();
-    showAddDialog();
-  }
+	/**
+	 * Delete a country
+	 * 
+	 * @param country
+	 *            the country to delete.
+	 */
+	public void deleteCountry(Country country) {
+		countryService.deleteCountry(country);
+		refreshCountries();
+		messageUtil.addMessage("message.country.delete.title",
+				"message.country.delete.detail", country.getEnglishName() + "");
+	}
 
-  private void hideAddDialog() {
-    RequestContext context = RequestContext.getCurrentInstance();
-    context.execute("PF('editCountryDialog').hide();");
-  }
+	public void cancel() {
+		selectedCountry = null;
+		hideAddDialog();
+	}
 
-  private void showAddDialog() {
-    RequestContext context = RequestContext.getCurrentInstance();
-    context.execute("PF('editCountryDialog').show();");
-  }
+	/**
+	 * Setup the page to edit a country.
+	 * 
+	 * @param country
+	 *            The country to edit.
+	 */
+	public void setupPageForEdit(Country country) {
+		selectedCountry = country;
+		detailGridTitle = "Edit country " + country.getEnglishName();
+		showAddDialog();
+	}
 
+	private void hideAddDialog() {
+		RequestContext context = RequestContext.getCurrentInstance();
+		context.execute("PF('editCountryDialog').hide();");
+	}
 
-  public Country getSelectedCountry() {
-    return selectedCountry;
-  }
+	private void showAddDialog() {
+		RequestContext context = RequestContext.getCurrentInstance();
+		context.execute("PF('editCountryDialog').show();");
+	}
 
-  public void setSelectedCountry(Country selectedCountry) {
-    this.selectedCountry = selectedCountry;
-  }
+	public Country getSelectedCountry() {
+		return selectedCountry;
+	}
 
-  public List<Country> getCountries() {
-    return countries;
-  }
+	public void setSelectedCountry(Country selectedCountry) {
+		this.selectedCountry = selectedCountry;
+	}
 
-  public void setCountries(List<Country> countries) {
-    this.countries = countries;
-  }
+	public List<Country> getCountries() {
+		return countries;
+	}
 
-  public CountryService getCountryService() {
-    return countryService;
-  }
+	public void setCountries(List<Country> countries) {
+		this.countries = countries;
+	}
 
-  public void setCountryService(CountryService countryService) {
-    this.countryService = countryService;
-  }
+	public CountryService getCountryService() {
+		return countryService;
+	}
 
-  public String getDetailGridTitle() {
-    return detailGridTitle;
-  }
+	public void setCountryService(CountryService countryService) {
+		this.countryService = countryService;
+	}
 
-  public void setDetailGridTitle(String detailGridTitle) {
-    this.detailGridTitle = detailGridTitle;
-  }
+	public String getDetailGridTitle() {
+		return detailGridTitle;
+	}
+
+	public void setDetailGridTitle(String detailGridTitle) {
+		this.detailGridTitle = detailGridTitle;
+	}
+
+	public MessageUtil getMessageUtil() {
+		return messageUtil;
+	}
+
+	public void setMessageUtil(MessageUtil messageUtil) {
+		this.messageUtil = messageUtil;
+	}
+
+	public ResourceBundle getMessageBundle() {
+		return messageBundle;
+	}
+
+	public void setMessageBundle(ResourceBundle messageBundle) {
+		this.messageBundle = messageBundle;
+	}
 }

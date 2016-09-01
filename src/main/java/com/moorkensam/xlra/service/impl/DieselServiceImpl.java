@@ -2,21 +2,23 @@ package com.moorkensam.xlra.service.impl;
 
 import com.moorkensam.xlra.dao.ConfigurationDao;
 import com.moorkensam.xlra.dao.DieselRateDao;
-import com.moorkensam.xlra.dao.LogDao;
 import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.DieselRate;
 import com.moorkensam.xlra.model.error.IntervalOverlapException;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.log.LogRecord;
+import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.DieselService;
-import com.moorkensam.xlra.service.UserService;
-import com.moorkensam.xlra.service.util.LogRecordFactory;
+import com.moorkensam.xlra.service.LogRecordFactoryService;
+import com.moorkensam.xlra.service.LogService;
+import com.moorkensam.xlra.service.UserSessionService;
 import com.moorkensam.xlra.service.util.RateUtil;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -28,115 +30,127 @@ import javax.inject.Inject;
 @Stateless
 public class DieselServiceImpl implements DieselService {
 
-  @Inject
-  private DieselRateDao dieselRateDao;
+	@Inject
+	private DieselRateDao dieselRateDao;
 
-  private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger();
 
-  @Inject
-  private ConfigurationDao xlraConfigurationDao;
+	@Inject
+	private ConfigurationDao xlraConfigurationDao;
 
-  @Inject
-  private LogDao logDao;
+	@Inject
+	private LogService logService;
 
-  @Inject
-  private UserService userService;
+	@Inject
+	private UserSessionService userSessionService;
 
-  private LogRecordFactory logRecordFactory;
+	@Inject
+	private LogRecordFactoryService logRecordFactoryService;
 
-  @PostConstruct
-  public void init() {
-    setLogRecordFactory(LogRecordFactory.getInstance());
-  }
+	@Override
+	public void updateDieselRate(final DieselRate dieselRate) {
+		getDieselRateDao().updateDieselRate(dieselRate);
+	}
 
-  @Override
-  public void updateDieselRate(DieselRate dieselRate) {
-    getDieselRateDao().updateDieselRate(dieselRate);
-  }
+	@Override
+	public void createDieselRate(final DieselRate dieselRate)
+			throws IntervalOverlapException {
+		RateUtil.validateRateInterval(dieselRate,
+				dieselRateDao.getAllDieselRates());
+		getDieselRateDao().createDieselRate(dieselRate);
+	}
 
-  @Override
-  public void createDieselRate(DieselRate dieselRate) throws IntervalOverlapException {
-    RateUtil.validateRateInterval(dieselRate, dieselRateDao.getAllDieselRates());
-    getDieselRateDao().createDieselRate(dieselRate);
-  }
+	@Override
+	public List<DieselRate> getAllDieselRates() {
+		return getDieselRateDao().getAllDieselRates();
+	}
 
-  @Override
-  public List<DieselRate> getAllDieselRates() {
-    return getDieselRateDao().getAllDieselRates();
-  }
+	@Override
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void updateCurrentDieselValue(final BigDecimal value) {
+		Configuration config = getXlraConfigurationDao().getXlraConfiguration();
 
-  @Override
-  @TransactionAttribute(TransactionAttributeType.REQUIRED)
-  public void updateCurrentDieselValue(BigDecimal value) {
-    Configuration config = getXlraConfigurationDao().getXlraConfiguration();
+		logUpdateCurrentDieselValue(value, config);
 
-    LogRecord createDieselLogRecord =
-        logRecordFactory.createDieselLogRecord(config.getCurrentDieselPrice(), value,
-            getUserService().getCurrentUsername());
-    logger.info("Saving dieselprice logrecord " + createDieselLogRecord);
-    getLogDao().createLogRecord(createDieselLogRecord);
+		config.setCurrentDieselPrice(value);
+		logger.info("Saving current diesel price"
+				+ config.getCurrentDieselPrice());
+		getXlraConfigurationDao().updateXlraConfiguration(config);
+	}
 
-    config.setCurrentDieselPrice(value);
-    logger.info("Saving current diesel price" + config.getCurrentDieselPrice());
-    getXlraConfigurationDao().updateXlraConfiguration(config);
-  }
+	private void logUpdateCurrentDieselValue(final BigDecimal value,
+			final Configuration config) {
+		User loggedInUser = userSessionService.getLoggedInUser();
+		LogRecord createDieselLogRecord = getLogRecordFactoryService()
+				.createDieselLogRecord(config.getCurrentDieselPrice(), value);
+		logger.info(loggedInUser.getUserName() + " updated dieselprice "
+				+ config.getCurrentDieselPrice() + " to " + value);
+		logService.createLogRecord(createDieselLogRecord);
+	}
 
-  @Override
-  public DieselRate getDieselRateForCurrentPrice(BigDecimal price) throws RateFileException {
-    List<DieselRate> rates = getAllDieselRates();
-    for (DieselRate rate : rates) {
-      if (rate.getInterval().getStart() <= price.doubleValue()
-          && rate.getInterval().getEnd() > price.doubleValue()) {
-        return rate;
-      }
-    }
-    throw new RateFileException(
-        "Could not calculate diesel supplement, no multiplier found for price " + price);
-  }
+	@Override
+	public DieselRate getDieselRateForCurrentPrice(final BigDecimal price)
+			throws RateFileException {
+		List<DieselRate> rates = getAllDieselRates();
+		if (rates == null || rates.isEmpty()) {
+			throw new RateFileException("diesel.charges.empty");
+		}
+		for (DieselRate rate : rates) {
+			if (rate.getInterval().getStart() <= price.doubleValue()
+					&& rate.getInterval().getEnd() > price.doubleValue()) {
+				return rate;
+			}
+		}
+		RateFileException rfex = new RateFileException(
+				"message.diesel.no.multiplier.found");
+		rfex.setExtraArguments(Arrays.asList(price + ""));
+		throw rfex;
+	}
 
-  @Override
-  public void deleteDieselRate(DieselRate rate) {
-    logger.info("Removing diesel rate " + rate);
-    dieselRateDao.deleteDieselRate(rate);
-  }
+	@Override
+	public void deleteDieselRate(DieselRate rate) {
+		logger.info("Removing diesel rate " + rate);
+		dieselRateDao.deleteDieselRate(rate);
+	}
 
-  public LogRecordFactory getLogRecordFactory() {
-    return logRecordFactory;
-  }
+	public DieselRateDao getDieselRateDao() {
+		return dieselRateDao;
+	}
 
-  public void setLogRecordFactory(LogRecordFactory logRecordFactory) {
-    this.logRecordFactory = logRecordFactory;
-  }
+	public void setDieselRateDao(DieselRateDao dieselRateDao) {
+		this.dieselRateDao = dieselRateDao;
+	}
 
-  public LogDao getLogDao() {
-    return logDao;
-  }
+	public ConfigurationDao getXlraConfigurationDao() {
+		return xlraConfigurationDao;
+	}
 
-  public void setLogDao(LogDao logDao) {
-    this.logDao = logDao;
-  }
+	public void setXlraConfigurationDao(ConfigurationDao xlraConfigurationDao) {
+		this.xlraConfigurationDao = xlraConfigurationDao;
+	}
 
-  public DieselRateDao getDieselRateDao() {
-    return dieselRateDao;
-  }
+	public LogService getLogService() {
+		return logService;
+	}
 
-  public void setDieselRateDao(DieselRateDao dieselRateDao) {
-    this.dieselRateDao = dieselRateDao;
-  }
+	public void setLogService(LogService logService) {
+		this.logService = logService;
+	}
 
-  public ConfigurationDao getXlraConfigurationDao() {
-    return xlraConfigurationDao;
-  }
+	public UserSessionService getUserSessionService() {
+		return userSessionService;
+	}
 
-  public void setXlraConfigurationDao(ConfigurationDao xlraConfigurationDao) {
-    this.xlraConfigurationDao = xlraConfigurationDao;
-  }
+	public void setUserSessionService(UserSessionService userSessionService) {
+		this.userSessionService = userSessionService;
+	}
 
-  public UserService getUserService() {
-    return userService;
-  }
+	public LogRecordFactoryService getLogRecordFactoryService() {
+		return logRecordFactoryService;
+	}
 
-  public void setUserService(UserService userService) {
-    this.userService = userService;
-  }
+	public void setLogRecordFactoryService(
+			LogRecordFactoryService logRecordFactoryService) {
+		this.logRecordFactoryService = logRecordFactoryService;
+	}
 }

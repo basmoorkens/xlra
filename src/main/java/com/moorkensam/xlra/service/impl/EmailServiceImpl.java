@@ -9,6 +9,7 @@ import com.moorkensam.xlra.model.security.User;
 import com.moorkensam.xlra.service.EmailService;
 import com.moorkensam.xlra.service.FileService;
 import com.moorkensam.xlra.service.UserService;
+import com.moorkensam.xlra.service.UserSessionService;
 import com.moorkensam.xlra.service.util.ConfigurationLoader;
 import com.moorkensam.xlra.service.util.EmailAttachmentHelper;
 import com.moorkensam.xlra.service.util.TransportDelegate;
@@ -50,7 +51,7 @@ public class EmailServiceImpl implements EmailService {
   private EmailHistoryDao emailHistoryDao;
 
   @Inject
-  private UserService userService;
+  private UserSessionService userSessionService;
 
   private ConfigurationLoader configLoader;
 
@@ -91,7 +92,7 @@ public class EmailServiceImpl implements EmailService {
       result.getEmailResult().setSend(true);
     } catch (MessagingException e) {
       result.getEmailResult().setSend(false);
-      logger.error("Error sending email: " + e);
+      logger.error("Error sending email: " + e.getLocalizedMessage());
       status = EmailSentStatus.NOT_SENT;
       throw new MessagingException("Error sending offerte email");
     } finally {
@@ -99,7 +100,7 @@ public class EmailServiceImpl implements EmailService {
       historyRecord.setDateTime(new Date());
       historyRecord.setOfferte(result);
       historyRecord.setStatus(status);
-      historyRecord.setUsername(userService.getCurrentUsername());
+      historyRecord.setUsername(userSessionService.getLoggedInUser().getUserName());
       emailHistoryDao.createEmailHistoryRecord(historyRecord);
     }
 
@@ -141,7 +142,7 @@ public class EmailServiceImpl implements EmailService {
         logger.debug("Email succesfully sent");
       }
     } catch (MessagingException e) {
-      logger.error("Error sending email: " + e);
+      logger.error("Error sending email: " + e.getLocalizedMessage());
       throw new MessagingException("Error sending password reset email");
     } catch (TemplatingException exc) {
       logger.error("Error parsing mail template: " + exc);
@@ -166,7 +167,7 @@ public class EmailServiceImpl implements EmailService {
         logger.debug("Email succesfully sent");
       }
     } catch (MessagingException e) {
-      logger.error("Error sending email: " + e);
+      logger.error("Error sending email: " + e.getLocalizedMessage());
       throw new MessagingException("Error sending password reset email");
     } catch (TemplatingException e) {
       logger.error(e);
@@ -230,11 +231,11 @@ public class EmailServiceImpl implements EmailService {
     this.emailHistoryDao = emailHistoryDao;
   }
 
-  public UserService getUserService() {
-    return userService;
+  public UserSessionService getUserSessionService() {
+    return userSessionService;
   }
 
-  public void setUserService(UserService userService) {
-    this.userService = userService;
+  public void setUserSessionService(UserSessionService userSessionService) {
+    this.userSessionService = userSessionService;
   }
 }

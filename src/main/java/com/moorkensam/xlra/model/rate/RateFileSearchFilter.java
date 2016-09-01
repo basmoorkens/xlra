@@ -8,6 +8,8 @@ public class RateFileSearchFilter implements Serializable {
 
   private static final long serialVersionUID = -6601295471333940331L;
 
+  private String name;
+
   private Kind rateKind;
 
   private Measurement measurement;
@@ -46,22 +48,22 @@ public class RateFileSearchFilter implements Serializable {
   public String toString() {
     String result = "";
     if (rateKind != null) {
-      result += "Ratekind: " + rateKind;
+      result += " " + rateKind;
     }
     if (measurement != null) {
-      result += " Measurement: " + measurement;
+      result += "  " + measurement;
     }
     if (country != null) {
-      result += " Country: " + country;
+      result += " " + country;
     }
     if (getCustomer() != null) {
-      result += " Customer: " + getCustomer().getName();
+      result += " " + getCustomer().getName();
     }
     if (getTransportationType() != null) {
-      result += "TransportationType: " + getTransportationType();
+      result += " " + getTransportationType();
     }
     if (result.equals("")) {
-      result = "Empty filter";
+      result = "";
     }
     return result;
   }
@@ -80,5 +82,13 @@ public class RateFileSearchFilter implements Serializable {
 
   public void setTransportationType(TransportType transportationType) {
     this.transportationType = transportationType;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 }

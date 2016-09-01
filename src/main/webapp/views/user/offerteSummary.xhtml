@@ -6,53 +6,54 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 	<h:form id="summaryForm">
-		<p:panel id="summaryPanel" header="Summary"
+		<p:panel id="summaryPanel" header="#{msg['offertesummary.title']}"
 			collapsed="#{createQuotationController.collapseSummaryPanel}"
 			toggleable="false">
 			<p:panelGrid columns="2" style="margin-bottom:20px;width:100%;"
 				columnClasses="labelColumn,valuesColumn">
-				<h:outputText value="Used ratefile: " />
+				<h:outputText value="#{msg['label.used.ratefile']}:" />
 				<h:outputText
 					value="#{createQuotationController.quotationResult.usedRateFileName}" />
 
-				<h:outputText value="Receipients: " />
+				<h:outputText value="#{msg['label.recipients']}:" />
 				<p:panelGrid columns="2" style="width:100%;"
 					columnClasses="valuesColumn,labelColumn">
 					<h:outputText
 						value="#{createQuotationController.selectedCustomerContactsAsString}" />
-					<p:commandButton value="Add/Remove recipients"
+					<p:commandButton value="#{msg['label.recipients.add.remove']}"
 						actionListener="#{createQuotationController.showEditRecipientsDialog}"
 						icon="ui-icon-pencil" title="View" ajax="true"
 						update=":editRecipientsForm" />
 				</p:panelGrid>
 
-				<h:outputText value="Subject: " />
+				<h:outputText value="#{msg['label.mail.subject']}:" />
 				<p:inputText size="100" style="width:100%;"
 					value="#{createQuotationController.quotationResult.emailResult.subject}" />
 			</p:panelGrid>
 
-			<h:outputText value="Generated email:" />
+			<h:outputText value="#{msg['label.email.generated']}:" />
 			<p:editor height="350"
 				value="#{createQuotationController.quotationResult.emailResult.email}" />
 			<p:panel style="margin-top:20px;">
-				<p:commandButton value="Back" styleClass="navButton"
-					style="margin-right:20px;" update=":summaryForm :optionsForm"
-					immediate="true" id="backButton3"
+				<p:commandButton value="#{msg['button.back']}"
+					styleClass="navButton" style="margin-right:20px;"
+					update=":summaryForm :optionsForm" immediate="true"
+					id="backButton3"
 					actionListener="#{createQuotationController.showOptionsPanel}" />
 				<p:tooltip id="backTip3" for="backButton3"
-					value="Go back to options selection" />
+					value="#{msg['offertesummary.back.tip']}" />
 				<p:commandButton styleClass="navButton" value="Open pdf"
 					id="openPdfButton" style="margin-right:20px;"
 					actionListener="#{createQuotationController.downloadPdf}"
 					onclick="this.form.target='_blank'" ajax="false" />
 				<p:tooltip id="openPdfTip" for="openPdfButton"
 					value="Open the generated PDF" />
-				<p:commandButton value="Send offerte"
+				<p:commandButton value="#{msg['offertesummary.send']}"
 					update=":resultForm :summaryForm" id="nextButton4"
 					actionListener="#{createQuotationController.submitOfferte}"
 					styleClass="navButton" ajax="true" />
 				<p:tooltip for="nextButton4" id="nextTip4"
-					value="Send the offerte to the customer" />
+					value="#{msg['offertesummary.send.tip']}" />
 			</p:panel>
 		</p:panel>
 		<p:ajaxStatus onstart="showStatusDialog();"
@@ -65,7 +66,8 @@
 	</h:form>
 
 	<h:form id="editRecipientsForm">
-		<p:dialog id="editRecipientsDialog" header="Add/Remove recipients"
+		<p:dialog id="editRecipientsDialog"
+			header="#{msg['offertesummary.add.remove.recipients']}"
 			widgetVar="editRecipientsDialog" width="70%" height="50%">
 			<p:panel>
 				<p:panelGrid columns="2" style="width:100%;">
@@ -76,12 +78,12 @@
 				</p:panelGrid>
 
 				<p:panel style="margin-top:30px; ">
-					<p:commandButton immediate="true" value="Cancel"
+					<p:commandButton immediate="true" value="#{msg['button.cancel']}"
 						style="margin-right:20px; padding-left:20px;padding-right:20px;"
 						update=":editRecipientsForm :summaryForm"
 						actionListener="#{createQuotationController.hideEditRecipientsDialog}"
 						id="editContactCancelButton" />
-					<p:commandButton value="Confirm"
+					<p:commandButton value="#{msg['button.confirm']}"
 						style="padding-left:20px;padding-right:20px;margin-left:20px;"
 						actionListener="#{createQuotationController.hideEditRecipientsDialog}"
 						update=":editRecipientsForm :summaryForm"

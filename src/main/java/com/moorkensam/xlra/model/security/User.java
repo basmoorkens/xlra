@@ -2,10 +2,10 @@ package com.moorkensam.xlra.model.security;
 
 import com.moorkensam.xlra.model.BaseEntity;
 import com.moorkensam.xlra.model.Person;
+import com.moorkensam.xlra.model.configuration.Language;
 
 import org.hibernate.annotations.BatchSize;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -59,6 +59,10 @@ public class User extends BaseEntity implements Person {
   @Embedded
   private TokenInfo tokenInfo;
 
+  @Column(name = "language")
+  @Enumerated(EnumType.STRING)
+  private Language language;
+
   @Transient
   public String getFullName() {
     return firstName + " " + name;
@@ -68,9 +72,7 @@ public class User extends BaseEntity implements Person {
    * the constructor.
    */
   public User() {
-    tokenInfo = new TokenInfo();
-    userStatus = UserStatus.FIRST_TIME_LOGIN;
-    roles = new ArrayList<Role>();
+
   }
 
   @ManyToMany
@@ -172,5 +174,13 @@ public class User extends BaseEntity implements Person {
 
   public void setUserName(String userName) {
     this.userName = userName;
+  }
+
+  public Language getLanguage() {
+    return language;
+  }
+
+  public void setLanguage(Language language) {
+    this.language = language;
   }
 }

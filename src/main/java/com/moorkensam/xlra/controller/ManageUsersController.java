@@ -2,10 +2,16 @@ package com.moorkensam.xlra.controller;
 
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.model.error.UserException;
+import com.moorkensam.xlra.model.error.XlraValidationException;
 import com.moorkensam.xlra.model.security.Role;
+import com.moorkensam.xlra.model.security.TokenInfo;
 import com.moorkensam.xlra.model.security.User;
+import com.moorkensam.xlra.model.security.UserStatus;
+import com.moorkensam.xlra.service.LocaleService;
 import com.moorkensam.xlra.service.RolePermissionService;
 import com.moorkensam.xlra.service.UserService;
+import com.moorkensam.xlra.service.UserSessionService;
+import com.moorkensam.xlra.service.util.UserStatusUtil;
 
 import org.primefaces.context.RequestContext;
 import org.primefaces.model.DualListModel;
@@ -13,9 +19,12 @@ import org.primefaces.model.DualListModel;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
@@ -31,7 +40,15 @@ public class ManageUsersController {
   private RolePermissionService permissionService;
 
   @Inject
-  private UserSessionController userSessionController;
+  private UserSessionService userSessionService;
+
+  @Inject
+  private LocaleService localeService;
+
+  @ManagedProperty("#{msg}")
+  private ResourceBundle messageBundle;
+
+  private MessageUtil messageUtil;
 
   private List<User> users;
 
@@ -50,6 +67,7 @@ public class ManageUsersController {
    */
   @PostConstruct
   public void initialize() {
+    messageUtil = MessageUtil.getInstance(messageBundle);
     setCreateTitle();
     roles = new DualListModel<Role>();
     refreshUsers();
@@ -57,16 +75,17 @@ public class ManageUsersController {
   }
 
   private void setUpdateTitle() {
-    crudPopupTitle = "Edit user " + selectedUser.getUserName();
+    crudPopupTitle =
+        messageBundle.getString("usermanagement.popup.title.edit") + selectedUser.getUserName();
   }
 
   private void setCreateTitle() {
-    crudPopupTitle = "Create new user";
+    crudPopupTitle = messageBundle.getString("usermanagement.popup.title.create");
   }
 
   private void fillInAvailableRoles() {
     List<Role> allRoles = permissionService.getAllRoles();
-    if (!userSessionController.isSysAdmin()) {
+    if (!userSessionService.isLoggedInUserSystemAdmin()) {
       removeSysAdminRole(allRoles);
     }
     setAllRoles(allRoles);
@@ -91,12 +110,11 @@ public class ManageUsersController {
    * 
    * @param user The user to delete.
    */
-  public void deleteUser(User user) {
+  public void deleteUser(final User user) {
     userService.deleteUser(user);
-    MessageUtil.addMessage("User deleted", "The user " + user.getName()
-        + " was successfully deleted.");
+    messageUtil.addMessage("message.user.deleted.title", "message.user.deleted.detail",
+        user.getName() + "");
     refreshUsers();
-
   }
 
   /**
@@ -106,15 +124,16 @@ public class ManageUsersController {
     if (getCanResetPassword()) {
       try {
         userService.resetUserPassword(selectedUser);
-        MessageUtil.addMessage("Password reset",
-            "Password reset email was sent to " + selectedUser.getEmail());
+        messageUtil.addMessage("message.user.password.reset.title",
+            "message.user.password.reset.detail", selectedUser.getEmail() + "");
+        refreshUsers();
       } catch (MessagingException e) {
-        MessageUtil.addErrorMessage(
-            "Failed to send email to user",
-            "There was a problem sending out the password reset email to "
-                + selectedUser.getUserName()
-                + ". Please try again or of this errors persists contact the system "
-                + "administrator.");
+        messageUtil.addErrorMessage("message.user.password.reset.failed.email.title",
+            "message.user.password.reset.failed.email.detail", selectedUser.getUserName());
+      } catch (XlraValidationException e2) {
+        messageUtil.addErrorMessage("message.user.password.reset.error.title", e2
+            .getBusinessException(), selectedUser.getUserName(), selectedUser.getUserStatus()
+            .toString());
       }
     }
   }
@@ -125,9 +144,15 @@ public class ManageUsersController {
    * @param user The user to enable.
    */
   public void enableUser(User user) {
-    userService.enableUser(user);
-    MessageUtil.addMessage("User enabled", "Enabled user " + user.getUserName());
-    refreshUsers();
+    try {
+      userService.enableUser(user);
+      messageUtil.addMessage("message.user.enabled.title", "message.user.enabled.detail",
+          user.getUserName());
+      refreshUsers();
+    } catch (XlraValidationException e) {
+      messageUtil.addErrorMessage("message.user.enabled.failed.title", e.getBusinessException(),
+          user.getUserName(), user.getUserStatus().toString());
+    }
   }
 
   /**
@@ -136,20 +161,39 @@ public class ManageUsersController {
    * @param user The user to disable.
    */
   public void disableUser(User user) {
-    userService.disableUser(user);
-    MessageUtil.addMessage("User disabled", "Disabled user " + user.getUserName());
-    refreshUsers();
+    try {
+      userService.disableUser(user);
+      messageUtil.addMessage("message.user.disabled.title", "message.user.disabled.detail",
+          user.getUserName());
+      refreshUsers();
+    } catch (XlraValidationException e) {
+      messageUtil.addErrorMessage("message.user.disabled.failed.title", e.getBusinessException(),
+          user.getUserName(), user.getUserStatus().toString());
+    }
   }
 
   /**
    * Sets up a new user.
    */
   public void setupNewUser() {
-    selectedUser = new User();
+    selectedUser = getNewUser();
     selectUserForEdit(selectedUser);
-    RequestContext context = RequestContext.getCurrentInstance();
     editMode = false;
-    context.execute("PF('addUserDialog').show();");
+    showAddDialog();
+  }
+
+  /**
+   * Create a empty new user with preloaded defaults.
+   * 
+   * @return The created user.
+   */
+  private User getNewUser() {
+    User user = new User();
+    user.setTokenInfo(new TokenInfo());
+    user.setUserStatus(UserStatus.FIRST_TIME_LOGIN);
+    user.setRoles(new ArrayList<Role>());
+    user.setLanguage(localeService.getDefaultUserLanguage());
+    return user;
   }
 
   /**
@@ -164,10 +208,13 @@ public class ManageUsersController {
     selectedUser = user;
     roles.setTarget(user.getRoles());
     roles.setSource(getSourceRoles(user));
-    setUpdateTitle();
-    RequestContext context = RequestContext.getCurrentInstance();
+    if (user.getId() > 0) {
+      setUpdateTitle();
+    } else {
+      setCreateTitle();
+    }
     editMode = true;
-    context.execute("PF('addUserDialog').show();");
+    showAddDialog();
   }
 
   private List<Role> getSourceRoles(User user) {
@@ -181,9 +228,13 @@ public class ManageUsersController {
     return sourceRole;
   }
 
+  /**
+   * Cancel the add of a new user.
+   */
   public void cancelAddNewUser() {
     selectedUser = null;
     hideAddDialog();
+    roles = new DualListModel<Role>();
   }
 
   private void hideAddDialog() {
@@ -211,22 +262,35 @@ public class ManageUsersController {
   private void createUser() {
     try {
       userService.createUser(selectedUser);
-      MessageUtil.addMessage("User created", "The user " + selectedUser.getUserName()
-          + " was successfully created.");
+      messageUtil.addMessage("message.user.created.title", "message.user.created.detail",
+          selectedUser.getUserName());
       refreshUsers();
       hideAddDialog();
     } catch (UserException e) {
       showAddDialog();
-      MessageUtil.addErrorMessage("Error creating user", e.getBusinessException());
+      messageUtil.addErrorMessage("message.user.created.error.title", e.getBusinessException(), e
+          .getExtraArguments().get(0));
     }
   }
 
   private void updateUser() {
-    MessageUtil.addMessage("User updated", "The user " + selectedUser.getUserName()
-        + " was successfully updated.");
-    userService.updateUser(selectedUser, false);
+    messageUtil.addMessage("message.user.updated.title", "message.user.updated.detail",
+        selectedUser.getUserName());
+    userService.updateUser(selectedUser);
     refreshUsers();
     hideAddDialog();
+  }
+
+  public boolean canUserBeEnabled(User user) {
+    return !UserStatusUtil.canEnableUser(user);
+  }
+
+  public boolean canUserResetPassword() {
+    return !UserStatusUtil.canResetPassword(selectedUser);
+  }
+
+  public boolean canUserBeDisabled(User user) {
+    return !UserStatusUtil.canDisableUser(user);
   }
 
   public List<User> getUsers() {
@@ -269,8 +333,17 @@ public class ManageUsersController {
     this.allRoles = allRoles;
   }
 
+  /**
+   * Check if the user canbe put in password reset state. only makes sense for a user that is
+   * already persisted.
+   * 
+   * @return the result of the check
+   */
   public boolean getCanResetPassword() {
-    return selectedUser != null && selectedUser.getId() > 0;
+    if (selectedUser.getId() > 0) {
+      return UserStatusUtil.canResetPassword(selectedUser);
+    }
+    return false;
   }
 
   public boolean isEditMode() {
@@ -281,13 +354,6 @@ public class ManageUsersController {
     this.editMode = editMode;
   }
 
-  public UserSessionController getUserSessionController() {
-    return userSessionController;
-  }
-
-  public void setUserSessionController(UserSessionController userSessionController) {
-    this.userSessionController = userSessionController;
-  }
 
   public String getCrudPopupTitle() {
     return crudPopupTitle;
@@ -295,5 +361,29 @@ public class ManageUsersController {
 
   public void setCrudPopupTitle(String crudPopupTitle) {
     this.crudPopupTitle = crudPopupTitle;
+  }
+
+  public ResourceBundle getMessageBundle() {
+    return messageBundle;
+  }
+
+  public void setMessageBundle(ResourceBundle messageBundle) {
+    this.messageBundle = messageBundle;
+  }
+
+  public MessageUtil getMessageUtil() {
+    return messageUtil;
+  }
+
+  public void setMessageUtil(MessageUtil messageUtil) {
+    this.messageUtil = messageUtil;
+  }
+
+  public LocaleService getLocaleService() {
+    return localeService;
+  }
+
+  public void setLocaleService(LocaleService localeService) {
+    this.localeService = localeService;
   }
 }

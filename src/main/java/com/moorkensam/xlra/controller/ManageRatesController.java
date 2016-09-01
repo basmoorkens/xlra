@@ -3,7 +3,6 @@ package com.moorkensam.xlra.controller;
 import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.dto.RateFileIdNameDto;
 import com.moorkensam.xlra.model.configuration.Language;
-import com.moorkensam.xlra.model.customer.Customer;
 import com.moorkensam.xlra.model.rate.Condition;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
@@ -11,9 +10,7 @@ import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.ExcelService;
 import com.moorkensam.xlra.service.RateFileService;
-import com.moorkensam.xlra.service.util.ConditionFactory;
-import com.moorkensam.xlra.service.util.RateUtil;
-import com.moorkensam.xlra.service.util.TranslationUtil;
+import com.moorkensam.xlra.service.UserSessionService;
 import com.moorkensam.xlra.service.util.ZoneUtil;
 
 import org.apache.logging.log4j.LogManager;
@@ -21,7 +18,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.CellEditEvent;
-import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
@@ -32,21 +28,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.faces.validator.ValidatorException;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 
 @ManagedBean(name = "manageRatesController")
 @ViewScoped
-public class ManageRatesController {
+public class ManageRatesController extends AbstractRateController {
 
   private static final Logger logger = LogManager.getLogger();
 
@@ -54,44 +49,25 @@ public class ManageRatesController {
   private RateFileService rateFileService;
 
   @Inject
-  private UserSessionController sessionController;
+  private UserSessionService userSessionService;
 
   @Inject
   private ExcelService excelService;
 
-  private ZoneUtil zoneUtil;
+  @ManagedProperty("#{msg}")
+  private ResourceBundle messageBundle;
 
-  private TranslationUtil translationUtil;
-
-  private ConditionFactory conditionFactory;
-
-  private boolean collapseConditionsDetailGrid = true;
+  private MessageUtil messageUtil;
 
   private boolean collapseRateLinesDetailGrid = true;
 
-  private boolean collapseZonesDetailGrid = true;
-
-  private RateFile selectedRateFile;
-
   private List<String> columnHeaders = new ArrayList<String>();
-
-  private boolean hasRateFileSelected = false;
 
   private TranslationKey keyToAdd;
 
   private boolean editable;
 
-  private Zone selectedZone;
-
-  private Zone originalSelectedZone;
-
-  private Condition selectedCondition;
-
   private List<RateFileIdNameDto> autoCompleteItems;
-
-  private boolean editMode = false;
-
-  private boolean editZoneMode = false;
 
   private LazyDataModel<RateFile> model;
 
@@ -100,11 +76,10 @@ public class ManageRatesController {
    */
   @PostConstruct
   public void initializeController() {
-    editable = sessionController.isAdmin();
+    messageUtil = MessageUtil.getInstance(messageBundle);
+    editable = userSessionService.isLoggedInUserAdmin();
     resetSelectedRateFile();
-    translationUtil = new TranslationUtil();
-    conditionFactory = new ConditionFactory();
-    zoneUtil = new ZoneUtil();
+    setZoneUtil(new ZoneUtil());
     autoCompleteItems = rateFileService.getRateFilesIdAndNamesForAutoComplete();
     initModel();
   }
@@ -125,12 +100,26 @@ public class ManageRatesController {
     };
   }
 
+  protected void showConditionDetailDialog() {
+    if (editConditionMode) {
+      conditionDialogTitle =
+          messageUtil.lookupI8nStringAndInjectParams("label.terms.and.conditions.title.edit",
+              selectedCondition.getTranslatedKey());
+    } else {
+      conditionDialogTitle =
+          messageUtil.lookupI8nStringAndInjectParams("label.terms.and.conditions.title.create",
+              null);
+    }
+    RequestContext context = RequestContext.getCurrentInstance();
+    context.execute("PF('editConditionDialog').show();");
+  }
+
   private void resetSelectedRateFile() {
-    selectedRateFile = new RateFile();
+    setSelectedRateFile(new RateFile());
   }
 
   public void saveRateFile() {
-    rateFileService.updateRateFile(selectedRateFile);
+    rateFileService.updateRateFile(getSelectedRateFile());
     resetPage();
   }
 
@@ -150,80 +139,55 @@ public class ManageRatesController {
    * @param event The event that triggered this.
    */
   public void onRateLineCellEdit(CellEditEvent event) {
-    RateUtil.onRateLineCellEdit(event);
+    Object newValue = event.getNewValue();
+    Object oldValue = event.getOldValue();
+
+    if (newValue != null && !newValue.equals(oldValue)) {
+      messageUtil.addMessage("message.ratefile.update.title", "message.ratefile.update.detail",
+          newValue + "");
+    }
     updateRateFile();
   }
 
+
   /**
-   * Setup the page to edit a condition.
+   * Redirect to the create rates based on existing rates screen. This is for customer rates only.
    * 
-   * @param condition The condition to edit.
+   * @throws IOException thrown when the response cant be redirected
    */
-  public void setupEditCondition(Condition condition) {
-    this.selectedCondition = condition;
-    editMode = true;
-    showConditionDetailDialog();
-  }
-
-  private void showConditionDetailDialog() {
-    RequestContext context = RequestContext.getCurrentInstance();
-    context.execute("PF('editConditionDialog').show();");
+  public void goToCreateRatesFromExistingRates() throws IOException {
+    FacesContext
+        .getCurrentInstance()
+        .getExternalContext()
+        .redirect(
+            FacesContext.getCurrentInstance().getExternalContext().getApplicationContextPath()
+                + "/views/admin/rate/createRateFileFromExisting.xhtml");
   }
 
   /**
-   * Setup the page to edit a zone.
+   * Redirect to the create rates based on existing rates screen. This is for customer rates only.
    * 
-   * @param zone The zone to edit.
+   * @throws IOException thrown when the response cant be redirected
    */
-  public void setupEditZone(Zone zone) {
-    this.originalSelectedZone = zone;
-    this.selectedZone = zone.deepCopy();
-    editZoneMode = true;
-    showZoneDetailDialog();
+  public void goToFreeCreateRates() throws IOException {
+    FacesContext
+        .getCurrentInstance()
+        .getExternalContext()
+        .redirect(
+            FacesContext.getCurrentInstance().getExternalContext().getApplicationContextPath()
+                + "/views/admin/rate/freeCreateRateFile.xhtml");
   }
 
-  /**
-   * Cancels the editing of a zone.
-   */
-  public void cancelEditZone() {
-    resetZoneEdit();
-    hideZoneDetailDialog();
-  }
-
-  private void resetZoneEdit() {
-    selectedZone = null;
-    originalSelectedZone = null;
-  }
-
-  private void showZoneDetailDialog() {
+  protected void showZoneDetailDialog() {
+    if (isEditZoneMode()) {
+      setZoneDialogTitle(messageUtil.lookupI8nStringAndInjectParams("zonedetail.edit.header.edit",
+          getSelectedZone().getName()));
+    } else {
+      setZoneDialogTitle(messageUtil.lookupI8nStringAndInjectParams(
+          "zonedetail.edit.header.create", ""));
+    }
     RequestContext context = RequestContext.getCurrentInstance();
     context.execute("PF('editZoneDialog').show();");
-  }
-
-  private void hideZoneDetailDialog() {
-    RequestContext context = RequestContext.getCurrentInstance();
-    context.execute("PF('editZoneDialog').hide();");
-  }
-
-  /**
-   * Load a condition based on the key that was selected.
-   */
-  public void loadConditionBasedOnKey() {
-    if (selectedCondition.getConditionKey() == null) {
-      selectedCondition = conditionFactory.createEmptyCondition();
-    } else {
-      selectedCondition = conditionFactory.createCondition(selectedCondition.getConditionKey(), "");
-    }
-    showConditionDetailDialog();
-  }
-
-  /**
-   * Setup the page to add a new condition.
-   */
-  public void setupAddCondition() {
-    selectedCondition = new Condition();
-    editMode = false;
-    showConditionDetailDialog();
   }
 
   /**
@@ -231,38 +195,18 @@ public class ManageRatesController {
    */
   public void saveEditCondition() {
     if (selectedCondition.getConditionKey() != null) {
-      selectedRateFile.addCondition(selectedCondition);
+      if (!editConditionMode) {
+        getSelectedRateFile().addCondition(selectedCondition);
+      }
       updateRateFile();
-      MessageUtil.addMessage("Condition updated", "Your changes were saved.");
+      messageUtil.addMessage("message.ratefile.condition.updated.title",
+          "message.ratefile.condition.updated.detail", selectedCondition.getTranslatedKey());
       selectedCondition = null;
     } else {
       showConditionDetailDialog();
-      MessageUtil.addErrorMessage("Empty condition", "You can not save an empty condition.");
+      messageUtil.addErrorMessage("message.ratefile.condition.empty",
+          "message.ratefile.condition.empty.detail");
     }
-  }
-
-  /**
-   * Check if the selected ratefile has numericalzones.
-   * 
-   * @return True when numerical, false otherwise.
-   */
-  public boolean isNumericRateFileZone() {
-    if (selectedRateFile != null) {
-      return selectedRateFile.isNumericalZoneRateFile();
-    }
-    return false;
-  }
-
-  /**
-   * Check if the selected ratefile has alpha numericalzones.
-   * 
-   * @return True when alphanumerical, false otherwise.
-   */
-  public boolean isAlphaNumericRateFileZone() {
-    if (selectedRateFile != null) {
-      return selectedRateFile.isAlphaNumericalZoneRateFile();
-    }
-    return false;
   }
 
   /**
@@ -270,17 +214,22 @@ public class ManageRatesController {
    */
   public void saveZone() {
     if (isSelectedZoneIsValid()) {
-      originalSelectedZone.fillInValuesFromZone(selectedZone);
+      if (!editZoneMode) {
+        getSelectedRateFile().addZone(getSelectedZone());
+      } else {
+        getOriginalSelectedZone().fillInValuesFromZone(getSelectedZone());
+      }
       updateRateFile();
+      messageUtil.addMessage("message.ratefile.zone.updated",
+          "message.ratefile.zone.updated.detail", getSelectedZone().getName());
       resetZoneEdit();
-      MessageUtil.addMessage("Zone update", selectedZone.getName() + " successfully updated.");
     } else {
       showZoneDetailDialog();
     }
   }
 
   public void deleteZone(Zone zone) {
-    selectedRateFile = rateFileService.deleteZone(zone);
+    setSelectedRateFile(rateFileService.deleteZone(zone));
   }
 
   /**
@@ -289,9 +238,9 @@ public class ManageRatesController {
    * @param condition The condition to delete.
    */
   public void deleteCondition(Condition condition) {
-    MessageUtil.addMessage("condition removed", condition.getTranslatedKey()
-        + " was successfully removed.");
-    selectedRateFile.getConditions().remove(condition);
+    messageUtil.addMessage("message.ratefile.condition.removed",
+        "message.ratefile.condition.removed.detail", condition.getTranslatedKey());
+    getSelectedRateFile().getConditions().remove(condition);
     condition.setRateFile(null);
     updateRateFile();
   }
@@ -305,7 +254,7 @@ public class ManageRatesController {
    */
   public void fetchDetailsOfRatefile(SelectEvent selectEvent) {
     RateFile fromFrontEnd = (RateFile) selectEvent.getObject();
-    selectedRateFile = rateFileService.getFullRateFile(fromFrontEnd.getId());
+    setSelectedRateFile(rateFileService.getFullRateFile(fromFrontEnd.getId()));
     refreshPageForRateFile();
   }
 
@@ -315,7 +264,7 @@ public class ManageRatesController {
    * @param rateFileToLoad The ratefile to full load.
    */
   public void fetchDetailsOfRatefile(RateFile rateFileToLoad) {
-    selectedRateFile = rateFileService.getFullRateFile(rateFileToLoad.getId());
+    setSelectedRateFile(rateFileService.getFullRateFile(rateFileToLoad.getId()));
     refreshPageForRateFile();
   }
 
@@ -325,8 +274,9 @@ public class ManageRatesController {
     collapseZonesDetailGrid = false;
     hasRateFileSelected = true;
     refreshRateLineColumns();
-    translationUtil.fillInTranslations(selectedRateFile.getConditions());
-    MessageUtil.addMessage("Loaded rates", "Displaying rates for " + selectedRateFile.getName());
+    translationUtil.fillInTranslations(getSelectedRateFile().getConditions());
+    messageUtil.addMessage("message.ratefile.rates.loaded", "message.ratefile.rates.loaded.detail",
+        getSelectedRateFile().getName());
   }
 
   /**
@@ -339,7 +289,7 @@ public class ManageRatesController {
     response.reset();
     response.setHeader("Content-Type", "application/vnd.ms-excel");
     response.setHeader("Content-disposition", "attachment; filename=test.xls");
-    XSSFWorkbook exportRateFileToExcel = excelService.exportRateFileToExcel(selectedRateFile);
+    XSSFWorkbook exportRateFileToExcel = excelService.exportRateFileToExcel(getSelectedRateFile());
     try {
       OutputStream responseOutputStream = response.getOutputStream();
       exportRateFileToExcel.write(responseOutputStream);
@@ -347,7 +297,7 @@ public class ManageRatesController {
       responseOutputStream.close();
     } catch (IOException e) {
       logger.error(e);
-      MessageUtil.addErrorMessage("Unexpected error", "Could not generate excel");
+      messageUtil.addErrorMessage("message.unexpected.error", "message.unexpected.excel.error");
     }
     facesContext.responseComplete();
 
@@ -379,24 +329,8 @@ public class ManageRatesController {
     this.rateFileService = rateFileService;
   }
 
-  public RateFile getSelectedRateFile() {
-    return selectedRateFile;
-  }
-
-  public void setSelectedRateFile(RateFile selectedRateFile) {
-    this.selectedRateFile = selectedRateFile;
-  }
-
   public RateFile getRateFileById(long id) {
     return rateFileService.getRateFileById(id);
-  }
-
-  public boolean isCollapseConditionsDetailGrid() {
-    return collapseConditionsDetailGrid;
-  }
-
-  public void setCollapseConditionsDetailGrid(boolean collapseConditionsDetailGrid) {
-    this.collapseConditionsDetailGrid = collapseConditionsDetailGrid;
   }
 
   public boolean isCollapseRateLinesDetailGrid() {
@@ -407,17 +341,9 @@ public class ManageRatesController {
     this.collapseRateLinesDetailGrid = collapseRateLinesDetailGrid;
   }
 
-  public boolean isHasRateFileSelected() {
-    return hasRateFileSelected;
-  }
-
-  public void setHasRateFileSelected(boolean hasRateFileSelected) {
-    this.hasRateFileSelected = hasRateFileSelected;
-  }
-
   private List<String> refreshRateLineColumns() {
     columnHeaders = new ArrayList<String>();
-    for (RateLine rl : selectedRateFile.getRateLines()) {
+    for (RateLine rl : getSelectedRateFile().getRateLines()) {
       columnHeaders.add(rl.getZone().getName());
     }
     return columnHeaders;
@@ -429,46 +355,31 @@ public class ManageRatesController {
    * @return The title string.
    */
   public String getMeasurementTitle() {
-    if (selectedRateFile.getId() != 0) {
-      return selectedRateFile.getMeasurement().getDescription();
+    if (getSelectedRateFile().getId() != 0) {
+      return getSelectedRateFile().getMeasurement().getDescription();
     } else {
       return "Measurement";
     }
   }
 
-  private boolean isSelectedZoneIsValid() {
-    if (selectedZone == null) {
-      return false;
-    }
-    if (selectedRateFile.isAlphaNumericalZoneRateFile()) {
-      return validateAlphanumericalPostalCodes(selectedZone.getAlphaNumericPostalCodesAsString());
-    }
-    if (selectedRateFile.isNumericalZoneRateFile()) {
-      return validateNumericalPostalCodes(selectedZone.getNumericalPostalCodesAsString());
+  protected boolean validateNumericalPostalCodes(String numericalPostalCodeString) {
+    try {
+      getZoneUtil().convertNumericalPostalCodeStringToList(numericalPostalCodeString);
+      return true;
+    } catch (Exception e) {
+      messageUtil.addErrorMessage("message.invalid.postal.codes",
+          "message.invalid.postal.codes.numeric.detail");
     }
     return false;
   }
 
-  private boolean validateNumericalPostalCodes(String numericalPostalCodeString) {
+  protected boolean validateAlphanumericalPostalCodes(String alphaNumericalPostalCodeString) {
     try {
-      zoneUtil.convertNumericalPostalCodeStringToList(numericalPostalCodeString);
+      getZoneUtil().convertAlphaNumericPostalCodeStringToList(alphaNumericalPostalCodeString);
       return true;
     } catch (Exception e) {
-      MessageUtil.addErrorMessage("Postal codes not valid",
-          "The given postal codes are not valid, make sure its a ','"
-              + " seperated list of numerical postcode intervals START-STOP,START-STOP,...");
-    }
-    return false;
-  }
-
-  private boolean validateAlphanumericalPostalCodes(String alphaNumericalPostalCodeString) {
-    try {
-      zoneUtil.convertAlphaNumericPostalCodeStringToList(alphaNumericalPostalCodeString);
-      return true;
-    } catch (Exception e) {
-      MessageUtil.addErrorMessage("Postal codes not valid",
-          "The given postal codes are not valid, make sure its a ','"
-              + " seperated list of alphanumerical postal codes.");
+      messageUtil.addErrorMessage("message.invalid.postal.codes",
+          "message.invalid.postal.codes.alphanumeric.detail");
       showZoneDetailDialog();
     }
     return false;
@@ -497,38 +408,22 @@ public class ManageRatesController {
    */
   public void createConditionForSelectedTranslationKey(ActionEvent event) {
     Condition createCondition = conditionFactory.createCondition(keyToAdd, "");
-    selectedRateFile.addCondition(createCondition);
+    getSelectedRateFile().addCondition(createCondition);
     keyToAdd = null;
     updateRateFile();
   }
 
   private void updateRateFile() {
-    selectedRateFile = rateFileService.updateRateFile(selectedRateFile);
-    translationUtil.fillInTranslations(selectedRateFile.getConditions());
+    setSelectedRateFile(rateFileService.updateRateFile(getSelectedRateFile()));
+    translationUtil.fillInTranslations(getSelectedRateFile().getConditions());
   }
 
   public List<TranslationKey> getAvailableTranslationKeysForSelectedRateFile() {
-    return translationUtil.getAvailableTranslationKeysForSelectedRateFile(selectedRateFile);
-  }
-
-  public boolean isCollapseZonesDetailGrid() {
-    return collapseZonesDetailGrid;
-  }
-
-  public void setCollapseZonesDetailGrid(boolean collapseZonesDetailGrid) {
-    this.collapseZonesDetailGrid = collapseZonesDetailGrid;
+    return translationUtil.getAvailableTranslationKeysForSelectedRateFile(getSelectedRateFile());
   }
 
   public boolean isCanEdit() {
     return editable;
-  }
-
-  public Condition getSelectedCondition() {
-    return selectedCondition;
-  }
-
-  public void setSelectedCondition(Condition selectedCondition) {
-    this.selectedCondition = selectedCondition;
   }
 
   public List<Language> getLanguages() {
@@ -543,30 +438,6 @@ public class ManageRatesController {
     this.autoCompleteItems = autoCompleteItems;
   }
 
-  public boolean isEditMode() {
-    return editMode;
-  }
-
-  public void setEditMode(boolean editMode) {
-    this.editMode = editMode;
-  }
-
-  public Zone getSelectedZone() {
-    return selectedZone;
-  }
-
-  public void setSelectedZone(Zone selectedZone) {
-    this.selectedZone = selectedZone;
-  }
-
-  public boolean isEditZoneMode() {
-    return editZoneMode;
-  }
-
-  public void setEditZoneMode(boolean editZoneMode) {
-    this.editZoneMode = editZoneMode;
-  }
-
   public LazyDataModel<RateFile> getModel() {
     return model;
   }
@@ -575,12 +446,35 @@ public class ManageRatesController {
     this.model = model;
   }
 
-  public Zone getOriginalSelectedZone() {
-    return originalSelectedZone;
+  public UserSessionService getUserSessionService() {
+    return userSessionService;
   }
 
-  public void setOriginalSelectedZone(Zone originalSelectedZone) {
-    this.originalSelectedZone = originalSelectedZone;
+  public void setUserSessionService(UserSessionService userSessionService) {
+    this.userSessionService = userSessionService;
   }
 
+  public ResourceBundle getMessageBundle() {
+    return messageBundle;
+  }
+
+  public void setMessageBundle(ResourceBundle messageBundle) {
+    this.messageBundle = messageBundle;
+  }
+
+  public MessageUtil getMessageUtil() {
+    return messageUtil;
+  }
+
+  public void setMessageUtil(MessageUtil messageUtil) {
+    this.messageUtil = messageUtil;
+  }
+
+  public String getZoneDialogTitle() {
+    return zoneDialogTitle;
+  }
+
+  public void setZoneDialogTitle(String zoneDialogTitle) {
+    this.zoneDialogTitle = zoneDialogTitle;
+  }
 }

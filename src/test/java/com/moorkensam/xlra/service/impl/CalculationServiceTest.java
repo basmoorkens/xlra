@@ -105,7 +105,7 @@ public class CalculationServiceTest extends UnitilsJUnit4 {
   }
 
   @Test
-  public void testApplyAfterconditionLogic() {
+  public void testApplyAfterconditionLogic() throws RateFileException {
     priceDto.setAdrSurchargeMinimum(new BigDecimal(20.00d));
     priceDto.setCalculatedAdrSurcharge(new BigDecimal(19.00d));
     calcService.applyAfterConditionLogic(priceDto);
@@ -113,7 +113,7 @@ public class CalculationServiceTest extends UnitilsJUnit4 {
   }
 
   @Test
-  public void testApplyAfterconditionLogicCalc() {
+  public void testApplyAfterconditionLogicCalc() throws RateFileException {
     priceDto.setAdrSurchargeMinimum(new BigDecimal(20.00d));
     priceDto.setCalculatedAdrSurcharge(new BigDecimal(190.00d));
     calcService.applyAfterConditionLogic(priceDto);

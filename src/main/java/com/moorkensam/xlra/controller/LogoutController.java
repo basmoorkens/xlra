@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.controller;
 
+import com.moorkensam.xlra.service.UserSessionService;
 import com.moorkensam.xlra.service.util.ConfigurationLoader;
 
 import org.apache.logging.log4j.LogManager;
@@ -23,7 +24,7 @@ public class LogoutController {
   private ConfigurationLoader configLoader;
 
   @Inject
-  private UserSessionController sessionController;
+  private UserSessionService userSessionService;
 
   @PostConstruct
   public void init() {
@@ -36,12 +37,20 @@ public class LogoutController {
    * @throws IOException When the baseurl for the applicaiton couldnt be loaded.
    */
   public void logout() throws IOException {
-    logger.info("Logging out " + sessionController.getLoggedInUser().getEmail());
+    logger.info("Logging out " + userSessionService.getLoggedInUser().getEmail());
     FacesContext fc = FacesContext.getCurrentInstance();
     HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
     session.invalidate();
     FacesContext.getCurrentInstance().getExternalContext()
         .redirect(configLoader.getProperty(ConfigurationLoader.APPLICATION_BASE_URL));
+  }
+
+  public UserSessionService getUserSessionService() {
+    return userSessionService;
+  }
+
+  public void setUserSessionService(UserSessionService userSessionService) {
+    this.userSessionService = userSessionService;
   }
 
 }

@@ -2,21 +2,24 @@ package com.moorkensam.xlra.service.impl;
 
 import com.moorkensam.xlra.dao.ConfigurationDao;
 import com.moorkensam.xlra.dao.CurrencyRateDao;
-import com.moorkensam.xlra.dao.LogDao;
 import com.moorkensam.xlra.model.configuration.Configuration;
 import com.moorkensam.xlra.model.configuration.CurrencyRate;
 import com.moorkensam.xlra.model.error.IntervalOverlapException;
 import com.moorkensam.xlra.model.error.RateFileException;
 import com.moorkensam.xlra.model.log.LogRecord;
 import com.moorkensam.xlra.service.CurrencyService;
+import com.moorkensam.xlra.service.LogRecordFactoryService;
+import com.moorkensam.xlra.service.LogService;
 import com.moorkensam.xlra.service.UserService;
-import com.moorkensam.xlra.service.util.LogRecordFactory;
+import com.moorkensam.xlra.service.UserSessionService;
 import com.moorkensam.xlra.service.util.RateUtil;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.hssf.record.UseSelFSRecord;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -34,125 +37,134 @@ import javax.inject.Inject;
 @Stateless
 public class CurrencyServiceImpl implements CurrencyService {
 
-  private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger();
 
-  @Inject
-  private ConfigurationDao xlraConfigurationDao;
+	@Inject
+	private ConfigurationDao xlraConfigurationDao;
 
-  @Inject
-  private LogDao logDao;
+	@Inject
+	private LogService logService;
 
-  @Inject
-  private CurrencyRateDao currencyRateDao;
+	@Inject
+	private CurrencyRateDao currencyRateDao;
 
-  @Inject
-  private UserService userService;
+	@Inject
+	private UserSessionService userSessionService;
 
-  private LogRecordFactory logRecordFactory;
+	@Inject
+	private LogRecordFactoryService logRecordFactoryService;
 
-  @PostConstruct
-  public void init() {
-    logRecordFactory = LogRecordFactory.getInstance();
-  }
+	@PostConstruct
+	public void init() {
+	}
 
-  @Override
-  public void updateCurrencyRate(CurrencyRate currencyRate) {
-    getCurrencyRateDao().updateCurrencyRate(currencyRate);
-  }
+	@Override
+	public void updateCurrencyRate(final CurrencyRate currencyRate) {
+		getCurrencyRateDao().updateCurrencyRate(currencyRate);
+	}
 
-  @Override
-  public void createCurrencyRate(CurrencyRate currencyRate) throws IntervalOverlapException {
-    RateUtil.validateRateInterval(currencyRate, currencyRateDao.getAllChfRates());
-    getCurrencyRateDao().createCurrencyRate(currencyRate);
-  }
+	@Override
+	public void createCurrencyRate(final CurrencyRate currencyRate)
+			throws IntervalOverlapException {
+		RateUtil.validateRateInterval(currencyRate,
+				currencyRateDao.getAllChfRates());
+		getCurrencyRateDao().createCurrencyRate(currencyRate);
+	}
 
-  @Override
-  public List<CurrencyRate> getAllCurrencyRates() {
-    return getCurrencyRateDao().getAllCurrencyRates();
-  }
+	@Override
+	public List<CurrencyRate> getAllCurrencyRates() {
+		return getCurrencyRateDao().getAllCurrencyRates();
+	}
 
-  @Override
-  public List<CurrencyRate> getAllChfRates() {
-    return getCurrencyRateDao().getAllChfRates();
-  }
+	@Override
+	public List<CurrencyRate> getAllChfRates() {
+		return getCurrencyRateDao().getAllChfRates();
+	}
 
-  @Override
-  @TransactionAttribute(TransactionAttributeType.REQUIRED)
-  public void updateCurrentChfValue(BigDecimal value) {
-    Configuration config = getXlraConfigurationDao().getXlraConfiguration();
+	@Override
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void updateCurrentChfValue(final BigDecimal value) {
+		Configuration config = getXlraConfigurationDao().getXlraConfiguration();
+		logUpdateCurrentChfValue(value, config);
+		config.setCurrentChfValue(value);
+		getXlraConfigurationDao().updateXlraConfiguration(config);
+	}
 
-    LogRecord createChfLogRecord =
-        logRecordFactory.createChfLogRecord(config.getCurrentChfValue(), value, getUserService()
-            .getCurrentUsername());
-    logger.info("saving chfprice logrecord" + createChfLogRecord);
-    getLogDao().createLogRecord(createChfLogRecord);
+	private void logUpdateCurrentChfValue(final BigDecimal value,
+			final Configuration config) {
+		String loggedInUserName = getUserSessionService().getLoggedInUser()
+				.getUserName();
+		LogRecord createChfLogRecord = logRecordFactoryService
+				.createChfLogRecord(config.getCurrentChfValue(), value);
+		logger.info(loggedInUserName + " updated chfprice "
+				+ config.getCurrentChfValue() + " to " + value);
+		getLogService().createLogRecord(createChfLogRecord);
+	}
 
-    config.setCurrentChfValue(value);
-    logger.info("Saving current chf rate " + config.getCurrentChfValue());
-    getXlraConfigurationDao().updateXlraConfiguration(config);
-  }
+	@Override
+	public CurrencyRate getChfRateForCurrentPrice(final BigDecimal price)
+			throws RateFileException {
+		List<CurrencyRate> allRates = getAllChfRates();
+		if (allRates == null || allRates.isEmpty()) {
+			throw new RateFileException("chfrates.rates.empty");
+		}
+		for (CurrencyRate rate : allRates) {
+			if (rate.getInterval().getStart() <= price.doubleValue()
+					&& rate.getInterval().getEnd() > price.doubleValue()) {
+				return rate;
+			}
+		}
 
-  @Override
-  public CurrencyRate getChfRateForCurrentPrice(BigDecimal price) throws RateFileException {
-    List<CurrencyRate> allRates = getAllChfRates();
-    if (allRates == null || allRates.isEmpty()) {
-      throw new RateFileException("No Chf rates found, please add chf rates first.");
-    }
-    for (CurrencyRate rate : allRates) {
-      if (rate.getInterval().getStart() <= price.doubleValue()
-          && rate.getInterval().getEnd() > price.doubleValue()) {
-        return rate;
-      }
-    }
+		RateFileException rfex = new RateFileException("");
+		rfex.setExtraArguments(Arrays.asList(price + ""));
+		throw rfex;
+	}
 
-    throw new RateFileException("Could not find Chf percentage multiplier for chf value of "
-        + price);
-  }
+	public CurrencyRateDao getCurrencyRateDao() {
+		return currencyRateDao;
+	}
 
-  public CurrencyRateDao getCurrencyRateDao() {
-    return currencyRateDao;
-  }
+	public void setCurrencyRateDao(CurrencyRateDao currencyRateDao) {
+		this.currencyRateDao = currencyRateDao;
+	}
 
-  public void setCurrencyRateDao(CurrencyRateDao currencyRateDao) {
-    this.currencyRateDao = currencyRateDao;
-  }
+	public ConfigurationDao getXlraConfigurationDao() {
+		return xlraConfigurationDao;
+	}
 
-  public LogDao getLogDao() {
-    return logDao;
-  }
+	public void setXlraConfigurationDao(ConfigurationDao xlraConfigurationDao) {
+		this.xlraConfigurationDao = xlraConfigurationDao;
+	}
 
-  public void setLogDao(LogDao logDao) {
-    this.logDao = logDao;
-  }
+	@Override
+	public void deleteCurrencyRate(CurrencyRate toDelete) {
+		logger.info("Deleting currency rate " + toDelete);
+		currencyRateDao.deleteCurrencyRate(toDelete);
+	}
 
-  public ConfigurationDao getXlraConfigurationDao() {
-    return xlraConfigurationDao;
-  }
+	public LogService getLogService() {
+		return logService;
+	}
 
-  public void setXlraConfigurationDao(ConfigurationDao xlraConfigurationDao) {
-    this.xlraConfigurationDao = xlraConfigurationDao;
-  }
+	public void setLogService(LogService logService) {
+		this.logService = logService;
+	}
 
-  @Override
-  public void deleteCurrencyRate(CurrencyRate toDelete) {
-    logger.info("Deleting currency rate " + toDelete);
-    currencyRateDao.deleteCurrencyRate(toDelete);
-  }
+	public UserSessionService getUserSessionService() {
+		return userSessionService;
+	}
 
-  public LogRecordFactory getLogRecordFactory() {
-    return logRecordFactory;
-  }
+	public void setUserSessionService(UserSessionService userSessionService) {
+		this.userSessionService = userSessionService;
+	}
 
-  public void setLogRecordFactory(LogRecordFactory logRecordFactory) {
-    this.logRecordFactory = logRecordFactory;
-  }
+	public LogRecordFactoryService getLogRecordFactoryService() {
+		return logRecordFactoryService;
+	}
 
-  public UserService getUserService() {
-    return userService;
-  }
-
-  public void setUserService(UserService userService) {
-    this.userService = userService;
-  }
+	public void setLogRecordFactoryService(
+			LogRecordFactoryService logRecordFactoryService) {
+		this.logRecordFactoryService = logRecordFactoryService;
+	}
 
 }

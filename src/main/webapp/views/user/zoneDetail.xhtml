@@ -6,99 +6,96 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
-	<h:form id="zoneDetailForm">
-		<p:growl id="message" showDetail="true" />
-		<p:panel id="zonesDetailPanel" toggleable="false" style="width:100%;"
-			collapsed="#{controller.collapseZonesDetailGrid}" header="Zones">
-			<p:dataTable editable="#{canEdit}" value="#{zones}" var="zone"
-				emptyMessage="No zones added yet!" id="zoneTable">
-				<p:column headerText="Name ">
-					<h:outputText value="#{zone.name}" />
-				</p:column>
-				<p:column rendered="#{manageRatesController.numericRateFileZone}"
-					headerText="Postalcode list(start-stop) seperated by ','">
-					<h:outputText value="#{zone.numericalPostalCodesAsString}" />
-				</p:column>
-				<p:column
-					rendered="#{manageRatesController.alphaNumericRateFileZone}"
-					headerText="Postalcode list">
-					<h:outputText value="#{zone.alphaNumericPostalCodesAsString}" />
-				</p:column>
-				<p:column headerText="Extra info ">
-					<h:outputText value="#{zone.extraInfo}" />
-				</p:column>
-				<p:column style="width:110px;" rendered="#{canEdit}">
-					<p:commandButton
-						actionListener="#{manageRatesController.setupEditZone(zone)}"
-						styleClass="navButton" icon="ui-icon-pencil" title="Edit"
-						ajax="true" id="editZoneButton" update=":editZoneForm" />
-					<p:tooltip id="editZoneTip" for="editZoneButton"
-						value="Edit the zone" />
-					<p:commandButton icon="ui-icon-trash" title="Delete"
-						id="deleteZoneButton" styleClass="navButton"
-						update=":zoneDetailForm :rateLinesDetailForm"
-						actionListener="#{manageRatesController.deleteZone(zone)}">
-						<p:confirm header="Confirm delete"
-							message="Are you sure you want to delete?" icon="ui-icon-alert" />
-					</p:commandButton>
-					<p:tooltip id="deleteZoneTip" for="deleteZoneButton"
-						value="Delete this zone" />
-				</p:column>
-			</p:dataTable>
-		</p:panel>
-	</h:form>
+	<p:dataTable editable="#{canEdit}" value="#{zones}" var="zone"
+		emptyMessage="#{msg['zonedetail.zones.empty']}" id="zoneTable">
+		<p:column headerText="#{msg['label.name']}">
+			<h:outputText value="#{zone.name}" />
+		</p:column>
+		<p:column rendered="#{controller.numericRateFileZone}"
+			headerText="#{msg['label.numeric.header']}">
+			<h:outputText value="#{zone.numericalPostalCodesAsString}" />
+		</p:column>
+		<p:column rendered="#{controller.alphaNumericRateFileZone}"
+			headerText="#{msg['label.alphanumeric.header']}">
+			<h:outputText value="#{zone.alphaNumericPostalCodesAsString}" />
+		</p:column>
+		<p:column headerText="#{msg['label.extra.info']}">
+			<h:outputText value="#{zone.extraInfo}" />
+		</p:column>
+		<p:column style="width:110px;" rendered="#{canEdit}">
+			<p:commandButton actionListener="#{controller.setupEditZone(zone)}"
+				styleClass="navButton" icon="ui-icon-pencil" title="Edit"
+				ajax="true" id="editZoneButton" update=":zoneDetailForm" />
+			<p:tooltip id="editZoneTip" for="editZoneButton"
+				value="#{msg['zonedetail.edit.tip']}" />
+			<p:commandButton icon="ui-icon-trash" title="Delete"
+				id="deleteZoneButton" styleClass="navButton"
+				update=":zoneDetailForm :rateLinesDetailForm"
+				actionListener="#{controller.deleteZone(zone)}">
+				<p:confirm header="#{msg['dialog.confirm.delete.title']}"
+					message="#{msg['zonedetail.delete.confirm']}" icon="ui-icon-alert" />
+			</p:commandButton>
+			<p:tooltip id="deleteZoneTip" for="deleteZoneButton"
+				value="#{msg['zonedetail.delete.tip']}" />
+		</p:column>
+	</p:dataTable>
 
-	<h:form id="editZoneForm">
-		<p:dialog id="editDialog" header="Edit zone" dynamic="true"
-			widgetVar="editZoneDialog" width="80%" height="50%">
-			<p:panel header="Rate info">
-				<p:panelGrid style="width:100%;" columns="2"
-					columnClasses="labelColumn,valuesColumn">
-					<h:outputText value="Name " />
-					<p:inputText value="#{manageRatesController.selectedZone.name}"
-						required="true" requiredMessage="Name is required"
+	<p:panel style="margin-top:10px;" rendered="#{canEdit}">
+		<p:commandButton value="#{msg['zonedetail.add.title']}"
+			icon="ui-icon-pencil" actionListener="#{controller.setupAddZone}"
+			ajax="true" immediate="true" update=":zoneDetailForm"
+			id="addZoneButton" styleClass="navButton" />
+		<p:tooltip id="addZoneTip" for="addZoneButton"
+			value="#{msg['zone.add.tip']}" />
+	</p:panel>
+
+	<p:dialog id="editDialog" header="#{controller.zoneDialogTitle}"
+		dynamic="true" widgetVar="editZoneDialog" width="80%" height="50%">
+		<p:panel header="#{msg['label.zone.info']}">
+			<p:panelGrid style="width:100%;" columns="2"
+				columnClasses="labelColumn,valuesColumn">
+				<h:outputText value="#{msg['label.name']}" />
+				<p:inputText value="#{controller.selectedZone.name}" required="true"
+					requiredMessage="#{msg['message.user.name.required']}"
+					style="width:100%;" />
+
+				<c:if test="#{controller.numericRateFileZone}">
+					<h:outputText value="#{msg['label.numeric.header']}:" />
+					<p:inputTextarea id="numericalPostalCodesInput"
+						value="#{controller.selectedZone.numericalPostalCodesAsString}"
 						style="width:100%;" />
+				</c:if>
 
-					<c:if test="#{manageRatesController.numericRateFileZone}">
-						<h:outputText
-							value="Postal code list(start-stop) seperated by ',':" />
-						<p:inputTextarea id="numericalPostalCodesInput"
-							value="#{manageRatesController.selectedZone.numericalPostalCodesAsString}"
-							style="width:100%;" />
-					</c:if>
-
-					<c:if test="#{manageRatesController.alphaNumericRateFileZone}">
-						<h:outputText value="Postal code list seperated by ',':" />
-						<p:inputTextarea
-							value="#{manageRatesController.selectedZone.alphaNumericPostalCodesAsString}"
-							style="width:100%" />
-					</c:if>
-					<h:outputText value="Extra info " />
-					<p:inputText
-						value="#{manageRatesController.selectedZone.extraInfo}"
+				<c:if test="#{controller.alphaNumericRateFileZone}">
+					<h:outputText value="#{msg['label.alphanumeric.header']}:" />
+					<p:inputTextarea
+						value="#{controller.selectedZone.alphaNumericPostalCodesAsString}"
 						style="width:100%" />
-				</p:panelGrid>
+				</c:if>
+				<h:outputText value="#{msg['label.extra.info']}" />
+				<p:inputText value="#{controller.selectedZone.extraInfo}"
+					style="width:100%" />
+			</p:panelGrid>
 
-				<p:panel style="margin-top:20px; ">
-					<p:commandButton immediate="true" value="Cancel"
-						styleClass="navButton" update=":zoneDetailForm :editZoneForm"
-						actionListener="#{manageRatesController.cancelEditZone}"
-						id="zoneEditCancelButton" style="margin-right:20px;" />
-					<p:commandButton value="Save" styleClass="navButton"
-						actionListener="#{manageRatesController.saveZone}"
-						update=":zoneDetailForm :editZoneForm" id="zoneEditSaveButton"
-						oncomplete="handleEditZoneRequest(xhr, status, args)" />
-				</p:panel>
+			<p:panel style="margin-top:20px; ">
+				<p:commandButton immediate="true" value="#{msg['button.cancel']}"
+					styleClass="navButton" update=":zoneDetailForm"
+					actionListener="#{controller.cancelEditZone}"
+					id="zoneEditCancelButton" style="margin-right:20px;" />
+				<p:commandButton value="#{msg['button.save']}"
+					styleClass="navButton" actionListener="#{controller.saveZone}"
+					update=":zoneDetailForm" id="zoneEditSaveButton"
+					oncomplete="handleEditZoneRequest(xhr, status, args)" />
 			</p:panel>
-		</p:dialog>
+		</p:panel>
+	</p:dialog>
 
-		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-			<p:commandButton value="No" type="button"
-				styleClass="ui-confirmdialog-no navButton" icon="ui-icon-close" />
-			<p:commandButton value="Yes" type="button"
-				styleClass="ui-confirmdialog-yes navButton" icon="ui-icon-check" />
-		</p:confirmDialog>
-	</h:form>
+	<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+		<p:commandButton value="#{msg['button.no']}" type="button"
+			styleClass="ui-confirmdialog-no navButton" icon="ui-icon-close" />
+		<p:commandButton value="#{msg['button.yes']}" type="button"
+			styleClass="ui-confirmdialog-yes navButton" icon="ui-icon-check" />
+	</p:confirmDialog>
 	<script>
 		function handleEditZoneRequest(xhr, status, args) {
 			if (args.validationFailed) {

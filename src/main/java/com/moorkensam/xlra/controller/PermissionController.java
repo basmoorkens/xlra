@@ -8,9 +8,11 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.RowEditEvent;
 
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 
@@ -21,12 +23,18 @@ public class PermissionController {
   @Inject
   private RolePermissionService rolePermissionService;
 
+  @ManagedProperty("#{msg}")
+  private ResourceBundle messageBundle;
+
+  private MessageUtil messageUtil;
+
   private List<Permission> allPermissions;
 
   private Permission newPermission;
 
   @PostConstruct
   public void initialize() {
+    messageUtil = MessageUtil.getInstance(messageBundle);
     newPermission = new Permission();
     refreshPermissions();
   }
@@ -38,7 +46,8 @@ public class PermissionController {
    */
   public void onPermissionRowEdit(RowEditEvent event) {
     Permission permission = (Permission) event.getObject();
-    MessageUtil.addMessage("Permission updated", "Updated " + permission.getKey() + " to ");
+    messageUtil.addMessage("message.permission.updated.title", "message.permission.updated.detail",
+        permission.getKey());
     rolePermissionService.updatePermission(permission);
     refreshPermissions();
   }
@@ -52,7 +61,8 @@ public class PermissionController {
    */
   public void saveNewPermission() {
     rolePermissionService.createPermission(newPermission);
-    MessageUtil.addMessage("Permission created", "Created permission" + newPermission.getKey());
+    messageUtil.addMessage("message.permission.created.title", "message.permission.created.detail",
+        newPermission.getKey());
     newPermission = new Permission();
     refreshPermissions();
   }
@@ -81,6 +91,22 @@ public class PermissionController {
 
   public void setNewPermission(Permission newPermission) {
     this.newPermission = newPermission;
+  }
+
+  public ResourceBundle getMessageBundle() {
+    return messageBundle;
+  }
+
+  public void setMessageBundle(ResourceBundle messageBundle) {
+    this.messageBundle = messageBundle;
+  }
+
+  public MessageUtil getMessageUtil() {
+    return messageUtil;
+  }
+
+  public void setMessageUtil(MessageUtil messageUtil) {
+    this.messageUtil = messageUtil;
   }
 
 }

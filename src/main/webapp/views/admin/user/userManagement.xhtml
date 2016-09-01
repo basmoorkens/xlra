@@ -9,52 +9,58 @@
 		<h:outputText value="XLRA - User - User management" />
 	</ui:define>
 	<ui:define name="pageTitle">
-		<h:outputText value="User management" />
+		<h:outputText value="#{msg['usermanagement.title']}" />
 	</ui:define>
 	<ui:define name="body">
 		<h:form id="usersForm">
 			<p:growl showDetail="true" id="messages" sticky="false" />
 			<p:panel>
-				<p:dataTable emptyMessage="No users found." id="usersTable"
-					value="#{manageUsersController.users}" var="user">
-					<p:column headerText="Username: ">
+				<p:dataTable
+					emptyMessage="#{msg['usermanagement.empty.user.table']}"
+					id="usersTable" value="#{manageUsersController.users}" var="user">
+					<p:column headerText="#{msg['label.username']}">
 						<h:outputText value="#{user.userName}" />
 					</p:column>
-					<p:column headerText="Email: ">
+					<p:column headerText="#{msg['label.email']}">
 						<h:outputText value="#{user.email}" />
 					</p:column>
-					<p:column headerText="Status">
+					<p:column headerText="#{msg['label.status']}">
 						<h:outputLabel value="#{user.userStatus}" />
 					</p:column>
-					<p:column headerText="roles list">
+					<p:column headerText="#{msg['usermanagement.roles.list']}">
 						#{user.rolesAsString}
 					</p:column>
-					<p:column style="width:200px;">
+					<p:column style="width:250px;">
 						<p:commandButton style="margin-top:5px;margin-bottom:5px;"
 							icon="ui-icon-pencil" update=":addUserForm" id="editButton"
-							styleClass="navButton" ajax="true"
+							styleClass="navButton small" ajax="true"
 							actionListener="#{manageUsersController.selectUserForEdit(user)}" />
-						<p:tooltip id="editTip" for="editButton" value="Edit user" />
+						<p:tooltip id="editTip" for="editButton"
+							value="#{msg['usermanagement.user.edit']}" />
 						<p:commandButton icon="ui-icon-locked"
 							update=":usersForm :addUserForm" id="disableButton"
-							styleClass="navButton"
+							styleClass="navButton small"
+							disabled="#{manageUsersController.canUserBeDisabled(user)}"
 							actionListener="#{manageUsersController.disableUser(user)}" />
 						<p:tooltip id="disabletip" for="disableButton"
-							value="Disable user" />
+							value="#{msg['usermanagement.user.disable']}" />
 						<p:commandButton icon="ui-icon-unlocked"
 							update=":usersForm :addUserForm" id="enableButton"
-							styleClass="navButton"
+							styleClass="navButton small"
+							disabled="#{manageUsersController.canUserBeEnabled(user)}"
 							actionListener="#{manageUsersController.enableUser(user)}" />
-						<p:tooltip id="enabletip" for="enableButton" value="Enable user" />
+						<p:tooltip id="enabletip" for="enableButton"
+							value="#{msg['usermanagement.user.enable']}" />
 						<p:commandButton icon="ui-icon-trash" title="Delete"
 							actionListener="#{manageUsersController.deleteUser(user)}"
-							styleClass="navButton" ajax="true" immediate="true"
+							styleClass="navButton small" ajax="true" immediate="true"
 							update=":usersForm" id="deleteButton">
-							<p:confirm header="Confirm delete"
-								message="Are you sure you want to delete the user?"
+							<p:confirm header="#{msg['dialog.confirm.delete.title']}"
+								message="#{msg['usermanagement.confirm.delete.message']}"
 								icon="ui-icon-alert" />
 						</p:commandButton>
-						<p:tooltip id="deleteTip" for="deleteButton" value="Delete user" />
+						<p:tooltip id="deleteTip" for="deleteButton"
+							value="#{msg['usermanagement.user.delete.tip']}" />
 					</p:column>
 				</p:dataTable>
 
@@ -62,10 +68,10 @@
 					<p:commandButton
 						actionListener="#{manageUsersController.setupNewUser}"
 						update=":addUserForm" immediate="true" ajax="true"
-						styleClass="navButton" value="Create new user"
-						id="gotoCreateButton" />
+						styleClass="navButton"
+						value="#{msg['usermanagement.user.create']}" id="gotoCreateButton" />
 					<p:tooltip id="goToCreateTip" for="gotoCreateButton"
-						value="Create a new user" />
+						value="#{msg['usermanagement.user.create.tip']}" />
 
 				</p:panel>
 			</p:panel>
@@ -78,51 +84,53 @@
 
 				<p:growl showDetail="true" id="messages" sticky="false" />
 				<p:tooltip for="userNameInput" id="idUserNameInput"
-					value="The username that will be used to log in to the application." />
+					value="#{msg['usermanagement.user.username.tip']}" />
 				<p:tooltip for="emailInput" id="emailInputTip"
-					value="This email adres will be used to send the confirmation email to." />
+					value="#{msg['usermanagement.user.email.tip']}" />
 				<p:tooltip for="rolesPicklist" id="rolesSelectorTip"
-					value="Select the roles which you want to give to the user." />
-				<p:tooltip for="resetPasswordButton" id="resetPasswordButtonTip"
-					value="Disables the user's account and sends out a password reset email to the user. The user can't use the application till he has completed the password reset process." />
-				<p:panel header="User information">
+					value="#{msg['usermanagement.user.role.tip']}" />
+
+				<p:panel header="#{msg['usermanagement.user.information']}">
 					<p:panelGrid columns="2" columnClasses="labelColumn,valuesColumn"
 						style="width:100%;">
-						<h:outputText value="Username: " />
+						<h:outputText value="#{msg['label.username']}" />
 						<p:inputText style="width:100%;"
 							value="#{manageUsersController.selectedUser.userName}"
-							required="true" requiredMessage="Username is required"
+							required="true"
+							requiredMessage="#{msg['usermanagement.user.username.required']}"
 							id="userNameInput" disabled="#{manageUsersController.editMode}" />
 
-						<h:outputText value="Email:" />
+						<h:outputText value="#{msg['label.email']}" />
 						<p:inputText value="#{manageUsersController.selectedUser.email}"
-							required="true" requiredMessage="Email is required"
-							validatorMessage="Please enter a valid email adres"
+							required="true"
+							requiredMessage="#{msg['usermanagement.user.email.required']}"
+							validatorMessage="#{msg['message.email.invalid.message']}"
 							style="width:100%;" id="emailInput"
 							disabled="#{manageUsersController.editMode}">
 							<f:validateRegex
 								pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
 						</p:inputText>
 
-						<h:outputText value="First name:" />
+						<h:outputText value="#{msg['label.first.name']}" />
 						<p:inputText style="width:100%;" required="true"
-							requiredMessage="First name is required"
+							requiredMessage="#{msg['usermanagement.user.first.name.required']}"
 							value="#{manageUsersController.selectedUser.firstName}" />
 
-						<h:outputText value="Name:" />
+						<h:outputText value="#{msg['label.name']}" />
 						<p:inputText value="#{manageUsersController.selectedUser.name}"
-							required="true" requiredMessage="Name is required"
+							required="true"
+							requiredMessage="#{msg['message.user.name.required']}"
 							style="width:100%;" />
 
-						<h:outputText value="Roles: " />
+						<h:outputText value="#{msg['usermanagement.user.roles']}" />
 						<p:pickList id="rolesPicklist" required="true"
 							value="#{manageUsersController.roles}" var="role"
-							requiredMessage="Roles are required for a user"
+							requiredMessage="#{msg['usermanagement.user.roles.required']}"
 							itemValue="#{role}" itemLabel="#{role.name}"
 							converter="#{roleConverter}" responsive="true">
 
-							<f:facet name="sourceCaption">All available roles</f:facet>
-							<f:facet name="targetCaption">Selected roles</f:facet>
+							<f:facet name="sourceCaption">#{msg['usermanagement.available.roles']}</f:facet>
+							<f:facet name="targetCaption">#{msg['usermanagement.selected.roles']}</f:facet>
 
 							<p:column style="width:80%;">
 								<h:outputText value="#{role.name}" />
@@ -130,19 +138,20 @@
 						</p:pickList>
 					</p:panelGrid>
 					<p:panel style="margin-top:30px;">
-						<p:commandButton immediate="true" value="Cancel"
+						<p:commandButton immediate="true" value="#{msg['button.cancel']}"
 							styleClass="navButton" style="margin-right:20px;"
-							update="
-							:addUserForm"
+							update=":addUserForm"
 							actionListener="#{manageUsersController.cancelAddNewUser}" />
 						<p:commandButton rendered="#{manageUsersController.editMode}"
-							value="Reset password" ajax="true" id="resetPasswordButton"
+							value="#{msg['usermanagement.reset.password']}" ajax="true"
+							id="resetPasswordButton"
 							actionListener="#{manageUsersController.resetUserPassword}"
 							update=":usersForm :addUserForm" styleClass="navButton"
+							disabled="#{manageUsersController.canUserResetPassword()}"
 							style="margin-right:20px;" />
-						<p:commandButton value="Save" update=":usersForm :addUserForm"
-							ajax="true" styleClass="navButton" style="margin-right:20px;"
-							id="saveButton"
+						<p:commandButton value="#{msg['button.save']}"
+							update=":usersForm :addUserForm" ajax="true"
+							styleClass="navButton" style="margin-right:20px;" id="saveButton"
 							actionListener="#{manageUsersController.createOrUpdateUser}"
 							oncomplete="handleAddUserRequest(xhr, status, args)" />
 					</p:panel>
@@ -158,23 +167,6 @@
 			</p:dialog>
 		</h:form>
 		<script type="text/javascript">
-			var statusDlgTimer = null;
-
-			function showStatusDialog() {
-				if (statusDlgTimer === null) {
-					statusDlgTimer = setTimeout("PF('statusDialog').show()",
-							500);
-				}
-			}
-
-			function hideStatusDialog() {
-				if (statusDlgTimer !== null) {
-					clearTimeout(statusDlgTimer);
-					PF('statusDialog').hide();
-					statusDlgTimer = null;
-				}
-			}
-
 			function handleAddUserRequest(xhr, status, args) {
 				if (args.validationFailed) {
 					PF('addUserDialog').jq.effect("shake", {

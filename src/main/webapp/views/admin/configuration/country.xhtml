@@ -10,36 +10,30 @@
 		<h:outputText value="XLRA - Configuration - Countries" />
 	</ui:define>
 	<ui:define name="pageTitle">
-		<h:outputText value="Countries" />
+		<h:outputText value="#{msg['countries.title']}" />
 	</ui:define>
 	<ui:define name="body">
 		<h:form id="countryForm">
 			<p:growl id="msgs" showDetail="true" />
-			<p:panel id="countryPanel" header="Countries">
+			<p:panel id="countryPanel" header="#{msg['countries.title']}">
 				<p:dataTable editable="true" value="#{countryController.countries}"
-					var="country" emptyMessage="No countries found." id="countryTable">
+					var="country" emptyMessage="#{msg['countries.empty.country.list']}"
+					id="countryTable">
 
-					<p:column headerText="Short name:">
+					<p:column headerText="#{msg['label.short.name']}">
 						<h:outputText value="#{country.shortName}" />
 					</p:column>
-					<p:column headerText="English name:">
+					<p:column headerText="#{msg['label.english.name']}">
 						<h:outputText value="#{country.englishName}" />
 					</p:column>
-					<p:column headerText="Dutch name:">
+					<p:column headerText="#{msg['label.dutch.name']}">
 						<h:outputText value="#{country.dutchName}" />
 					</p:column>
-					<p:column headerText="French name:">
+					<p:column headerText="#{msg['label.french.name']}">
 						<h:outputText value="#{country.frenchName}" />
 					</p:column>
-					<p:column headerText="German name:">
-						<p:cellEditor>
-							<f:facet name="output">
-								<h:outputText value="#{country.germanName}" />
-							</f:facet>
-							<f:facet name="input">
-								<p:inputText value="#{country.germanName}" style="width:100%" />
-							</f:facet>
-						</p:cellEditor>
+					<p:column headerText="#{msg['label.german.name']}">
+						<h:outputText value="#{country.germanName}" />
 					</p:column>
 					<p:column style="width:120px;">
 						<p:commandButton id="editButton" styleClass="navButton"
@@ -47,14 +41,14 @@
 							icon="ui-icon-pencil" title="View" ajax="true"
 							update=":countryEditForm" style="margin-right:10px;" />
 						<p:tooltip id="editCountryTip" for="editButton"
-							value="Edit the country" />
+							value="#{msg['countries.edit.tip']}" />
 						<p:commandButton icon="ui-icon-trash" title="Delete"
 							id="deleteCountryButton" styleClass="navButton"
 							style="margin-right:5px;margin-left:5px;"
 							actionListener="#{countryController.deleteCountry(country)}"
 							ajax="true" immediate="true" update=":countryForm">
-							<p:confirm header="Confirm delete"
-								message="Are you sure you want to delete the country?"
+							<p:confirm header="#{msg['dialog.confirm.delete.title']}"
+								message="#{msg['countries.delete.confirm.message']}"
 								icon="ui-icon-alert" />
 						</p:commandButton>
 					</p:column>
@@ -67,37 +61,38 @@
 				header="#{countryController.detailGridTitle}"
 				widgetVar="editCountryDialog" width="70%" height="50%"
 				dynamic="true">
-				<p:panel id="countryDetailPanel" header="Country info">
+				<p:panel id="countryDetailPanel"
+					header="#{msg['countries.country.info']}">
 					<p:growl id="message" showDetail="true" />
 					<p:panelGrid columns="2" style="width:100%;"
 						columnClasses="labelColumn,valuesColumn">
-						<h:outputText value="English name:" />
+						<h:outputText value="#{msg['label.english.name']}" />
 						<p:inputText
 							value="#{countryController.selectedCountry.englishName}"
 							style="width:100%;" />
 
-						<h:outputText value="Dutch name:" />
+						<h:outputText value="#{msg['label.dutch.name']}" />
 						<p:inputText
 							value="#{countryController.selectedCountry.dutchName}"
 							style="width:100%;" />
 
-						<h:outputText value="French name:" />
+						<h:outputText value="#{msg['label.french.name']}" />
 						<p:inputText
 							value="#{countryController.selectedCountry.frenchName}"
 							style="width:100%;" />
 
-						<h:outputText value="German name:" />
+						<h:outputText value="#{msg['label.german.name']}" />
 						<p:inputText
 							value="#{countryController.selectedCountry.germanName}"
 							style="width:100%;" />
 					</p:panelGrid>
 
 					<p:panel style="margin-top:20px;">
-						<p:commandButton value="cancel"
+						<p:commandButton value="#{msg['button.cancel']}"
 							actionListener="#{countryController.cancel}" immediate="true"
 							update=":countryForm :countryEditForm" styleClass="navButton"
 							style="margin-right:20px;" />
-						<p:commandButton value="Save"
+						<p:commandButton value="#{msg['button.save']}"
 							update=":countryForm :countryEditForm"
 							actionListener="#{countryController.saveEditedCountry}"
 							styleClass="navButton" style="margin-right:20px;" />

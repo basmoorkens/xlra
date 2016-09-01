@@ -27,8 +27,10 @@ public class CustomerTest extends UnitilsJUnit4 {
     contactDelete.setEmail("bas@test.com");
     customer.deleteContact(contactDelete);
 
-    Assert.assertEquals(1, customer.getContacts().size());// standard contact is saved in a
-                                                          // different way
+    Assert.assertEquals(1, customer.getContacts().size());/*
+                                                           * standard contact is saved in a
+                                                           * different way
+                                                           */
     Assert.assertEquals(contact2.getEmail(), customer.getContacts().get(0).getEmail());
   }
 

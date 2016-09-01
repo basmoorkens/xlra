@@ -1,15 +1,16 @@
 package com.moorkensam.xlra.service.impl;
 
-import com.moorkensam.xlra.dao.LogDao;
 import com.moorkensam.xlra.dao.RateFileDao;
 import com.moorkensam.xlra.model.log.RaiseRatesRecord;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
 import com.moorkensam.xlra.model.rate.RateOperation;
+import com.moorkensam.xlra.service.LogRecordFactoryService;
+import com.moorkensam.xlra.service.LogService;
 import com.moorkensam.xlra.service.RaiseRateFileService;
 import com.moorkensam.xlra.service.UserService;
+import com.moorkensam.xlra.service.UserSessionService;
 import com.moorkensam.xlra.service.util.CalcUtil;
-import com.moorkensam.xlra.service.util.LogRecordFactory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,22 +31,22 @@ public class RaiseRateFileServiceImpl implements RaiseRateFileService {
   private static final Logger logger = LogManager.getLogger();
 
   @Inject
-  private LogDao logDao;
+  private LogService logService;
 
-  private LogRecordFactory logRecordFactory;
+  @Inject
+  private LogRecordFactoryService logRecordFactoryService;
 
   @Inject
   private RateFileDao rateFileDao;
 
   @Inject
-  private UserService userService;
+  private UserSessionService userSessionService;
 
   private CalcUtil calcUtil;
 
   @PostConstruct
   public void init() {
     setCalcUtil(CalcUtil.getInstance());
-    setLogRecordFactory(LogRecordFactory.getInstance());
   }
 
   @Override
@@ -57,12 +58,12 @@ public class RaiseRateFileServiceImpl implements RaiseRateFileService {
 
   @Override
   public List<RaiseRatesRecord> getRaiseRatesLogRecordsThatAreNotUndone() {
-    return getLogDao().getAllRaiseRateLogRecords();
+    return logService.getAllRaiseRateLogRecords();
   }
 
   @Override
   public void undoLatestRatesRaise() {
-    RaiseRatesRecord lastRaise = getLogDao().getLastRaiseRates();
+    RaiseRatesRecord lastRaise = logService.getLastRaiseRates();
     if (lastRaise == null) {
       logger.info("No raise found in the database");
     } else {
@@ -70,7 +71,7 @@ public class RaiseRateFileServiceImpl implements RaiseRateFileService {
       applyRateOperation(lastRaise.getRateFiles(), lastRaise.getPercentage(),
           RateOperation.SUBTRACT);
       lastRaise.setUndone(true);
-      getLogDao().updateRaiseRatesRecord(lastRaise);
+      logService.updateRaiseRatesRecord(lastRaise);
     }
   }
 
@@ -88,10 +89,7 @@ public class RaiseRateFileServiceImpl implements RaiseRateFileService {
 
     raiseRateFiles(percentage, fullRateFiles, operation);
 
-    RaiseRatesRecord createRaiseRatesRecord =
-        getLogRecordFactory().createRaiseRatesRecord(operation, percentage, fullRateFiles,
-            getUserService().getCurrentUsername());
-    logDao.createLogRecord(createRaiseRatesRecord);
+    logRaiseRates(percentage, operation, fullRateFiles);
 
     for (RateFile rf : fullRateFiles) {
       if (operation == RateOperation.RAISE) {
@@ -101,6 +99,13 @@ public class RaiseRateFileServiceImpl implements RaiseRateFileService {
       }
       getRateFileDao().updateRateFile(rf);
     }
+  }
+
+  private void logRaiseRates(double percentage, RateOperation operation,
+      List<RateFile> fullRateFiles) {
+    RaiseRatesRecord createRaiseRatesRecord =
+        logRecordFactoryService.createRaiseRatesRecord(operation, percentage, fullRateFiles);
+    logService.createLogRecord(createRaiseRatesRecord);
   }
 
   /**
@@ -164,22 +169,6 @@ public class RaiseRateFileServiceImpl implements RaiseRateFileService {
     }
   }
 
-  public LogDao getLogDao() {
-    return logDao;
-  }
-
-  public void setLogDao(LogDao logDao) {
-    this.logDao = logDao;
-  }
-
-  public LogRecordFactory getLogRecordFactory() {
-    return logRecordFactory;
-  }
-
-  public void setLogRecordFactory(LogRecordFactory logRecordFactory) {
-    this.logRecordFactory = logRecordFactory;
-  }
-
   public RateFileDao getRateFileDao() {
     return rateFileDao;
   }
@@ -196,12 +185,28 @@ public class RaiseRateFileServiceImpl implements RaiseRateFileService {
     this.calcUtil = calcUtil;
   }
 
-  public UserService getUserService() {
-    return userService;
+  public LogService getLogService() {
+    return logService;
   }
 
-  public void setUserService(UserService userService) {
-    this.userService = userService;
+  public void setLogService(LogService logService) {
+    this.logService = logService;
+  }
+
+  public UserSessionService getUserSessionService() {
+    return userSessionService;
+  }
+
+  public void setUserSessionService(UserSessionService userSessionService) {
+    this.userSessionService = userSessionService;
+  }
+
+  public LogRecordFactoryService getLogRecordFactoryService() {
+    return logRecordFactoryService;
+  }
+
+  public void setLogRecordFactoryService(LogRecordFactoryService logRecordFactoryService) {
+    this.logRecordFactoryService = logRecordFactoryService;
   }
 
 }

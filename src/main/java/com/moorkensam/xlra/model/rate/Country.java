@@ -3,6 +3,9 @@ package com.moorkensam.xlra.model.rate;
 import com.moorkensam.xlra.model.BaseEntity;
 import com.moorkensam.xlra.model.configuration.Language;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,6 +23,7 @@ import javax.persistence.MapKeyEnumerated;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Cacheable
@@ -41,6 +45,9 @@ public class Country extends BaseEntity {
 
   @Enumerated(EnumType.STRING)
   private ZoneType zoneType;
+
+  @Transient
+  private String i8nCountryName;
 
   public String getShortName() {
     return shortName;
@@ -67,10 +74,13 @@ public class Country extends BaseEntity {
       return false;
     }
     Country country = (Country) obj;
-    if (country.getId() == id && country.getShortName().equals(shortName)) {
-      return true;
-    }
-    return false;
+    return new EqualsBuilder().append(id, country.getId())
+        .append(shortName, country.getShortName()).isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder(17, 31).append(id).append(shortName).toHashCode();
   }
 
   @Override
@@ -132,6 +142,14 @@ public class Country extends BaseEntity {
 
   public String getNameForLanguage(Language language) {
     return names.get(language);
+  }
+
+  public String getI8nCountryName() {
+    return i8nCountryName;
+  }
+
+  public void setI8nCountryName(String i8nCountryName) {
+    this.i8nCountryName = i8nCountryName;
   }
 
 }

@@ -4,7 +4,6 @@ import com.moorkensam.xlra.model.BaseEntity;
 import com.moorkensam.xlra.model.mail.EmailHistoryRecord;
 import com.moorkensam.xlra.model.mail.EmailResult;
 import com.moorkensam.xlra.model.rate.Country;
-import com.moorkensam.xlra.model.rate.RateFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +13,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -61,6 +61,13 @@ public class QuotationResult extends BaseEntity {
 
   @Column(name = "used_ratefilename")
   private String usedRateFileName;
+
+  @Column(name = "created_username")
+  private String createdUserName;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "status")
+  private QuotationResultStatus quotationResultStatus;
 
   @Transient
   private List<OfferteOptionDto> selectableOptions;
@@ -200,6 +207,22 @@ public class QuotationResult extends BaseEntity {
       availableEmailRecipients = new ArrayList<String>();
     }
     availableEmailRecipients.add(recipient);
+  }
+
+  public String getCreatedUserName() {
+    return createdUserName;
+  }
+
+  public void setCreatedUserName(String createdUserName) {
+    this.createdUserName = createdUserName;
+  }
+
+  public QuotationResultStatus getQuotationResultStatus() {
+    return quotationResultStatus;
+  }
+
+  public void setQuotationResultStatus(QuotationResultStatus quotationResultStatus) {
+    this.quotationResultStatus = quotationResultStatus;
   }
 
 }

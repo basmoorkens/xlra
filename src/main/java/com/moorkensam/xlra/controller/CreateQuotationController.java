@@ -20,23 +20,23 @@ import com.moorkensam.xlra.service.FileService;
 import com.moorkensam.xlra.service.QuotationService;
 import com.moorkensam.xlra.service.impl.FileServiceImpl;
 import com.moorkensam.xlra.service.util.CustomerUtil;
+import com.moorkensam.xlra.service.util.FileUtil;
+import com.moorkensam.xlra.service.util.LocaleUtil;
 import com.moorkensam.xlra.service.util.QuotationUtil;
 import com.moorkensam.xlra.service.util.TranslationUtil;
 
 import org.primefaces.model.DualListModel;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJBException;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -54,6 +54,18 @@ public class CreateQuotationController {
 
   @Inject
   private CountryService countryService;
+
+  @ManagedProperty("#{localeController}")
+  private LocaleController localeController;
+
+  @ManagedProperty("#{msg}")
+  private ResourceBundle messageBundle;
+
+  private String usedRateFileMessage;
+
+  private LocaleUtil localeUtil;
+
+  private MessageUtil messageUtil;
 
   private TranslationUtil translationUtil;
 
@@ -80,6 +92,7 @@ public class CreateQuotationController {
    */
   @PostConstruct
   public void init() {
+    messageUtil = MessageUtil.getInstance(messageBundle);
     controllerDelegate = new QuotationControllerDelegate();
     allCountries = countryService.getAllCountries();
     initializeNewQuotationQuery();
@@ -88,11 +101,16 @@ public class CreateQuotationController {
     translationUtil = new TranslationUtil();
     showCustomerPanel();
     customerContacts = new DualListModel<CustomerContact>();
+    localeUtil = new LocaleUtil();
   }
 
+  /**
+   * Reset the state of the controller.
+   */
   public void resetPage() {
     initializeNewQuotationQuery();
     showCustomerPanel();
+    usedRateFileMessage = "";
   }
 
   /**
@@ -132,25 +150,32 @@ public class CreateQuotationController {
     try {
       getQuotationQuery().setCustomer(
           getCustomerService().createCustomerAndReturnManaged(customerToAdd));
-      MessageUtil.addMessage("Customer created", "Created customer " + customerToAdd.getName());
+      messageUtil.addMessage("message.customer.created.title", "message.customer.created.detail",
+          customerToAdd.getName());
       renderAddCustomerGrid = false;
       customerToAdd = new Customer();
     } catch (XlraValidationException exc) {
-      MessageUtil.addErrorMessage("Invalid customer data", exc.getBusinessException());
+      messageUtil.addErrorMessage("message.customer.invalid.data", exc.getBusinessException(), exc
+          .getExtraArguments().get(0));
     }
   }
 
+  /**
+   * Get all languages and fill in translation by user locale.
+   * 
+   * @return The transated langauges
+   */
   public List<Language> getAllLanguages() {
-    return Arrays.asList(Language.values());
+    List<Language> supportedLanguages = localeController.getSupportedLanguages();
+    localeUtil.fillInLanguageTranslations(supportedLanguages, getMessageBundle());
+    return supportedLanguages;
   }
 
   /**
    * Proces the customer section.
    */
   public void procesCustomer() {
-    if (getQuotationQuery().getCustomer().isHasOwnRateFile()) {
-      setupFiltersFromExistingCustomer();
-    }
+    setupFiltersFromExistingCustomer();
     showRateFilterPanel();
   }
 
@@ -204,14 +229,17 @@ public class CreateQuotationController {
         RateFileException re = (RateFileException) e.getCausedByException();
         showRateFileError(re);
       } else {
-        MessageUtil.addErrorMessage("Unknown exception",
-            "An unexpected exception occurred, please contact the system admin.");
+        messageUtil
+            .addErrorMessage("message.unknown.exception", "message.unknown.exception.detail");
       }
     }
   }
 
   private void fillInOptionTranslations() {
     translationUtil.fillInTranslations(quotationResult.getSelectableOptions());
+    usedRateFileMessage =
+        messageUtil.lookupI8nStringAndInjectParams("message.used.ratefile", "<strong>"
+            + quotationResult.getUsedRateFileName() + "</strong>");
   }
 
   public void selectAllOptions() {
@@ -259,21 +287,8 @@ public class CreateQuotationController {
     FacesContext facesContext = FacesContext.getCurrentInstance();
     HttpServletResponse response =
         (HttpServletResponse) facesContext.getExternalContext().getResponse();
-    response.reset();
-    response.setHeader("Content-Type", "application/pdf");
-    OutputStream responseOutputStream = response.getOutputStream();
-    File generatedPdfFromDisk =
-        fileService.getOffertePdfFromFileSystem(quotationResult.getPdfFileName());
-    InputStream pdfInputStream = new FileInputStream(generatedPdfFromDisk);
-    byte[] bytesBuffer = new byte[2048];
-    int bytesRead;
-    while ((bytesRead = pdfInputStream.read(bytesBuffer)) > 0) {
-      responseOutputStream.write(bytesBuffer, 0, bytesRead);
-    }
-
-    responseOutputStream.flush();
-    pdfInputStream.close();
-    responseOutputStream.close();
+    File pdfToServe = fileService.getOffertePdfFromFileSystem(quotationResult.getPdfFileName());
+    FileUtil.serveDownloadToHttpServletResponse(pdfToServe, response);
     facesContext.responseComplete();
   }
 
@@ -285,8 +300,8 @@ public class CreateQuotationController {
       QuotationUtil.getInstance().setCustomerContactsForOfferte(customerContacts.getTarget(),
           quotationResult);
       quotationService.submitQuotationResult(quotationResult);
-      MessageUtil.addMessage("Offerte successfully send", "The offerte was successfully send to "
-          + quotationResult.getEmailResult().getRecipientsAsString());
+      messageUtil.addMessage("message.offerte.sent.title", "message.offerte.sent.detail",
+          quotationResult.getEmailResult().getRecipientsAsString());
       showResultPanel();
     } catch (RateFileException re2) {
       showRateFileError(re2);
@@ -295,19 +310,20 @@ public class CreateQuotationController {
         RateFileException re = (RateFileException) e.getCausedByException();
         showRateFileError(re);
       } else {
-        MessageUtil.addErrorMessage("Unknown exception",
-            "An unexpected exception occurred, please contact the system admin.");
+        messageUtil
+            .addErrorMessage("message.unknown.exception", "message.unknown.exception.detail");
       }
     }
   }
 
   private void showRateFileError(RateFileException re) {
-    MessageUtil.addErrorMessage("Unexpected error whilst processing quotation request.",
-        re.getBusinessException());
+    messageUtil.addErrorMessage("message.processing.unexecptected.error",
+        re.getBusinessException(), re.getExtraArguments() != null ? re.getExtraArguments().get(0)
+            : "");
   }
 
   private void setupFiltersFromExistingCustomer() {
-    // TODO implements loading of filters based on customer ratefile present
+    quotationQuery.setLanguage(quotationQuery.getCustomer().getLanguage());
   }
 
   /**
@@ -321,12 +337,26 @@ public class CreateQuotationController {
     return customers;
   }
 
+  /**
+   * Get all the measurements and fill in the translation for the frontend.
+   * 
+   * @return List of translated measurements
+   */
   public List<Measurement> getAllMeasurements() {
-    return Arrays.asList(Measurement.values());
+    List<Measurement> measurements = Arrays.asList(Measurement.values());
+    localeUtil.fillInMeasurementTranslations(measurements, messageBundle);
+    return measurements;
   }
 
+  /**
+   * Get all the rateskinds and fill in the translation for the frontend
+   * 
+   * @return The list of translated ratekinds.
+   */
   public List<Kind> getAllKinds() {
-    return Arrays.asList(Kind.values());
+    List<Kind> kinds = Arrays.asList(Kind.values());
+    localeUtil.fillInRateKindTranslations(kinds, messageBundle);
+    return kinds;
   }
 
   public Customer getCustomerToAdd() {
@@ -346,6 +376,7 @@ public class CreateQuotationController {
   }
 
   public List<Country> getAllCountries() {
+    localeUtil.fillInCountryi8nNameByLanguage(allCountries, localeController.getLanguage());
     return allCountries;
   }
 
@@ -393,8 +424,15 @@ public class CreateQuotationController {
     controllerDelegate.setCollapseFiltersPanel(collapseFiltersPanel);
   }
 
+  /**
+   * Get all the transporttypes translated in the correct language.
+   * 
+   * @return The list of transporttypes.
+   */
   public List<TransportType> getAllTransportTypes() {
-    return Arrays.asList(TransportType.values());
+    List<TransportType> transportTypes = Arrays.asList(TransportType.values());
+    localeUtil.fillInTransportTypeTranslations(transportTypes, messageBundle);
+    return transportTypes;
   }
 
   public boolean isCollapseResultPanel() {
@@ -455,14 +493,8 @@ public class CreateQuotationController {
    * @return String representation of all customer contacts.
    */
   public String getSelectedCustomerContactsAsString() {
-    StringBuilder builder = new StringBuilder();
-    if (customerContacts != null && customerContacts.getTarget() != null
-        && customerContacts.getTarget().size() > 0) {
-      for (CustomerContact contact : customerContacts.getTarget()) {
-        builder.append(contact.getEmail() + ", ");
-      }
-      String result = builder.toString();
-      return result.substring(0, result.length() - 2);
+    if (customerContacts != null) {
+      return CustomerUtil.getInstance().getCustomerContactsAsString(customerContacts.getTarget());
     }
     return "";
   }
@@ -473,5 +505,45 @@ public class CreateQuotationController {
 
   public void setCustomerService(CustomerService customerService) {
     this.customerService = customerService;
+  }
+
+  public MessageUtil getMessageUtil() {
+    return messageUtil;
+  }
+
+  public void setMessageUtil(MessageUtil messageUtil) {
+    this.messageUtil = messageUtil;
+  }
+
+  public ResourceBundle getMessageBundle() {
+    return messageBundle;
+  }
+
+  public void setMessageBundle(ResourceBundle messageBundle) {
+    this.messageBundle = messageBundle;
+  }
+
+  public LocaleController getLocaleController() {
+    return localeController;
+  }
+
+  public void setLocaleController(LocaleController localeController) {
+    this.localeController = localeController;
+  }
+
+  public LocaleUtil getLocaleUtil() {
+    return localeUtil;
+  }
+
+  public void setLocaleUtil(LocaleUtil localeUtil) {
+    this.localeUtil = localeUtil;
+  }
+
+  public String getUsedRateFileMessage() {
+    return usedRateFileMessage;
+  }
+
+  public void setUsedRateFileMessage(String usedRateFileMessage) {
+    this.usedRateFileMessage = usedRateFileMessage;
   }
 }

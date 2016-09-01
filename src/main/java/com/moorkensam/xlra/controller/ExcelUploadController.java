@@ -1,5 +1,6 @@
 package com.moorkensam.xlra.controller;
 
+
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.rate.Country;
 import com.moorkensam.xlra.model.rate.Kind;
@@ -8,6 +9,7 @@ import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.TransportType;
 import com.moorkensam.xlra.service.CountryService;
 import com.moorkensam.xlra.service.ExcelService;
+import com.moorkensam.xlra.service.util.LocaleUtil;
 import com.moorkensam.xlra.service.util.RateUtil;
 
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -17,9 +19,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 
@@ -33,15 +37,23 @@ public class ExcelUploadController {
   @Inject
   private CountryService countryService;
 
+  @ManagedProperty("#{localeController}")
+  private LocaleController localeController;
+
+  @ManagedProperty("#{msg}")
+  private ResourceBundle messageBundle;
+
+  private LocaleUtil localeUtil;
+
   private List<Country> countries;
 
   private RateFile ratefile;
 
   private FileUploadEvent event;
 
-  private List<Measurement> measurements = Arrays.asList(Measurement.values());
+  private List<Measurement> measurements;
 
-  private List<Kind> kindOfRates = Arrays.asList(Kind.values());
+  private List<Kind> kindOfRates;
 
   private boolean showUpload = false;
 
@@ -51,8 +63,12 @@ public class ExcelUploadController {
   @PostConstruct
   public void init() {
     ratefile = new RateFile();
+    localeUtil = new LocaleUtil();
     ratefile.setTransportType(TransportType.EXPORT);
     setCountries(countryService.getAllCountries());
+    localeUtil.fillInCountryi8nNameByLanguage(countries, localeController.getLanguage());
+    measurements = getLocaleController().getMeasurements();
+    kindOfRates = getLocaleController().getKinds();
   }
 
   /**
@@ -117,16 +133,70 @@ public class ExcelUploadController {
     this.showUpload = showUpload;
   }
 
-  public List<TransportType> getAllTransportTypes() {
-    return Arrays.asList(TransportType.values());
-  }
-
   public FileUploadEvent getEvent() {
     return event;
   }
 
   public void setEvent(FileUploadEvent event) {
     this.event = event;
+  }
+
+  public ResourceBundle getMessageBundle() {
+    return messageBundle;
+  }
+
+  public void setMessageBundle(ResourceBundle messageBundle) {
+    this.messageBundle = messageBundle;
+  }
+
+  public LocaleController getLocaleController() {
+    return localeController;
+  }
+
+  public void setLocaleController(LocaleController localeController) {
+    this.localeController = localeController;
+  }
+
+  /**
+   * Get all the rateskinds and fill in the translation for the frontend
+   * 
+   * @return The list of translated ratekinds.
+   */
+  public List<Kind> getAllKinds() {
+    List<Kind> kinds = Arrays.asList(Kind.values());
+    getLocaleUtil().fillInRateKindTranslations(kinds, messageBundle);
+    return kinds;
+  }
+
+  /**
+   * Get all the measurements and fill in the translation for the frontend.
+   * 
+   * @return List of translated measurements
+   */
+  public List<Measurement> getAllMeasurements() {
+    List<Measurement> measurements = Arrays.asList(Measurement.values());
+    getLocaleUtil().fillInMeasurementTranslations(measurements, messageBundle);
+    return measurements;
+  }
+
+
+  /**
+   * Get all the transport types with description filled in in the user locale.
+   * 
+   * @return The list of transport types.
+   */
+  public List<TransportType> getAllTransportTypes() {
+    List<TransportType> transportTypes = Arrays.asList(TransportType.values());
+    getLocaleUtil().fillInTransportTypeTranslations(transportTypes, messageBundle);
+    return transportTypes;
+  }
+
+  public LocaleUtil getLocaleUtil() {
+    return localeUtil;
+  }
+
+  public void setLocaleUtil(LocaleUtil localeUtil) {
+    this.localeUtil = localeUtil;
   }
 
 }

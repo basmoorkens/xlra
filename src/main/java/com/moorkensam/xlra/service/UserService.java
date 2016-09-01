@@ -1,6 +1,7 @@
 package com.moorkensam.xlra.service;
 
 import com.moorkensam.xlra.model.error.UserException;
+import com.moorkensam.xlra.model.error.XlraValidationException;
 import com.moorkensam.xlra.model.security.User;
 
 import java.util.List;
@@ -13,11 +14,13 @@ public interface UserService {
 
   public void createUser(User user) throws UserException;
 
-  public User updateUser(User user, boolean updatePw);
+  public User updateUser(User user);
+
+  public User updateUserPassword(User user);
 
   public void deleteUser(User user);
 
-  public void resetUserPassword(User user) throws MessagingException;
+  public void resetUserPassword(User user) throws MessagingException, XlraValidationException;
 
   public User getUserById(long id);
 
@@ -33,10 +36,8 @@ public interface UserService {
 
   public void setPasswordAndActivateUser(User user, String password);
 
-  public String getCurrentUsername();
+  public void disableUser(User user) throws XlraValidationException;
 
-  public void disableUser(User user);
-
-  public void enableUser(User user);
+  public void enableUser(User user) throws XlraValidationException;
 
 }
