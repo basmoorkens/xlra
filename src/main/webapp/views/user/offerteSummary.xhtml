@@ -42,12 +42,13 @@
 					actionListener="#{createQuotationController.showOptionsPanel}" />
 				<p:tooltip id="backTip3" for="backButton3"
 					value="#{msg['offertesummary.back.tip']}" />
-				<p:commandButton styleClass="navButton" value="Open pdf"
-					id="openPdfButton" style="margin-right:20px;"
+				<p:commandButton styleClass="navButton"
+					value="#{msg['button.show.pdf']}" id="openPdfButton"
+					style="margin-right:20px;"
 					actionListener="#{createQuotationController.downloadPdf}"
 					onclick="this.form.target='_blank'" ajax="false" />
 				<p:tooltip id="openPdfTip" for="openPdfButton"
-					value="Open the generated PDF" />
+					value="#{msg['button.tip.open.pdf']}" />
 				<p:commandButton value="#{msg['offertesummary.send']}"
 					update=":resultForm :summaryForm" id="nextButton4"
 					actionListener="#{createQuotationController.submitOfferte}"
