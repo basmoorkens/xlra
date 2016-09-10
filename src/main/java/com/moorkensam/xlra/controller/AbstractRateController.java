@@ -11,6 +11,7 @@ import com.moorkensam.xlra.service.util.ZoneUtil;
 import org.primefaces.context.RequestContext;
 
 import java.util.List;
+import java.util.ResourceBundle;
 
 public abstract class AbstractRateController implements ConditionsControllerInterface,
     ZoneControllerInterface {

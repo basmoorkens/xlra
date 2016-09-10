@@ -19,127 +19,124 @@ import javax.inject.Inject;
 @ViewScoped
 public class CountryController {
 
-	@Inject
-	private CountryService countryService;
+  @Inject
+  private CountryService countryService;
 
-	@ManagedProperty("#{msg}")
-	private ResourceBundle messageBundle;
+  @ManagedProperty("#{msg}")
+  private ResourceBundle messageBundle;
 
-	private MessageUtil messageUtil;
+  private MessageUtil messageUtil;
 
-	private List<Country> countries;
+  private List<Country> countries;
 
-	private Country selectedCountry;
+  private Country selectedCountry;
 
-	private String detailGridTitle;
+  private String detailGridTitle;
 
-	@PostConstruct
-	public void init() {
-		refreshCountries();
-		messageUtil = MessageUtil.getInstance(messageBundle);
-	}
+  @PostConstruct
+  public void init() {
+    refreshCountries();
+    messageUtil = MessageUtil.getInstance(messageBundle);
+  }
 
-	private void refreshCountries() {
-		countries = countryService.getAllCountriesFullLoad();
-	}
+  private void refreshCountries() {
+    countries = countryService.getAllCountriesFullLoad();
+  }
 
-	/**
-	 * Saves the country that was edited.
-	 */
-	public void saveEditedCountry() {
-		selectedCountry = countryService.updateCountry(selectedCountry);
-		messageUtil.addMessage("message.country.update.title",
-				"message.country.update.detail",
-				selectedCountry.getEnglishName() + "");
-		refreshCountries();
-		hideAddDialog();
-	}
+  /**
+   * Saves the country that was edited.
+   */
+  public void saveEditedCountry() {
+    selectedCountry = countryService.updateCountry(selectedCountry);
+    messageUtil.addMessage("message.country.update.title", "message.country.update.detail",
+        selectedCountry.getEnglishName() + "");
+    refreshCountries();
+    hideAddDialog();
+  }
 
-	/**
-	 * Delete a country
-	 * 
-	 * @param country
-	 *            the country to delete.
-	 */
-	public void deleteCountry(Country country) {
-		countryService.deleteCountry(country);
-		refreshCountries();
-		messageUtil.addMessage("message.country.delete.title",
-				"message.country.delete.detail", country.getEnglishName() + "");
-	}
+  /**
+   * Delete a country
+   * 
+   * @param country the country to delete.
+   */
+  public void deleteCountry(Country country) {
+    countryService.deleteCountry(country);
+    refreshCountries();
+    messageUtil.addMessage("message.country.delete.title", "message.country.delete.detail",
+        country.getEnglishName() + "");
+  }
 
-	public void cancel() {
-		selectedCountry = null;
-		hideAddDialog();
-	}
+  public void cancel() {
+    selectedCountry = null;
+    hideAddDialog();
+  }
 
-	/**
-	 * Setup the page to edit a country.
-	 * 
-	 * @param country
-	 *            The country to edit.
-	 */
-	public void setupPageForEdit(Country country) {
-		selectedCountry = country;
-		detailGridTitle = "Edit country " + country.getEnglishName();
-		showAddDialog();
-	}
+  /**
+   * Setup the page to edit a country.
+   * 
+   * @param country The country to edit.
+   */
+  public void setupPageForEdit(Country country) {
+    selectedCountry = country;
+    detailGridTitle = "Edit country " + country.getEnglishName();
+    showAddDialog();
+  }
 
-	private void hideAddDialog() {
-		RequestContext context = RequestContext.getCurrentInstance();
-		context.execute("PF('editCountryDialog').hide();");
-	}
+  private void hideAddDialog() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    context.execute("PF('editCountryDialog').hide();");
+  }
 
-	private void showAddDialog() {
-		RequestContext context = RequestContext.getCurrentInstance();
-		context.execute("PF('editCountryDialog').show();");
-	}
+  private void showAddDialog() {
+    RequestContext context = RequestContext.getCurrentInstance();
+    context.execute("PF('editCountryDialog').show();");
+  }
 
-	public Country getSelectedCountry() {
-		return selectedCountry;
-	}
+  public Country getSelectedCountry() {
+    return selectedCountry;
+  }
 
-	public void setSelectedCountry(Country selectedCountry) {
-		this.selectedCountry = selectedCountry;
-	}
+  public void setSelectedCountry(Country selectedCountry) {
+    this.selectedCountry = selectedCountry;
+  }
 
-	public List<Country> getCountries() {
-		return countries;
-	}
+  public List<Country> getCountries() {
+    return countries;
+  }
 
-	public void setCountries(List<Country> countries) {
-		this.countries = countries;
-	}
+  public void setCountries(List<Country> countries) {
+    this.countries = countries;
+  }
 
-	public CountryService getCountryService() {
-		return countryService;
-	}
+  public CountryService getCountryService() {
+    return countryService;
+  }
 
-	public void setCountryService(CountryService countryService) {
-		this.countryService = countryService;
-	}
+  public void setCountryService(CountryService countryService) {
+    this.countryService = countryService;
+  }
 
-	public String getDetailGridTitle() {
-		return detailGridTitle;
-	}
+  public String getDetailGridTitle() {
+    return detailGridTitle;
+  }
 
-	public void setDetailGridTitle(String detailGridTitle) {
-		this.detailGridTitle = detailGridTitle;
-	}
+  public void setDetailGridTitle(String detailGridTitle) {
+    this.detailGridTitle = detailGridTitle;
+  }
 
-	public MessageUtil getMessageUtil() {
-		return messageUtil;
-	}
+  public MessageUtil getMessageUtil() {
+    return messageUtil;
+  }
 
-	public void setMessageUtil(MessageUtil messageUtil) {
-		this.messageUtil = messageUtil;
-	}
+  public void setMessageUtil(MessageUtil messageUtil) {
+    this.messageUtil = messageUtil;
+  }
 
-	public ResourceBundle getMessageBundle() {
-		return messageBundle;
-	}
+  public ResourceBundle getMessageBundle() {
+    return messageBundle;
+  }
 
-	public void setMessageBundle(ResourceBundle messageBundle) {
-		this.messageBundle = messageBundle;
-	}
+  public void setMessageBundle(ResourceBundle messageBundle) {
+    this.messageBundle = messageBundle;
+  }
 }

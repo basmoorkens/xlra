@@ -4,13 +4,17 @@ import com.moorkensam.xlra.controller.util.MessageUtil;
 import com.moorkensam.xlra.dto.RateFileIdNameDto;
 import com.moorkensam.xlra.model.configuration.Language;
 import com.moorkensam.xlra.model.rate.Condition;
+import com.moorkensam.xlra.model.rate.Kind;
+import com.moorkensam.xlra.model.rate.Measurement;
 import com.moorkensam.xlra.model.rate.RateFile;
 import com.moorkensam.xlra.model.rate.RateLine;
+import com.moorkensam.xlra.model.rate.TransportType;
 import com.moorkensam.xlra.model.rate.Zone;
 import com.moorkensam.xlra.model.translation.TranslationKey;
 import com.moorkensam.xlra.service.ExcelService;
 import com.moorkensam.xlra.service.RateFileService;
 import com.moorkensam.xlra.service.UserSessionService;
+import com.moorkensam.xlra.service.util.LocaleUtil;
 import com.moorkensam.xlra.service.util.ZoneUtil;
 
 import org.apache.logging.log4j.LogManager;
@@ -71,17 +75,27 @@ public class ManageRatesController extends AbstractRateController {
 
   private LazyDataModel<RateFile> model;
 
+  private LocaleUtil localeUtil;
+
   /**
    * Logic to initialize the controller.
    */
   @PostConstruct
   public void initializeController() {
-    messageUtil = MessageUtil.getInstance(messageBundle);
+    initI8n();
     editable = userSessionService.isLoggedInUserAdmin();
     resetSelectedRateFile();
     setZoneUtil(new ZoneUtil());
     autoCompleteItems = rateFileService.getRateFilesIdAndNamesForAutoComplete();
     initModel();
+  }
+
+  private void initI8n() {
+    messageUtil = MessageUtil.getInstance(messageBundle);
+    localeUtil = new LocaleUtil();
+    getAllKinds();
+    getAllMeasurements();
+    getAllTransportTypes();
   }
 
   private void initModel() {
@@ -98,6 +112,39 @@ public class ManageRatesController extends AbstractRateController {
         return lazyRateFiles;
       }
     };
+  }
+
+  /**
+   * Get all the measurements and fill in the translation for the frontend.
+   * 
+   * @return List of translated measurements
+   */
+  private List<Measurement> getAllMeasurements() {
+    List<Measurement> measurements = Arrays.asList(Measurement.values());
+    localeUtil.fillInMeasurementTranslations(measurements, messageBundle);
+    return measurements;
+  }
+
+  /**
+   * Get all the rateskinds and fill in the translation for the frontend
+   * 
+   * @return The list of translated ratekinds.
+   */
+  private List<Kind> getAllKinds() {
+    List<Kind> kinds = Arrays.asList(Kind.values());
+    localeUtil.fillInRateKindTranslations(kinds, messageBundle);
+    return kinds;
+  }
+
+  /**
+   * Get all the transporttypes translated in the correct language.
+   * 
+   * @return The list of transporttypes.
+   */
+  private List<TransportType> getAllTransportTypes() {
+    List<TransportType> transportTypes = Arrays.asList(TransportType.values());
+    localeUtil.fillInTransportTypeTranslations(transportTypes, messageBundle);
+    return transportTypes;
   }
 
   protected void showConditionDetailDialog() {
