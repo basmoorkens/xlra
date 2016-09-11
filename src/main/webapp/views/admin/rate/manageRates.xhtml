@@ -71,7 +71,8 @@
 						<p:commandButton id="editButton" styleClass="navButton"
 							actionListener="#{manageRatesController.fetchDetailsOfRatefile(rateFile)}"
 							icon="ui-icon-pencil" title="View" ajax="true"
-							update=":basicForm :zoneDetailForm :rateLinesDetailForm :conditionsDetailForm" />
+							update=":basicForm :zoneDetailForm :rateLinesDetailForm :conditionsDetailForm"
+							oncomplete="scrollToDetail();" />
 						<p:tooltip id="editButtonTip" for="editButton"
 							value="#{msg['managerates.edit.tip']}" />
 					</p:column>
@@ -80,7 +81,8 @@
 			</p:panel>
 		</h:form>
 
-		<p:panel header="#{msg['label.details']}" style="margin-top:20px;">
+		<p:panel header="#{msg['label.details']}" id="detailFormContainer"
+			style="margin-top:20px;">
 			<ui:include src="/views/user/rateBasicInfo.xhtml">
 				<ui:param name="rateFile"
 					value="#{manageRatesController.selectedRateFile}" />
@@ -129,6 +131,17 @@
 				</p:panel>
 			</h:form>
 		</p:panel>
+
+		<script type="text/javascript">
+			function scrollToDetail() {
+				$('html, body').animate({
+					scrollTop : $("#detailFormContainer").offset().top
+				}, 1000);
+				return false;
+
+			}
+		</script>
+
 	</ui:define>
 </ui:composition>
 </html>

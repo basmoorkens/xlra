@@ -124,6 +124,7 @@
 					value="#{msg['customermanagement.add.new.contact']}" ajax="true"
 					update=":customerDetailForm :customerContactForm" immediate="true"
 					styleClass="navButton"
+					rendered="#{customerController.editCustomerMode}"
 					actionListener="#{customerController.setupPageForNewContact}"
 					style="margin-right:20px;" />
 				<p:commandButton value="#{msg['button.save']}" title="Save customer"

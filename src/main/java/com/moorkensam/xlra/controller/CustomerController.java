@@ -54,6 +54,11 @@ public class CustomerController {
 
   private String saveContactButtonTitle;
 
+  private boolean editCustomerMode;
+
+  /**
+   * Initializes the controller.
+   */
   @PostConstruct
   public void initializeController() {
     messageUtil = MessageUtil.getInstance(messageBundle);
@@ -137,23 +142,34 @@ public class CustomerController {
 
   private void reInitializePage() {
     hideAddDialog();
-    detailGridTitle = "Details selected customer";
-    selectedCustomer = new Customer();
+    internalSetupNewCustomer();
     selectedContact = new CustomerContact();
+    setEditCustomerMode(false);
   }
 
+  /**
+   * Gets all the languages and fills in the translations.
+   * 
+   * @return List of languages
+   */
   public List<Language> getAllLanguages() {
     List<Language> supportedLanguages = getLocaleController().getSupportedLanguages();
     getLocaleUtil().fillInLanguageTranslations(supportedLanguages, getMessageBundle());
     return supportedLanguages;
   }
 
+  private void internalSetupNewCustomer() {
+    detailGridTitle =
+        messageUtil.lookupI8nStringAndInjectParams("customermanagement.detail.new.customer", "");
+    selectedCustomer = new Customer();
+    setEditCustomerMode(false);
+  }
+
   /**
    * Set up the page for a new customer.
    */
   public void setupPageForNewCustomer() {
-    detailGridTitle = "New customer";
-    selectedCustomer = new Customer();
+    internalSetupNewCustomer();
     showAddDialog();
   }
 
@@ -167,8 +183,12 @@ public class CustomerController {
    */
   public void setupPageForNewContact() {
     selectedContact = new CustomerContact();
-    contactHeader = "Add contact for " + selectedCustomer.getName();
-    saveContactButtonTitle = "Add contact to customer";
+    contactHeader =
+        messageUtil.lookupI8nStringAndInjectParams(
+            "customermanagement.detail.add.new.contact.title", selectedCustomer.getName());
+    saveContactButtonTitle =
+        messageUtil.lookupI8nStringAndInjectParams(
+            "customermanagement.detail.add.contact.save.button", "");
     showAddContactDialog();
   }
 
@@ -180,9 +200,12 @@ public class CustomerController {
   public void setupPageForEditContact(CustomerContact customerContact) {
     selectedContact = customerContact;
     contactHeader =
-        "Edit contact " + selectedContact.getEmail() + " from customer "
-            + selectedCustomer.getName();
-    saveContactButtonTitle = "Update contact";
+        messageUtil.lookupI8nStringAndInjectParams(
+            "customermanagement.detail.add.new.contact.title", selectedContact.getEmail(),
+            selectedCustomer.getName());
+    saveContactButtonTitle =
+        messageUtil.lookupI8nStringAndInjectParams(
+            "customermanagement.detail.add.contact.save.button", "");
     showAddContactDialog();
   }
 
@@ -236,7 +259,9 @@ public class CustomerController {
    */
   public void setupPageForEditCustomer(Customer customer) {
     loadInCustomer(customer);
-    detailGridTitle = "Edit customer " + selectedCustomer.getName();
+    detailGridTitle =
+        messageUtil.lookupI8nStringAndInjectParams("customermanagement.detail.existing.customer",
+            selectedCustomer.getName());
     showAddDialog();
   }
 
@@ -244,6 +269,7 @@ public class CustomerController {
     customer = customerService.getCustomerById(customer.getId());
     CustomerUtil.getInstance().promoteToFullCustomer(customer);
     selectedCustomer = customer;
+    setEditCustomerMode(true);
   }
 
   private void fillInLocales() {
@@ -342,4 +368,11 @@ public class CustomerController {
     this.localeUtil = localeUtil;
   }
 
+  public boolean isEditCustomerMode() {
+    return editCustomerMode;
+  }
+
+  public void setEditCustomerMode(boolean editCustomerMode) {
+    this.editCustomerMode = editCustomerMode;
+  }
 }
